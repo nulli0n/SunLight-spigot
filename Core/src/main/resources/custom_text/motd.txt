@@ -1,0 +1,10 @@
+&6>&6&m-----------------&e&m-----------&6&m-----------------&r&6<
+
+          &7Welcome &e%player_displayname% &7to &2&lSampleCraft
+                 &eUse&6 {json: ~hint: &6Click to teleport; ~chat-type: /wild;}/wild{end-json} &eto get started
+
+         &6Community: &ehttp://samplecraft.com
+         &6Store: &ehttp://store.samplecraft.com
+         &6Discord: &ehttp://samplecraft.com/discord
+
+&6>&6&m-----------------&e&m-----------&6&m-----------------&r&6<

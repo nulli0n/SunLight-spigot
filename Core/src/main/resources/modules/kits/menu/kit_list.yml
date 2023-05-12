@@ -1,0 +1,59 @@
+Title: '#8c5be1          &lServer Kits'
+Size: 54
+# Sets whether to use Paper's MiniMessage API for the GUI Title.
+Use_Mini_Message: false
+
+Kit:
+  Name: '#9af7ff&lKit: &f%kit_name%'
+  Lore:
+    Default:
+    - '%kit_description%'
+    - ''
+    - '#9af7ff&lInfo:'
+    - '#9af7ff▪ #ddeceeCost: #9af7ff$%kit_cost_money%'
+    - '#9af7ff▪ #ddeceeCooldown: #9af7ff%kit_cooldown%'
+    - ''
+    - '%no_permission%'
+    - '%no_money%'
+    - '%cooldown%'
+    - ''
+    - '#a5ff9a&lActions:'
+    - '#a5ff9a▪ #ddeceeLeft-Click: #a5ff9aGet'
+    - '#a5ff9a▪ #ddeceeRight-Click: #a5ff9aPreview'
+    No_Permission:
+    - '#ff9a9a[!] #ddeceeYou don''t have #ff9a9apermission#ddecee to use this kit.'
+    No_Money:
+    - '#ff9a9a[!] #ddeceeYou don''t have enough #ff9a9amoney#ddecee to use this kit.'
+    Cooldown:
+    - '#ff9a9a[!] #ddeceeYou can use this kit again in #ff9a9a%cooldown%#ddecee.'
+  Slots: 11,13,15,29,31,33
+
+Content:
+  
+  return:
+    Priority: 5
+    Item:
+      Material: PLAYER_HEAD
+      Head_Texture: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmU5YWU3YTRiZTY1ZmNiYWVlNjUxODEzODlhMmY3ZDQ3ZTJlMzI2ZGI1OWVhM2ViNzg5YTkyYzg1ZWE0NiJ9fX0=
+      Name: '#ffee9a(↓) &fClose Menu'
+      Lore: []
+    Slots: 49
+    Type: CLOSE
+  
+  page_next:
+    Slots: 53
+    Type: PAGE_NEXT
+    Item:
+      Material: PLAYER_HEAD
+      Head_Texture: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjMyY2E2NjA1NmI3Mjg2M2U5OGY3ZjMyYmQ3ZDk0YzdhMGQ3OTZhZjY5MWM5YWMzYTkxMzYzMzEzNTIyODhmOSJ9fX0=
+      Name: '#ffee9a(→) &fNext Page'
+    Priority: 5
+  
+  page_previous:
+    Slots: 45
+    Type: PAGE_PREVIOUS
+    Item:
+      Material: PLAYER_HEAD
+      Head_Texture: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODY5NzFkZDg4MWRiYWY0ZmQ2YmNhYTkzNjE0NDkzYzYxMmY4Njk2NDFlZDU5ZDFjOTM2M2EzNjY2YTVmYTYifX19
+      Name: '#ffee9a(←) &fPrevious Page'
+    Priority: 5

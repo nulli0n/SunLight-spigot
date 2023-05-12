@@ -1,0 +1,146 @@
+# Sets the range for death messages.
+# Set to 0 for a world-wide messages.
+# Set to -1 for a server-wide messages.
+# Set other value for certain blocks distance.
+Range: -1
+# A list of all custom death messages. Here you can add or remove messages.
+# Use DamageCause as a primary key for messages section: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/event/entity/EntityDamageEvent.DamageCause.html
+# For next levels, you can specify last attacker name/type as a key for different messages:
+# - BLOCK_EXPLOSION, CONTACT, FALLING_BLOCK, SUFFOCATION -> Material Name: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html
+# - ENTITY_ATTACK, ENTITY_SWEEP_ATTACK, ENTITY_EXPLODE, PROJECTILE -> Entity Type: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/entity/EntityType.html
+# You can also use 'default' key for all other damagers/sources.
+# There is also a bit of internal placeholders:
+# - All Player Placeholders from https://github.com/nulli0n/NexEngine-spigot/wiki/Internal-Placeholders
+# - %damager% - For attacker/damager name.
+# PlaceholderAPI is supported in all messages.
+# JSON formatting is also supported in all messages: https://github.com/nulli0n/NexEngine-spigot/wiki/Language-Config#json-formatting
+List:
+  BLOCK_EXPLOSION:
+    default:
+      - '&7(&c☠&7) &c%player_display_name% &7blowed up!'
+    TNT:
+      - '&7(&c☠&7) &c%player_display_name% &7lost his limbs due to &cTNT&7 explosion!'
+  CONTACT:
+    default:
+      - '&7(&c☠&7) &c%player_display_name% &7died from &c%damager%&7.'
+    CACTUS:
+      - '&7(&c☠&7) &c%player_display_name% &7tried to obtain some water from &c%damager%&7.'
+      - '&7(&c☠&7) &c%player_display_name% &7died when accidiently touch a &c%damager%&7.'
+  CRAMMING:
+    default:
+      - '&7(&c☠&7) &c%player_display_name% &7trampled into the ground by a crowd.'
+  CUSTOM:
+    default:
+      - '&7(&c☠&7) &c%player_display_name% &7died somehow...'
+      - '&7(&c☠&7) &c%player_display_name% &7no more alive.'
+  DRAGON_BREATH:
+    default:
+      - '&7(&c☠&7) &c%player_display_name% &7was incinerated by a &cDragon Breath&7.'
+  DROWNING:
+    default:
+      - '&7(&c☠&7) &c%player_display_name% &7drowned.'
+      - '&7(&c☠&7) &c%player_display_name% &7forgot how to swim.'
+  ENTITY_ATTACK:
+    default:
+      - '&7(&c⚔&7) &c%player_display_name% &7was slain by &c%damager%&7.'
+    PLAYER:
+      - '&7(&c⚔&7) &c%damager% &7killed &c%player_display_name%'
+    BEE:
+      - '&7(&c⚔&7) &c%player_display_name% &7attempted to steal honey from &cBees&7.'
+    BLAZE:
+      - '&7(&c⚔&7) &c%player_display_name% &7could not reflect &cBlaze&7''s fireball.'
+      - '&7(&c⚔&7) &c%player_display_name% &7catched a fireball with his head.'
+    CAVE_SPIDER:
+      - '&7(&c⚔&7) &c%player_display_name% &7was bited to death by a little spidee.'
+      - '&7(&c⚔&7) &c%player_display_name% &7climb down too deep in a cave with &cSpiders&7.'
+    CHICKEN:
+      - '&7(&c⚔&7) &c%player_display_name% &7was pecked by a &cChicken&7...'
+    DROWNED:
+      - '&7(&c⚔&7) &c%player_display_name% &7was drowned by &cDrowned&7...'
+    GHAST:
+      - '&7(&c⚔&7) &c%player_display_name% &7was fireballed by a &cGhast&7.'
+    ENDERMAN:
+      - '&7(&c⚔&7) &c%player_display_name% &7looked strange at &cEnderman&7.'
+    ZOMBIE:
+      - '&7(&c⚔&7) &c%player_display_name%&7''s brain was eaten by &cZombie&7.'
+    ZOMBIE_VILLAGER:
+      - '&7(&c⚔&7) &c%player_display_name%&7 tried to talk with &cZombie Villager&7.'
+    PIGLIN:
+      - '&7(&c⚔&7) &c%player_display_name%&7 offered a very bad trade to &cPiglin&7.'
+      - '&7(&c⚔&7) &c%player_display_name%&7 tried to scam &cPiglin&7 during the trade.'
+    PIGLIN_BRUTE:
+      - '&7(&c⚔&7) &c%player_display_name%&7 offered a very bad trade to &cPiglin&7.'
+      - '&7(&c⚔&7) &c%player_display_name%&7 tried to scam &cPiglin&7 during the trade.'
+  ENTITY_SWEEP_ATTACK:
+    default:
+      - '&7(&c☠&7) &c%player_display_name% &7was slain by &c%damager%&7.'
+  ENTITY_EXPLOSION:
+    default:
+      - '&7(&c☠&7) &c%player_display_name% &7was blowed up by a &c%damager%&7.'
+    CREEPER:
+      - '&7(&c☠&7) &c%player_display_name% &7could not run away from a &cCreeper&7 in time.'
+  FALL:
+    default:
+      - '&7(&c☠&7) &c%player_display_name% &7fell from a high spot.'
+      - '&7(&c☠&7) &c%player_display_name% &7tried to fly without elytras.'
+  FALLING_BLOCK:
+    default:
+      - '&7(&c☠&7) &c%player_display_name% &7was squased by a &c%damager%&7.'
+    ANVIL:
+      - '&7(&c☠&7) &c%player_display_name% &7was unable to hold an &c%damager%&7.'
+  FLY_INTO_WALL:
+    default:
+      - '&7(&c☠&7) &c%player_display_name% &7exceeded the speed limit with elytras.'
+      - '&7(&c☠&7) &c%player_display_name% &7lost control while flying elytras.'
+  FIRE:
+    default:
+      - '&7(&c☠&7) &c%player_display_name% &7burned to the ground.'
+  FIRE_TICK:
+    default:
+      - '&7(&c☠&7) &c%player_display_name% &7burned to the ground.'
+  FREEZE:
+    default:
+      - '&7(&c☠&7) &c%player_display_name% &7frozen to death.'
+      - '&7(&c☠&7) &c%player_display_name% &7fell asleep in the snow.'
+  HOT_FLOOR:
+    default:
+      - '&7(&c☠&7) &c%player_display_name% &7walked too long on &cMagma Blocks&7.'
+  LAVA:
+    default:
+      - '&7(&c☠&7) &c%player_display_name% &7tried to swim in lava.'
+  LIGHTNING:
+    default:
+      - '&7(&c☠&7) &c%player_display_name% &7was shot by a &cLightning&7.'
+  MAGIC:
+    default:
+      - '&7(&c☠&7) &c%player_display_name% &7killed by a deadly magic.'
+  POISON:
+    default:
+      - '&7(&c☠&7) &c%player_display_name% &7was poisoned.'
+  PROJECTILE:
+    default:
+      - '&7(&c⚔&7) &c%player_display_name%&7 was shot by a &c%damager%&7.'
+    SKELETON:
+      - '&7(&c⚔&7) &c%player_display_name%&7 was shot by a skeleton.'
+  SONIC_BOOM:
+    default:
+      - '&7(&c☠&7) &c%player_display_name%''s eardrums were exploded.'
+  STARVATION:
+    default:
+      - '&7(&c☠&7) &c%player_display_name% &7forgot to eat.'
+  SUFFOCATION:
+    default:
+      - '&7(&c☠&7) &c%player_display_name% &7was buried alive.'
+  SUICIDE:
+    default:
+      - '&7(&c☠&7) &c%player_display_name% &7killed himself.'
+      - '&7(&c☠&7) &c%player_display_name% &7could not longer bear this all.'
+  THORNS:
+    default:
+      - '&7(&c☠&7) &c%player_display_name% &7died when touching &c%damager%&7.'
+  VOID:
+    default:
+      - '&7(&c☠&7) &c%player_display_name% &7fell into the void.'
+  WITHER:
+    default:
+      - '&7(&c☠&7) &c%player_display_name% &7could not beat &cWither&7.'

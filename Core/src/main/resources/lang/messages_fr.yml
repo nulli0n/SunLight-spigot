@@ -1,0 +1,913 @@
+Afk:
+  Enter: '&b%player% &9est AFK.'
+  Exit: '&b%player% &9est de retour après &b%time% &9d''innactivié.'
+  Kick: '&9Vous venez d''être ejecté après &b%time% &9d''innactivité.'
+  Sms: '&b%player% &9est innactif et ne pourra donc pas répondre à votre message.'
+Chat:
+  AntiSpam:
+    Similar:
+      Msg: '&cNe spammez pas les messages !'
+      Cmd: '&cNe spammez pas les commandes !'
+    Delay:
+      Msg: '&cVous devez attendre &c%time% &cavant de pouvoir renvoyer un message.'
+      Cmd: '&cVous devez attendre &c%time% &cavant de pouvoir retapper une commande.'
+  Cooldown:
+    Command: '&cVous devez attendre &c%time% &cavant de pouvoir réutiliser &c&l%cmd%
+      &cde nouveau.'
+Bans:
+  Kick:
+    Kicked:
+      - '&c&nVous venez d''être éjecté du serveur !'
+      - '&7'
+      - '&9Raison : &b%reason%&9;'
+      - '&9Admin : &b%admin%&9.'
+    Banned:
+      Perma:
+        - '&c&nVous êtes banni de ce serveur !'
+        - '&7'
+        - '&9Raison : &b%reason% &9| &9Admin : &b%admin%&9;'
+        - '&9Date : &b%date%&9;'
+        - '&b%appeal%&9.'
+      Temp:
+        - '&c&nVous êtes banni de ce serveur !'
+        - '&7'
+        - '&9Raison : &b%reason% &7| &9Admin : &b%admin%&9;'
+        - '&9Date du bannissement : &b%date% &7| &9déban dans : &b%time%&9;'
+        - '%appeal%&9.'
+    Done: '&b%user% &9à bien été éjecté pour &b%reason%&9.'
+    Broadcast: '&b%admin% &9a éjecté &b%user% &9pour &b%reason%&9.'
+  Command:
+    Banlist:
+      Desc: Liste des joueurs bannis.
+      Usage: '[page]'
+    Ban:
+      Desc: Ban un joueur ou une IP spécifique.
+      Usage: <utilisateur/ip> <temps> <raison>
+    Banip:
+      Desc: Ban un joueur spécifique par IP.
+      Usage: <utilisateur/ip> <temps> <raison>
+    Mute:
+      Desc: Rend muet un joueur spécifique.
+      Usage: <utilisateur> <temps> <raison>
+    Kick:
+      Desc: Ejecte un utilisateur ou une IP spécifique.
+      Usage: <user/ip> <reason>
+    Unmute:
+      Desc: Réetablis la voix dans le chat.
+      Usage: <utilisateur>
+    Unban:
+      Desc: Débannis un joueur ou une IP spécifique.
+      Usage: <utilisateur>
+    Warn:
+      Desc: Avertis un joueur spécifique.
+      Usage: <utilisateur> <raison>
+    Unwarn:
+      Desc: Supprime l'avertissement d'un joueur.
+      Usage: <utilisateur>
+  Ban:
+    User:
+      Perma:
+        Done: '&b%user% &9a été banni pour toujour pour &b%reason%&9.'
+        Broadcast: '&b%admin% &9a banni pour toujours &b%user% &9pour &b%reason%&9.'
+      Temp:
+        Done: '&b%user% &9a été banni pour &b%time%&9. Raison : &b%reason%&9.'
+        Broadcast: '&b%admin% &9a banni &b%user% &9pour &b%time%&9. Raison : &b%reason%&9.'
+    IP:
+      Perma:
+        Done: '&9L''IP &b%ip% &9a été définitivement banni pour &b%reason%&9.'
+        Broadcast: '&b%admin% &9a banni définitivement l''IP &b%ip% &9pour &b%reason%&9.'
+      Temp:
+        Done: '&9L''IP &b%ip% &9a été banni pour &b%time%&9. Raison : &b%reason%&9.'
+        Broadcast: '&b%admin% &9a banni l''IP &b%ip% &9pour &b%time%&9. Raison : &b%reason%&9.'
+  Unban:
+    User:
+      Done: '&b%user% &9vien d''être débannis.'
+      Broadcast: '&b%admin% &9a débanni &b%user%&9.'
+    IP:
+      Done: '&9L''IP &b%ip% &9a été débanni.'
+      Broadcast: '&b%admin% &9a débanni l''IP &b%ip%&9.'
+  Mute:
+    User:
+      Perma:
+        Done: '&b%user% &9a été rendu muet définitivement pour &b%reason%&9.'
+        Notify: '&9Vous êtes rendu muet définitivement pour &b%reason%&9.'
+        Broadcast: '&b%admin% &9a rendu &b%user% &9définitivement muet pour &b%reason%&9.'
+      Temp:
+        Done: '&b%user% &9 a été rendu muet pour %time%&9. Raison : &b%reason%&9.'
+        Notify: '&9Vous êtes désormais muet pendant &b%time% &9pour &b%reason%&9.'
+        Broadcast: '&b%admin% &9a rendu muet &b%user% &9pour &b%time%&9. Raison :
+          &b%reason%&9.'
+  Unmute:
+    User:
+      Done: '&b%user% &9peut de nouveau parler.'
+      Broadcast: '&b%admin% &9a réetabli la voix de &b%user%&9.'
+  Warn:
+    User:
+      Done: '&b%suser% &9a été avertis pour &b%reason%&9.'
+      Notify: Vous venez d'être avertis pour &b%reason%&9.
+      Broadcast: '&b%admin% &9a avertis &b%user% &9pour &b%reason%&9.'
+  Unwarn:
+    User:
+      Done: '&b%user% &9n''est plus avertis.'
+      Broadcast: '&b%admin% &9a enlevé l''avertissemnt de &b%user%&9.'
+  List:
+    Format:
+      - '                              &9&l[ &b&lBan List &9&l]                                '
+      - '&bJoueur/IP  &9|&b         Date         &9|&b     Admin     &9|&b    Raison'
+      - '&9'
+      - '%list%'
+      - '                     &b %back% %page%&9/&b%pages% %next%                              '
+    Node: '&b%user%   &b%date%   &b%admin%   &b%reason%'
+    Button:
+      Back:
+        Active:
+          Text: '&b[Ava.]'
+          Hint: '&9Cliquez pour voir la page précédente.'
+        Inactive:
+          Text: '&b[Ava.]'
+          Hint: '&9Vous êtes déjà a la première page !.'
+      Next:
+        Active:
+          Text: '&b[Apr.]'
+          Hint: '&9Cliquez pour voir la page suivante.'
+        Inactive:
+          Text: '&b[Apr.]'
+          Hint: '&9Vous êtes déjà à la dernière page !'
+  Error:
+    Immune: '&b%user% &9ne peut être punni !'
+    NotBanned: '&b%user% &9n''est pas banni.'
+    NotMuted: '&b%user% &9n''est pas muet.'
+    NotIP: '&b%ip% &9n''est pas une adresse IP !'
+Enhancements:
+  Chairs:
+    Command:
+      Sit:
+        Desc: Permet de s'asseoir sur le block sur lequel vous vous tenez.
+Economy:
+  Command:
+    Balance:
+      Usage: '[player]'
+      Done: '&9Argent de &b%player% &9: &b%balance%&9.'
+    BalanceTop:
+      Usage: '[player]'
+      Header: '                      &9[&b&lJoueurs les plus riches&9]                  '
+      Format: '&b%pos%. &b%player% &9: &b%money%'
+    Eco:
+      Give:
+        Usage: <joueur> <montant>
+        Desc: Ajoute une quantité spécifique d'argent au compte banquaire d'un joueur.
+        Done: '&9Ajout de %amount% &9à &b%player%&9.'
+      Take:
+        Usage: <joueur> <montant>
+        Desc: Saisi un montant spécifique d'argent au compte banquaire d'un joueur.
+        Done: '&9Saisie de &b%amount% &9de &b%player%&9.'
+      Set:
+        Usage: <joueur> <montant>
+        Desc: Redéfinit le montant d'un compte banquaire d'un joueur.
+        Done: '&9Définition du compte de &b%player% &9a &b%amount%&9.'
+    Pay:
+      Usage: <joueur> <montant>
+      Desc: Donne de son argent à un joueur spécifique.
+      Done:
+        In: '&b%player% &9vous a donné &b%amount%&9.'
+        Out: '&9Envoie de &b%amount% &9à &b%player%&9.'
+      Error:
+        InsufficientFunds: '&cVous n''avez pas assez d''argent !'
+  Error:
+    NoAccount: '&cCe joueur n''existe pas !'
+Exploits:
+  Patcher:
+    TooManySameIp: '&cVous avez atteint la limite de joueurs pouvant avoir cet IP.'
+GUI:
+  Error:
+    Invalid: GUI &b%gui% &9n'existe pas !
+    NoPerm: '&cVous n''avez pas la permission d''utiliser %gui% GUI !'
+Ignore:
+  PrivateMessage: '&cCe joueur ne veut pas recevoir de vos messages.'
+  TeleportRequest: '&cCe joueur ne veut pas recevoir de demandes de téléportation
+    de votre part.'
+Command:
+  AdminChat:
+    Desc: Bascule sur le chat des administrateurs.
+    Toggle: '&9Admin-tchat : &b%state%'
+  Afk:
+    Desc: Active le mode innactif.
+  Air:
+    Desc: Change le niveau d'air.
+    Usage: <montant> [joueur]
+    Done:
+      Others: du niveau d'air de &b%player% &9!
+      Self: Niveau d'air changé !
+  Anvil:
+    Desc: Ouvre une enclume portable.
+    Usage: '[joueur]'
+    Done:
+      Others: d'une enclume portable pour &b%player%&9.
+  Armor:
+    Desc: Montre l'équipement d'un joueur spécifique.
+    Usage: <joueur>
+  Back:
+    Desc: Permet de retourner à son emplacement précédent.
+    Usage: '[joueur]'
+    Error:
+      Empty: Désolé, vous n'avez pas de location précédente.
+      BadWorld: '&cVous ne pouvez pas vous téléporter dans ce monde !'
+    Done: Téléportation à votre location précédente.
+  Broadcast:
+    Desc: Message d'annonce.
+    Usage: <message>
+    Format: '&b[Broadcast] &9: &b%msg%'
+  Burn:
+    Desc: Enflamme un joueur spécifique.
+    Usage: <joueur> <temps>
+    Done: Joueur &b%player% &9a été enflammé pour &b%time% seconds&9.
+  ChestSort:
+    Desc: Bascule en mode tri automatique des coffres.
+    Toggle: '&9Triage auto. : &b%state%&9.'
+  Chairs:
+    Desc: Fonction qui permet de s'asseoir.
+    Toggle: '&9Chairs : &b%state%&9.'
+  ClearChat:
+    Desc: Nettoie le tchat.
+    Done: Le tchat a été vidé par &b%player%&9.
+  ClearInv:
+    Desc: Nettoie l'inventaire d'un joueur spécifique.
+    Usage: '[joueur]'
+    Done:
+      Others: de &b%player% &9a été vidé !
+      Self: Inventaire vidé !
+  CText:
+    Invalid: TXT &c&l%file% &cnon trouvé !
+  CreateWorld:
+    Usage: <nom> [normal/nether/end] [generation] [type] [difficulté] [seed] [Sctuctures]
+    Error: Un monde de ce nom existe déjà !
+    Done: '&9Le monde &b%world% a été crée !'
+  Condense:
+    Desc: Condense des irems dans des blocks.
+    Error:
+      Nothing: n'y a rien a condenser !
+      NotEnought: n'avez pas assez de &c&l%item-from% &cpour avoir &c&l%item-result%&c.
+        Need at least &c%amount%.
+    Done: Converted &bx%amount-from% %item-from% &9en &bx%amount-result% %item-result%
+  Disposal:
+    Desc: Ouvre disposal GUI.
+    GUI:
+      Title: Disposal
+  DelHome:
+    Desc: Supprime une résidence.
+    Usage: '[résidence] &9ou &b/%cmd% [joueur] [résidence]'
+    Error:
+      Invalid: '&cLa résidence &c&l%home% &cn''existe pas !'
+    Done: '&9Résidence &b%home% &9supprimé !'
+  DelSpawn:
+    Desc: Supprime un spawn pécifique.
+    Usage: <nom>
+    Done: du spawn &b%id% &9réussie !
+  DelWarp:
+    Desc: Supprime un warp spécifique.
+    Usage: <warp>
+    Done: du warp &b%id% &9réussie !
+  DeleteWorld:
+    Usage: <monde>
+    Error: Ce monde n'existe pas ou il est le monde principal !
+    Done: du monde &b%world% &9!
+  Enchant:
+    Desc: Enchante un item.
+    Usage: <enchantement> <niveau>
+    Done: Enchanté !
+  Enchanting:
+    Desc: Ouvre une table d'enchantement portable.
+  Enderchest:
+    Desc: Ouvre un coffre de l'ender portable.
+    Usage: '[joueur]'
+  Exp:
+    Desc: XP contrôleur.
+    Usage: '[joueur] ou <give/set> <montant> ou <give/set> <joueur> <montant>'
+    Show: '&9XP de &b%player% &9: &b%total%exp&9, &b%lvl%niveaux&9, prochain niveau
+      dans &b%up%XP&9. level.'
+    Done: '&9Fait ! Nouvel XP de &b%player% &9: &b%exp%exp&9.'
+  Ext:
+    Desc: Extinguish the player.
+    Usage: '[joueur]'
+    Done:
+      Self: You have been extinguished.
+      Others: Player &9%player% &7has been extinguished.
+  Feed:
+    Desc: Rempli la barre dee nourriture.
+    Usage: '[joueur]'
+    Done:
+      Self: Vous êtes nourri !
+      Others: '&b%player% &9a été nourri !'
+  Fly:
+    Desc: Bascule en mode vol.
+    Usage: <0/1> [joueur]
+    Done:
+      Others: '&9Mode vol &b%state% &9pour &b%player%&9.'
+      Self: '&9Mode de vol : &b%state%&9.'
+    Error:
+      BadWorld: '&cVous ne pouvez pas voler ici !'
+  GameMode:
+    Desc: Change de mode de jeu.
+    Usage: <0/1/2/3> [joueur]
+    Done:
+      Self: '&9Gamemode : &b%gm%&9.'
+      Others: '&9Gamemode du joueur &b%player% &9: &b%gm%&9.'
+  Give:
+    Desc: Give un item spécifique à un joueur.
+    Usage: <item> [nombre] [joueur]
+    Error:
+      Invalid: '&cMateriel invalide !'
+    Done:
+      Others: Give de &bx%amount% %item% &9à &b%player%&9.
+      Self: Vous avez reçu &bx%amount% %item%&9.
+  God:
+    Desc: Bascule en mode invincible.
+    Usage: '[1/0] [joueur]'
+    Toggle:
+      Self: '&9Mode invincible : &b%state%&9.'
+      Others: '&9Mode invincible &b%state% &9pour &b%player%&9.'
+    Error:
+      World: '&cLe mode invincible n''est pas autorisé ici !'
+  Goto:
+    Usage: <monde>
+    Done: Vous venez d'être téléporté !
+  GUI:
+    Desc: Ouvre un GUI spécifié.
+    Usage: <id> [joueur]
+    Others:
+      Error: '&cImpossible d''ouvrir &c&l%gui% &cGUI pour &c&l%player%&c. &c(accès
+        refusé)'
+      Done: '&9Ouverture &b%gui% &9GUI pour &b%player%&9.'
+  Hat:
+    Desc: Met un item sur sa tête.
+    Done: Amusez-vous avec votre nouveau chapeau :) !
+  Heal:
+    Desc: Remplie la barre de vie.
+    Usage: '[joueur]'
+    Done:
+      Self: Votre vie a été réetablie !
+      Others: '&9La vie de &b%player% &9a été réetablie !'
+  Home:
+    Desc: Permet de se téléporter à un endroit défini.
+    Usage: '[résidence] ou /%cmd% [joueur] [résidence]'
+    Error:
+      Invalid: '&cLa résidence &c&l%home% &cest invalide.'
+    Done: '&9Téléportation à la résidence &b%home% &9!'
+  Homes:
+    Desc: Controle vos résidences.
+  SetHome:
+    Error:
+      World: '&cVous ne pouvez pas définir de résidence ici !'
+      Limit: '&cVous avez déjà atteind votre limite de résidences'
+    Desc: Défini l'endroit de la résidence.
+    Usage: '[résidence]'
+    Done: '&9Création du home &b%home%&9. Vous pouvez le configurer en tapant &b/homes&9.'
+  Ignore:
+    Desc: Ignore un joueur spécifique.
+    Usage: <joueur>
+    Done: '&b%player% &9a été ajouté a votre liste de joueurs ignorés. Il ne peux
+      plus vous envoyer de messages / demandes de TP.'
+    Error:
+      Already: '&cVous ignorez déjà &c&l%player%&c.'
+  Inv:
+    Desc: Permet de voir l'inventaire d'un joueur spécifique.
+    Usage: <joueur>
+  Item:
+    Desc: Permet d'obtenir un item spécifique.
+    Usage: <item> [nombre]
+    Error:
+      Invalid: '&cMateriel invalide !'
+    Done: '&9Vous avez reçu &bx%amount% %item%&9.'
+  Itemname:
+    Desc: Modifie le nom d'un item.
+    Usage: <nom>
+    Done: Item renommé !
+  ItemLore:
+    Desc: Modifie la description d'un item.
+    Usage: ajouter|enlever|supprimer
+    Done: La description de l'item a été changé!
+  Kit:
+    Usage: <kit> [joueur]
+    Desc: Permer d'obtenir un kit spécifique.
+  Kits:
+    List:
+      Format:
+        - '                      &9&l[ &b&lKits du serveur &9&l]                    '
+        - '&b» &9Kit : &b%kit% &9(passez la souris) Actions : &b%button_get% %button_preview%'
+        - '&b&m                                                          &7'
+      Empty: Aucun kits disponibles.
+    Button:
+      Get:
+        Name: '&a[Obtenir]'
+        Hint:
+          - '&9Vous avez reçu le kit &b%kit%&9.'
+          - '&9Vous ne pouvez qu''obtenir ce kit en tapant : &b/kit %id%&9.'
+      Preview:
+        Name: '&2[Apperçu]'
+        Hint: '&9Permet d''avoir un apperçu du kit.'
+    Error:
+      Invalid: kit &c&l#%kit% &cn'existe pas !
+      NoPerm: '&cVous n''avez pas la permission pour obtenir ce kit !'
+      NoMoney: '&cVous n''avez pas assez d''argent pour acheter ce kit, il coute &c&l%cost%$&c,
+        et vous n''avez que &c&l%money%$&c.'
+      Cooldown: '&cVous devez attendre encore &c&l%time% &cavant de pouvoir ravoir
+        ce kit.'
+    Give:
+      Self: '&9Kit &b%kit% &9reçu !'
+      Others: '&b%player% a reçu le kit &b%kit%&9.'
+  List:
+    Desc: Montre les joueurs connectés et leur grade.
+  LoadWorld:
+    Usage: <monde>
+    Error: '&cCe monde n''existe pas ou alors, il est déjà chargé!'
+    Done: '&9Monde &b%world% &9chargé !'
+  Me:
+    Desc: Montre les actions dans le tchat.
+    Usage: <action>
+    Format: '&9&o* &b&o%player% &9&o%msg%'
+  Mobkill:
+    Desc: Tue des entités spécifiques.
+    Usage: <type>
+    Done:
+      Type: '&b%amount% %type% &9ont été détruites !'
+      All: '&b%amount% &9entités ont été détruites !'
+  More:
+    Desc: Augmente le nombre d'items dans la maisn.
+  Move:
+    Usage: <joueur> <monde>
+    Done: '&b%player% &9a été téléporté dans le monde &b%world% &9!'
+  Near:
+    Desc: Montre les joueurs lesp lus proches.
+    List:
+      - '&9Joueurs dans un rayon de &b%radius% &9blocs : '
+      - '&b» &b%prefix%%player%%suffix% &9: &b%distance% blocs&9.'
+    Error:
+      None: '&9Aucun joueurs se trouvent dans un rayon de &b%radius% blocs&9.'
+  Nick:
+    Desc: Change le nom du joueur.
+    Usage: '[nouveau nom]'
+    Done:
+      Others: '&9Le nom de &b%player% &9a été changé en &b%nick%&9.'
+      Self: '&9Votre nom a été changé en &b%nick%&9.'
+    Error:
+      Blacklisted: '&cCe nom contient des mots familliers !'
+      Long: '&cCe nom contient plus de &c&l20 &clettres !'
+      Short: '&cCe nom contient moin de &c&l3 &clettres !'
+  NoPhantom:
+    Desc: Désactive l'attaque des phantoms pour un joueur spécifique.
+    Usage: '[0/1] [joueur]'
+    Toggle:
+      Self: '&9Anti-Phantome : &b%state%&9.'
+      Others: '&9Anti-Phantome &b%state% &9pour &b%player%&9.'
+  PlayerInfo:
+    Desc: Affiche les infos du joueur.
+    Usage: <joueur>
+    List:
+      - '&9            &9&l[ &b&lInformation of &b&l%player% &9&l]            &7'
+      - '&b» &9Nom : &b%name% &9| Nick : &b%display%&9;'
+      - '&b» &9Online : &b%online%&9;'
+      - '&b» &9Innactif : &b%afk% &9(depuis &b%afk-time%&9);'
+      - '&b» &9Adresse IP : &b%ip%&9;'
+      - '&b» &9Vie : &b%hp%/%maxhp%&9;'
+      - '&b» &9Saturation : &b%feed%/20&9;'
+      - '&b» &9Mode de jeu : &b%gm%&9;'
+      - '&b» &9Vol : &b%fly% &9| Permission : &b%canfly%&9;'
+      - '&b» &9Argent : &b%money%&9;'
+      - '&b» &9Localisation : monde &b%world%&9, &b%x%&9, &b%y%&9, &b%z%&9;'
+      - '&b» &9Opérateur :  &b%op%&9.'
+  Plugins:
+    Desc: Affiche la liste des plugins installés sur le serveur.
+    List:
+      - '&9                &9&l[ &b&lPlugins du serveur &9&l]                &7'
+      - '&b» &b&l%pl_name% &9v%pl_ver% &9(par &b%pl_author%&9) - &b%pl_status%'
+  Potion:
+    Desc: Modifie les potions.
+    Usage: <effet> <niveau> <durée>
+    Error:
+      NotAPotion: '&cVous devez avoir une potion !'
+      InvalidEffect: '&cEffet invalide !'
+    Done: Potion crée !
+  Repair:
+    Desc: Repare les item(s) de votre inventaire.
+    Usage: '[tout]'
+    Done:
+      Hand: Item réparé!
+      All: Tout les items de votre inventaire ont été réparés !
+  Reply:
+    Desc: Renvoie un message privé au destinataire précédent.
+    Usage: <texte>
+    Error:
+      Empty: Personne ne vous a envoyé de message privé auparavant.
+  RTP:
+    Error:
+      World: '&cLa commande /rtp n''est pas autorisé ici !'
+      AlreadyIn: '&cVous avez déjà utilisé le RTP !'
+    Notify:
+      Teleport:
+        - '&9Téléportation effectuée !'
+        - '&9Vous êtes en : [&bX &9: &b%x%&9] [&bY &9: &b%y%&9] [&bZ &9: &b%z%&9].'
+      Search:
+        - '&b&lRecherche ...'
+        - ' &9Processus : [&b%attempt%&9/&b%max%&9]'
+      Failure:
+        - '&c&lAucun endroit trouvé :'
+        - ' &7&lEchec de la téléportation.'
+  Seen:
+    Desc: Affiche le statut d'un joueur.
+    Usage: <joueur>
+    Offline:
+      - '              &9&l[ &b&lconnections de %player% &9&l]              '
+      - '&b» &9Dernière connection il y a &b%time% &9jours;'
+      - '&b» &9Adresse IP : &b%ip%&9.'
+    Online:
+      - '              &9&l[ &b&lConnections de %player% &9&l]              '
+      - '&b» &9Connecté depuis &b%time%&9;'
+      - '&b» &9Innactif : &b%afk% &9(depuis &b%afk-time%&9)&9;'
+      - '&b» &9Adresse IP : &b%ip%&9.'
+  SetSpawn:
+    Desc: Crée le point de spawn.
+    Usage: '[spawn]'
+    Done: '&9Spawn crée : &b%id% &9! Vous pouvez le configurer en tapant &b/spawn
+      editor&9.'
+  SetWarp:
+    Desc: Crée un warp.
+    Usage: <warp>
+    Error:
+      Limit: Vous avez atteint la limite de warps ! Vous ne pouvez pas en créer plus
+        !
+    Done: '&9Warp crée: &b%id% &9! Vous pouvez le configurer en tapant &b/warp editor&9.'
+  Skull:
+    Desc: Permet d'avoir la tête d'un joueur.
+    Usage: <nom>
+    Done: Vous venez d'obtenir la tête &b%player% &9!
+  SocialSpy:
+    Desc: Permet d'observer les MP des autres joueurs.
+    Usage: '[1/0] [joueur]'
+    Toggle:
+      Self: '&9Espionnage MP : &b%state%&9.'
+      Others: '&9Espionnage MP &b%state% &9pour &b%player%&9.'
+    Format: '&9[&bEspionnage PM&9] &b%from% &9-> &b%to% &9: &f%msg%'
+  Spawn:
+    Desc: Permet de se téléporter dans un spawn spécifique.
+    Usage: '[spawn] ou [joueur] [spawn]'
+    Done:
+      Self: '&9Téléportation au spawn &b%id%&9...'
+      Others: '&9Téléportation de &b%player% &7dans le spawn &b%id%&9...'
+    Error:
+      Empty: '&cLe spawn &c&l%id% &cn''existe pas.'
+  Spawner:
+    Desc: Change le type d'un spawner.
+    Usage: <type>
+    Done: Le type du spawner a été changé en &b%type%&9.
+    Error:
+      Type: '&cCe type n''existe pas.'
+      Block: '&cVous devez regarder un spawner !'
+  SpawnMob:
+    Desc: Fait apparaitre un/des mobs spécifiques.
+    Usage: <type> [nombre]
+    Done: '&9Apparition de &bx%amount% %type%&9.'
+  Speed:
+    Desc: Change la vitesse de vol/marche.
+    Usage: <vitesse> [joueur]
+    Done:
+      Self:
+        Walk: '&9Vitesse de marche définie à &b%speed%&9.'
+        Fly: '&9Vitesse de vol définie à &b%speed%&9.'
+      Others:
+        Walk: '&b%player% &9marche désormais à une vitesse de &b%speed%&9.'
+        Fly: '&b%player% &9vole désormais à une vitesse de &b%speed%&9.'
+  Sudo:
+    Desc: Force un joueur a exécuter une commande.
+    Usage: <joueur> <commande>
+    Done: '&b%player% &9a été forcé d''exécuté la commande &b%cmd%&9.'
+  Suicide:
+    Desc: Commet un suicide.
+    Done: Au-revoir tout le monde :(
+  Summon:
+    Desc: Fait apparaitre un joueur là ou vous êtes.
+    Usage: <joueur>
+  System:
+    Desc: Infos du serveur.
+    World: '&b%world% &9: &b%chunks% &9chunks, &b%entities% &9entitées, &b%tiles%
+      &9tiles (?).'
+    Info:
+      - '                 &9&l[ &b&lSystème info &9&l]                 '
+      - '&b» &9Allumé depuis : &b%uptime% &9;'
+      - '&b» &9TPS : &b%tps% &9;'
+      - '&b» &9RAM (MB) : max : &b%max%&9, total : &b%total%&9, &9dispinible : &b%free%
+      &9;'
+      - '&b» &9CPU : &b%cpu_cores% &9;'
+      - '&b» &9Java : &b%java_version% &9;'
+      - '&b» &9OS : &b%os_name% %os_arch% &9;'
+      - '&b» &9Charge CPU : &b%cpu_load% &9.'
+      - ' '
+      - '&9Mondes :'
+      - '%worlds%'
+  Tell:
+    Desc: Envoie unmessage privé a quelqu'un.
+    Usage: <joueur> <message>
+    Format:
+      From: '{json: ~hint: &9Cliquez pour répondre !; ~chat-suggest: /msg %player%;}&9[&bSMS&9]
+        &b%player% &9chuchote : &f%msg%{end-json}'
+      To: '&9[&bSMS&9] &b%player% &9vous chuchote : &f%msg%'
+  Time:
+    Desc: Permet de définir ou voir le temps en jeu.
+    Done: '&9Temps défini : &b%time% &9dans le monde &b%world%&9.'
+    Info: 'Time in world &9%world%&7: &b%ticks% ticks&7, &b%time%'
+  Thunder:
+    Desc: Fait apparaitre un éclair.
+    Usage: '[joueur]'
+    Done:
+      Player: '&9Un éclair a été déclenché sur &b%player% &9!'
+      Block: '&9éclair déclenché !'
+  Tpa:
+    Desc: Envoie une demande de téléportation à un joueur.
+    Usage: <joueur>
+    Button:
+      Accept:
+        Name: '&a&l[Accepter]'
+        Hint: '&b%player% &9pourra se téléporter à vous.'
+      Decline:
+        Name: '&c&l[Refuser]'
+        Hint: '&b%player% &9ne pourra pas se téléporter à vous.'
+    Done:
+      In:
+        - '                 &9&l[ &b&lDemande de TP &9&l]                 '
+        - '&b%player% &9souhaite se téléporter à vous :'
+        - '&9Tapez &b/tpaccept %player% &9pour accepter'
+        - '&9ou tapez &b/tpdeny %player% &9pour refuser.'
+        - ''
+        - '             %button_accept%         %button_decline%'
+        - ''
+      Out: '&9Envoie d''une demande de téléportation à &b%player%&9.'
+    Error:
+      Cooldown: '&cVous devez encore attendre &c&l%time% &cavant de pouvoir rénvoyer
+        une demande de téléportation !'
+      Disabled: '&c&l%player% &ca refusé votre demande de téléportation.'
+  TpAccept:
+    Desc: Accepte une demande de téléportation.
+    Usage: '[joueur]'
+    Done: Demande de téléportation acceptée !
+    Error:
+      Empty: '&cPersonne ne vous a envoyé de demande de téléportation.'
+      Time: '&cDésolé, mais vous avez attendu trop longtemps, la demande a été annulée.'
+      TeleportHole: '&cImpossible de vous téléporter (Un trou dans le sol ?).'
+  TpDeny:
+    Desc: Refuse une demande de téléportation.
+    Usage: '[joueur]'
+    Done:
+      In: Demande de téléportation refusée.
+      Out: '&c&l%player% &ca refusé votre demande de téléportation.'
+    Error:
+      Empty: '&cPersonne ne vous a envoyé de demande de téléportation.'
+      Time: '&cDécolé, mais cous avez attendu trop longtemps, la demande a été annulée.'
+  TpToggle:
+    Desc: Active les demandes de téléportation.
+    Usage: '[0/1] [joueur]'
+    Toggle:
+      Self: '&9Demandes de téléportations : &b%state%&9.'
+      Others: '&9Demandes de téléportation de &b%player% &9 : &b%state%&9.'
+  Tp:
+    Desc: Permet de se téléporter à un joueur spécifique.
+    Usage: <joueur> ou /%cmd% <joueur à téléporter> <joueur ou l'autre sera téléporté>
+    Done:
+      Self: '&9Téléportation à &b%player%&9...'
+      Others: '&b&9%who% &9a été téléporté à la position de &b%to% &9!'
+  Tppos:
+    Desc: Permet de se téléporter a une position précise.
+    Usage: <x> <y> <z> [joueur]
+    Done:
+      Others: '&b%player% &9a été téléporté en &b%w% %x% %y%&7 %z% &9!'
+      Self: Teleporting...
+  Top:
+    Desc: Permet de se téléporter au bloc le plus haut au-dessus de vous.
+    Usage: '[joueur]'
+    Done:
+      Self: '&9Téléportation sur le bloc le plus haut...'
+      Others: '&b%player% &9a été téléporté sur le bloc le plus haut au-dessus de
+        lui.'
+  UnIgnore:
+    Desc: Désactive l'ignore d'un joueur.
+    Usage: <joueur>
+    Done: '&b%player% &9a été retiré de la liste des joueurs que vous ignorez. Il
+      peut de nouveau vous encoyer des demandes de TP et des messages privés.'
+    Error:
+      Already: '&b%player% &9n''est pas dans votre liste de joueurs ignorés.'
+  UnLoadWorld:
+    Usage: <monde>
+    Error: '&cCe monde n''existe pas ou il est déja déchargé !'
+    Done: '&9Le monde &b%world% &9a été déchargé !'
+  Vanish:
+    Desc: Active me mode invisible.
+    Toggle: '&9Invisibilité : &b%state%&9.'
+  Weather:
+    Desc: Change le temps dans un monde.
+    Usage: <sun/storm> [monde]
+    Done: temps a été défini sur &b%weather% &9dans le monde &b%world%&9.
+  Warp:
+    Desc: Permet d'afficher ou se téléporter à un warp.
+    Usage: <warp> [joueur]
+  Warps:
+    List:
+      Format:
+        - '                  &9&l[&b&lWarps du serveur&9&l]                  '
+        - '&b» &9Warp : &b%warp% &9Actions : &b%button_tp% %button_edit%&8;'
+      Empty: Aucun warp disponible.
+    Button:
+      Tp:
+        Name: '&a[Téléporter]'
+        Hint:
+          - '&9Cliquez pour vous téléporter au warp &b%warp%&9.'
+          - '&9Vous pouvez également taper la commande &b/warp %id%&9.'
+      Edit:
+        Name: '&c[Editer]'
+        Hint: '&9Ouvre l''éditeur de warps.'
+    Move:
+      Self: '&9téléportation auwarp &b%warp%&9...'
+      Others: '&b%player% &9a été téléporté au warp &b%warp%&9...'
+    Error:
+      World: '&cVous ne poucez pas créer de warps dans ce monde !'
+      Exists: '&cUn warp portant ce nom existe déjà !'
+      Invalid: '&cLe warp &c&l%id% &cn''existe pas !'
+      NoPerm: '&cVous n''avez pas la permission pour vous téléporter à ce warp !'
+      NoMoney: '&cVous n''avez pas d''argent pour vous téléporter à ce warp ; il coute
+        &c&l%cost%$&c, et vous n''avez que &c&l%money%$&c.'
+      Unsafe: '&cCe warp n''est pas sécurisé, merci de contacter le staff'
+  Workbench:
+    Desc: Ouvre un établi portable.
+  Worlds:
+    Format:
+      List:
+        - '                  &9&l[&b&lMondes du serveur&9&l]                  '
+        - '%worlds%'
+      World: '&b» %name% &9[&b%state%&9] | &9Type : &b%type%&9, Générateur : &b%gen%&9,
+        Environnement : &b%env%&9, Difficulté : &b%dif%&9;'
+Scoreboard:
+  Command:
+    Scoreboard:
+      Desc: Avtive le tableau de score.
+      Toggle: Tableau de score activé.
+Home:
+  Editor:
+    Tip:
+      AddInvite: '&9Tapez le nom du joueur'
+Kits:
+  Editor:
+    Tip:
+      Id: '&9Entrez l''identifiant du kit'
+      Command: '&9Entrez une commande.'
+      Cooldown: '&9Entrez un temps d''interval entre les utilisations (en minutes).'
+      Cost: '&9Entrez un prix'
+      Name: '&9Entrez un nom (pour le kit).'
+      Priority: '&9Entrez l''ordre de priorité du kit'
+    Error:
+      AlreadyExists: '&cCe kit existe déjà !'
+Spawn:
+  Editor:
+    Tip:
+      Name: '&9Entrez le nom du spawn'
+      Priority: '&9Entrez l''ordre de priorité du spawn'
+      AddGroup: '&9Entrez le nom du groupe'
+Warps:
+  Editor:
+    Desc:
+      Error:
+        Length: '&cLa ligne ne peut contenir plus de &c&l%length% &ccaractères !'
+        Lines: '&cLe nombre de lignes ne peut exéder &c&l%length% &clignes.'
+    Tip:
+      Welcome: '&9Entrez un message de bienvenue.'
+      Cost: '&9Entrez un prix de téléportation.'
+      Name: '&9Entrez un nouveau nom'
+      Owner: '&9Entrez le nom du nouveau propriétaire.'
+      Desc: '&9Entrez une description.'
+Worlds:
+  Error:
+    BadCommand: '&cVous n''êtes pas autorisé a entrer cette cmmande ici !'
+Other:
+  Free: '&aGRATUIT'
+  'On': '&aON'
+  'Off': '&cOFF'
+  Eternity: ETERNEL
+Error:
+  Material: '&cMateriel invalide !'
+  Enchant: '&cEnchantement incalide !'
+  Self: '&cImpossible de l''appliquer sur vous même !'
+EntityType:
+  DROPPED_ITEM: Item au sol
+  EXPERIENCE_ORB: Orbe d'expérience
+  AREA_EFFECT_CLOUD: Nuage d'effet
+  ELDER_GUARDIAN: Maitre gardien
+  WITHER_SKELETON: Wither squelette
+  STRAY: Vagabond
+  EGG: Oeuf
+  LEASH_HITCH: Laisses
+  PAINTING: Painture
+  ARROW: Flêche
+  SNOWBALL: Boule de neige
+  FIREBALL: Boule de feu
+  SMALL_FIREBALL: Petite boule de feu
+  ENDER_PEARL: Perle de lender
+  ENDER_SIGNAL: Signal de l'ender
+  SPLASH_POTION: Potion jetable
+  THROWN_EXP_BOTTLE: Potion d'xp jetée
+  ITEM_FRAME: Cadre
+  WITHER_SKULL: Tête de wither
+  PRIMED_TNT: TNT amorcée
+  FALLING_BLOCK: Bloc qui tombe
+  FIREWORK: Feu d'artifice
+  HUSK: Zombie mommifié
+  SPECTRAL_ARROW: flêche spectrale
+  SHULKER_BULLET: Bombe de shulker
+  DRAGON_FIREBALL: Boule de feu de dragon
+  ZOMBIE_VILLAGER: Villageous zombie
+  SKELETON_HORSE: Cheval squelette
+  ZOMBIE_HORSE: Cheval zombie
+  ARMOR_STAND: Porte armure
+  DONKEY: Ane
+  MULE: Mule
+  EVOKER_FANGS: Crocs de crocodile
+  EVOKER: Invocateur
+  VEX: Vex
+  VINDICATOR: Vindicateur
+  ILLUSIONER: Illusioniste
+  MINECART_COMMAND: Commande minecraft
+  BOAT: Bateau
+  MINECART: Wagon
+  MINECART_CHEST: Wagon coffre
+  MINECART_FURNACE: Wagon four
+  MINECART_TNT: Wagon TNT
+  MINECART_HOPPER: Wagon entonnoir
+  MINECART_MOB_SPAWNER: Générateur de mobs
+  CREEPER: Creeper
+  SKELETON: Squelette
+  SPIDER: Araignée
+  GIANT: Géant
+  ZOMBIE: Zombie
+  SLIME: Slime
+  GHAST: Ghast
+  ZOMBIFIED_PIGLIN: Piglin zombifié
+  ENDERMAN: Enderman
+  CAVE_SPIDER: Araignée veunimeuse
+  SILVERFISH: Poisson d'argent
+  BLAZE: Blaze
+  MAGMA_CUBE: Cube de magma
+  ENDER_DRAGON: Dragon de l'ender
+  WITHER: Wither
+  BAT: Chauve souris
+  WITCH: Sorcière
+  ENDERMITE: Endermite
+  GUARDIAN: Gardien
+  SHULKER: Shulker
+  PIG: Cochon
+  SHEEP: Mouton
+  COW: Vache
+  CHICKEN: Poulet
+  SQUID: Poulpe
+  WOLF: Chien
+  MUSHROOM_COW: Vache Mushroom
+  SNOWMAN: Bon-homme de neige
+  OCELOT: Ocelot
+  IRON_GOLEM: Golem de fer
+  HORSE: Cheval
+  RABBIT: Lapin
+  POLAR_BEAR: Ours polaire
+  LLAMA: Lama
+  LLAMA_SPIT: Cracha de lama
+  PARROT: Perroquet
+  VILLAGER: Villageois
+  ENDER_CRYSTAL: Cristal de l'ender
+  TURTLE: Tortue
+  PHANTOM: Phantome
+  TRIDENT: Trident
+  COD: Morue
+  SALMON: Saumonn
+  PUFFERFISH: Poisson globe
+  TROPICAL_FISH: Poisson topical
+  DROWNED: Noyé
+  DOLPHIN: Dophin
+  CAT: Chat
+  PANDA: Panda
+  PILLAGER: Pilleur
+  RAVAGER: Ravageur
+  TRADER_LLAMA: Lama villageois
+  WANDERING_TRADER: Villageois érant
+  FOX: Renard
+  BEE: Abeille
+  HOGLIN: Sanglier
+  PIGLIN: Piglin
+  STRIDER: Arpenteur
+  ZOGLIN: Cochon zombie
+  PIGLIN_BRUTE: Piglin Brut
+  FISHING_HOOK: Canne à pêche
+  LIGHTNING: Eclair
+  PLAYER: Joueur
+  UNKNOWN: Inconnu
+GameMode:
+  CREATIVE: Creatif
+  SURVIVAL: Survie
+  ADVENTURE: Aventure
+  SPECTATOR: Spectateur
+WarpSortType:
+  WARP_NAME: Warp Name
+  WARP_ID: Warp Id
+  RATING: Rating

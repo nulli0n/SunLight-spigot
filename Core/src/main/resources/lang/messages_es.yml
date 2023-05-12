@@ -1,0 +1,372 @@
+Generic:
+  Command:
+    Cooldown:
+      Default: '{message: ~prefix: false;}&cTienes que esperar &c%time% &cantes de poder usar &e%cmd% &cde nuevo.'
+      Onetime: '{message: ~prefix: false;}&cEste comando es único y ya lo has utilizado.'
+Command:
+  Air:
+    Desc: Cambiar el nivel de aire.
+    Usage: <amount> [player]
+    Done:
+      Others: '{message: ~prefix: false;}&7¡El nivel de aire de &a%player% &7cambió!'
+      Self: '{message: ~prefix: false;}&7¡El nivel del aire cambió!'
+  Anvil:
+    Desc: Abrir yunque portátil.
+    Usage: '[player]'
+    Done:
+      Others: '{message: ~prefix: false;}&7Yunque abierto para &a%player%&7.'
+  Armor:
+    Desc: Mostrar equipamiento del jugador
+    Usage: <player>
+  Back:
+    Desc: Volver a la ubicación anterior
+    Usage: '[player]'
+    Error:
+      Empty: '{message: ~prefix: false;}&7No hay ubicación previa.'
+      BadWorld: '{message: ~prefix: false;}&cNo puedes teletransportarte de vuelta a ese mundo.'
+    Done: '{message: ~prefix: false;}&7Volver a la ubicación anterior.'
+  Broadcast:
+    Desc: Mensaje de Broadcast.
+    Usage: <message>
+    Format: '{message: ~prefix: false;}&6[&eBroadcast&6] &c%msg%'
+  Burn:
+    Desc: Incinerar un jugador
+    Usage: <player> <time>
+    Done: '{message: ~prefix: false;}&7El jugador &a%player% &7se incinero por &a%time% &7segundos.'
+  ClearChat:
+    Desc: Borrar chat.
+    Done: '{message: ~prefix: false;}&7El chat ha sido borrado por &a%player%&7.'
+  ClearInv:
+    Desc: Borrar inventario.
+    Usage: '[player]'
+    Done:
+      Others: '{message: ~prefix: false;}&7¡Inventario de &a%player% &7borrado!'
+      Self: '{message: ~prefix: false;}&7¡Inventario borrado!'
+  CText:
+    Invalid: '{message: ~prefix: false;}&7¡Archivo TXT &c%file% &7no encontrado!'
+  Condense:
+    Desc: Condensar items en bloques.
+    Error:
+      Nothing: '{message: ~prefix: false;}&7Nada que condensar.'
+      NotEnought: '{message: ~prefix: false;}&7No hay suficientes items para convertir &c%item-from% &7en &c%item-result%&7. Necesita al menos &c%amount%&7.'
+    Done: '{message: ~prefix: false;}&7Convertido &ax%amount-from% %item-from% &7a &ax%amount-result% %item-result%'
+  DeathBack:
+    Desc: Volver a la ubicación de muerte
+    Usage: '[player]'
+    Error:
+      Empty: '{message: ~prefix: false;}&7No hay ubicación de muerte.'
+      BadWorld: '{message: ~prefix: false;}&cNo puedes teletransportarte de vuelta a ese mundo.'
+    Done: '{message: ~prefix: false;}&7Volver a la ubicación de muerte...'
+  Disposal:
+    Desc: Abrir basurero virtual.
+  Enchant:
+    Desc: Encantar un item.
+    Usage: <enchantment> <level>
+    Done: '{message: ~prefix: false;}&7¡Encantado!'
+  Enchanting:
+    Desc: Abrir mesa de encantamientos portátil.
+  Enderchest:
+    Desc: Abrir cofre de ender portátil.
+    Usage: '[player]'
+  Exp:
+    Desc: Ver o gestionar los puntos de exp de los jugadores.
+    Usage: <show/give/take/set> <player> <amount>
+    Show:
+      Done:
+      - '{message: ~prefix: false;}'
+      - '&6&m            &6&l[ &eExp de &a%player_name% &6&l]&6&m            &7'
+      - '&7'
+      - '&e    Nivel: &6%exp_level% &7(&f%exp_progress%% del siguiente nivel)'
+      - '&e    Exp para el Siguiente Nivel: &6%exp_required%'
+      - '&e    Experiencia Total: &6%exp_total%'
+      - '&7'
+      - '&7  {json: ~showText: &7Añadir exp a un jugador.; ~suggestCommand: /exp give %player_name% ;}&a&l[Dar]{end-json}   {json: ~showText: &7Tomar exp de un jugador.; ~suggestCommand: /exp take %player_name% ;}&c&l[Tomar]{end-json}   {json: ~showText: &7Establecer exp para un jugador.; ~suggestCommand: /exp set %player_name% ;}&e&l[Establecer]{end-json}   {json: ~showText: &7Restablecer la exp de un jugador.; ~runCommand: /exp set %player_name% 0;}&d&l[Restablecer]{end-json}&7'
+      - '&7'
+      - '&6&m                                              &7'
+    Give:
+      Done: '{message: ~prefix: false;}&eDar &a%amount% &eexp/niveles a &6%player_name%&e.
+        Level: &6%exp_level%&e, Exp: &6%exp_total%&e.'
+    Take:
+      Done: '{message: ~prefix: false;}&eTomar &c%amount% &eexp/niveles de &6%player_name%&e.
+        Level: &6%exp_level%&e, Exp: &6%exp_total%&e.'
+    Set:
+      Done: '{message: ~prefix: false;}&eEstablecer &6%amount% &eexp/niveles para &6%player_name%&e.
+        Level: &6%exp_level%&e, Exp: &6%exp_total%&e.'
+  Ext:
+    Desc: Extinguir al jugador.
+    Usage: '[player]'
+    Done:
+      Self: '{message: ~prefix: false;}&7Has sido extinguido.'
+      Others: '{message: ~prefix: false;}&7El jugador &e%player% &7ha sido extinguido.'
+  Feed:
+    Desc: Restaurar el hambre.
+    Usage: '[player]'
+    Done:
+      Self: '{message: ~prefix: false;}&7¡Alimentado!'
+      Others: '{message: ~prefix: false;}&7¡&e%player%&7 alimentado!'
+  Fly:
+    Desc: Alternar modo de vuelo.
+    Usage: <0/1> [player]
+    Done:
+      Others: '{message: ~prefix: false;}&7Modo de vuelo para &e%player%&7: &e%state%'
+      Self: '{message: ~prefix: false;}&7Modo de vuelo: &e%state%'
+    Error:
+      BadWorld: '{message: ~prefix: false;}&c¡Aquí no está permitido volar!'
+  GameMode:
+    Desc: Cambiar modo de juego.
+    Usage: <0/1/2/3> [player]
+    Done:
+      Self: '{message: ~prefix: false;}&7Modo de juego: &e%gm%&7.'
+      Others: '{message: ~prefix: false;}&7Modo de juego para &e%player%&7: &e%gm%&7.'
+  Give:
+    Desc: Dar un item específico a un jugador.
+    Usage: <item> [amount] [player]
+    Done:
+      Others: '{message: ~prefix: false;}&7Dar &ex%amount% %item% &7a &e%player%&7.'
+      Self: '{message: ~prefix: false;}&7Has recibido &ex%amount% %item%&7.'
+  God:
+    Desc: Alternar modo dios.
+    Usage: '[1/0] [player]'
+    Toggle:
+      Self: '{message: ~prefix: false;}&7Modo dios: &e%state%'
+      Others: '{message: ~prefix: false;}&7Modo dios para &e%player%&7: &e%state%'
+    Error:
+      World: '{message: ~prefix: false;}&c¡Aquí no está permitido el modo dios!'
+  Hat:
+    Desc: Colocarse el item a mano.
+    Done: '{message: ~prefix: false;}&7Disfruta de tu nuevo sombrero :)'
+  Heal:
+    Desc: Restaurar la salud.
+    Usage: '[player]'
+    Done:
+      Self: '{message: ~prefix: false;}&7¡Has sido curado!'
+      Others: '{message: ~prefix: false;}&7¡&e%player% &7curado!'
+  Ignore:
+    Desc: Ignorar al jugador especificado.
+    Usage: '[player]'
+    Done: '{message: ~prefix: false;}&7Jugador &e%player% &7añadido en la lista negra. Puedes cambiar la configuración o desbloquearlo en &e/ignore'
+    Error:
+      Already: '{message: ~prefix: false;}&cYa estás ignorando a &e%player%&c.'
+      Bypass: '{message: ~prefix: false;}&cNo puedes ignorar a &e%player%&c!'
+  Inv:
+    Desc: Ver el inventario del jugador.
+    Usage: <player>
+  Item:
+    Desc: Obtener el item especificado.
+    Usage: <item> [amount]
+    Done: '{message: ~prefix: false;}&7Has recibido &ex%amount% %item%&7.'
+  Itemname:
+    Desc: Modificar el nombre del item.
+    Usage: <name>
+    Done: '{message: ~prefix: false;}&7¡Item renombrado!'
+  ItemLore:
+    Desc: Modificar el lore del item.
+    Usage: add|del|clear
+    Done: '{message: ~prefix: false;}&7¡Lore del Item cambiado!'
+  List:
+    Desc: Mostrar jugadores y rangos conectados.
+  Me:
+    Desc: Mostrar acción en el chat.
+    Usage: <action>
+  Mobkill:
+    Desc: Matar a los mobs especificados.
+    Usage: <type>
+    Done:
+      Type: '{message: ~prefix: false;}&7¡Has matado &a%amount% %type%&7!'
+      All: '{message: ~prefix: false;}&7¡Has matado &a%amount% &7mobs!'
+  More:
+    Desc: Aumentar la cantidad del item de mano.
+  Near:
+    Desc: Mostrar los jugadores más cercanos.
+    Error:
+      None: '{message: ~prefix: false;}&7No hay jugadores en un radio de &e%radius% bloques&7.'
+  Nick:
+    Desc: Cambiar el nombre mostrado.
+    Usage: '[nick]'
+    Done:
+      Others: '{message: ~prefix: false;}&7El nick de &e%player% &7cambió a &e%nick%&7.'
+      Self: '{message: ~prefix: false;}&7Tu nick cambió a &e%nick%&7.'
+    Error:
+      Blacklisted: '{message: ~prefix: false;}&cEl nick contiene palabras prohibidas.'
+      Long: '{message: ~prefix: false;}&cEl nick no puede tener más de &e20 caracteres&c.'
+      Short: '{message: ~prefix: false;}&cEl nick no puede tener menos de &e3 caracteres&c.'
+  NoPhantom:
+    Desc: Alternar ataques de phantoms.
+    Usage: '[0/1] [player]'
+    Toggle:
+      Self: '{message: ~prefix: false;}&7Anti-Phantom: &e%state%'
+      Others: '{message: ~prefix: false;}&7Anti-Phantom para &e%player%&7: &e%state%'
+  PlayerInfo:
+    Desc: Mostrar información del jugador.
+    Usage: <player>
+  Potion:
+    Desc: Modificar items de poción.
+    Usage: <effect> <amplifier> <duration>
+    Error:
+      NotAPotion: '{message: ~prefix: false;}&c¡Debes sostener una poción!'
+      InvalidEffect: '{message: ~prefix: false;}&c¡Efecto inválido!'
+    Done: '{message: ~prefix: false;}&7¡Poción creada!'
+  Repair:
+    Desc: Reparar item(s) en el inventario.
+    Usage: '[all]'
+    Done:
+      Hand: '{message: ~prefix: false;}&7¡Item reparado!'
+      All: '{message: ~prefix: false;}&7¡Reparados todos los items del inventario!'
+  Reply:
+    Desc: Respuesta rápida a un mensaje privado anterior.
+    Usage: <text>
+    Error:
+      Empty: '{message: ~prefix: false;}&7No hay nadie que responda.'
+  Skull:
+    Desc: Obtener la cabeza del jugador por su nombre.
+    Usage: <name>
+    Done: '{message: ~prefix: false;}&Tienes la cabeza de &e%player%&7.'
+  SocialSpy:
+    Desc: Espiar MPs del jugador.
+    Usage: '[1/0] [player]'
+    Toggle:
+      Self: '{message: ~prefix: false;}&7Socialspy: &e%state%'
+      Others: '{message: ~prefix: false;}&7Socialspy para &e%player%&7: &e%state%'
+  Spawner:
+    Desc: Cambiar tipo de spawner.
+    Usage: <type>
+    Done: '{message: ~prefix: false;}&7Tipo de spawnear cambiado a &e%type%&7.'
+    Error:
+      Type: '{message: ~prefix: false;}&7Este tipo no puede ser generado.'
+      Block: '{message: ~prefix: false;}&cDebes mirar al &espawner'
+  SpawnMob:
+    Desc: Generar mob(s) especificado(s).
+    Usage: <type> [amount]
+    Done: '{message: ~prefix: false;}&7Creó &ex%amount% %type%&7.'
+  Speed:
+    Desc: Cambiar velocidad de vuelo/caminata.
+    Usage: <speed> [player]
+    Done:
+      Self:
+        Walk: '{message: ~prefix: false;}&7Establecer velocidad de caminata: &e%speed%'
+        Fly: '{message: ~prefix: false;}&7Establecer velocidad de vuelo: &e%speed%'
+      Others:
+        Walk: '{message: ~prefix: false;}&7Establecer velocidad de caminata: &e%speed% &7para &e%player%'
+        Fly: '{message: ~prefix: false;}&7Establecer velocidad de vuelo: &e%speed% &7para &e%player%'
+  Sudo:
+    Desc: Forzar al jugador a ejecutar un comando o mensaje de chat.
+    Usage: <player> <type> <message>
+    Done: '{message: ~prefix: false;}&7Obligó a &e%player% &7a realizar: &e%message%'
+  Suicide:
+    Desc: Suicidarse.
+    Done: '{message: ~prefix: false;}&4%player%&c se suicidó.'
+  Summon:
+    Desc: Invocar a un jugador en tu ubicación.
+    Usage: <player>
+  System:
+    Desc: Información del sistema del servidor.
+  Tell:
+    Desc: Enviar un mensaje privado.
+    Usage: <player> <message>
+  Time:
+    Desc: Establecer o ver la hora del mundo.
+    Done: '{message: ~prefix: false;}&7Hora establecida: &e%time%&7 en el mundo &e%world%&7.'
+    Info: '{message: ~prefix: false;}&7Hora en el mundo &e%world%&7: &6%ticks% ticks&7, &6%time%'
+  Thunder:
+    Desc: Invocar un rayo.
+    Usage: '[player]'
+    Done:
+      Player: '{message: ~prefix: false;}&7¡Invocó un rayo en &e%player%&7!'
+      Block: '{message: ~prefix: false;}&7¡Rayo invocado!'
+  TeleportRequest:
+    Error:
+      Cooldown: Puede volver a enviar la solicitud en &e%time%
+      Disabled: '&e%player% &crechaza la solicitud de teletransporte.'
+    Call:
+      Desc: Send teleport request.
+      Usage: <player>
+      Notify:
+        From: '{message: ~prefix: false;}&7Enviado solicitud de teletransporte a &e%player%&7.'
+        To:
+        - '{message: ~prefix: false;}&6&m                 &6&l[ &e&lSolicitud de Teletransporte &6&l]&6&m                 &7'
+        - '&6El jugador &e%player%&6 quiere teletransportarse a ti.'
+        - '&6Escribe &a/tpaccept %player% &6para aceptar'
+        - '&6o &c/tpdeny %player% &6para rechazar.'
+        - '&7'
+        - '&7             {json: ~hint: &a%player% &7Será teletransportado a usted.; ~chat-type: /tpaccept %player%;}&a&l[Aceptar]{end-json}         {json: ~hint:&c%player% &7no será teletransportado a ti.; ~chat-type: /tpdeny %player%;}&c&l[Rechazar]{end-json}'
+        - '&7'
+    Summon:
+      Desc: Ask player to teleport to you.
+      Usage: <player>
+      Notify:
+        From: '{message: ~prefix: false;}&7Sent teleport request to &e%player%&7.'
+        To:
+        - '{message: ~prefix: false;}&6&m                 &6&l[ &e&lSolicitud de Teletransporte &6&l]&6&m                 &7'
+        - '&6El jugador &e%player%&6 quiere que te teletransportes a él.'
+        - '&6Escribe &a/tpaccept %player% &6para aceptar y teletransportarse.'
+        - '&6o &c/tpdeny %player% &6para rechazar.'
+        - '&7'
+        - '&7             {json: ~hint: &7Serás teletransportado a &a%player%&7.; ~chat-type: /tpaccept %player%;}&a&l[Aceptar]{end-json}         {json: ~hint:&7No serás teletransportado a &c%player%&7.; ~chat-type: /tpdeny %player%;}&c&l[Rechazar]{end-json}'
+        - '&7'
+  TpAccept:
+    Desc: Aceptar la solicitud de teletransporte.
+    Usage: '[player]'
+    Done: '{message: ~prefix: false;}&7¡Solicitud de teletransporte aceptada!'
+    Error:
+      Empty: '{message: ~prefix: false;}&7No hay nada que aceptar (o el tiempo de teletransporte ha expirado).'
+  TpDeny:
+    Desc: Rechazar la solicitud de teletransporte.
+    Usage: '[player]'
+    Done:
+      In: '{message: ~prefix: false;}&7Solicitud de teletransporte rechazada.'
+      Out: '{message: ~prefix: false;}&e%player% &crechazo la solicitud de teletransporte.'
+    Error:
+      Empty: '{message: ~prefix: false;}&7No hay nada que rechazar (o el tiempo de teletransporte ha expirado).'
+  TpToggle:
+    Desc: Alternar las solicitudes de teletransporte.
+    Usage: '[0/1] [player]'
+    Toggle:
+      Self: '{message: ~prefix: false;}&7Solicitudes de Teletransporte: &e%state%'
+      Others: '{message: ~prefix: false;}&7Solicitudes de Teletransporte para &e%player%&7: &e%state%'
+  Tp:
+    Desc: Teletransportarse al jugador especificado.
+    Usage: <player> &7or &f/%cmd% <who> <to>
+    Done:
+      Self: '{message: ~prefix: false;}&7Teletransportarse a &e%player%&7...'
+      Others: '{message: ~prefix: false;}&7¡El jugador &e%who% &7se ha teletransportado a &e%to%&7!'
+  Tppos:
+    Desc: Teletransportarte a las coordenadas especificadas.
+    Usage: <x> <y> <z> [player]
+    Done:
+      Self: '{message: ~prefix: false;}&7Teletransportándose...'
+      Others: '{message: ~prefix: false;}&7El jugador &e%player% &7se ha teletransportado a: &e%w%&7, &e%x%&7, &e%y%&7, &e%z%&7!'
+  Top:
+    Desc: Teletransportarte al bloque más alto.
+    Usage: '[player]'
+    Done:
+      Self: '{message: ~prefix: false;}&7Teleporting on the highest block...'
+      Others: '{message: ~prefix: false;}&7El jugador &e%player% &7se ha teletransportado al bloque más alto.'
+  UnIgnore:
+    Desc: Desbloquear jugador(es).
+    Usage: '[player]'
+    Done: '{message: ~prefix: false;}&7El jugador &e%player% &7fue eliminado de la lista de ignorados.'
+    Error:
+      Already: '{message: ~prefix: false;}&cEl jugador &e%player% &cno está en la lista de ignorados.'
+  Vanish:
+    Desc: Alternar vanish.
+    Toggle: '{message: ~prefix: false;}&7Vanish: &e%state%'
+  Weather:
+    Desc: Cambiar el clima del mundo.
+    Usage: <sun/storm> [world]
+    Done: '{message: ~prefix: false;}&7Establecer el clima &e%weather%&7 en el mundo &e%world%&7.'
+  Workbench:
+    Desc: Abrir mesa de trabajo portátil.
+User:
+  Ignore:
+    PrivateMessage: '{message: ~prefix: false;}&cEste jugador te prohíbe enviarle mensajes privados.'
+    TeleportRequest: '{message: ~prefix: false;}&cEste jugador te prohíbe enviarle solicitudes de teletransporte.'
+Other:
+  Free: '&aFree'
+  'On': '&aON'
+  'Off': '&cOFF'
+  Eternity: Eternity
+Error:
+  InvalidName: '{message: ~prefix: false;}&cNombre inválido: &e%name%&c. Contiene caracteres prohibidos.'
+  Material: '{message: ~prefix: false;}&c¡Material inválido!'
+  Enchant: '{message: ~prefix: false;}&c¡Encantamiento inválido!'
+  Self: '{message: ~prefix: false;}&c¡No se puede aplicar en uno mismo!'

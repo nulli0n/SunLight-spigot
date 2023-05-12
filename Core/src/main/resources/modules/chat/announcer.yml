@@ -1,0 +1,25 @@
+Random_Order: true
+Interval: 180
+Messages:
+  info1:
+    Groups:
+      - default
+      - owner
+    Text:
+      - '&7'
+      - '#084cfb&m #1155fb&m #195efb&m #2266fb&m #2b6ffb&m #3378fc&m #3c81fc&m #458afc&m #4d92fc&m #569bfc&m #5fa4fc&m #68adfc&m #70b5fc&m #79befc&m #82c7fc&m #8ad0fd&m #93d9fd&m #9ce1fd&m #a4eafd&m #adf3fd&m &c   *   #adf3fd&m #a4eafd&m #9ce1fd&m #93d9fd&m #8ad0fd&m #82c7fc&m #79befc&m #70b5fc&m #68adfc&m #5fa4fc&m #569bfc&m #4d92fc&m #458afc&m #3c81fc&m #3378fc&m #2b6ffb&m #2266fb&m #195efb&m #1155fb&m #084cfb&m &7'
+      - '  #084cfbG#1458fbe#2064fbt #2b70fba#377cfcw#4388fce#4f94fcs#5ba0fco#66abfcm#72b7fce #7ec3fcr#8acffda#95dbfdn#a1e7fdk#adf3fds #adf3fdo#9de2fdn #8cd2fdo#7cc1fcu#6bb0fcr #5ba0fcs#4a8ffct#3a7efco#296dfbr#195dfbe#084cfb!'
+      - '&b    http://store.samplecraft.com/'
+      - '#084cfb&m #1155fb&m #195efb&m #2266fb&m #2b6ffb&m #3378fc&m #3c81fc&m #458afc&m #4d92fc&m #569bfc&m #5fa4fc&m #68adfc&m #70b5fc&m #79befc&m #82c7fc&m #8ad0fd&m #93d9fd&m #9ce1fd&m #a4eafd&m #adf3fd&m &c   *   #adf3fd&m #a4eafd&m #9ce1fd&m #93d9fd&m #8ad0fd&m #82c7fc&m #79befc&m #70b5fc&m #68adfc&m #5fa4fc&m #569bfc&m #4d92fc&m #458afc&m #3c81fc&m #3378fc&m #2b6ffb&m #2266fb&m #195efb&m #1155fb&m #084cfb&m &7'
+      - '&7'
+  info2:
+    Groups:
+      - vip
+      - owner
+    Text:
+      - '&7'
+      - '#084cfb&m #1155fb&m #195efb&m #2266fb&m #2b6ffb&m #3378fc&m #3c81fc&m #458afc&m #4d92fc&m #569bfc&m #5fa4fc&m #68adfc&m #70b5fc&m #79befc&m #82c7fc&m #8ad0fd&m #93d9fd&m #9ce1fd&m #a4eafd&m #adf3fd&m &c   *   #adf3fd&m #a4eafd&m #9ce1fd&m #93d9fd&m #8ad0fd&m #82c7fc&m #79befc&m #70b5fc&m #68adfc&m #5fa4fc&m #569bfc&m #4d92fc&m #458afc&m #3c81fc&m #3378fc&m #2b6ffb&m #2266fb&m #195efb&m #1155fb&m #084cfb&m &7'
+      - '       #084cfbE#195dfbx#296dfba#3a7efcm#4a8ffcp#5ba0fcl#6bb0fce #7cc1fcJ#8cd2fdS#9de2fdO#adf3fdN #adf3fdC#9be0fdu#88cefds#76bbfct#64a9fco#5196fcm #3f84fcT#2d71fbe#1a5ffbx#084cfbt'
+      - '&b            {json: ~text: #fd27fa[#fd2ef4C#fd34efl#fd3be9i#fd42e4c#fc48dek#fc4fd8a#fc55d3b#fc5ccdl#fc63c7e #fc69c2B#fc70bcu#fc77b7t#fb7db1t#fb84abo#fb8aa6n#fb91a0]; ~showText: &dYay!|&7|&b&lDid you know:|&7You can use &fPlaceholderAPI &7here!; ~suggestCommand: /say Hey there!;}'
+      - '#084cfb&m #1155fb&m #195efb&m #2266fb&m #2b6ffb&m #3378fc&m #3c81fc&m #458afc&m #4d92fc&m #569bfc&m #5fa4fc&m #68adfc&m #70b5fc&m #79befc&m #82c7fc&m #8ad0fd&m #93d9fd&m #9ce1fd&m #a4eafd&m #adf3fd&m &c   *   #adf3fd&m #a4eafd&m #9ce1fd&m #93d9fd&m #8ad0fd&m #82c7fc&m #79befc&m #70b5fc&m #68adfc&m #5fa4fc&m #569bfc&m #4d92fc&m #458afc&m #3c81fc&m #3378fc&m #2b6ffb&m #2266fb&m #195efb&m #1155fb&m #084cfb&m &7'
+      - '&7'

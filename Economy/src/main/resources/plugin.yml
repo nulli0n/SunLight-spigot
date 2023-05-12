@@ -1,0 +1,8 @@
+main: su.nightexpress.sunlight.economy.SunLightEconomyPlugin
+name: SunLight_Economy
+version: '${version}'
+description: Simple economy plugin.
+author: NightExpress
+depend: [Vault, NexEngine]
+load: STARTUP
+api-version: 1.17

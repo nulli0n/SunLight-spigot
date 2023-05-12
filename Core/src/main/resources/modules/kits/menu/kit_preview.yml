@@ -1,0 +1,19 @@
+Title: '#8c5be1           &lKit Preview'
+Size: 54
+# Sets whether to use Paper's MiniMessage API for the GUI Title.
+Use_Mini_Message: false
+
+Item_Slots: 9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44
+Armor_Slots: 5,4,3,2
+Extra_Slots: 6
+
+Content:
+  
+  return:
+    Priority: 5
+    Item:
+      Material: PLAYER_HEAD
+      Head_Texture: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmU5YWU3YTRiZTY1ZmNiYWVlNjUxODEzODlhMmY3ZDQ3ZTJlMzI2ZGI1OWVhM2ViNzg5YTkyYzg1ZWE0NiJ9fX0=
+      Name: '#ffee9a(↓) &fReturn to Kits'
+    Slots: 49
+    Type: RETURN

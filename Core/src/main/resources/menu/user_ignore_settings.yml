@@ -1,0 +1,60 @@
+Title: '#5d6d7e&l      Ignore Settings'
+Size: 36
+Inventory_Type: CHEST
+Use_Mini_Message: false
+
+Content:
+  return:
+    Item:
+      Material: PLAYER_HEAD
+      Head_Texture: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmU5YWU3YTRiZTY1ZmNiYWVlNjUxODEzODlhMmY3ZDQ3ZTJlMzI2ZGI1OWVhM2ViNzg5YTkyYzg1ZWE0NiJ9fX0=
+      Name: '#e6e4dd(↓) &fReturn'
+      Lore: []
+    Slots: 31
+    Type: RETURN
+
+  chat:
+    Item:
+      Material: MAP
+      Name: '#ee9aff&lHide Chat'
+      Lore:
+        - '#ee9aff▪ #ddeceeEnabled: #ee9aff%hide_chat%'
+        - ''
+        - '#ddeceeHides out all chat messages'
+        - '#ddeceefrom this player if enabled.'
+        - ''
+        - '#9af7ff&lActions:'
+        - '#9af7ff▪ #ddeceeLeft-Click: #9af7ffToggle'
+    Slots: 10
+    Type: HIDE_CHAT
+
+  private_messages:
+    Item:
+      Material: WRITABLE_BOOK
+      Name: '#ee9aff&lDeny Conversations'
+      Lore:
+        - '#ee9aff▪ #ddeceeEnabled: #ee9aff%deny_conversations%'
+        - ''
+        - '#ddeceeBlocks out all private messages'
+        - '#ddeceefrom this player if enabled.'
+        - ''
+        - '#9af7ff&lActions:'
+        - '#9af7ff▪ #ddeceeLeft-Click: #9af7ffToggle'
+    Slots: 13
+    Type: DENY_CONVERSATIONS
+
+  teleport_requests:
+    Item:
+      Material: ENDER_PEARL
+      Name: '#ee9aff&lDeny Teleports'
+      Lore:
+        - '#ee9aff▪ #ddeceeEnabled: #ee9aff%deny_teleports%'
+        - ''
+        - '#ddeceeBlocks out all teleport requests'
+        - '#ddeceefrom this player if enabled.'
+        - ''
+        - '#9af7ff&lActions:'
+        - '#9af7ff▪ #ddeceeLeft-Click: #9af7ffToggle'
+    Slots: 16
+    Type: DENY_TELEPORTS
+
