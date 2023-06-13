@@ -75,6 +75,8 @@ public class HomeMenu extends ConfigMenu<SunLight> {
                 }
 
                 viewer.getPlayer().closeInventory();
+
+
                 EditorManager.prompt(viewer.getPlayer(), plugin.getMessage(HomesLang.EDITOR_ENTER_PLAYER_NAME).getLocalized());
                 EditorManager.startEdit(viewer.getPlayer(), chat -> {
                     this.module.addHomeInvite(viewer.getPlayer(), home, chat.getMessage());
