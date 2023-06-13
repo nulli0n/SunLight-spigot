@@ -7,6 +7,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import su.nexmedia.engine.api.config.JYML;
+import su.nexmedia.engine.api.editor.InputHandler;
 import su.nexmedia.engine.api.menu.MenuItemType;
 import su.nexmedia.engine.api.menu.impl.ConfigMenu;
 import su.nexmedia.engine.api.menu.impl.MenuViewer;
@@ -78,16 +79,16 @@ public class HomeMenu extends ConfigMenu<SunLight> {
 
 
                 EditorManager.prompt(viewer.getPlayer(), plugin.getMessage(HomesLang.EDITOR_ENTER_PLAYER_NAME).getLocalized());
-                EditorManager.startEdit(viewer.getPlayer(), chat -> {
-                    this.module.addHomeInvite(viewer.getPlayer(), home, chat.getMessage());
+                EditorManager.startEdit(viewer.getPlayer(), (InputHandler) chat -> {
+                    this.module.addHomeInvite(viewer.getPlayer(), home, chat.getText());
                     return true;
                 });
             })
             .addClick(Type.HOME_CHANGE_NAME, (viewer, event) -> {
                 viewer.getPlayer().closeInventory();
                 EditorManager.prompt(viewer.getPlayer(), plugin.getMessage(HomesLang.EDITOR_ENTER_HOME_NAME).getLocalized());
-                EditorManager.startEdit(viewer.getPlayer(), chat -> {
-                    home.setName(chat.getMessage());
+                EditorManager.startEdit(viewer.getPlayer(), (InputHandler) chat -> {
+                    home.setName(chat.getText());
                     home.save();
                     return true;
                 });
