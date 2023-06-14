@@ -89,7 +89,15 @@ public class Warp extends AbstractConfigHolder<SunLight> implements ICleanable, 
 
     @Override
     public boolean load() {
-        UUID ownerId = UUID.fromString(cfg.getString("Owner.Id", ""));
+        UUID ownerId;
+        try {
+            ownerId = UUID.fromString(cfg.getString("Owner.Id", "null"));
+        }
+        catch (IllegalArgumentException e) {
+            e.printStackTrace();
+            return false;
+        }
+
         String ownerName = cfg.getString("Owner.Name", "null");
         this.setOwner(new UserInfo(ownerId, ownerName));
 

@@ -244,6 +244,7 @@ public class WorldConfig extends AbstractConfigHolder<SunLight> implements IClea
         this.loadWorld();
         this.setLastWipe(System.currentTimeMillis());
         this.module.info("Auto-Wipe for world '" + this.getId() + "' completed.");
+        this.save();
         return true;
     }
 

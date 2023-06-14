@@ -45,6 +45,7 @@ public class RTPConfig {
             )
         ),
         "List of per-world range values to search location in.",
-        "You can create as many entries per world as you want."
+        "You can create as many entries per world as you want.",
+        "Put here your ACTUAL worlds, especially if your main world is named differently than default 'world'."
     ).setWriter((cfg, path, map) -> map.forEach((world, infoMap) -> infoMap.forEach((id, range) -> range.write(cfg, path + "." + world + "." + id))));
 }

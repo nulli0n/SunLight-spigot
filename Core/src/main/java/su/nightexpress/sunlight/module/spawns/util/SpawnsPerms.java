@@ -18,11 +18,11 @@ public class SpawnsPerms {
     public static final JPermission SPAWN   = new JPermission(PREFIX_SPAWN + Placeholders.WILDCARD, "Access to all spawns in Spawns module.");
 
     public static final JPermission COMMAND_SPAWNS                 = new JPermission(PREFIX_COMMAND + SpawnsCommand.NAME, "Access to the '/" + SpawnsCommand.NAME + "' command (without sub-commands).");
-    public static final JPermission COMMAND_SPAWNS_CREATE          = new JPermission(PREFIX_COMMAND + SpawnsCreateCommand.NAME, "Access to the '/" + SpawnsCommand.NAME + " " + SpawnsCreateCommand.NAME + "' command.");
-    public static final JPermission COMMAND_SPAWNS_DELETE          = new JPermission(PREFIX_COMMAND + SpawnsDeleteCommand.NAME, "Access to the '/" + SpawnsCommand.NAME + " " + SpawnsDeleteCommand.NAME + "' command.");
-    public static final JPermission COMMAND_SPAWNS_TELEPORT        = new JPermission(PREFIX_COMMAND + SpawnsTeleportCommand.NAME, "Access to the '/" + SpawnsCommand.NAME + " " + SpawnsTeleportCommand.NAME + "' command.");
-    public static final JPermission COMMAND_SPAWNS_TELEPORT_OTHERS = new JPermission(PREFIX_COMMAND + SpawnsTeleportCommand.NAME + ".others", "Access to the '/" + SpawnsCommand.NAME + " " + SpawnsTeleportCommand.NAME + "' command on other players.");
-    public static final JPermission COMMAND_SPAWNS_EDITOR          = new JPermission(PREFIX_COMMAND + SpawnsEditorCommand.NAME, "Access to the '/" + SpawnsCommand.NAME + " " + SpawnsEditorCommand.NAME + "' command.");
+    public static final JPermission COMMAND_SPAWNS_CREATE          = new JPermission(PREFIX_COMMAND + SpawnsCommand.NAME + "." + SpawnsCreateCommand.NAME, "Access to the '/" + SpawnsCommand.NAME + " " + SpawnsCreateCommand.NAME + "' command.");
+    public static final JPermission COMMAND_SPAWNS_DELETE          = new JPermission(PREFIX_COMMAND + SpawnsCommand.NAME + "." + SpawnsDeleteCommand.NAME, "Access to the '/" + SpawnsCommand.NAME + " " + SpawnsDeleteCommand.NAME + "' command.");
+    public static final JPermission COMMAND_SPAWNS_TELEPORT        = new JPermission(PREFIX_COMMAND + SpawnsCommand.NAME + "." + SpawnsTeleportCommand.NAME, "Access to the '/" + SpawnsCommand.NAME + " " + SpawnsTeleportCommand.NAME + "' command.");
+    public static final JPermission COMMAND_SPAWNS_TELEPORT_OTHERS = new JPermission(PREFIX_COMMAND + SpawnsCommand.NAME + "." + SpawnsTeleportCommand.NAME + ".others", "Access to the '/" + SpawnsCommand.NAME + " " + SpawnsTeleportCommand.NAME + "' command on other players.");
+    public static final JPermission COMMAND_SPAWNS_EDITOR          = new JPermission(PREFIX_COMMAND + SpawnsCommand.NAME + "." + SpawnsEditorCommand.NAME, "Access to the '/" + SpawnsCommand.NAME + " " + SpawnsEditorCommand.NAME + "' command.");
 
     static {
         Perms.PLUGIN.addChildren(MODULE);

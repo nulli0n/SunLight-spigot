@@ -40,6 +40,11 @@ public class GamemodeCommand extends TargetCommand {
 
     @Override
     protected void onExecute(@NotNull CommandSender sender, @NotNull CommandResult result) {
+        if (result.length() < 1) {
+            this.printUsage(sender);
+            return;
+        }
+
         GameMode mode = StringUtil.getEnum(result.getArg(0), GameMode.class).orElse(GameMode.SURVIVAL);
         if (!this.hasPermission(sender, mode)) {
             this.errorPermission(sender);
