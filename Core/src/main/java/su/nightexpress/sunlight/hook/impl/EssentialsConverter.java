@@ -4,18 +4,24 @@ import com.earth2me.essentials.Essentials;
 import com.earth2me.essentials.User;
 import com.earth2me.essentials.UserMap;
 import com.earth2me.essentials.Warps;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import su.nexmedia.engine.utils.FileUtil;
+import su.nexmedia.engine.utils.StringUtil;
 import su.nightexpress.sunlight.SunLight;
 import su.nightexpress.sunlight.SunLightAPI;
 import su.nightexpress.sunlight.data.impl.SunUser;
 import su.nightexpress.sunlight.hook.HookId;
 import su.nightexpress.sunlight.module.homes.HomesModule;
+import su.nightexpress.sunlight.module.homes.config.HomesLang;
+import su.nightexpress.sunlight.module.homes.event.PlayerHomeCreateEvent;
+import su.nightexpress.sunlight.module.homes.impl.Home;
 import su.nightexpress.sunlight.module.homes.impl.LegacyHome;
 import su.nightexpress.sunlight.module.warps.WarpsModule;
 import su.nightexpress.sunlight.data.impl.IgnoredUser;
 import su.nightexpress.sunlight.data.impl.settings.BasicSettings;
+import su.nightexpress.sunlight.utils.UserInfo;
 
 import java.io.File;
 import java.util.HashMap;
@@ -55,7 +61,7 @@ public class EssentialsConverter {
             String ip = essUser.getLastLoginAddress();
             double balance = essUser.getMoney().doubleValue();
 
-            Map<String, LegacyHome> homes = new HashMap<>();
+            Map<String, Home> homes = new HashMap<>();
             if (homesModule != null) {
                 for (String eHomeId : essUser.getHomes()) {
                     try {
@@ -63,7 +69,11 @@ public class EssentialsConverter {
                         if (eHomeLoc == null || eHomeLoc.getWorld() == null) continue;
 
                         LegacyHome sunHome = new LegacyHome(eHomeId, name, eHomeId, Material.GRASS_BLOCK, eHomeLoc, new HashSet<>(), false);
-                        homes.put(sunHome.getId(), sunHome);
+                        Home home = new Home(sunHome, essUser.getUUID(), essUser.getName());
+
+                        HomesModule.getInstance().getHomes(essUserId).put(home.getId(), home);
+                        HomesModule.getInstance().getCache().cache(home);
+                        HomesModule.getInstance().plugin().runTaskAsync(task -> HomesModule.getInstance().plugin().getData().addHome(home));
 
                         plugin.info(PREFIX + "Home converted: " + eHomeId + " / " + uuid + " / " + name);
                     } catch (Exception e) {
@@ -72,6 +82,7 @@ public class EssentialsConverter {
                     }
                 }
             }
+
 
             Map<String, Long> kitCooldowns = new HashMap<>();
             Map<String, Long> commandCooldowns = new HashMap<>();

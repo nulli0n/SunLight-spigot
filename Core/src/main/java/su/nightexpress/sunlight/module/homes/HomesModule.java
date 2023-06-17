@@ -35,6 +35,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class HomesModule extends Module {
 
+    static HomesModule INSTANCE;
+
     private final Map<UUID, Map<String, Home>> homes;
     private final HomesCache                   cache;
 
@@ -45,6 +47,11 @@ public class HomesModule extends Module {
         super(plugin, id);
         this.homes = new ConcurrentHashMap<>();
         this.cache = new HomesCache(this);
+        INSTANCE = this;
+    }
+
+    public static HomesModule getInstance() {
+        return INSTANCE;
     }
 
     @Override

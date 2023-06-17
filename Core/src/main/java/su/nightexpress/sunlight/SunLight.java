@@ -18,6 +18,7 @@ import su.nightexpress.sunlight.config.Lang;
 import su.nightexpress.sunlight.data.DataHandler;
 import su.nightexpress.sunlight.data.UserManager;
 import su.nightexpress.sunlight.data.impl.SunUser;
+import su.nightexpress.sunlight.hook.impl.EssentialsConverter;
 import su.nightexpress.sunlight.hook.impl.PlaceholderHook;
 import su.nightexpress.sunlight.module.ModuleManager;
 import su.nightexpress.sunlight.nms.SunNMS;
