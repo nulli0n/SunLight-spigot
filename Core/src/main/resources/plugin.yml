@@ -7,4 +7,5 @@ depend: [ NexEngine ]
 softdepend:
   - PlaceholderAPI
   - ProtocolLib
+  - Essentials
 api-version: 1.17

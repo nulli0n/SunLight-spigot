@@ -4,5 +4,7 @@ version: '${version}'
 description: Simple economy plugin.
 author: NightExpress
 depend: [Vault, NexEngine]
+softdepend:
+  - Essentials
 load: STARTUP
 api-version: 1.17
