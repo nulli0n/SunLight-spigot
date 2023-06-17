@@ -7,4 +7,5 @@ depend: [ NexEngine ]
 softdepend:
   - PlaceholderAPI
   - ProtocolLib
+  - DiscordSRV
 api-version: 1.17

@@ -18,6 +18,7 @@ import su.nightexpress.sunlight.config.Lang;
 import su.nightexpress.sunlight.data.DataHandler;
 import su.nightexpress.sunlight.data.UserManager;
 import su.nightexpress.sunlight.data.impl.SunUser;
+import su.nightexpress.sunlight.hook.impl.DiscordSrvHook;
 import su.nightexpress.sunlight.hook.impl.PlaceholderHook;
 import su.nightexpress.sunlight.module.ModuleManager;
 import su.nightexpress.sunlight.nms.SunNMS;
@@ -63,6 +64,9 @@ public class SunLight extends NexPlugin<SunLight> implements UserDataHolder<SunL
 
         this.moduleManager = new ModuleManager(this);
         this.moduleManager.setup();
+
+        // Setup discord srv hook
+        new DiscordSrvHook(this);
 
         int commands = this.getCommandManager().getCommands().size();
         int subs = this.getCommandManager().getCommands().stream().map(AbstractCommand::getChildrens).mapToInt(Collection::size).sum();

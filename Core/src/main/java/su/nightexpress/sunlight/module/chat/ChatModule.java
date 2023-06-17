@@ -1,5 +1,6 @@
 package su.nightexpress.sunlight.module.chat;
 
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
@@ -17,6 +18,7 @@ import su.nightexpress.sunlight.api.event.PlayerPrivateMessageEvent;
 import su.nightexpress.sunlight.config.Config;
 import su.nightexpress.sunlight.data.impl.SunUser;
 import su.nightexpress.sunlight.hook.HookId;
+import su.nightexpress.sunlight.hook.impl.DiscordSrvHook;
 import su.nightexpress.sunlight.module.Module;
 import su.nightexpress.sunlight.module.chat.command.BroadcastCommand;
 import su.nightexpress.sunlight.module.chat.command.ClearchatCommand;
@@ -408,6 +410,8 @@ public class ChatModule extends Module {
             event.getRecipients().forEach(receiver -> MessageUtil.sendWithJson(receiver, finalFormat));
             MessageUtil.sendWithJson(this.plugin.getServer().getConsoleSender(), MessageUtil.toSimpleText(finalFormat));
         }
+
+        DiscordSrvHook.sendMessageToMain(event.getPlayer().getDisplayName() + ": " + ChatColor.stripColor(msgReal));
 
         toMention.forEach(mentioned -> ChatConfig.MENTIONS_NOTIFY.get().replace(Placeholders.Player.replacer(player)).send(mentioned));
 
