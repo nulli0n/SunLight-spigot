@@ -10,7 +10,6 @@ import org.jetbrains.annotations.Nullable;
 import su.nexmedia.engine.api.config.JYML;
 import su.nexmedia.engine.api.manager.AbstractConfigHolder;
 import su.nexmedia.engine.api.manager.ICleanable;
-import su.nexmedia.engine.api.manager.IEditable;
 import su.nexmedia.engine.api.placeholder.Placeholder;
 import su.nexmedia.engine.api.placeholder.PlaceholderMap;
 import su.nexmedia.engine.command.CommandRegister;
@@ -19,6 +18,7 @@ import su.nexmedia.engine.lang.LangManager;
 import su.nexmedia.engine.utils.*;
 import su.nightexpress.sunlight.SunLight;
 import su.nightexpress.sunlight.data.impl.SunUser;
+import su.nightexpress.sunlight.data.impl.cooldown.CooldownInfo;
 import su.nightexpress.sunlight.module.warps.WarpsModule;
 import su.nightexpress.sunlight.module.warps.command.WarpShortcutCommand;
 import su.nightexpress.sunlight.module.warps.config.WarpsLang;
@@ -27,14 +27,13 @@ import su.nightexpress.sunlight.module.warps.type.WarpType;
 import su.nightexpress.sunlight.module.warps.util.Placeholders;
 import su.nightexpress.sunlight.module.warps.util.WarpsPerms;
 import su.nightexpress.sunlight.utils.UserInfo;
-import su.nightexpress.sunlight.data.impl.cooldown.CooldownInfo;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.*;
 
-public class Warp extends AbstractConfigHolder<SunLight> implements ICleanable, IEditable, Placeholder {
+public class Warp extends AbstractConfigHolder<SunLight> implements ICleanable, Placeholder {
 
     public static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ISO_LOCAL_TIME;
 
@@ -167,7 +166,6 @@ public class Warp extends AbstractConfigHolder<SunLight> implements ICleanable, 
     }
 
     @NotNull
-    @Override
     public WarpSettingsMenu getEditor() {
         if (this.editor == null) {
             this.editor = new WarpSettingsMenu(this);
@@ -301,7 +299,7 @@ public class Warp extends AbstractConfigHolder<SunLight> implements ICleanable, 
     }
 
     @NotNull
-    public WarpsModule getWarpsModule() {
+    public WarpsModule getModule() {
         return this.module;
     }
 

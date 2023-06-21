@@ -1,5 +1,6 @@
 package su.nightexpress.sunlight.config;
 
+@Deprecated
 public interface LangColors {
 
     String GRAY      = "#d4d9d8";

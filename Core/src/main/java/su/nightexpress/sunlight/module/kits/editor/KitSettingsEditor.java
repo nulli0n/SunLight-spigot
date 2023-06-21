@@ -1,196 +1,184 @@
 package su.nightexpress.sunlight.module.kits.editor;
 
-import org.bukkit.entity.Player;
+import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
-import su.nexmedia.engine.api.editor.EditorButtonType;
-import su.nexmedia.engine.api.editor.EditorInput;
-import su.nexmedia.engine.api.menu.AbstractMenu;
-import su.nexmedia.engine.api.menu.MenuClick;
-import su.nexmedia.engine.api.menu.MenuItem;
-import su.nexmedia.engine.api.menu.MenuItemType;
-import su.nexmedia.engine.editor.AbstractEditorMenu;
-import su.nexmedia.engine.editor.EditorManager;
+import org.jetbrains.annotations.Nullable;
+import su.nexmedia.engine.api.menu.impl.EditorMenu;
+import su.nexmedia.engine.api.menu.impl.Menu;
+import su.nexmedia.engine.api.menu.impl.MenuViewer;
 import su.nexmedia.engine.hooks.external.VaultHook;
 import su.nexmedia.engine.utils.Colorizer;
 import su.nexmedia.engine.utils.ItemUtil;
-import su.nexmedia.engine.utils.StringUtil;
 import su.nightexpress.sunlight.SunLight;
 import su.nightexpress.sunlight.module.kits.Kit;
-import su.nightexpress.sunlight.module.kits.KitsModule;
 import su.nightexpress.sunlight.module.kits.config.KitsLang;
 import su.nightexpress.sunlight.module.kits.util.Placeholders;
 
-import java.util.Map;
-
-public class KitSettingsEditor extends AbstractEditorMenu<SunLight, Kit> {
-
-    private final KitsModule kitsModule;
+public class KitSettingsEditor extends EditorMenu<SunLight, Kit> {
 
     public KitSettingsEditor(@NotNull Kit kit) {
-        super(kit.getKitManager().plugin(), kit, Placeholders.EDITOR_TITLE, 45);
-        this.kitsModule = kit.getKitManager();
+        super(kit.getModule().plugin(), kit, Placeholders.EDITOR_TITLE, 45);
 
-        EditorInput<Kit, KitsEditorType> input = (player, kit2, type, e) -> {
-            String text = e.getMessage();
-            switch (type) {
-                case KIT_CHANGE_COMMANDS -> kit.getCommands().add(Colorizer.plain(text));
-                case KIT_CHANGE_COOLDOWN -> kit.setCooldown(StringUtil.getInteger(text, 0));
-                case KIT_CHANGE_COST -> kit.setCost(StringUtil.getDouble(text, 0D));
-                case KIT_CHANGE_PRIORITY -> kit.setPriority(StringUtil.getInteger(text, 0));
-                case KIT_CHANGE_NAME -> kit.setName(text);
-                case KIT_CHANGE_DESCRIPTION -> kit.getDescription().add(Colorizer.apply(text));
-                default -> {}
-            }
+        this.addReturn(40).setClick((viewer, event) -> {
+            kit.getModule().getEditor().openNextTick(viewer, 1);
+        });
 
-            kit.save();
-            return true;
-        };
-        
-        MenuClick click = (player, type, e) -> {
-            if (type instanceof MenuItemType type2) {
-                if (type2 == MenuItemType.RETURN) {
-                    this.kitsModule.getEditor().open(player, 1);
-                }
-            }
-            else if (type instanceof KitsEditorType type2) {
-                switch (type2) {
-                    case KIT_CHANGE_ARMOR -> {
-                        new ContentEditor(this.object, 9).open(player, 1);
-                        return;
-                    }
-                    case KIT_CHANGE_INVENTORY -> {
-                        new ContentEditor(this.object, 36).open(player, 1);
-                        return;
-                    }
-                    case KIT_CHANGE_COMMANDS -> {
-                        if (e.isRightClick()) {
-                            kit.getCommands().clear();
-                            break;
-                        }
-
-                        EditorManager.startEdit(player, kit, type2, input);
-                        EditorManager.prompt(player, plugin.getMessage(KitsLang.EDITOR_ENTER_COMMAND).getLocalized());
-                        EditorManager.sendCommandTips(player);
-                        player.closeInventory();
-                        return;
-                    }
-                    case KIT_CHANGE_COOLDOWN -> {
-                        if (e.isRightClick()) {
-                            kit.setCooldown(-1);
-                            break;
-                        }
-                        EditorManager.startEdit(player, kit, type2, input);
-                        EditorManager.prompt(player, plugin.getMessage(KitsLang.EDITOR_ENTER_COOLDOWN).getLocalized());
-                        player.closeInventory();
-                        return;
-                    }
-                    case KIT_CHANGE_COST -> {
-                        if (!VaultHook.hasEconomy()) return;
-                        if (e.isRightClick()) {
-                            kit.setCost(0);
-                            break;
-                        }
-
-                        EditorManager.startEdit(player, kit, type2, input);
-                        EditorManager.prompt(player, plugin.getMessage(KitsLang.EDITOR_ENTER_COST).getLocalized());
-                        player.closeInventory();
-                        return;
-                    }
-                    case KIT_CHANGE_ICON -> {
-                        ItemStack cursor = e.getCursor();
-                        if (cursor == null || cursor.getType().isAir()) return;
-
-                        kit.setIcon(cursor);
-                        e.getWhoClicked().setItemOnCursor(null);
-                    }
-                    case KIT_CHANGE_NAME -> {
-                        EditorManager.startEdit(player, kit, type2, input);
-                        EditorManager.prompt(player, plugin.getMessage(KitsLang.EDITOR_ENTER_NAME).getLocalized());
-                        player.closeInventory();
-                        return;
-                    }
-                    case KIT_CHANGE_DESCRIPTION -> {
-                        if (e.isRightClick()) {
-                            kit.getDescription().clear();
-                            break;
-                        }
-                        EditorManager.startEdit(player, kit, type2, input);
-                        EditorManager.prompt(player, plugin.getMessage(KitsLang.EDITOR_ENTER_DESCRIPTION).getLocalized());
-                        player.closeInventory();
-                        return;
-                    }
-                    case KIT_CHANGE_PRIORITY -> {
-                        EditorManager.startEdit(player, kit, type2, input);
-                        EditorManager.prompt(player, plugin.getMessage(KitsLang.EDITOR_ENTER_PRIORITY).getLocalized());
-                        player.closeInventory();
-                        return;
-                    }
-                    case KIT_CHANGE_PERMISSION -> kit.setPermissionRequired(!kit.isPermissionRequired());
-                    default -> {
-                        return;
-                    }
-                }
+        this.addItem(Material.NAME_TAG, EditorLocales.KIT_NAME, 2).setClick((viewer, event) -> {
+            this.handleInput(viewer, KitsLang.EDITOR_ENTER_NAME, wrapper -> {
+                kit.setName(wrapper.getText());
                 kit.save();
-                this.open(player, 1);
+                return true;
+            });
+        });
+
+        this.addItem(Material.ITEM_FRAME, EditorLocales.KIT_ICON, 4).setClick((viewer, event) -> {
+            ItemStack cursor = event.getCursor();
+            if (cursor == null || cursor.getType().isAir()) return;
+
+            kit.setIcon(cursor);
+            kit.save();
+            event.getWhoClicked().setItemOnCursor(null);
+            this.save(viewer);
+        }).getOptions().addDisplayModifier((viewer, item) -> {
+            item.setType(kit.getIcon().getType());
+            item.setItemMeta(kit.getIcon().getItemMeta());
+            ItemUtil.mapMeta(item, meta -> {
+                meta.setDisplayName(EditorLocales.KIT_ICON.getLocalizedName());
+                meta.setLore(EditorLocales.KIT_ICON.getLocalizedLore());
+            });
+        });
+
+        this.addItem(Material.MAP, EditorLocales.KIT_DESCRIPTION, 6).setClick((viewer, event) -> {
+            if (event.isRightClick()) {
+                kit.getDescription().clear();
+                this.save(viewer);
+                return;
             }
-        };
+            this.handleInput(viewer, KitsLang.EDITOR_ENTER_DESCRIPTION, wrapper -> {
+                kit.getDescription().add(Colorizer.apply(wrapper.getText()));
+                kit.save();
+                return true;
+            });
+        });
 
-        this.loadItems(click);
+
+        this.addItem(Material.COMPARATOR, EditorLocales.KIT_PRIORITY, 10).setClick((viewer, event) -> {
+            this.handleInput(viewer, KitsLang.EDITOR_ENTER_PRIORITY, wrapper -> {
+                kit.setPriority(wrapper.asInt());
+                kit.save();
+                return true;
+            });
+        });
+
+        this.addItem(Material.REDSTONE_TORCH, EditorLocales.KIT_PERMISSION, 12).setClick((viewer, event) -> {
+            kit.setPermissionRequired(!kit.isPermissionRequired());
+            this.save(viewer);
+        });
+
+        this.addItem(Material.CLOCK, EditorLocales.KIT_COOLDOWN, 14).setClick((viewer, event) -> {
+            if (event.isRightClick()) {
+                kit.setCooldown(-1);
+                this.save(viewer);
+                return;
+            }
+            this.handleInput(viewer, KitsLang.EDITOR_ENTER_COOLDOWN, wrapper -> {
+                kit.setCooldown(wrapper.asInt());
+                kit.save();
+                return true;
+            });
+        });
+
+        this.addItem(Material.GOLD_NUGGET, EditorLocales.KIT_COST, 16).setClick((viewer, event) -> {
+            if (!VaultHook.hasEconomy()) return;
+            if (event.isRightClick()) {
+                kit.setCost(0);
+                this.save(viewer);
+                return;
+            }
+
+            this.handleInput(viewer, KitsLang.EDITOR_ENTER_COST, wrapper -> {
+                kit.setCost(wrapper.asDouble());
+                kit.save();
+                return true;
+            });
+        });
+
+
+        this.addItem(Material.ARMOR_STAND, EditorLocales.KIT_ARMOR, 20).setClick((viewer, event) -> {
+            new ContentEditor(this.object, 9).openNextTick(viewer, 1);
+        });
+
+        this.addItem(Material.COMMAND_BLOCK, EditorLocales.KIT_COMMANDS, 22).setClick((viewer, event) -> {
+            if (event.isRightClick()) {
+                kit.getCommands().clear();
+                this.save(viewer);
+                return;
+            }
+
+            this.handleInput(viewer, KitsLang.EDITOR_ENTER_COMMAND, wrapper -> {
+                kit.getCommands().add(Colorizer.plain(wrapper.getText()));
+                kit.save();
+                return true;
+            });
+        });
+
+        this.addItem(Material.CHEST_MINECART, EditorLocales.KIT_INVENTORY, 24).setClick((viewer, event) -> {
+            new ContentEditor(this.object, 36).openNextTick(viewer, 1);
+        });
+
+        this.getItems().forEach(menuItem -> {
+            menuItem.getOptions().addDisplayModifier((viewer, item) -> ItemUtil.replace(item, kit.replacePlaceholders()));
+        });
+    }
+
+    private void save(@NotNull MenuViewer viewer) {
+        this.object.save();
+        this.openNextTick(viewer, 1);
     }
 
     @Override
-    public void setTypes(@NotNull Map<EditorButtonType, Integer> map) {
-        map.put(KitsEditorType.KIT_CHANGE_NAME, 2);
-        map.put(KitsEditorType.KIT_CHANGE_ICON, 4);
-        map.put(KitsEditorType.KIT_CHANGE_DESCRIPTION, 6);
-
-        map.put(KitsEditorType.KIT_CHANGE_PRIORITY, 10);
-        map.put(KitsEditorType.KIT_CHANGE_PERMISSION, 12);
-        map.put(KitsEditorType.KIT_CHANGE_COOLDOWN, 14);
-        map.put(KitsEditorType.KIT_CHANGE_COST, 16);
-
-        map.put(KitsEditorType.KIT_CHANGE_ARMOR, 20);
-        map.put(KitsEditorType.KIT_CHANGE_COMMANDS, 22);
-        map.put(KitsEditorType.KIT_CHANGE_INVENTORY, 24);
-
-        map.put(MenuItemType.RETURN, 40);
+    public void onClick(@NotNull MenuViewer viewer, @Nullable ItemStack item, @NotNull SlotType slotType, int slot, @NotNull InventoryClickEvent event) {
+        super.onClick(viewer, item, slotType, slot, event);
+        if (slotType == SlotType.PLAYER || slotType == SlotType.PLAYER_EMPTY) {
+            event.setCancelled(false);
+        }
     }
 
-    @Override
-    public void onItemPrepare(@NotNull Player player, @NotNull MenuItem menuItem, @NotNull ItemStack item) {
-        super.onItemPrepare(player, menuItem, item);
-        ItemUtil.replace(item, this.object.replacePlaceholders());
-    }
-
-    @Override
-    public boolean cancelClick(@NotNull InventoryClickEvent e, @NotNull SlotType slotType) {
-        return slotType != SlotType.PLAYER && slotType != SlotType.EMPTY_PLAYER;
-    }
-
-    static class ContentEditor extends AbstractMenu<SunLight> {
+    private static class ContentEditor extends Menu<SunLight> {
 
         private final Kit     kit;
         private final boolean isArmor;
 
         public ContentEditor(@NotNull Kit kit, int size) {
-            super(kit.getKitManager().plugin(), "Kit Content", size);
+            super(kit.getModule().plugin(), "Kit Content", size);
             this.kit = kit;
             this.isArmor = size == 9;
         }
 
         @Override
-        public boolean onPrepare(@NotNull Player player, @NotNull Inventory inventory) {
-            inventory.setContents(this.isArmor ? this.kit.getArmor() : this.kit.getItems());
-            return true;
+        public boolean isPersistent() {
+            return false;
         }
 
         @Override
-        public void onClose(@NotNull Player player, @NotNull InventoryCloseEvent e) {
-            Inventory inventory = e.getInventory();
+        public void onReady(@NotNull MenuViewer viewer, @NotNull Inventory inventory) {
+            inventory.setContents(this.isArmor ? this.kit.getArmor() : this.kit.getItems());
+        }
+
+        @Override
+        public void onClick(@NotNull MenuViewer viewer, @Nullable ItemStack item, @NotNull SlotType slotType, int slot, @NotNull InventoryClickEvent event) {
+            super.onClick(viewer, item, slotType, slot, event);
+            event.setCancelled(false);
+        }
+
+        @Override
+        public void onClose(@NotNull MenuViewer viewer, @NotNull InventoryCloseEvent event) {
+
+            Inventory inventory = event.getInventory();
             ItemStack[] items = new ItemStack[this.isArmor ? 4 : 36];
 
             for (int slot = 0; slot < items.length; slot++) {
@@ -207,18 +195,8 @@ public class KitSettingsEditor extends AbstractEditorMenu<SunLight, Kit> {
             else this.kit.setItems(items);
 
             this.kit.save();
-            this.plugin.runTask(task -> this.kit.getEditor().open(player, 1));
-            super.onClose(player, e);
-        }
-
-        @Override
-        public boolean destroyWhenNoViewers() {
-            return true;
-        }
-
-        @Override
-        public boolean cancelClick(@NotNull InventoryClickEvent e, @NotNull SlotType slotType) {
-            return false;
+            this.kit.getEditor().openNextTick(viewer, 1);
+            super.onClose(viewer, event);
         }
     }
 }

@@ -1,29 +1,31 @@
 package su.nightexpress.sunlight.module.warps.menu;
 
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import su.nexmedia.engine.api.config.JYML;
-import su.nexmedia.engine.api.menu.AbstractMenuAuto;
-import su.nexmedia.engine.api.menu.MenuClick;
-import su.nexmedia.engine.api.menu.MenuItem;
+import su.nexmedia.engine.api.menu.AutoPaged;
 import su.nexmedia.engine.api.menu.MenuItemType;
+import su.nexmedia.engine.api.menu.click.ClickHandler;
+import su.nexmedia.engine.api.menu.click.ItemClick;
+import su.nexmedia.engine.api.menu.impl.ConfigMenu;
+import su.nexmedia.engine.api.menu.impl.MenuOptions;
+import su.nexmedia.engine.api.menu.impl.MenuViewer;
 import su.nexmedia.engine.utils.*;
 import su.nightexpress.sunlight.SunLight;
 import su.nightexpress.sunlight.data.impl.SunUser;
+import su.nightexpress.sunlight.data.impl.cooldown.CooldownInfo;
 import su.nightexpress.sunlight.module.warps.WarpsModule;
 import su.nightexpress.sunlight.module.warps.impl.Warp;
 import su.nightexpress.sunlight.module.warps.type.WarpSortType;
 import su.nightexpress.sunlight.module.warps.util.Placeholders;
 import su.nightexpress.sunlight.module.warps.util.WarpsPerms;
-import su.nightexpress.sunlight.data.impl.cooldown.CooldownInfo;
 
 import java.time.LocalTime;
 import java.util.*;
 
-public class WarpsMenu extends AbstractMenuAuto<SunLight, Warp> {
+public class WarpsMenu extends ConfigMenu<SunLight> implements AutoPaged<Warp> {
 
     private static final String PLACEHOLDER_TIMES         = "%times%";
     private static final String PLACEHOLDER_NO_PERMISSION = "%no_permission%";
@@ -46,7 +48,7 @@ public class WarpsMenu extends AbstractMenuAuto<SunLight, Warp> {
     private final Map<Player, WarpSortType> userSortCache;
 
     public WarpsMenu(@NotNull WarpsModule module) {
-        super(module.plugin(), JYML.loadOrExtract(module.plugin(), module.getLocalPath() + "/menu/warp_list.yml"), "");
+        super(module.plugin(), JYML.loadOrExtract(module.plugin(), module.getLocalPath() + "/menu/", "warp_list.yml"));
         this.module = module;
         this.userSortCache = new WeakHashMap<>();
 
@@ -59,37 +61,35 @@ public class WarpsMenu extends AbstractMenuAuto<SunLight, Warp> {
         this.loreNoMoney = Colorizer.apply(cfg.getStringList("Warp.Lore.No_Money"));
         this.loreCooldown = Colorizer.apply(cfg.getStringList("Warp.Lore.Cooldown"));
 
-        MenuClick click = (player, type, e) -> {
-            if (type instanceof MenuItemType type2) {
-                this.onItemClickDefault(player, type2);
-            }
-            else if (type instanceof Type type2) {
-                if (type2 == Type.SORTING_MODE) {
-                    WarpSortType userSort = this.getUserSortType(player);
-                    userSort = CollectionsUtil.next(userSort);
-                    this.userSortCache.put(player, userSort);
-                    this.open(player, this.getPage(player));
-                }
-            }
-        };
+        this.registerHandler(MenuItemType.class)
+            .addClick(MenuItemType.CLOSE, (viewer, event) -> plugin.runTask(task -> viewer.getPlayer().closeInventory()))
+            .addClick(MenuItemType.PAGE_NEXT, ClickHandler.forNextPage(this))
+            .addClick(MenuItemType.PAGE_PREVIOUS, ClickHandler.forPreviousPage(this));
 
-        for (String sId : cfg.getSection("Content")) {
-            MenuItem menuItem = cfg.getMenuItem("Content." + sId, MenuItemType.class);
+        this.registerHandler(Type.class)
+            .addClick(Type.SORTING_MODE, (viewer, event) -> {
+                WarpSortType userSort = this.getUserSortType(viewer.getPlayer());
+                userSort = CollectionsUtil.next(userSort);
+                this.userSortCache.put(viewer.getPlayer(), userSort);
+                this.openNextTick(viewer, viewer.getPage());
+            });
 
-            if (menuItem.getType() != null) {
-                menuItem.setClickHandler(click);
+        this.load();
+
+        this.getItems().forEach(menuItem -> {
+            if (menuItem.getType() == Type.SORTING_MODE) {
+                menuItem.getOptions().addDisplayModifier((viewer, item) -> {
+                    WarpSortType sortType = this.getUserSortType(viewer.getPlayer());
+                    ItemUtil.replace(item, line -> line.replace(PLACEHOLDER_SORTING_MODE, plugin.getLangManager().getEnum(sortType)));
+                });
             }
-            this.addItem(menuItem);
-        }
+        });
+    }
 
-        for (String sId : cfg.getSection("Special")) {
-            MenuItem menuItem = cfg.getMenuItem("Special." + sId, Type.class);
-
-            if (menuItem.getType() != null) {
-                menuItem.setClickHandler(click);
-            }
-            this.addItem(menuItem);
-        }
+    @Override
+    public void onPrepare(@NotNull MenuViewer viewer, @NotNull MenuOptions options) {
+        super.onPrepare(viewer, options);
+        this.getItemsForPage(viewer).forEach(this::addItem);
     }
 
     enum Type {
@@ -108,19 +108,13 @@ public class WarpsMenu extends AbstractMenuAuto<SunLight, Warp> {
 
     @Override
     @NotNull
-    protected List<Warp> getObjects(@NotNull Player player) {
-        return new ArrayList<>(this.module.getWarps());
+    public List<Warp> getObjects(@NotNull Player player) {
+        return this.module.getWarps().stream().sorted(this.getUserSortType(player).getComparator()).toList();
     }
 
     @Override
     @NotNull
-    protected List<Warp> fineObjects(@NotNull List<Warp> objects, @NotNull Player player) {
-        return objects.stream().sorted(this.getUserSortType(player).getComparator()).toList();
-    }
-
-    @Override
-    @NotNull
-    protected ItemStack getObjectStack(@NotNull Player player, @NotNull Warp warp) {
+    public ItemStack getObjectStack(@NotNull Player player, @NotNull Warp warp) {
         ItemStack item = new ItemStack(warp.getIcon());
 
         List<String> lore = new ArrayList<>(this.warpLore);
@@ -177,39 +171,25 @@ public class WarpsMenu extends AbstractMenuAuto<SunLight, Warp> {
 
     @Override
     @NotNull
-    protected MenuClick getObjectClick(@NotNull Player player, @NotNull Warp warp) {
-        return (player1, type, e) -> {
-            if (e.isLeftClick()) {
-                warp.teleport(player1, false);
+    public ItemClick getObjectClick(@NotNull Warp warp) {
+        return (viewer, event) -> {
+            Player player = viewer.getPlayer();
+            if (event.isLeftClick()) {
+                warp.teleport(player, false);
                 return;
             }
 
-            if (e.isRightClick()) {
-                if (warp.isOwner(player1) || player1.hasPermission(WarpsPerms.EDITOR_OTHERS)) {
-                    warp.getEditor().open(player1, 1);
+            if (event.isRightClick()) {
+                if (warp.isOwner(player) || player.hasPermission(WarpsPerms.EDITOR_OTHERS)) {
+                    warp.getEditor().openNextTick(viewer, 1);
                 }
             }
         };
     }
 
     @Override
-    public void onClose(@NotNull Player player, @NotNull InventoryCloseEvent e) {
-        super.onClose(player, e);
-        this.userSortCache.remove(player);
-    }
-
-    @Override
-    public void onItemPrepare(@NotNull Player player, @NotNull MenuItem menuItem, @NotNull ItemStack item) {
-        super.onItemPrepare(player, menuItem, item);
-
-        if (menuItem.getType() == Type.SORTING_MODE) {
-            WarpSortType sortType = this.getUserSortType(player);
-            ItemUtil.replace(item, line -> line.replace(PLACEHOLDER_SORTING_MODE, plugin.getLangManager().getEnum(sortType)));
-        }
-    }
-
-    @Override
-    public boolean cancelClick(@NotNull InventoryClickEvent e, @NotNull SlotType slotType) {
-        return true;
+    public void onClose(@NotNull MenuViewer viewer, @NotNull InventoryCloseEvent event) {
+        super.onClose(viewer, event);
+        this.userSortCache.remove(viewer.getPlayer());
     }
 }

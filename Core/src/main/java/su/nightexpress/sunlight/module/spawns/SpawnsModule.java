@@ -5,12 +5,12 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import su.nexmedia.engine.api.config.JYML;
-import su.nexmedia.engine.editor.EditorManager;
 import su.nexmedia.engine.utils.StringUtil;
 import su.nightexpress.sunlight.SunLight;
 import su.nightexpress.sunlight.module.Module;
 import su.nightexpress.sunlight.module.spawns.command.SpawnsCommand;
 import su.nightexpress.sunlight.module.spawns.config.SpawnsLang;
+import su.nightexpress.sunlight.module.spawns.editor.EditorLocales;
 import su.nightexpress.sunlight.module.spawns.editor.SpawnsEditor;
 import su.nightexpress.sunlight.module.spawns.impl.Spawn;
 import su.nightexpress.sunlight.module.spawns.listener.SpawnListener;
@@ -36,6 +36,7 @@ public class SpawnsModule extends Module {
     protected void onLoad() {
         this.plugin.registerPermissions(SpawnsPerms.class);
         this.plugin.getLangManager().loadMissing(SpawnsLang.class);
+        this.plugin.getLangManager().loadEditor(EditorLocales.class);
         this.plugin.getLang().saveChanges();
         this.plugin.runTask(task -> this.loadSpawns()); // Do a tick delay for all the worlds to load.
         this.plugin.getCommandRegulator().register(SpawnsCommand.NAME, (cfg1, aliases) -> new SpawnsCommand(this, aliases));
@@ -119,7 +120,7 @@ public class SpawnsModule extends Module {
 
     public boolean createSpawn(@NotNull Player player, @NotNull String id) {
         Location location = player.getLocation();
-        id = EditorManager.fineId(id);
+        id = StringUtil.lowerCaseUnderscore(id);
 
         Spawn spawn = this.getSpawnById(id).orElse(null);
         if (spawn == null) {
