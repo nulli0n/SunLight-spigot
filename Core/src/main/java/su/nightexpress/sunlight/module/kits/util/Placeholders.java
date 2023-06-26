@@ -12,6 +12,5 @@ public class Placeholders extends su.nightexpress.sunlight.Placeholders {
     public static final String KIT_COOLDOWN            = "%kit_cooldown%";
     public static final String KIT_COST_MONEY          = "%kit_cost_money%";
     public static final String KIT_PRIORITY            = "%kit_priority%";
-    public static final String KIT_ICON                = "%kit_icon%";
     public static final String KIT_COMMANDS            = "%kit_commands%";
 }

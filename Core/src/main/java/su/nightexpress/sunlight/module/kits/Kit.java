@@ -10,14 +10,15 @@ import org.jetbrains.annotations.NotNull;
 import su.nexmedia.engine.api.config.JYML;
 import su.nexmedia.engine.api.manager.AbstractConfigHolder;
 import su.nexmedia.engine.api.manager.ICleanable;
-import su.nexmedia.engine.api.manager.IEditable;
-import su.nexmedia.engine.api.manager.IPlaceholder;
+import su.nexmedia.engine.api.placeholder.Placeholder;
+import su.nexmedia.engine.api.placeholder.PlaceholderMap;
 import su.nexmedia.engine.hooks.external.VaultHook;
 import su.nexmedia.engine.lang.LangManager;
 import su.nexmedia.engine.utils.*;
 import su.nightexpress.sunlight.SunLight;
 import su.nightexpress.sunlight.config.Lang;
 import su.nightexpress.sunlight.data.impl.SunUser;
+import su.nightexpress.sunlight.data.impl.cooldown.CooldownInfo;
 import su.nightexpress.sunlight.module.kits.config.KitsConfig;
 import su.nightexpress.sunlight.module.kits.config.KitsLang;
 import su.nightexpress.sunlight.module.kits.editor.KitSettingsEditor;
@@ -25,16 +26,14 @@ import su.nightexpress.sunlight.module.kits.menu.KitPreviewMenu;
 import su.nightexpress.sunlight.module.kits.util.KitsPerms;
 import su.nightexpress.sunlight.module.kits.util.KitsUtils;
 import su.nightexpress.sunlight.module.kits.util.Placeholders;
-import su.nightexpress.sunlight.data.impl.cooldown.CooldownInfo;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.UnaryOperator;
 
-public class Kit extends AbstractConfigHolder<SunLight> implements ICleanable, IEditable, IPlaceholder {
+public class Kit extends AbstractConfigHolder<SunLight> implements ICleanable, Placeholder {
 
-    private final KitsModule kitsModule;
+    private final KitsModule module;
 
     private String       name;
     private List<String> description;
@@ -51,12 +50,14 @@ public class Kit extends AbstractConfigHolder<SunLight> implements ICleanable, I
     private KitPreviewMenu    preview;
     private KitSettingsEditor editor;
 
+    private final PlaceholderMap placeholderMap;
+
     /*enum ContentType {
         ITEMS, ARMOR, EXTRA
     }*/
 
-    public Kit(@NotNull KitsModule kitsModule, @NotNull String id) {
-        this(kitsModule, JYML.loadOrExtract(kitsModule.plugin(), kitsModule.getLocalPath() + KitsModule.DIR_KITS, id + ".yml"));
+    public Kit(@NotNull KitsModule module, @NotNull String id) {
+        this(module, JYML.loadOrExtract(module.plugin(), module.getLocalPath() + KitsModule.DIR_KITS, id + ".yml"));
 
         this.setName(StringUtil.capitalizeFully(id.replace("_", " ")));
         this.setPermissionRequired(true);
@@ -71,9 +72,20 @@ public class Kit extends AbstractConfigHolder<SunLight> implements ICleanable, I
         this.setExtras(new ItemStack[1]);
     }
 
-    public Kit(@NotNull KitsModule kitsModule, @NotNull JYML cfg) {
-        super(kitsModule.plugin(), cfg);
-        this.kitsModule = kitsModule;
+    public Kit(@NotNull KitsModule module, @NotNull JYML cfg) {
+        super(module.plugin(), cfg);
+        this.module = module;
+
+        this.placeholderMap = new PlaceholderMap()
+            .add(Placeholders.KIT_ID, this::getId)
+            .add(Placeholders.KIT_NAME, this::getName)
+            .add(Placeholders.KIT_DESCRIPTION, () -> String.join("\n", this.getDescription()))
+            .add(Placeholders.KIT_PERMISSION_REQUIRED, () -> LangManager.getBoolean(this.isPermissionRequired()))
+            .add(Placeholders.KIT_PERMISSION_NODE, this::getPermission)
+            .add(Placeholders.KIT_COOLDOWN, () -> this.getCooldown() >= 0 ? TimeUtil.formatTime(this.getCooldown() * 1000L) : LangManager.getPlain(Lang.OTHER_ONE_TIMED))
+            .add(Placeholders.KIT_COST_MONEY, () -> NumberUtil.format(this.getCost()))
+            .add(Placeholders.KIT_PRIORITY, () -> String.valueOf(this.getPriority()))
+            .add(Placeholders.KIT_COMMANDS, () -> String.join("\n", this.getCommands()));
     }
 
     @Override
@@ -122,25 +134,11 @@ public class Kit extends AbstractConfigHolder<SunLight> implements ICleanable, I
 
     @Override
     @NotNull
-    public UnaryOperator<String> replacePlaceholders() {
-        String cooldown = this.getCooldown() >= 0 ? TimeUtil.formatTime(this.getCooldown() * 1000L) : plugin.getMessage(Lang.OTHER_ONE_TIMED).getLocalized();
-
-        return str -> str
-            .replace(Placeholders.KIT_ID, this.getId())
-            .replace(Placeholders.KIT_NAME, this.getName())
-            .replace(Placeholders.KIT_DESCRIPTION, String.join("\n", this.getDescription()))
-            .replace(Placeholders.KIT_PERMISSION_REQUIRED, LangManager.getBoolean(this.isPermissionRequired()))
-            .replace(Placeholders.KIT_PERMISSION_NODE, KitsPerms.PREFIX_KIT + this.getId())
-            .replace(Placeholders.KIT_COOLDOWN, cooldown)
-            .replace(Placeholders.KIT_COST_MONEY, NumberUtil.format(this.getCost()))
-            .replace(Placeholders.KIT_PRIORITY, String.valueOf(this.getPriority()))
-            .replace(Placeholders.KIT_ICON, ItemUtil.getItemName(this.getIcon()))
-            .replace(Placeholders.KIT_COMMANDS, String.join(DELIMITER_DEFAULT, this.getCommands()))
-            ;
+    public PlaceholderMap getPlaceholders() {
+        return this.placeholderMap;
     }
 
     @NotNull
-    @Override
     public KitSettingsEditor getEditor() {
         if (this.editor == null) {
             this.editor = new KitSettingsEditor(this);
@@ -149,8 +147,8 @@ public class Kit extends AbstractConfigHolder<SunLight> implements ICleanable, I
     }
 
     @NotNull
-    public KitsModule getKitManager() {
-        return this.kitsModule;
+    public KitsModule getModule() {
+        return this.module;
     }
 
     @NotNull
@@ -159,6 +157,11 @@ public class Kit extends AbstractConfigHolder<SunLight> implements ICleanable, I
             this.preview = new KitPreviewMenu(this);
         }
         return preview;
+    }
+
+    @NotNull
+    public String getPermission() {
+        return KitsPerms.PREFIX_KIT + this.getId();
     }
 
     @NotNull
@@ -326,7 +329,7 @@ public class Kit extends AbstractConfigHolder<SunLight> implements ICleanable, I
     }
 
     public void give(@NotNull Player player, boolean force) {
-        SunLight plugin = this.kitsModule.plugin();
+        SunLight plugin = this.module.plugin();
         SunUser user = plugin.getUserManager().getUserData(player);
 
         // Check kit permission.

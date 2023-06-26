@@ -6,7 +6,6 @@ import org.jetbrains.annotations.NotNull;
 import su.nexmedia.engine.api.config.JYML;
 import su.nexmedia.engine.api.manager.AbstractConfigHolder;
 import su.nexmedia.engine.api.manager.ICleanable;
-import su.nexmedia.engine.api.manager.IEditable;
 import su.nexmedia.engine.api.placeholder.Placeholder;
 import su.nexmedia.engine.api.placeholder.PlaceholderMap;
 import su.nexmedia.engine.hooks.Hooks;
@@ -25,7 +24,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
-public class Spawn extends AbstractConfigHolder<SunLight> implements ICleanable, IEditable, Placeholder {
+public class Spawn extends AbstractConfigHolder<SunLight> implements ICleanable, Placeholder {
 
     private final SpawnsModule   spawnsModule;
     private final PlaceholderMap placeholderMap;
@@ -125,7 +124,6 @@ public class Spawn extends AbstractConfigHolder<SunLight> implements ICleanable,
     }
 
     @NotNull
-    @Override
     public SpawnSettingsEditor getEditor() {
         if (this.editor == null) {
             this.editor = new SpawnSettingsEditor(this);

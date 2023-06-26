@@ -272,7 +272,7 @@ public class ChatModule extends Module {
         }
 
         // Apply message colors for permission.
-        String msgReal = player.hasPermission(ChatPerms.COLOR) ? Colorizer.legacyHex(e.getMessage()) : Colorizer.strip(e.getMessage());
+        String msgReal = player.hasPermission(ChatPerms.COLOR) ? Colorizer.legacyHex(e.getMessage()) : Colorizer.restrip(e.getMessage());
 
         // Strip all non-expected Json elements, aka avoid hacking.
         msgReal = MessageUtil.stripJson(msgReal);

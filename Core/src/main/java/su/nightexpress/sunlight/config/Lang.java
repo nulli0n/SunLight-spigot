@@ -2,6 +2,7 @@ package su.nightexpress.sunlight.config;
 
 import org.bukkit.Sound;
 import org.jetbrains.annotations.NotNull;
+import su.nexmedia.engine.api.lang.LangColors;
 import su.nexmedia.engine.api.lang.LangKey;
 import su.nexmedia.engine.lang.EngineLang;
 import su.nightexpress.sunlight.Placeholders;
@@ -537,17 +538,6 @@ public class Lang extends EngineLang implements LangColors {
     public static final LangKey ERROR_PLAYER_NO_ITEM = LangKey.of("Error.Player.NoItem", RED + "Player don't have an item!");
     public static final LangKey             Error_Self                = new LangKey("Error.Self", "{message: ~prefix: false;}&cUnable to apply on self!");
     public static final LangKey ERROR_MATERIAL_INVALID = LangKey.of("Error.Material.Invalid", "&cNo valid material(s) provided!");
-
-    @NotNull
-    @Deprecated
-    public static LangKey getOnOff(boolean b) {
-        if (b) {
-            return Other_On;
-        }
-        else {
-            return Other_Off;
-        }
-    }
 
     @NotNull
     public static LangKey getEnabled(boolean value) {

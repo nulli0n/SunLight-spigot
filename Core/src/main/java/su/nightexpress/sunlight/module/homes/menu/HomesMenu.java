@@ -92,12 +92,6 @@ public class HomesMenu extends ConfigMenu<SunLight> implements AutoPaged<Home> {
 
     @Override
     @NotNull
-    public Comparator<Home> getObjectSorter() {
-        return (o1, o2) -> 0;
-    }
-
-    @Override
-    @NotNull
     public List<Home> getObjects(@NotNull Player player) {
         UUID userId = this.others.getOrDefault(player, player.getUniqueId());
         return this.module.getHomes(userId).values().stream().sorted(Comparator.comparing(Home::getId)).toList();

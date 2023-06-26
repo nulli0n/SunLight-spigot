@@ -1,15 +1,17 @@
 package su.nightexpress.sunlight.module.kits.menu;
 
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import su.nexmedia.engine.api.config.JYML;
-import su.nexmedia.engine.api.menu.AbstractMenuAuto;
-import su.nexmedia.engine.api.menu.MenuClick;
-import su.nexmedia.engine.api.menu.MenuItem;
+import su.nexmedia.engine.api.menu.AutoPaged;
 import su.nexmedia.engine.api.menu.MenuItemType;
+import su.nexmedia.engine.api.menu.click.ClickHandler;
+import su.nexmedia.engine.api.menu.click.ItemClick;
+import su.nexmedia.engine.api.menu.impl.ConfigMenu;
+import su.nexmedia.engine.api.menu.impl.MenuOptions;
+import su.nexmedia.engine.api.menu.impl.MenuViewer;
 import su.nexmedia.engine.utils.Colorizer;
 import su.nexmedia.engine.utils.ItemUtil;
 import su.nexmedia.engine.utils.StringUtil;
@@ -17,18 +19,18 @@ import su.nexmedia.engine.utils.TimeUtil;
 import su.nightexpress.sunlight.SunLight;
 import su.nightexpress.sunlight.config.Lang;
 import su.nightexpress.sunlight.data.impl.SunUser;
+import su.nightexpress.sunlight.data.impl.cooldown.CooldownInfo;
 import su.nightexpress.sunlight.module.kits.Kit;
 import su.nightexpress.sunlight.module.kits.KitsModule;
-import su.nightexpress.sunlight.module.kits.util.Placeholders;
 import su.nightexpress.sunlight.module.kits.config.KitsLang;
-import su.nightexpress.sunlight.data.impl.cooldown.CooldownInfo;
+import su.nightexpress.sunlight.module.kits.util.Placeholders;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public class KitsMenu extends AbstractMenuAuto<SunLight, Kit> {
+public class KitsMenu extends ConfigMenu<SunLight> implements AutoPaged<Kit> {
 
     private static final String PLACEHOLDER_NO_MONEY = "%no_money%";
     private static final String PLACEHOLDER_NO_PERMISSION = "%no_permission%";
@@ -44,7 +46,7 @@ public class KitsMenu extends AbstractMenuAuto<SunLight, Kit> {
     private final int[]        kitSlots;
 
     public KitsMenu(@NotNull KitsModule kitsModule) {
-        super(kitsModule.plugin(), JYML.loadOrExtract(kitsModule.plugin(), kitsModule.getLocalPath() + "/menu/kit_list.yml"), "");
+        super(kitsModule.plugin(), JYML.loadOrExtract(kitsModule.plugin(), kitsModule.getLocalPath() + "/menu/", "kit_list.yml"));
         this.kitsModule = kitsModule;
 
         this.kitName = Colorizer.apply(cfg.getString("Kit.Name", Placeholders.KIT_NAME));
@@ -54,20 +56,18 @@ public class KitsMenu extends AbstractMenuAuto<SunLight, Kit> {
         this.kitLoreCooldown = Colorizer.apply(cfg.getStringList("Kit.Lore.Cooldown"));
         this.kitSlots = cfg.getIntArray("Kit.Slots");
 
-        MenuClick click = (player, type, e) -> {
-            if (type instanceof MenuItemType type2) {
-                this.onItemClickDefault(player, type2);
-            }
-        };
+        this.registerHandler(MenuItemType.class)
+            .addClick(MenuItemType.CLOSE, (viewer, event) -> plugin.runTask(task -> viewer.getPlayer().closeInventory()))
+            .addClick(MenuItemType.PAGE_PREVIOUS, ClickHandler.forPreviousPage(this))
+            .addClick(MenuItemType.PAGE_NEXT, ClickHandler.forNextPage(this));
 
-        for (String sId : cfg.getSection("Content")) {
-            MenuItem menuItem = cfg.getMenuItem("Content." + sId, MenuItemType.class);
+        this.load();
+    }
 
-            if (menuItem.getType() != null) {
-                menuItem.setClickHandler(click);
-            }
-            this.addItem(menuItem);
-        }
+    @Override
+    public void onPrepare(@NotNull MenuViewer viewer, @NotNull MenuOptions options) {
+        super.onPrepare(viewer, options);
+        this.getItemsForPage(viewer).forEach(this::addItem);
     }
 
     @Override
@@ -86,13 +86,13 @@ public class KitsMenu extends AbstractMenuAuto<SunLight, Kit> {
 
     @Override
     @NotNull
-    protected List<Kit> getObjects(@NotNull Player player) {
+    public List<Kit> getObjects(@NotNull Player player) {
         return this.kitsModule.getKits().stream().sorted(Comparator.comparingInt(Kit::getPriority)).toList();
     }
 
     @Override
     @NotNull
-    protected ItemStack getObjectStack(@NotNull Player player, @NotNull Kit kit) {
+    public ItemStack getObjectStack(@NotNull Player player, @NotNull Kit kit) {
         ItemStack item = kit.getIcon();
         ItemMeta meta = item.getItemMeta();
         if (meta == null) return item;
@@ -118,20 +118,16 @@ public class KitsMenu extends AbstractMenuAuto<SunLight, Kit> {
 
     @Override
     @NotNull
-    protected MenuClick getObjectClick(@NotNull Player player, @NotNull Kit kit) {
-        return (player1, type, e) -> {
-            if (e.isLeftClick()) {
-                kit.give(player1, false);
-                player1.closeInventory();
+    public ItemClick getObjectClick(@NotNull Kit kit) {
+        return (viewer, event) -> {
+            Player player = viewer.getPlayer();
+            if (event.isLeftClick()) {
+                kit.give(player, false);
+                player.closeInventory();
             }
-            else if (e.isRightClick()) {
-                kit.getPreview().open(player1, 1);
+            else if (event.isRightClick()) {
+                kit.getPreview().openNextTick(player, 1);
             }
         };
-    }
-
-    @Override
-    public boolean cancelClick(@NotNull InventoryClickEvent e, @NotNull SlotType slotType) {
-        return true;
     }
 }

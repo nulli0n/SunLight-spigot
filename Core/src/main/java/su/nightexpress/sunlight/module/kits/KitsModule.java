@@ -10,8 +10,8 @@ import su.nightexpress.sunlight.module.Module;
 import su.nightexpress.sunlight.module.kits.command.kits.KitsCommand;
 import su.nightexpress.sunlight.module.kits.config.KitsConfig;
 import su.nightexpress.sunlight.module.kits.config.KitsLang;
+import su.nightexpress.sunlight.module.kits.editor.EditorLocales;
 import su.nightexpress.sunlight.module.kits.editor.KitsEditor;
-import su.nightexpress.sunlight.module.kits.editor.KitsEditorType;
 import su.nightexpress.sunlight.module.kits.listener.KitListener;
 import su.nightexpress.sunlight.module.kits.menu.KitsMenu;
 import su.nightexpress.sunlight.module.kits.util.KitsPerms;
@@ -36,7 +36,7 @@ public class KitsModule extends Module {
     protected void onLoad() {
         this.plugin.registerPermissions(KitsPerms.class);
         this.plugin.getLangManager().loadMissing(KitsLang.class);
-        this.plugin.getLangManager().setupEditorEnum(KitsEditorType.class);
+        this.plugin.getLangManager().loadEditor(EditorLocales.class);
         this.plugin.getLang().setComments("Kits", "-".repeat(50), "Kits Module Lang", "-".repeat(50));
         this.plugin.getLang().saveChanges();
         this.plugin.getConfigManager().extractResources(this.getLocalPath() + DIR_KITS);
@@ -121,7 +121,6 @@ public class KitsModule extends Module {
     }
 
     public boolean create(@NotNull Player player, @NotNull String id) {
-        id = EditorManager.fineId(id);
         if (this.isKitExists(id)) {
             EditorManager.error(player, this.plugin.getMessage(KitsLang.EDITOR_ERROR_ALREADY_EXISTS).getLocalized());
             return false;

@@ -18,13 +18,13 @@ class SetSubCommand extends AbstractChannelSubCommand {
     @Override
     @NotNull
     public String getUsage() {
-        return this.plugin.getMessage(ChatLang.COMMAND_CHANNEL_JOIN_USAGE).getLocalized();
+        return this.plugin.getMessage(ChatLang.COMMAND_CHANNEL_SET_USAGE).getLocalized();
     }
 
     @Override
     @NotNull
     public String getDescription() {
-        return this.plugin.getMessage(ChatLang.COMMAND_CHANNEL_JOIN_DESC).getLocalized();
+        return this.plugin.getMessage(ChatLang.COMMAND_CHANNEL_SET_DESC).getLocalized();
     }
 
     @Override
