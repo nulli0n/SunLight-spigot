@@ -9,7 +9,6 @@ import su.nexmedia.engine.Version;
 import su.nightexpress.sunlight.SunLight;
 import su.nightexpress.sunlight.SunLightAPI;
 import su.nightexpress.sunlight.hook.impl.ProtocolLibHook;
-import su.nightexpress.sunlight.nms.v1_19_R2.V1_19_R2;
 
 import java.util.UUID;
 
@@ -53,7 +52,7 @@ public final class ChatReportDisabler extends PacketAdapter {
             PacketContainer container = event.getPacket();
 
             if (Version.isAbove(Version.V1_19_R1)) {
-                Object finePacket = ((V1_19_R2) SunLightAPI.PLUGIN.getSunNMS()).fineChatPacket(container.getHandle());
+                Object finePacket = SunLightAPI.PLUGIN.getSunNMS().fineChatPacket(container.getHandle());
                 event.setPacket(new PacketContainer(PacketType.Play.Server.SYSTEM_CHAT, finePacket));
             }
             else {

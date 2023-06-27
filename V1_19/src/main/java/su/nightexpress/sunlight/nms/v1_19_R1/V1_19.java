@@ -26,6 +26,12 @@ public class V1_19 implements SunNMS {
 
     @Override
     @NotNull
+    public Object fineChatPacket(@NotNull Object packet) {
+        return packet;
+    }
+
+    @Override
+    @NotNull
     public org.bukkit.entity.Player loadPlayerData(@NotNull UUID id, @NotNull String name) {
         GameProfile profile = new GameProfile(id, name);
         DedicatedServer server = ((CraftServer)Bukkit.getServer()).getServer();

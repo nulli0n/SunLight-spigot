@@ -37,7 +37,7 @@ public class ChatPlayerFormat {
         int priority = cfg.getInt(path + ".Priority");
         String nameFormat = cfg.getString(path + ".Name", "");
         String messageFormat = cfg.getString(path + ".Message", "");
-        String color = cfg.getString(path + ".Color", ChatColor.GRAY.getName());
+        String color = cfg.getString(path + ".Default_Color", ChatColor.GRAY.getName());
         return new ChatPlayerFormat(priority, nameFormat, messageFormat, color);
     }
 

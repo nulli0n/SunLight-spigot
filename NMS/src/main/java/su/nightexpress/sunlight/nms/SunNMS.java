@@ -10,6 +10,8 @@ import java.util.UUID;
 
 public interface SunNMS {
 
+    @NotNull Object fineChatPacket(@NotNull Object packet);
+
     @NotNull Player loadPlayerData(@NotNull UUID id, @NotNull String name);
 
     @NotNull Inventory getPlayerInventory(@NotNull Player player);

@@ -36,6 +36,7 @@ public class ReloadCommand extends ReloadSubCommand<SunLight> {
         Module module = plugin.getModuleManager().getModule(moduleId);
         if (module != null) {
             this.plugin.getLang().reload();
+            module.getConfig().reload();
             module.reload();
             sender.sendMessage(module.getName() + " reloaded.");
         }
