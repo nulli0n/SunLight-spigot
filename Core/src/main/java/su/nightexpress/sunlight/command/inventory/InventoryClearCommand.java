@@ -33,12 +33,12 @@ public class InventoryClearCommand extends TargetCommand {
 
         if (!result.hasFlag(CommandFlags.SILENT)) {
             plugin.getMessage(Lang.COMMAND_INVENTORY_CLEAR_DONE_NOTIFY)
-                .replace(Placeholders.Player.replacer(sender))
+                .replace(Placeholders.forSender(sender))
                 .send(target);
         }
         if (sender != target) {
             plugin.getMessage(Lang.COMMAND_INVENTORY_CLEAR_DONE_TARGET)
-                .replace(Placeholders.Player.replacer(target))
+                .replace(Placeholders.forPlayer(target))
                 .send(sender);
         }
     }

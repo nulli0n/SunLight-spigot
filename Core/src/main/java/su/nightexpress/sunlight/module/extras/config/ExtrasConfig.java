@@ -1,8 +1,8 @@
 package su.nightexpress.sunlight.module.extras.config;
 
 import su.nexmedia.engine.api.config.JOption;
-import su.nexmedia.engine.hooks.Hooks;
 import su.nexmedia.engine.utils.CollectionsUtil;
+import su.nexmedia.engine.utils.EngineUtils;
 import su.nexmedia.engine.utils.StringUtil;
 import su.nightexpress.sunlight.Placeholders;
 import su.nightexpress.sunlight.module.extras.impl.chestsort.SortRule;
@@ -27,16 +27,16 @@ public class ExtrasConfig {
         "Sets whether or not Join Commands feature is enabled.");
 
     public static final JOption<List<String>> JOIN_COMMANDS_FIRST = JOption.create("JoinCommands.FirstJoin",
-        Collections.singletonList("broadcast Welcome new player: " + Placeholders.Player.NAME + "!"),
+        Collections.singletonList("broadcast Welcome new player: " + Placeholders.PLAYER_NAME + "!"),
         "List of commands to execute when player joined server for the first time.",
-        "Use '" + Placeholders.Player.NAME + "' for a player name.",
-        "You can use " + Hooks.PLACEHOLDER_API + " here.");
+        "Use '" + Placeholders.PLAYER_NAME + "' for a player name.",
+        "You can use " + EngineUtils.PLACEHOLDER_API + " here.");
 
     public static final JOption<List<String>> JOIN_COMMANDS_DEFAULT = JOption.create("JoinCommands.Default",
         Collections.emptyList(),
         "List of commands to execute when player joins the server.",
-        "Use '" + Placeholders.Player.NAME + "' for a player name.",
-        "You can use " + Hooks.PLACEHOLDER_API + " here.");
+        "Use '" + Placeholders.PLAYER_NAME + "' for a player name.",
+        "You can use " + EngineUtils.PLACEHOLDER_API + " here.");
 
     public static final JOption<Boolean> ANVIL_COLORS_ENABLED = JOption.create("Anvil_Colors.Enabled", true,
         "Sets whether or not Anvil Colors feature is enabled.",

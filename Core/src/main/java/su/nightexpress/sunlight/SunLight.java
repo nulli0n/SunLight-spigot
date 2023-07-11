@@ -1,5 +1,6 @@
 package su.nightexpress.sunlight;
 
+import org.bukkit.GameMode;
 import org.bukkit.inventory.EquipmentSlot;
 import org.jetbrains.annotations.NotNull;
 import su.nexmedia.engine.NexPlugin;
@@ -7,9 +8,10 @@ import su.nexmedia.engine.Version;
 import su.nexmedia.engine.api.command.AbstractCommand;
 import su.nexmedia.engine.api.command.GeneralCommand;
 import su.nexmedia.engine.api.data.UserDataHolder;
-import su.nexmedia.engine.hooks.Hooks;
-import su.nexmedia.engine.hooks.external.VaultHook;
+import su.nexmedia.engine.integration.VaultHook;
+import su.nexmedia.engine.utils.EngineUtils;
 import su.nightexpress.sunlight.actions.ActionsManager;
+import su.nightexpress.sunlight.actions.action.list.AVaultAdd;
 import su.nightexpress.sunlight.command.CommandRegulator;
 import su.nightexpress.sunlight.command.children.ReloadCommand;
 import su.nightexpress.sunlight.command.list.WeatherCommand;
@@ -23,10 +25,7 @@ import su.nightexpress.sunlight.module.ModuleManager;
 import su.nightexpress.sunlight.nms.SunNMS;
 import su.nightexpress.sunlight.nms.v1_17_R1.V1_17_R1;
 import su.nightexpress.sunlight.nms.v1_18_R2.V1_18_R2;
-import su.nightexpress.sunlight.nms.v1_19_R1.V1_19;
-import su.nightexpress.sunlight.nms.v1_19_R2.V1_19_R2;
 import su.nightexpress.sunlight.nms.v1_19_R3.V1_19_R3;
-import su.nightexpress.sunlight.actions.action.list.AVaultAdd;
 import su.nightexpress.sunlight.nms.v1_20_R1.V1_20_R1;
 
 import java.util.Collection;
@@ -51,6 +50,11 @@ public class SunLight extends NexPlugin<SunLight> implements UserDataHolder<SunL
     @Override
     public void enable() {
         this.setupInternalNMS();
+        if (this.sunNMS == null) {
+            this.error("Unsupported server version. Bye.");
+            this.getPluginManager().disablePlugin(this);
+            return;
+        }
 
         this.actionsManager = new ActionsManager(this);
         this.actionsManager.setup();
@@ -71,6 +75,9 @@ public class SunLight extends NexPlugin<SunLight> implements UserDataHolder<SunL
 
     @Override
     public void disable() {
+        if (EngineUtils.hasPlaceholderAPI()) {
+            PlaceholderHook.shutdown();
+        }
         if (this.moduleManager != null) {
             this.moduleManager.shutdown();
             this.moduleManager = null;
@@ -83,17 +90,14 @@ public class SunLight extends NexPlugin<SunLight> implements UserDataHolder<SunL
             this.actionsManager.shutdown();
             this.actionsManager = null;
         }
-        if (Hooks.hasPlaceholderAPI()) {
-            PlaceholderHook.shutdown();
-        }
     }
 
     private void setupInternalNMS() {
-        this.sunNMS = switch (Version.CURRENT) {
+        this.sunNMS = switch (Version.getCurrent()) {
+            case V1_19_R1, V1_19_R2, UNKNOWN -> null;
+
             case V1_17_R1 -> new V1_17_R1();
             case V1_18_R2 -> new V1_18_R2();
-            case V1_19_R1 -> new V1_19();
-            case V1_19_R2 -> new V1_19_R2();
             case V1_19_R3 -> new V1_19_R3();
             case V1_20_R1 -> new V1_20_R1();
         };
@@ -137,7 +141,7 @@ public class SunLight extends NexPlugin<SunLight> implements UserDataHolder<SunL
 
     @Override
     public void registerHooks() {
-        if (Hooks.hasPlaceholderAPI()) {
+        if (EngineUtils.hasPlaceholderAPI()) {
             PlaceholderHook.setup(this);
         }
     }
@@ -150,8 +154,9 @@ public class SunLight extends NexPlugin<SunLight> implements UserDataHolder<SunL
     @Override
     public void loadLang() {
         this.getLangManager().loadMissing(Lang.class);
-        this.getLangManager().setupEnum(EquipmentSlot.class);
-        this.getLangManager().setupEnum(WeatherCommand.WeatherType.class);
+        this.getLangManager().loadEnum(EquipmentSlot.class);
+        this.getLangManager().loadEnum(GameMode.class);
+        this.getLangManager().loadEnum(WeatherCommand.WeatherType.class);
         this.getLang().saveChanges();
     }
 

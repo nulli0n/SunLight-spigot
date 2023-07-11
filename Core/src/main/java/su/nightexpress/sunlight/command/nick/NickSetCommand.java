@@ -66,7 +66,7 @@ public class NickSetCommand extends AbstractCommand<SunLight> {
         if (sender != user.getPlayer()) {
             plugin.getMessage(Lang.COMMAND_NICK_SET_TARGET)
                 .replace(Placeholders.GENERIC_NAME, nick)
-                .replace(Placeholders.Player.NAME, user.getName())
+                .replace(Placeholders.PLAYER_NAME, user.getName())
                 .send(sender);
         }
         if (!result.hasFlag(CommandFlags.SILENT) && target != null) {

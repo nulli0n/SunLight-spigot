@@ -9,8 +9,8 @@ import org.bukkit.entity.SpawnCategory;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import su.nexmedia.engine.api.config.JYML;
+import su.nexmedia.engine.api.lang.LangColors;
 import su.nexmedia.engine.api.manager.AbstractConfigHolder;
-import su.nexmedia.engine.api.manager.ICleanable;
 import su.nexmedia.engine.api.placeholder.Placeholder;
 import su.nexmedia.engine.api.placeholder.PlaceholderMap;
 import su.nexmedia.engine.lang.LangManager;
@@ -21,7 +21,6 @@ import su.nexmedia.engine.utils.TimeUtil;
 import su.nightexpress.sunlight.SunLight;
 import su.nightexpress.sunlight.config.Config;
 import su.nightexpress.sunlight.config.Lang;
-import su.nightexpress.sunlight.config.LangColors;
 import su.nightexpress.sunlight.module.spawns.SpawnsModule;
 import su.nightexpress.sunlight.module.spawns.impl.Spawn;
 import su.nightexpress.sunlight.module.worlds.WorldsModule;
@@ -34,7 +33,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class WorldConfig extends AbstractConfigHolder<SunLight> implements ICleanable, Placeholder {
+public class WorldConfig extends AbstractConfigHolder<SunLight> implements Placeholder {
 
     private final WorldsModule module;
     private final WorldCreator creator;
@@ -45,6 +44,7 @@ public class WorldConfig extends AbstractConfigHolder<SunLight> implements IClea
     private boolean                     pvpAllowed;
     private String                      generator;
     private Difficulty                  difficulty;
+    private World.Environment environment;
 
     private boolean autoWipe;
     private int wipeInterval;
@@ -70,7 +70,7 @@ public class WorldConfig extends AbstractConfigHolder<SunLight> implements IClea
             .add(Placeholders.WORLD_AUTO_SAVE, () -> LangManager.getBoolean(this.isAutoSave()))
             .add(Placeholders.WORLD_PVP_ALLOWED, () -> LangManager.getBoolean(this.isPVPAllowed()))
             .add(Placeholders.WORLD_GENERATOR, () -> this.getGenerator() == null ? Placeholders.DEFAULT : this.getGenerator())
-            .add(Placeholders.WORLD_ENVIRONMENT, () -> StringUtil.capitalizeUnderscored(this.getCreator().environment().name()))
+            .add(Placeholders.WORLD_ENVIRONMENT, () -> StringUtil.capitalizeUnderscored(this.getEnvironment().name()))
             .add(Placeholders.WORLD_DIFFICULTY, () -> plugin.getLangManager().getEnum(this.getDifficulty()))
             .add(Placeholders.WORLD_STRUCTURES, () -> LangManager.getBoolean(this.getCreator().generateStructures()))
             .add(Placeholders.WORLD_SPAWN_LIMITS, () -> {
@@ -97,6 +97,7 @@ public class WorldConfig extends AbstractConfigHolder<SunLight> implements IClea
         this.setPVPAllowed(cfg.getBoolean("PVP_Allowed"));
         this.setGenerator(cfg.getString("Generator"));
         this.setDifficulty(cfg.getEnum("Difficulty", Difficulty.class, Difficulty.NORMAL));
+        this.setEnvironment(cfg.getEnum("Environment", World.Environment.class));
         for (SpawnCategory spawnCategory : SpawnCategory.values()) {
             if (spawnCategory == SpawnCategory.MISC) continue;
 
@@ -123,6 +124,7 @@ public class WorldConfig extends AbstractConfigHolder<SunLight> implements IClea
         cfg.set("PVP_Allowed", this.isPVPAllowed());
         cfg.set("Generator", this.getGenerator());
         cfg.set("Difficulty", this.getDifficulty().name());
+        cfg.set("Environment", this.getEnvironment().name());
         this.getSpawnLimits().forEach((cat, lim) -> cfg.set("SpawnLimits." + cat.name(), lim));
         this.getTicksPerSpawns().forEach((cat, tick) -> cfg.set("TicksPerSpawn." + cat.name(), tick));
         cfg.set("Auto_Wipe.Enabled", this.isAutoWipe());
@@ -142,7 +144,6 @@ public class WorldConfig extends AbstractConfigHolder<SunLight> implements IClea
         return this.placeholderMap;
     }
 
-    @Override
     public void clear() {
         if (this.rulesEditor != null) {
             this.rulesEditor.clear();
@@ -184,6 +185,7 @@ public class WorldConfig extends AbstractConfigHolder<SunLight> implements IClea
     public boolean loadWorld() {
         if (this.isLoaded()) return false;
 
+        this.getCreator().environment(this.getEnvironment());
         this.getCreator().generator(this.module.getPluginGenerator(this.getId(), this.getGenerator()));
         if (this.getCreator().createWorld() == null) return false;
 
@@ -323,6 +325,15 @@ public class WorldConfig extends AbstractConfigHolder<SunLight> implements IClea
 
     public void setDifficulty(@NotNull Difficulty difficulty) {
         this.difficulty = difficulty;
+    }
+
+    @NotNull
+    public World.Environment getEnvironment() {
+        return environment == null ? World.Environment.NORMAL : this.environment;
+    }
+
+    public void setEnvironment(@Nullable World.Environment environment) {
+        this.environment = environment == null ? World.Environment.NORMAL : environment;
     }
 
     @NotNull

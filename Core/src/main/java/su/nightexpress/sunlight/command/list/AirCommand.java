@@ -68,7 +68,7 @@ public class AirCommand extends ChangeCommand {
                 .replace(Placeholders.GENERIC_CURRENT, String.valueOf(current))
                 .replace(Placeholders.GENERIC_MAX, String.valueOf(max))
                 .replace(Placeholders.GENERIC_AMOUNT, NumberUtil.format(amount))
-                .replace(Placeholders.Player.replacer(target))
+                .replace(Placeholders.forPlayer(target))
                 .send(sender);
         }
         if (!result.hasFlag(CommandFlags.SILENT)) {
@@ -76,7 +76,7 @@ public class AirCommand extends ChangeCommand {
                 .replace(Placeholders.GENERIC_CURRENT, String.valueOf(current))
                 .replace(Placeholders.GENERIC_MAX, String.valueOf(max))
                 .replace(Placeholders.GENERIC_AMOUNT, NumberUtil.format(amount))
-                .replace(Placeholders.Player.replacer(target))
+                .replace(Placeholders.forPlayer(target))
                 .send(target);
         }
     }

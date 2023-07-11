@@ -3,6 +3,7 @@ package su.nightexpress.sunlight.module.homes.command.basic;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import su.nexmedia.engine.api.command.CommandResult;
 import su.nexmedia.engine.utils.CollectionsUtil;
 import su.nightexpress.sunlight.module.ModuleCommand;
 import su.nightexpress.sunlight.module.homes.HomesModule;
@@ -10,7 +11,6 @@ import su.nightexpress.sunlight.module.homes.config.HomesLang;
 import su.nightexpress.sunlight.module.homes.util.HomesPerms;
 
 import java.util.List;
-import java.util.Map;
 
 public class HomesListCommand extends ModuleCommand<HomesModule> {
 
@@ -47,9 +47,9 @@ public class HomesListCommand extends ModuleCommand<HomesModule> {
     }
 
     @Override
-    public void onExecute(@NotNull CommandSender sender, @NotNull String label, @NotNull String[] args, @NotNull Map<String, String> flags) {
+    public void onExecute(@NotNull CommandSender sender, @NotNull CommandResult result) {
         Player player = (Player) sender;
-        if (args.length <= 1) {
+        if (result.length() <= 1) {
             this.module.getHomesMenu().open(player, 1);
             return;
         }
@@ -58,7 +58,7 @@ public class HomesListCommand extends ModuleCommand<HomesModule> {
             return;
         }
 
-        String userName = args[1];
+        String userName = result.getArg(1);
         this.plugin.getUserManager().getUserDataAsync(userName).thenAcceptAsync(user -> {
             if (user == null) {
                 this.errorPlayer(sender);

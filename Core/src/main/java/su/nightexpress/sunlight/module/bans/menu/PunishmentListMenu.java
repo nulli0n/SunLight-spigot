@@ -102,12 +102,6 @@ public class PunishmentListMenu extends ConfigMenu<SunLight> implements AutoPage
 
     @Override
     @NotNull
-    public Comparator<Punishment> getObjectSorter() {
-        return ((o1, o2) -> 0);
-    }
-
-    @Override
-    @NotNull
     public List<Punishment> getObjects(@NotNull Player player) {
         // userName can be as player name and as IP address.
         String userName = this.getUser(player);

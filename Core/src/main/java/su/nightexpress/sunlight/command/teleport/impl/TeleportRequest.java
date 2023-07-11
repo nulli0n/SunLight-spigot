@@ -107,11 +107,11 @@ public class TeleportRequest {
 
         if (doNotify) {
             SunLightAPI.PLUGIN.getMessage(Lang.COMMAND_TELEPORT_ACCEPT_NOTIFY_SENDER)
-                .replace(Placeholders.Player.replacer(pAsker))
+                .replace(Placeholders.forPlayer(pAsker))
                 .send(pAccept);
 
             SunLightAPI.PLUGIN.getMessage(Lang.COMMAND_TELEPORT_ACCEPT_NOTIFY_TARGET)
-                .replace(Placeholders.Player.replacer(pAccept))
+                .replace(Placeholders.forPlayer(pAccept))
                 .send(pAsker);
         }
         return true;
@@ -127,11 +127,11 @@ public class TeleportRequest {
         // Send notifications.
         if (doNotify) {
             SunLightAPI.PLUGIN.getMessage(Lang.COMMAND_TELEPORT_DECLINE_NOTIFY_SENDER)
-                .replace(Placeholders.Player.replacer(pSender))
+                .replace(Placeholders.forPlayer(pSender))
                 .send(pTarget);
 
             SunLightAPI.PLUGIN.getMessage(Lang.COMMAND_TELEPORT_DECLINE_NOTIFY_TARGET)
-                .replace(Placeholders.Player.replacer(pTarget))
+                .replace(Placeholders.forPlayer(pTarget))
                 .send(pSender);
         }
         return true;

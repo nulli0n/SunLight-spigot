@@ -11,12 +11,11 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.jetbrains.annotations.NotNull;
-import su.nexmedia.engine.NexEngine;
 import su.nexmedia.engine.api.config.JOption;
 import su.nexmedia.engine.api.config.JYML;
 import su.nexmedia.engine.api.manager.AbstractListener;
 import su.nexmedia.engine.api.manager.AbstractManager;
-import su.nexmedia.engine.hooks.Hooks;
+import su.nexmedia.engine.lang.LangManager;
 import su.nexmedia.engine.utils.*;
 import su.nexmedia.engine.utils.random.Rnd;
 import su.nightexpress.sunlight.SunLight;
@@ -40,7 +39,7 @@ public class ChatDeathManager extends AbstractManager<SunLight> {
         (cfg, path, def) -> {
             Map<DamageCause, Map<String, List<String>>> messages = new HashMap<>();
             for (String causeRaw : cfg.getSection(path)) {
-                DamageCause cause = CollectionsUtil.getEnum(causeRaw, DamageCause.class);
+                DamageCause cause = StringUtil.getEnum(causeRaw, DamageCause.class).orElse(null);
                 if (cause == null) continue;
 
                 for (String damager : cfg.getSection(path + "." + causeRaw)) {
@@ -138,13 +137,13 @@ public class ChatDeathManager extends AbstractManager<SunLight> {
 
             String deathMsg = Rnd.get(list);
             deathMsg = mainReplacer.apply(deathMsg);
-            deathMsg = Placeholders.Player.replacer(player).apply(deathMsg);
-            if (Hooks.hasPlaceholderAPI()) {
+            deathMsg = Placeholders.forPlayer(player).apply(deathMsg);
+            if (EngineUtils.hasPlaceholderAPI()) {
                 deathMsg = PlaceholderAPI.setPlaceholders(player, deathMsg);
             }
 
             String finalDeathMsg = deathMsg;
-            getRecievers(player).forEach(entity -> MessageUtil.sendWithJson(entity, finalDeathMsg));
+            getRecievers(player).forEach(entity -> PlayerUtil.sendRichMessage(entity, finalDeathMsg));
         }
     }
 
@@ -160,6 +159,6 @@ public class ChatDeathManager extends AbstractManager<SunLight> {
             }
         }
 
-        return NexEngine.get().getLangManager().getEnum(entity.getType());
+        return LangManager.getEntityType(entity.getType());
     }
 }

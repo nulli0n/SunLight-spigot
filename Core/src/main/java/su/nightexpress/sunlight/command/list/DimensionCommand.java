@@ -57,7 +57,7 @@ public class DimensionCommand extends TargetCommand {
         SunUtils.teleport(target, world.getSpawnLocation());
         if (sender != target) {
             plugin.getMessage(Lang.COMMAND_DIMENSION_TARGET)
-                .replace(Placeholders.Player.replacer(target))
+                .replace(Placeholders.forPlayer(target))
                 .replace(Placeholders.GENERIC_WORLD, LangManager.getWorld(world))
                 .send(sender);
         }

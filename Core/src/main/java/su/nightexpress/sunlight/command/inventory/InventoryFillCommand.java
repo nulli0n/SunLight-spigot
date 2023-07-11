@@ -95,7 +95,7 @@ public class InventoryFillCommand extends AbstractCommand<SunLight> {
         String itemName = materials.stream().map(LangManager::getMaterial).collect(Collectors.joining(", "));
 
         plugin.getMessage(Lang.COMMAND_INVENTORY_FILL_DONE)
-            .replace(Placeholders.Player.replacer(target))
+            .replace(Placeholders.forPlayer(target))
             .replace(Placeholders.GENERIC_ITEM, itemName)
             .send(sender);
     }

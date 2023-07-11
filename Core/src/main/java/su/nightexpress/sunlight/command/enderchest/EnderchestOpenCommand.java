@@ -33,7 +33,7 @@ public class EnderchestOpenCommand extends TargetCommand {
         player.openInventory(inventory);
 
         plugin.getMessage(Lang.COMMAND_ENDERCHEST_OPEN_DONE_EXECUTOR)
-            .replace(Placeholders.Player.replacer(target))
+            .replace(Placeholders.forPlayer(target))
             .send(sender);
     }
 }

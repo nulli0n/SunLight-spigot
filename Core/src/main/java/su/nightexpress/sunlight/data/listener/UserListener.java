@@ -10,7 +10,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.jetbrains.annotations.NotNull;
 import su.nexmedia.engine.api.manager.AbstractListener;
 import su.nexmedia.engine.command.CommandRegister;
-import su.nexmedia.engine.hooks.Hooks;
+import su.nexmedia.engine.utils.PlayerUtil;
 import su.nexmedia.engine.utils.StringUtil;
 import su.nexmedia.engine.utils.TimeUtil;
 import su.nightexpress.sunlight.Perms;
@@ -79,7 +79,7 @@ public class UserListener extends AbstractListener<SunLight> {
         }
         else {
             Map<String, Map<String, Integer>> cooldownMap = CommandConfig.COOLDOWNS.get();
-            Set<String> ranks = Hooks.getPermissionGroups(player);
+            Set<String> ranks = PlayerUtil.getPermissionGroups(player);
             Set<String> aliases = new HashSet<>(command.getAliases());
             aliases.add(command.getLabel());
 

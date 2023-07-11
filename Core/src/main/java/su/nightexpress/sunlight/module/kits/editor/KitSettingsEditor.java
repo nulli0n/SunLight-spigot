@@ -10,8 +10,9 @@ import org.jetbrains.annotations.Nullable;
 import su.nexmedia.engine.api.menu.impl.EditorMenu;
 import su.nexmedia.engine.api.menu.impl.Menu;
 import su.nexmedia.engine.api.menu.impl.MenuViewer;
-import su.nexmedia.engine.hooks.external.VaultHook;
+import su.nexmedia.engine.integration.VaultHook;
 import su.nexmedia.engine.utils.Colorizer;
+import su.nexmedia.engine.utils.EngineUtils;
 import su.nexmedia.engine.utils.ItemUtil;
 import su.nightexpress.sunlight.SunLight;
 import su.nightexpress.sunlight.module.kits.Kit;
@@ -93,7 +94,7 @@ public class KitSettingsEditor extends EditorMenu<SunLight, Kit> {
         });
 
         this.addItem(Material.GOLD_NUGGET, EditorLocales.KIT_COST, 16).setClick((viewer, event) -> {
-            if (!VaultHook.hasEconomy()) return;
+            if (!EngineUtils.hasVault() || !VaultHook.hasEconomy()) return;
             if (event.isRightClick()) {
                 kit.setCost(0);
                 this.save(viewer);

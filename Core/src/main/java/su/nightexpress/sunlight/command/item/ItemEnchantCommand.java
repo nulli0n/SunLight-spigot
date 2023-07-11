@@ -56,7 +56,7 @@ public class ItemEnchantCommand extends AbstractCommand<SunLight> {
         ItemStack item = player.getInventory().getItemInMainHand();
         ItemMeta meta = item.getItemMeta();
         if (item.getType().isAir() || meta == null) {
-            plugin.getMessage(Lang.ERROR_ITEM_INVALID).send(sender);
+            plugin.getMessage(Lang.COMMAND_ITEM_ERROR_EMPTY_HAND).send(sender);
             return;
         }
 

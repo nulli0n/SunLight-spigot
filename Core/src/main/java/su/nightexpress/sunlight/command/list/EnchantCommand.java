@@ -99,7 +99,7 @@ public class EnchantCommand extends TargetCommand {
 
         if (target != sender) {
             plugin.getMessage(level > 0 ? Lang.COMMAND_ENCHANT_ENCHANTED_TARGET : Lang.COMMAND_ENCHANT_DISENCHANTED_TARGET)
-                .replace(Placeholders.Player.replacer(target))
+                .replace(Placeholders.forPlayer(target))
                 .replace(Placeholders.GENERIC_TYPE, plugin.getLangManager().getEnum(slot))
                 .replace(Placeholders.GENERIC_ITEM, ItemUtil.getItemName(item))
                 .replace(Placeholders.GENERIC_NAME, LangManager.getEnchantment(enchant))

@@ -11,9 +11,10 @@ import org.jetbrains.annotations.Nullable;
 import su.nexmedia.engine.api.config.JYML;
 import su.nexmedia.engine.api.manager.AbstractListener;
 import su.nexmedia.engine.api.manager.AbstractManager;
-import su.nexmedia.engine.hooks.Hooks;
 import su.nexmedia.engine.utils.Colorizer;
+import su.nexmedia.engine.utils.EngineUtils;
 import su.nexmedia.engine.utils.Placeholders;
+import su.nexmedia.engine.utils.PlayerUtil;
 import su.nexmedia.engine.utils.random.Rnd;
 import su.nightexpress.sunlight.SunLight;
 import su.nightexpress.sunlight.module.chat.ChatModule;
@@ -69,13 +70,13 @@ public class ChatJoinManager extends AbstractManager<SunLight> {
 
     @Nullable
     public String getMessage(@NotNull Player player, @NotNull Map<String, List<String>> map) {
-        String group = Hooks.getPermissionGroup(player);
+        String group = PlayerUtil.getPermissionGroup(player);
         List<String> messages = map.getOrDefault(group, Collections.emptyList());
         if (messages.isEmpty()) return null;
 
         String message = Rnd.get(messages);
-        message = Placeholders.Player.replacer(player).apply(message);
-        if (Hooks.hasPlaceholderAPI()) {
+        message = Placeholders.forPlayer(player).apply(message);
+        if (EngineUtils.hasPlaceholderAPI()) {
             message = PlaceholderAPI.setPlaceholders(player, message);
         }
         return message;

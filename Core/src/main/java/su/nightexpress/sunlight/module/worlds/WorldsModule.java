@@ -25,6 +25,7 @@ import su.nightexpress.sunlight.module.worlds.impl.generation.VoidChunkGenerator
 import su.nightexpress.sunlight.module.worlds.listener.InventoryListener;
 import su.nightexpress.sunlight.module.worlds.listener.WorldsListener;
 import su.nightexpress.sunlight.module.worlds.task.WorldWipeTask;
+import su.nightexpress.sunlight.module.worlds.util.Placeholders;
 
 import java.util.*;
 
@@ -52,7 +53,7 @@ public class WorldsModule extends Module {
         this.plugin.registerPermissions(WorldsPerms.class);
         this.plugin.getLangManager().loadMissing(WorldsLang.class);
         this.plugin.getLangManager().loadEditor(EditorLocales.class);
-        this.plugin.getLangManager().setupEnum(Difficulty.class);
+        this.plugin.getLangManager().loadEnum(Difficulty.class);
         this.plugin.getLang().saveChanges();
         this.getConfig().initializeOptions(WorldsConfig.class);
 
@@ -147,6 +148,8 @@ public class WorldsModule extends Module {
 
     @Nullable
     public ChunkGenerator getPluginGenerator(@NotNull String world, @Nullable String name) {
+        if (name == null || name.equalsIgnoreCase(Placeholders.DEFAULT)) return null;
+
         ChunkGenerator generator = this.getChunkGenerator(name);
         if (generator != null) return generator;
 

@@ -7,15 +7,14 @@ import su.nexmedia.engine.api.command.CommandResult;
 import su.nexmedia.engine.api.command.GeneralCommand;
 import su.nexmedia.engine.api.config.JOption;
 import su.nexmedia.engine.api.config.JYML;
-import su.nexmedia.engine.hooks.Hooks;
+import su.nexmedia.engine.api.lang.LangColors;
 import su.nexmedia.engine.utils.Colorizer;
-import su.nexmedia.engine.utils.MessageUtil;
 import su.nexmedia.engine.utils.NumberUtil;
+import su.nexmedia.engine.utils.PlayerUtil;
 import su.nightexpress.sunlight.Perms;
 import su.nightexpress.sunlight.Placeholders;
 import su.nightexpress.sunlight.SunLight;
 import su.nightexpress.sunlight.config.Lang;
-import su.nightexpress.sunlight.config.LangColors;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -78,13 +77,13 @@ public class PlayerListCommand extends GeneralCommand<SunLight> {
         for (String line : this.formatList) {
             if (line.contains(PLACEHOLDER_RANK)) {
                 this.formatGroup.forEach((rank, name) -> {
-                    Set<Player> ranked = players.stream().filter(player -> Hooks.getPermissionGroups(player).contains(rank)).collect(Collectors.toSet());
+                    Set<Player> ranked = players.stream().filter(player -> PlayerUtil.getPermissionGroups(player).contains(rank)).collect(Collectors.toSet());
                     if (ranked.isEmpty()) return;
 
                     players.removeAll(ranked);
 
                     String names = ranked.stream().map(Player::getDisplayName).collect(Collectors.joining(", "));
-                    MessageUtil.sendCustom(sender, line
+                    PlayerUtil.sendRichMessage(sender, line
                         .replace(Placeholders.GENERIC_AMOUNT, String.valueOf(ranked.size()))
                         .replace(PLACEHOLDER_RANK, name)
                         .replace(PLACEHOLDER_PLAYERS, names)
@@ -92,7 +91,7 @@ public class PlayerListCommand extends GeneralCommand<SunLight> {
                 });
                 continue;
             }
-            MessageUtil.sendCustom(sender, line.replace(Placeholders.GENERIC_TOTAL, NumberUtil.format(onlineTotal)));
+            PlayerUtil.sendRichMessage(sender, line.replace(Placeholders.GENERIC_TOTAL, NumberUtil.format(onlineTotal)));
         }
     }
 }

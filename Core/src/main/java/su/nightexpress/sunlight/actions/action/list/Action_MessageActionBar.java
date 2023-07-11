@@ -3,9 +3,9 @@ package su.nightexpress.sunlight.actions.action.list;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import su.nexmedia.engine.hooks.Hooks;
-import su.nexmedia.engine.utils.MessageUtil;
+import su.nexmedia.engine.utils.EngineUtils;
 import su.nexmedia.engine.utils.Placeholders;
+import su.nexmedia.engine.utils.PlayerUtil;
 import su.nightexpress.sunlight.actions.action.AbstractActionExecutor;
 import su.nightexpress.sunlight.actions.action.ActionId;
 import su.nightexpress.sunlight.actions.parameter.ParameterId;
@@ -23,10 +23,10 @@ public class Action_MessageActionBar extends AbstractActionExecutor {
         String text = (String) result.getValue(ParameterId.MESSAGE);
         if (text == null) return;
 
-        text = Placeholders.Player.replacer(player).apply(text);
-        if (Hooks.hasPlaceholderAPI()) {
+        text = Placeholders.forPlayer(player).apply(text);
+        if (EngineUtils.hasPlaceholderAPI()) {
             text = PlaceholderAPI.setPlaceholders(player, text);
         }
-        MessageUtil.sendActionBar(player, text);
+        PlayerUtil.sendActionBar(player, text);
     }
 }

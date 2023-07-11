@@ -2,7 +2,7 @@ package su.nightexpress.sunlight.actions.action.list;
 
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import su.nexmedia.engine.hooks.external.VaultHook;
+import su.nexmedia.engine.integration.VaultHook;
 import su.nightexpress.sunlight.actions.action.AbstractActionExecutor;
 import su.nightexpress.sunlight.actions.parameter.ParameterId;
 import su.nightexpress.sunlight.actions.parameter.ParameterResult;

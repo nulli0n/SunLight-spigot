@@ -9,9 +9,9 @@ import su.nexmedia.engine.api.command.CommandResult;
 import su.nexmedia.engine.api.command.GeneralCommand;
 import su.nexmedia.engine.api.config.JOption;
 import su.nexmedia.engine.api.config.JYML;
-import su.nexmedia.engine.hooks.Hooks;
 import su.nexmedia.engine.utils.Colorizer;
-import su.nexmedia.engine.utils.MessageUtil;
+import su.nexmedia.engine.utils.EngineUtils;
+import su.nexmedia.engine.utils.PlayerUtil;
 import su.nightexpress.sunlight.Perms;
 import su.nightexpress.sunlight.Placeholders;
 import su.nightexpress.sunlight.SunLight;
@@ -44,11 +44,11 @@ public class NearCommand extends GeneralCommand<SunLight> {
                 "#ffeea2",
                 "#ffeea2Players in #fdba5e+" + Placeholders.GENERIC_RADIUS + " #ffeea2blocks from you:",
                 "#ffeea2",
-                "#ffeea2▪ #fdba5e" + Placeholders.Player.NAME + ": #ffeea2" + Placeholders.GENERIC_AMOUNT + " blocks away <? show_text:\"#ddeceeClick to send teleport request.\" run_command:\"/" + TeleportCommand.NAME + " " + TeleportRequestCommand.NAME + " " + Placeholders.Player.NAME + "\" ?>#aefd5e[TPA]</>",
+                "#ffeea2▪ #fdba5e" + Placeholders.PLAYER_NAME + ": #ffeea2" + Placeholders.GENERIC_AMOUNT + " blocks away <? show_text:\"#ddeceeClick to send teleport request.\" run_command:\"/" + TeleportCommand.NAME + " " + TeleportRequestCommand.NAME + " " + Placeholders.PLAYER_NAME + "\" ?>#aefd5e[TPA]</>",
                 "#ffeea2"
             ),
             "List format for nearby players.",
-            "You can use " + Hooks.PLACEHOLDER_API + " here.",
+            "You can use " + EngineUtils.PLACEHOLDER_API + " here.",
             "JSON is also supported: " + Placeholders.ENGINE_URL_LANG_JSON).mapReader(Colorizer::apply).read(cfg);
     }
 
@@ -72,21 +72,21 @@ public class NearCommand extends GeneralCommand<SunLight> {
         }
 
         for (String line : this.format) {
-            if (line.contains(Placeholders.Player.NAME)) {
+            if (line.contains(Placeholders.PLAYER_NAME)) {
                 listNear.forEach((nearPlayer, dist) -> {
                     String name = nearPlayer.getName();
                     String line2 = line
                         .replace(Placeholders.GENERIC_AMOUNT, String.valueOf(dist))
-                        .replace(Placeholders.Player.NAME, name);
+                        .replace(Placeholders.PLAYER_NAME, name);
 
-                    if (Hooks.hasPlaceholderAPI()) {
+                    if (EngineUtils.hasPlaceholderAPI()) {
                         line2 = PlaceholderAPI.setPlaceholders(nearPlayer, line2);
                     }
-                    MessageUtil.sendCustom(sender, line2);
+                    PlayerUtil.sendRichMessage(sender, line2);
                 });
                 continue;
             }
-            MessageUtil.sendCustom(sender, line.replace(Placeholders.GENERIC_RADIUS, String.valueOf(radius)));
+            PlayerUtil.sendRichMessage(sender, line.replace(Placeholders.GENERIC_RADIUS, String.valueOf(radius)));
         }
     }
 }

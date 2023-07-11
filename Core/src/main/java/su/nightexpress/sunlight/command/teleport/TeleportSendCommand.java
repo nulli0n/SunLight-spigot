@@ -80,7 +80,7 @@ public class TeleportSendCommand extends AbstractCommand<SunLight> {
 
         if (!result.hasFlag(CommandFlags.SILENT)) {
             plugin.getMessage(Lang.COMMAND_TELEPORT_SEND_NOTIFY)
-                .replace(Placeholders.Player.replacer(target))
+                .replace(Placeholders.forPlayer(target))
                 .send(source);
         }
     }

@@ -3,9 +3,9 @@ package su.nightexpress.sunlight.module.chat.config;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import su.nexmedia.engine.api.config.JYML;
-import su.nexmedia.engine.hooks.Hooks;
 import su.nexmedia.engine.utils.Colorizer;
 import su.nexmedia.engine.utils.Placeholders;
+import su.nexmedia.engine.utils.PlayerUtil;
 
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -43,7 +43,7 @@ public class ChatMention {
     }
 
     public boolean isApplicable(@NotNull Player player) {
-        Set<String> userGroups = Hooks.getPermissionGroups(player);
+        Set<String> userGroups = PlayerUtil.getPermissionGroups(player);
         return this.getGroups().stream().anyMatch(need -> need.equalsIgnoreCase(Placeholders.WILDCARD) || userGroups.contains(need));
     }
 }

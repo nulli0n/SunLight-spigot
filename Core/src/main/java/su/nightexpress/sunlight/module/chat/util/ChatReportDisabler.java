@@ -51,7 +51,7 @@ public final class ChatReportDisabler extends PacketAdapter {
         else if (event.getPacketType() == PacketType.Play.Server.CHAT) {
             PacketContainer container = event.getPacket();
 
-            if (Version.isAbove(Version.V1_19_R1)) {
+            if (Version.isAtLeast(Version.V1_19_R3)) {
                 Object finePacket = SunLightAPI.PLUGIN.getSunNMS().fineChatPacket(container.getHandle());
                 event.setPacket(new PacketContainer(PacketType.Play.Server.SYSTEM_CHAT, finePacket));
             }

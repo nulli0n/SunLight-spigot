@@ -93,7 +93,7 @@ public class EnderchestFillCommand extends AbstractCommand<SunLight> {
         String itemName = materials.stream().map(LangManager::getMaterial).collect(Collectors.joining(", "));
 
         plugin.getMessage(Lang.COMMAND_ENDERCHEST_FILL_DONE_EXECUTOR)
-            .replace(Placeholders.Player.replacer(pTarget))
+            .replace(Placeholders.forPlayer(pTarget))
             .replace(Placeholders.GENERIC_ITEM, itemName)
             .send(sender);
     }

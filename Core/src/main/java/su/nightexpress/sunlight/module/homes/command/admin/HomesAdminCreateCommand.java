@@ -3,6 +3,7 @@ package su.nightexpress.sunlight.module.homes.command.admin;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import su.nexmedia.engine.api.command.CommandResult;
 import su.nexmedia.engine.utils.CollectionsUtil;
 import su.nightexpress.sunlight.module.ModuleCommand;
 import su.nightexpress.sunlight.module.homes.HomesModule;
@@ -14,7 +15,6 @@ import su.nightexpress.sunlight.utils.UserInfo;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 public class HomesAdminCreateCommand extends ModuleCommand<HomesModule> {
@@ -55,15 +55,15 @@ public class HomesAdminCreateCommand extends ModuleCommand<HomesModule> {
     }
 
     @Override
-    protected void onExecute(@NotNull CommandSender sender, @NotNull String label, @NotNull String[] args, @NotNull Map<String, String> flags) {
-        if (args.length < 3) {
+    protected void onExecute(@NotNull CommandSender sender, @NotNull CommandResult result) {
+        if (result.length() < 3) {
             this.printUsage(sender);
             return;
         }
 
         Player player = (Player) sender;
-        String userName = args[1];
-        String homeId = args[2].toLowerCase();
+        String userName = result.getArg(1);
+        String homeId = result.getArg(2).toLowerCase();
 
         this.plugin.getUserManager().getUserDataAsync(userName).thenAcceptAsync(user -> {
             if (user == null) {
@@ -81,7 +81,7 @@ public class HomesAdminCreateCommand extends ModuleCommand<HomesModule> {
                     this.module.createHome(homeId, new UserInfo(user), player.getLocation());
                     this.plugin.getMessage(HomesLang.COMMAND_HOMES_ADMIN_CREATE_DONE_FRESH)
                         .replace(Placeholders.HOME_ID, homeId)
-                        .replace(Placeholders.Player.NAME, user.getName())
+                        .replace(Placeholders.PLAYER_NAME, user.getName())
                         .send(player);
                 });
                 return;
@@ -91,7 +91,7 @@ public class HomesAdminCreateCommand extends ModuleCommand<HomesModule> {
             home.save();
             this.plugin.getMessage(HomesLang.COMMAND_HOMES_ADMIN_CREATE_DONE_EDITED)
                 .replace(Placeholders.HOME_ID, homeId)
-                .replace(Placeholders.Player.NAME, user.getName())
+                .replace(Placeholders.PLAYER_NAME, user.getName())
                 .send(player);
         });
     }

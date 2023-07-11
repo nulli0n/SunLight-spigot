@@ -1,8 +1,8 @@
 package su.nightexpress.sunlight.module.homes.config;
 
 import org.bukkit.Sound;
+import su.nexmedia.engine.api.lang.LangColors;
 import su.nexmedia.engine.api.lang.LangKey;
-import su.nightexpress.sunlight.config.LangColors;
 import su.nightexpress.sunlight.module.homes.command.basic.HomesCommand;
 import su.nightexpress.sunlight.module.homes.command.basic.HomesListCommand;
 import su.nightexpress.sunlight.module.homes.command.basic.HomesTeleportCommand;
@@ -33,13 +33,13 @@ public class HomesLang implements LangColors {
 
     public static final LangKey COMMAND_HOMES_ADMIN_DELETE_DESC        = LangKey.of("Homes.Command.HomesAdmin.Delete.Desc", "Delete player's home.");
     public static final LangKey COMMAND_HOMES_ADMIN_DELETE_USAGE       = LangKey.of("Homes.Command.HomesAdmin.Delete.Usage", "<player> [home]");
-    public static final LangKey COMMAND_HOMES_ADMIN_DELETE_DONE_SINGLE = LangKey.of("Homes.Command.HomesAdmin.Delete.Done.Single", "You deleted " + GREEN + Placeholders.Player.NAME + GRAY + "'s " + GREEN + Placeholders.HOME_ID + GRAY + " home.");
-    public static final LangKey COMMAND_HOMES_ADMIN_DELETE_DONE_ALL    = LangKey.of("Homes.Command.HomesAdmin.Delete.Done.All", "You deleted all " + GREEN + Placeholders.Player.NAME + GRAY + "'s " + GRAY + " homes.");
+    public static final LangKey COMMAND_HOMES_ADMIN_DELETE_DONE_SINGLE = LangKey.of("Homes.Command.HomesAdmin.Delete.Done.Single", "You deleted " + GREEN + Placeholders.PLAYER_NAME + GRAY + "'s " + GREEN + Placeholders.HOME_ID + GRAY + " home.");
+    public static final LangKey COMMAND_HOMES_ADMIN_DELETE_DONE_ALL    = LangKey.of("Homes.Command.HomesAdmin.Delete.Done.All", "You deleted all " + GREEN + Placeholders.PLAYER_NAME + GRAY + "'s " + GRAY + " homes.");
 
     public static final LangKey COMMAND_HOMES_ADMIN_CREATE_DESC        = LangKey.of("Homes.Command.HomesAdmin.Create.Desc", "Create a home for the player.");
     public static final LangKey COMMAND_HOMES_ADMIN_CREATE_USAGE       = LangKey.of("Homes.Command.HomesAdmin.Create.Usage", "<player> [name]");
-    public static final LangKey COMMAND_HOMES_ADMIN_CREATE_DONE_FRESH = LangKey.of("Homes.Command.HomesAdmin.Create.Done.Fresh", "You created " + GREEN + Placeholders.HOME_ID + GRAY + " home for " + GREEN + Placeholders.Player.NAME + GRAY + ".");
-    public static final LangKey COMMAND_HOMES_ADMIN_CREATE_DONE_EDITED    = LangKey.of("Homes.Command.HomesAdmin.Create.Done.Edited", "You edited " + GREEN + Placeholders.Player.NAME + GRAY + "'s " + GREEN + Placeholders.HOME_ID + GRAY + " home location.");
+    public static final LangKey COMMAND_HOMES_ADMIN_CREATE_DONE_FRESH = LangKey.of("Homes.Command.HomesAdmin.Create.Done.Fresh", "You created " + GREEN + Placeholders.HOME_ID + GRAY + " home for " + GREEN + Placeholders.PLAYER_NAME + GRAY + ".");
+    public static final LangKey COMMAND_HOMES_ADMIN_CREATE_DONE_EDITED    = LangKey.of("Homes.Command.HomesAdmin.Create.Done.Edited", "You edited " + GREEN + Placeholders.PLAYER_NAME + GRAY + "'s " + GREEN + Placeholders.HOME_ID + GRAY + " home location.");
 
     public static final LangKey HOME_TELEPORT_SUCCESS = LangKey.of("Homes.Home.Teleport",
         "<! type:\"titles:20:50:20\" sound:\"" + Sound.ENTITY_ENDERMAN_TELEPORT.name() + "\" !>" +

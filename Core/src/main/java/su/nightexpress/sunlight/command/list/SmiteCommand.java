@@ -33,7 +33,7 @@ public class SmiteCommand extends TargetCommand {
             plugin.getMessage(Lang.COMMAND_SMITE_NOTIFY).send(target);
         }
         if (sender != target) {
-            plugin.getMessage(Lang.COMMAND_SMITE_TARGET).replace(Placeholders.Player.replacer(target)).send(sender);
+            plugin.getMessage(Lang.COMMAND_SMITE_TARGET).replace(Placeholders.forPlayer(target)).send(sender);
         }
     }
 }

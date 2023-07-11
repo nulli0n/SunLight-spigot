@@ -9,8 +9,8 @@ import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import su.nexmedia.engine.hooks.Hooks;
 import su.nexmedia.engine.utils.Colorizer;
+import su.nexmedia.engine.utils.EngineUtils;
 import su.nightexpress.sunlight.hook.impl.ProtocolLibHook;
 import su.nightexpress.sunlight.module.scoreboard.ScoreboardModule;
 import su.nightexpress.sunlight.utils.SimpleTextAnimator;
@@ -116,7 +116,7 @@ public class Board {
             for (SimpleTextAnimator animation : this.module.animationMap.values()) {
                 line = animation.replace(line);
             }
-            if (Hooks.hasPlaceholderAPI()) {
+            if (EngineUtils.hasPlaceholderAPI()) {
                 line = PlaceholderAPI.setPlaceholders(this.player, line);
             }
             scores.put(index--, Colorizer.apply(line));

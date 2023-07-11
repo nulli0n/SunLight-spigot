@@ -1,7 +1,7 @@
 package su.nightexpress.sunlight.module.spawns.config;
 
+import su.nexmedia.engine.api.lang.LangColors;
 import su.nexmedia.engine.api.lang.LangKey;
-import su.nightexpress.sunlight.config.LangColors;
 import su.nightexpress.sunlight.module.spawns.command.SpawnsCommand;
 import su.nightexpress.sunlight.module.spawns.command.SpawnsEditorCommand;
 import su.nightexpress.sunlight.module.spawns.util.Placeholders;
@@ -27,7 +27,7 @@ public class SpawnsLang implements LangColors {
     
     public static final LangKey COMMAND_SPAWNS_TELEPORT_DESC  = LangKey.of("Spawns.Command.Spawns.Teleport.Desc", "Teleport on specified spawn.");
     public static final LangKey COMMAND_SPAWNS_TELEPORT_USAGE  = LangKey.of("Spawns.Command.Spawns.Teleport.Usage", "[spawn] [player]");
-    public static final LangKey COMMAND_SPAWNS_TELEPORT_NOTIFY = LangKey.of("Spawns.Command.Spawns.Teleport.Notify", GRAY + "Teleporting " + YELLOW + Placeholders.Player.DISPLAY_NAME + GRAY + " on " + YELLOW + Placeholders.SPAWN_ID + GRAY + " spawn.");
+    public static final LangKey COMMAND_SPAWNS_TELEPORT_NOTIFY = LangKey.of("Spawns.Command.Spawns.Teleport.Notify", GRAY + "Teleporting " + YELLOW + Placeholders.PLAYER_DISPLAY_NAME + GRAY + " on " + YELLOW + Placeholders.SPAWN_ID + GRAY + " spawn.");
 
     public static final LangKey COMMAND_SPAWNS_EDITOR_DESC = LangKey.of("Spawns.Command.Spawns.Editor.Desc", "Open Spawns editor.");
     

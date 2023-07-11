@@ -8,7 +8,6 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.jetbrains.annotations.NotNull;
 import su.nexmedia.engine.api.command.CommandResult;
 import su.nexmedia.engine.api.manager.AbstractListener;
-import su.nexmedia.engine.api.manager.ICleanable;
 import su.nightexpress.sunlight.Perms;
 import su.nightexpress.sunlight.Placeholders;
 import su.nightexpress.sunlight.SunLight;
@@ -17,8 +16,9 @@ import su.nightexpress.sunlight.command.api.ToggleCommand;
 import su.nightexpress.sunlight.config.Lang;
 import su.nightexpress.sunlight.data.impl.SunUser;
 import su.nightexpress.sunlight.data.impl.settings.UserSetting;
+import su.nightexpress.sunlight.utils.Cleanable;
 
-public class VanishCommand extends ToggleCommand implements ICleanable {
+public class VanishCommand extends ToggleCommand implements Cleanable {
 
     public static final String NAME = "vanish";
     public static final UserSetting<Boolean> VANISH = UserSetting.asBoolean("vanish", false, false);
@@ -58,7 +58,7 @@ public class VanishCommand extends ToggleCommand implements ICleanable {
         }
         if (sender != target) {
             plugin.getMessage(Lang.COMMAND_VANISH_TARGET)
-                .replace(Placeholders.Player.replacer(target))
+                .replace(Placeholders.forPlayer(target))
                 .replace(Placeholders.GENERIC_STATE, Lang.getEnable(state))
                 .send(sender);
         }

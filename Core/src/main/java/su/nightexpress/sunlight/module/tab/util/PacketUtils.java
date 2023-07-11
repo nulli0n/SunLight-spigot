@@ -12,8 +12,8 @@ import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Team;
 import org.jetbrains.annotations.NotNull;
-import su.nexmedia.engine.hooks.Hooks;
 import su.nexmedia.engine.utils.Colorizer;
+import su.nexmedia.engine.utils.EngineUtils;
 import su.nightexpress.sunlight.hook.impl.ProtocolLibHook;
 import su.nightexpress.sunlight.module.tab.impl.NametagFormat;
 
@@ -32,7 +32,7 @@ public class PacketUtils {
         String teamSuffix = tag.getSuffix();
         ChatColor teamColor = tag.getColor();
 
-        if (Hooks.hasPlaceholderAPI()) {
+        if (EngineUtils.hasPlaceholderAPI()) {
             teamPrefix = Colorizer.apply(PlaceholderAPI.setPlaceholders(playerOfTeam, teamPrefix));
             teamSuffix = Colorizer.apply(PlaceholderAPI.setPlaceholders(playerOfTeam, teamSuffix));
         }

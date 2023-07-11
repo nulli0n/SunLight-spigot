@@ -16,7 +16,6 @@ import su.nexmedia.engine.api.command.CommandResult;
 import su.nexmedia.engine.api.config.JOption;
 import su.nexmedia.engine.api.config.JYML;
 import su.nexmedia.engine.api.manager.AbstractListener;
-import su.nexmedia.engine.api.manager.ICleanable;
 import su.nexmedia.engine.utils.CollectionsUtil;
 import su.nexmedia.engine.utils.EntityUtil;
 import su.nexmedia.engine.utils.StringUtil;
@@ -28,11 +27,15 @@ import su.nightexpress.sunlight.command.api.ToggleCommand;
 import su.nightexpress.sunlight.config.Lang;
 import su.nightexpress.sunlight.data.impl.SunUser;
 import su.nightexpress.sunlight.data.impl.settings.UserSetting;
+import su.nightexpress.sunlight.utils.Cleanable;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
-public class GodCommand extends ToggleCommand implements ICleanable {
+public class GodCommand extends ToggleCommand implements Cleanable {
 
     public static final String NAME = "god";
     public static final UserSetting<Boolean> GOD_MODE = UserSetting.asBoolean("god_mode", false, false);
@@ -142,7 +145,7 @@ public class GodCommand extends ToggleCommand implements ICleanable {
         if (sender != target) {
             plugin.getMessage(Lang.COMMAND_GOD_TOGGLE_TARGET)
                 .replace(Placeholders.GENERIC_STATE, Lang.getEnable(user.getSettings().get(GOD_MODE)))
-                .replace(Placeholders.Player.replacer(target))
+                .replace(Placeholders.forPlayer(target))
                 .send(sender);
         }
         if (!result.hasFlag(CommandFlags.SILENT)) {

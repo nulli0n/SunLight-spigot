@@ -74,6 +74,6 @@ public class SudoCommand extends GeneralCommand<SunLight> {
             target.performCommand(command);
             message = plugin.getMessage(Lang.COMMAND_SUDO_DONE_COMMAND);
         }
-        message.replace(Placeholders.GENERIC_COMMAND, command).replace(Placeholders.Player.replacer(target)).send(sender);
+        message.replace(Placeholders.GENERIC_COMMAND, command).replace(Placeholders.forPlayer(target)).send(sender);
     }
 }

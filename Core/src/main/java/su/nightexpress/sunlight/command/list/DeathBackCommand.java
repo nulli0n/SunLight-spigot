@@ -12,7 +12,6 @@ import su.nexmedia.engine.api.command.CommandResult;
 import su.nexmedia.engine.api.config.JOption;
 import su.nexmedia.engine.api.config.JYML;
 import su.nexmedia.engine.api.manager.AbstractListener;
-import su.nexmedia.engine.api.manager.ICleanable;
 import su.nexmedia.engine.utils.EntityUtil;
 import su.nightexpress.sunlight.Perms;
 import su.nightexpress.sunlight.Placeholders;
@@ -20,13 +19,14 @@ import su.nightexpress.sunlight.SunLight;
 import su.nightexpress.sunlight.command.CommandFlags;
 import su.nightexpress.sunlight.command.api.TargetCommand;
 import su.nightexpress.sunlight.config.Lang;
+import su.nightexpress.sunlight.utils.Cleanable;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-public class DeathBackCommand extends TargetCommand implements ICleanable {
+public class DeathBackCommand extends TargetCommand implements Cleanable {
 
     public static final String NAME = "deathback";
 
@@ -89,7 +89,7 @@ public class DeathBackCommand extends TargetCommand implements ICleanable {
             plugin.getMessage(Lang.COMMAND_DEATH_BACK_NOTIFY).send(sender);
         }
         if (target != sender) {
-            plugin.getMessage(Lang.COMMAND_DEATH_BACK_TARGET).replace(Placeholders.Player.replacer(target)).send(sender);
+            plugin.getMessage(Lang.COMMAND_DEATH_BACK_TARGET).replace(Placeholders.forPlayer(target)).send(sender);
         }
     }
 

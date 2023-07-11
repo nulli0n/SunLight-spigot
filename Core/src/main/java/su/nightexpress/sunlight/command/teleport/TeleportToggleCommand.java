@@ -37,13 +37,13 @@ public class TeleportToggleCommand extends ToggleCommand {
 
         if (sender != target) {
             plugin.getMessage(Lang.COMMAND_TELEPORT_TOGGLE_TARGET)
-                .replace(Placeholders.Player.replacer(target))
+                .replace(Placeholders.forPlayer(target))
                 .replace(Placeholders.GENERIC_STATE, Lang.getEnable(state))
                 .send(sender);
         }
         if (!result.hasFlag(CommandFlags.SILENT)) {
             plugin.getMessage(Lang.COMMAND_TELEPORT_TOGGLE_NOTIFY)
-                .replace(Placeholders.Player.replacer(sender))
+                .replace(Placeholders.forSender(sender))
                 .replace(Placeholders.GENERIC_STATE, Lang.getEnable(state))
                 .send(target);
         }

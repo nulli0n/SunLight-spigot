@@ -3,6 +3,7 @@ package su.nightexpress.sunlight.module.spawns.command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import su.nexmedia.engine.api.command.CommandResult;
 import su.nexmedia.engine.utils.Placeholders;
 import su.nightexpress.sunlight.module.ModuleCommand;
 import su.nightexpress.sunlight.module.spawns.SpawnsModule;
@@ -10,7 +11,6 @@ import su.nightexpress.sunlight.module.spawns.config.SpawnsLang;
 import su.nightexpress.sunlight.module.spawns.util.SpawnsPerms;
 
 import java.util.List;
-import java.util.Map;
 
 public class SpawnsCreateCommand extends ModuleCommand<SpawnsModule> {
 
@@ -47,8 +47,8 @@ public class SpawnsCreateCommand extends ModuleCommand<SpawnsModule> {
     }
 
     @Override
-    public void onExecute(@NotNull CommandSender sender, @NotNull String label, @NotNull String[] args, @NotNull Map<String, String> flags) {
-        String spawnId = args.length >= 2 ? args[1] : Placeholders.DEFAULT;
+    public void onExecute(@NotNull CommandSender sender, @NotNull CommandResult result) {
+        String spawnId = result.length() >= 2 ? result.getArg(1) : Placeholders.DEFAULT;
         Player player = (Player) sender;
         this.module.createSpawn(player, spawnId);
     }

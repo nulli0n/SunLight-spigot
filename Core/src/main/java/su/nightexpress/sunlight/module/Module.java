@@ -3,11 +3,10 @@ package su.nightexpress.sunlight.module;
 import org.jetbrains.annotations.NotNull;
 import su.nexmedia.engine.api.config.JYML;
 import su.nexmedia.engine.api.manager.AbstractManager;
-import su.nexmedia.engine.api.manager.ILogger;
 import su.nexmedia.engine.utils.StringUtil;
 import su.nightexpress.sunlight.SunLight;
 
-public abstract class Module extends AbstractManager<SunLight> implements ILogger {
+public abstract class Module extends AbstractManager<SunLight> {
 
     private final String id;
     private final String name;
@@ -54,17 +53,14 @@ public abstract class Module extends AbstractManager<SunLight> implements ILogge
         return "[" + this.getName() + "] " + msg;
     }
 
-    @Override
     public final void info(@NotNull String msg) {
         this.plugin.info(this.buildLog(msg));
     }
 
-    @Override
     public final void warn(@NotNull String msg) {
         this.plugin.warn(this.buildLog(msg));
     }
 
-    @Override
     public final void error(@NotNull String msg) {
         this.plugin.error(this.buildLog(msg));
     }

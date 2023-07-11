@@ -98,7 +98,7 @@ public class ItemTakeCommand extends TargetCommand {
         boolean isTaken = PlayerUtil.takeItem(target, predicate, amount);
         if (isTaken) {
             plugin.getMessage(Lang.COMMAND_ITEM_TAKE_DONE)
-                .replace(Placeholders.Player.replacer(target))
+                .replace(Placeholders.forPlayer(target))
                 .replace(Placeholders.GENERIC_AMOUNT, amount)
                 .replace(Placeholders.GENERIC_TYPE, plugin.getLangManager().getEnum(material))
                 .send(sender);

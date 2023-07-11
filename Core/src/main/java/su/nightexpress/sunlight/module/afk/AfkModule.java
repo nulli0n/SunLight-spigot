@@ -3,7 +3,7 @@ package su.nightexpress.sunlight.module.afk;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import su.nexmedia.engine.hooks.Hooks;
+import su.nexmedia.engine.utils.EngineUtils;
 import su.nexmedia.engine.utils.EntityUtil;
 import su.nexmedia.engine.utils.TimeUtil;
 import su.nightexpress.sunlight.Placeholders;
@@ -112,7 +112,7 @@ public class AfkModule extends Module {
         this.plugin.getPluginManager().callEvent(event);
 
         this.plugin.getMessage(AfkLang.AFK_EXIT)
-            .replace(Placeholders.Player.replacer(player))
+            .replace(Placeholders.forPlayer(player))
             .replace(Placeholders.GENERIC_TIME, TimeUtil.formatTime(System.currentTimeMillis() - getAfkSince(user)))
             .broadcast();
 
@@ -123,8 +123,8 @@ public class AfkModule extends Module {
         this.getTrack(player).setSleepCooldown();
 
         AfkConfig.WAKE_UP_COMMANDS.get().forEach(command -> {
-            if (Hooks.hasPlaceholderAPI()) command = PlaceholderAPI.setPlaceholders(player, command);
-            plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), Placeholders.Player.replacer(player).apply(command));
+            if (EngineUtils.hasPlaceholderAPI()) command = PlaceholderAPI.setPlaceholders(player, command);
+            plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), Placeholders.forPlayer(player).apply(command));
         });
     }
 
@@ -142,18 +142,18 @@ public class AfkModule extends Module {
         this.plugin.getPluginManager().callEvent(event);
 
         AfkConfig.AFK_COMMANDS.get().forEach(command -> {
-            if (Hooks.hasPlaceholderAPI()) command = PlaceholderAPI.setPlaceholders(player, command);
-            plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), Placeholders.Player.replacer(player).apply(command));
+            if (EngineUtils.hasPlaceholderAPI()) command = PlaceholderAPI.setPlaceholders(player, command);
+            plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), Placeholders.forPlayer(player).apply(command));
         });
 
-        this.plugin.getMessage(AfkLang.AFK_ENTER).replace(Placeholders.Player.replacer(player)).broadcast();
+        this.plugin.getMessage(AfkLang.AFK_ENTER).replace(Placeholders.forPlayer(player)).broadcast();
     }
 
     public static int getTimeToAfk(@NotNull Player player) {
-        return Hooks.getGroupValueInt(player, AfkConfig.AFK_IDLE_TIMES.get(), true);
+        return AfkConfig.AFK_IDLE_TIMES.get().getBestValue(player, -1);
     }
 
     public static int getTimeToKick(@NotNull Player player) {
-        return Hooks.getGroupValueInt(player, AfkConfig.AFK_KICK_TIMES.get(), true);
+        return AfkConfig.AFK_KICK_TIMES.get().getBestValue(player, -1);
     }
 }

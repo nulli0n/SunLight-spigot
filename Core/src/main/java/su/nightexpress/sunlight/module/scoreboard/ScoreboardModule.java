@@ -4,9 +4,10 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import su.nexmedia.engine.api.config.JYML;
-import su.nexmedia.engine.hooks.Hooks;
+import su.nexmedia.engine.utils.EngineUtils;
 import su.nexmedia.engine.utils.EntityUtil;
 import su.nexmedia.engine.utils.Placeholders;
+import su.nexmedia.engine.utils.PlayerUtil;
 import su.nightexpress.sunlight.SunLight;
 import su.nightexpress.sunlight.data.impl.SunUser;
 import su.nightexpress.sunlight.data.impl.settings.UserSetting;
@@ -45,7 +46,7 @@ public class ScoreboardModule extends Module {
 
     @Override
     public boolean canLoad() {
-        if (!Hooks.hasPlugin(HookId.PROTOCOL_LIB)) {
+        if (!EngineUtils.hasPlugin(HookId.PROTOCOL_LIB)) {
             this.error("You must have " + HookId.PROTOCOL_LIB + " installed to use " + this.getName() + " module!");
             return false;
         }
@@ -90,7 +91,7 @@ public class ScoreboardModule extends Module {
 
     @Nullable
     public BoardConfig getBoardConfig(@NotNull Player player) {
-        Set<String> groups = Hooks.getPermissionGroups(player);
+        Set<String> groups = PlayerUtil.getPermissionGroups(player);
         return SBConfig.BOARD_CONFIGS.get().values().stream()
             .filter(board -> groups.stream().anyMatch(pRank -> board.getGroups().contains(pRank)) || board.getGroups().contains(Placeholders.WILDCARD))
             .filter(board -> board.getWorlds().contains(player.getWorld().getName()) || board.getWorlds().contains(Placeholders.WILDCARD))

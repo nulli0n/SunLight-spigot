@@ -32,7 +32,7 @@ public class ExtinguishCommand extends TargetCommand {
         if (!target.isOnline()) target.saveData();
 
         if (sender != target) {
-            plugin.getMessage(Lang.COMMAND_EXTINGUISH_TARGET).replace(Placeholders.Player.replacer(target)).send(sender);
+            plugin.getMessage(Lang.COMMAND_EXTINGUISH_TARGET).replace(Placeholders.forPlayer(target)).send(sender);
         }
         if (!result.hasFlag(CommandFlags.SILENT)) {
             plugin.getMessage(Lang.COMMAND_EXTINGUISH_NOTIFY).send(target);

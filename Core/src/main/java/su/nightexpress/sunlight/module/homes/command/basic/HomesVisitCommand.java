@@ -3,6 +3,7 @@ package su.nightexpress.sunlight.module.homes.command.basic;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import su.nexmedia.engine.api.command.CommandResult;
 import su.nexmedia.engine.utils.Placeholders;
 import su.nightexpress.sunlight.module.ModuleCommand;
 import su.nightexpress.sunlight.module.homes.HomesModule;
@@ -12,7 +13,6 @@ import su.nightexpress.sunlight.module.homes.util.HomesPerms;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 public class HomesVisitCommand extends ModuleCommand<HomesModule> {
@@ -71,15 +71,15 @@ public class HomesVisitCommand extends ModuleCommand<HomesModule> {
     }
 
     @Override
-    public void onExecute(@NotNull CommandSender sender, @NotNull String label, @NotNull String[] args, @NotNull Map<String, String> flags) {
-        if (args.length < 2) {
+    public void onExecute(@NotNull CommandSender sender, @NotNull CommandResult result) {
+        if (result.length() < 2) {
             this.printUsage(sender);
             return;
         }
 
         Player player = (Player) sender;
-        String ownerName = args[1];
-        String id = args.length >= 3 ? args[2] : Placeholders.DEFAULT;
+        String ownerName = result.getArg(1);
+        String id = result.length() >= 3 ? result.getArg(2) : Placeholders.DEFAULT;
 
         this.plugin.getUserManager().getUserDataAsync(ownerName).thenAccept(user -> {
             if (user == null) {

@@ -8,8 +8,8 @@ import org.jetbrains.annotations.NotNull;
 import su.nexmedia.engine.api.command.CommandResult;
 import su.nexmedia.engine.api.config.JOption;
 import su.nexmedia.engine.api.config.JYML;
+import su.nexmedia.engine.api.lang.LangColors;
 import su.nexmedia.engine.api.placeholder.PlaceholderMap;
-import su.nexmedia.engine.hooks.Hooks;
 import su.nexmedia.engine.lang.LangManager;
 import su.nexmedia.engine.utils.*;
 import su.nightexpress.sunlight.Perms;
@@ -17,7 +17,6 @@ import su.nightexpress.sunlight.Placeholders;
 import su.nightexpress.sunlight.SunLight;
 import su.nightexpress.sunlight.command.api.TargetCommand;
 import su.nightexpress.sunlight.config.Lang;
-import su.nightexpress.sunlight.config.LangColors;
 import su.nightexpress.sunlight.data.impl.SunUser;
 
 import java.util.ArrayList;
@@ -50,13 +49,13 @@ public class PlayerInfoCommand extends TargetCommand {
             LangColors.LIGHT_YELLOW,
             LangColors.LIGHT_YELLOW + "&lPlayer Info:",
             LangColors.LIGHT_YELLOW,
-            LangColors.LIGHT_YELLOW + "▪ " + LangColors.ORANGE + "Real Name: " + LangColors.LIGHT_YELLOW + Placeholders.Player.NAME,
-            LangColors.LIGHT_YELLOW + "▪ " + LangColors.ORANGE + "Display Name: " + LangColors.LIGHT_YELLOW + Placeholders.Player.DISPLAY_NAME,
+            LangColors.LIGHT_YELLOW + "▪ " + LangColors.ORANGE + "Real Name: " + LangColors.LIGHT_YELLOW + Placeholders.PLAYER_NAME,
+            LangColors.LIGHT_YELLOW + "▪ " + LangColors.ORANGE + "Display Name: " + LangColors.LIGHT_YELLOW + Placeholders.PLAYER_DISPLAY_NAME,
             LangColors.LIGHT_YELLOW + "▪ " + LangColors.ORANGE + "Online: " + LangColors.LIGHT_YELLOW + PLACEHOLDER_IS_ONLINE,
             LangColors.LIGHT_YELLOW + "▪ " + LangColors.ORANGE + "Last Join: " + LangColors.LIGHT_YELLOW + PLACEHOLDER_LAST_JOIN,
             LangColors.LIGHT_YELLOW + "▪ " + LangColors.ORANGE + "Last IP: " + LangColors.LIGHT_YELLOW + PLACEHOLDER_IP,
             LangColors.LIGHT_YELLOW,
-            LangColors.LIGHT_YELLOW + "▪ " + LangColors.ORANGE + "Location: " + LangColors.LIGHT_YELLOW + Placeholders.Location.X + ", " + Placeholders.Location.Y + ", " + Placeholders.Location.Z + " in " + Placeholders.Location.WORLD,
+            LangColors.LIGHT_YELLOW + "▪ " + LangColors.ORANGE + "Location: " + LangColors.LIGHT_YELLOW + Placeholders.LOCATION_X + ", " + Placeholders.LOCATION_Y + ", " + Placeholders.LOCATION_Z + " in " + Placeholders.LOCATION_WORLD,
             LangColors.LIGHT_YELLOW + "▪ " + LangColors.ORANGE + "Game Mode: " + LangColors.LIGHT_YELLOW + PLACEHOLDER_GAMEMODE,
             LangColors.LIGHT_YELLOW + "▪ " + LangColors.ORANGE + "Can Fly: " + LangColors.LIGHT_YELLOW + PLACEHOLDER_CAN_FLY,
             LangColors.LIGHT_YELLOW + "▪ " + LangColors.ORANGE + "Food Level: " + LangColors.LIGHT_YELLOW + PLACEHOLDER_FOOD_LEVEL,
@@ -64,7 +63,7 @@ public class PlayerInfoCommand extends TargetCommand {
             LangColors.LIGHT_YELLOW + "▪ " + LangColors.ORANGE + "Health: " + LangColors.LIGHT_YELLOW + PLACEHOLDER_HEALTH + "/" + PLACEHOLDER_MAX_HEALTH,
             LangColors.LIGHT_YELLOW),
             "Sets player info format.",
-            "You can use " + Hooks.PLACEHOLDER_API + " here.",
+            "You can use " + EngineUtils.PLACEHOLDER_API + " here.",
             "JSON is supported: " + Placeholders.ENGINE_URL_LANG_JSON
         ).mapReader(Colorizer::apply).read(cfg);
     }
@@ -77,15 +76,15 @@ public class PlayerInfoCommand extends TargetCommand {
         SunUser user = plugin.getUserManager().getUserData(target);
 
         List<String> format = new ArrayList<>(this.formatOnline);
-        if (Hooks.hasPlaceholderAPI()) format.replaceAll(str -> PlaceholderAPI.setPlaceholders(target, str));
+        if (EngineUtils.hasPlaceholderAPI()) format.replaceAll(str -> PlaceholderAPI.setPlaceholders(target, str));
 
         PlaceholderMap placeholderMap = new PlaceholderMap()
             .add(PLACEHOLDER_IP, user::getIp)
             .add(PLACEHOLDER_LAST_JOIN, () -> TimeUtil.formatTimeLeft(System.currentTimeMillis(), user.getLastOnline()))
-            .add(Placeholders.Location.X, () -> NumberUtil.format(target.getLocation().getX()))
-            .add(Placeholders.Location.Y, () -> NumberUtil.format(target.getLocation().getY()))
-            .add(Placeholders.Location.Z, () -> NumberUtil.format(target.getLocation().getZ()))
-            .add(Placeholders.Location.WORLD, () -> LangManager.getWorld(target.getWorld()))
+            .add(Placeholders.LOCATION_X, () -> NumberUtil.format(target.getLocation().getX()))
+            .add(Placeholders.LOCATION_Y, () -> NumberUtil.format(target.getLocation().getY()))
+            .add(Placeholders.LOCATION_Z, () -> NumberUtil.format(target.getLocation().getZ()))
+            .add(Placeholders.LOCATION_WORLD, () -> LangManager.getWorld(target.getWorld()))
             .add(PLACEHOLDER_IS_ONLINE, () -> LangManager.getBoolean(target.isOnline()))
             .add(PLACEHOLDER_CAN_FLY, () -> LangManager.getBoolean(target.getAllowFlight()))
             .add(PLACEHOLDER_FOOD_LEVEL, () -> String.valueOf(target.getFoodLevel()))
@@ -93,10 +92,10 @@ public class PlayerInfoCommand extends TargetCommand {
             .add(PLACEHOLDER_MAX_HEALTH, () -> NumberUtil.format(EntityUtil.getAttribute(target, Attribute.GENERIC_MAX_HEALTH)))
             .add(PLACEHOLDER_HEALTH, () -> NumberUtil.format(target.getHealth()))
             .add(PLACEHOLDER_GAMEMODE, () -> plugin.getLangManager().getEnum(target.getGameMode()))
-            .add(Placeholders.Player.DISPLAY_NAME, target::getDisplayName)
-            .add(Placeholders.Player.NAME, target::getName)
+            .add(Placeholders.PLAYER_DISPLAY_NAME, target::getDisplayName)
+            .add(Placeholders.PLAYER_NAME, target::getName)
             ;
         format.replaceAll(placeholderMap.replacer());
-        format.forEach(line -> MessageUtil.sendCustom(sender, line));
+        format.forEach(line -> PlayerUtil.sendRichMessage(sender, line));
     }
 }

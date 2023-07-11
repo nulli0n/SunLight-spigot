@@ -5,8 +5,6 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockCanBuildEvent;
 import org.jetbrains.annotations.NotNull;
-import su.nexmedia.engine.hooks.Hooks;
-import su.nexmedia.engine.hooks.external.WorldGuardHook;
 import su.nexmedia.engine.utils.StringUtil;
 import su.nightexpress.sunlight.SunLight;
 import su.nightexpress.sunlight.config.Lang;
@@ -129,7 +127,7 @@ public class HomesModule extends Module {
     }
 
     public int getHomesMaxAmount(@NotNull Player player) {
-        return Hooks.getGroupValueInt(player, HomesConfig.HOMES_PER_RANK.get(), true);
+        return HomesConfig.HOMES_PER_RANK.get().getBestValue(player, 0);
     }
 
     public void loadHomesIfAbsent(@NotNull UUID playerId) {
@@ -180,13 +178,14 @@ public class HomesModule extends Module {
             }
         }
 
-        if (Hooks.hasWorldGuard() && !player.hasPermission(HomesPerms.BYPASS_CREATION_REGIONS)) {
+        // TODO
+        /*if (Hooks.hasWorldGuard() && !player.hasPermission(HomesPerms.BYPASS_CREATION_REGIONS)) {
             String region = WorldGuardHook.getRegion(location);
             if (HomesConfig.REGION_BLACKLIST.get().contains(region)) {
                 if (notify) this.plugin.getMessage(HomesLang.HOME_SET_ERROR_REGION).send(player);
                 return false;
             }
-        }
+        }*/
         return true;
     }
 

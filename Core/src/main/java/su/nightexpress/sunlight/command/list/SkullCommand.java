@@ -42,6 +42,6 @@ public class SkullCommand extends TargetCommand {
             }
         });
         PlayerUtil.addItem(target, skull);
-        plugin.getMessage(Lang.COMMAND_SKULL_DONE).replace(Placeholders.Player.NAME, user.getName()).send(sender);
+        plugin.getMessage(Lang.COMMAND_SKULL_DONE).replace(Placeholders.PLAYER_NAME, user.getName()).send(sender);
     }
 }

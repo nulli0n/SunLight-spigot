@@ -83,7 +83,7 @@ public class ExpCommand extends ChangeCommand {
                 .replace(Placeholders.GENERIC_AMOUNT, NumberUtil.format(amount))
                 .replace(Placeholders.GENERIC_TOTAL, NumberUtil.format(target.getTotalExperience()))
                 .replace(Placeholders.GENERIC_LEVEL, NumberUtil.format(target.getLevel()))
-                .replace(Placeholders.Player.replacer(target))
+                .replace(Placeholders.forPlayer(target))
                 .send(sender);
         }
         if (!result.hasFlag(CommandFlags.SILENT)) {
@@ -91,7 +91,6 @@ public class ExpCommand extends ChangeCommand {
                 .replace(Placeholders.GENERIC_AMOUNT, NumberUtil.format(amount))
                 .replace(Placeholders.GENERIC_TOTAL, NumberUtil.format(target.getTotalExperience()))
                 .replace(Placeholders.GENERIC_LEVEL, NumberUtil.format(target.getLevel()))
-                .replace(Placeholders.Player.replacer(target))
                 .send(target);
         }
     }

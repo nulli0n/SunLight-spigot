@@ -1,8 +1,8 @@
 package su.nightexpress.sunlight.module.warps.config;
 
 import org.bukkit.Sound;
+import su.nexmedia.engine.api.lang.LangColors;
 import su.nexmedia.engine.api.lang.LangKey;
-import su.nightexpress.sunlight.config.LangColors;
 import su.nightexpress.sunlight.module.warps.util.Placeholders;
 
 public class WarpsLang implements LangColors {
@@ -18,11 +18,11 @@ public class WarpsLang implements LangColors {
 
     public static final LangKey COMMAND_WARPS_TELEPORT_DESC   = LangKey.of("Warps.Command.Warps.Teleport.Desc", "Teleport to a specified warp.");
     public static final LangKey COMMAND_WARPS_TELEPORT_USAGE  = LangKey.of("Warps.Command.Warps.Teleport.Usage", "<warp> [player]");
-    public static final LangKey COMMAND_WARPS_TELEPORT_OTHERS = LangKey.of("Warps.Command.Warps.Teleport.Others", "{message: ~prefix: false;}Player &a%player% &7teleported on warp &a%warp_name%&7...");
+    public static final LangKey COMMAND_WARPS_TELEPORT_OTHERS = LangKey.of("Warps.Command.Warps.Teleport.Others", "Player &a%player% &7teleported on warp &a%warp_name%&7...");
 
     public static final LangKey COMMAND_WARPS_LIST_DESC = LangKey.of("Warps.Command.Warps.List.Desc", "Open Warps GUI.");
     public static final LangKey COMMAND_WARPS_LIST_USAGE  = LangKey.of("Warps.Command.Warps.List.Usage", "[player]");
-    public static final LangKey COMMAND_WARPS_LIST_OTHERS = LangKey.of("Warps.Command.Warps.List.Others", "Opened Warps GUI for " + GREEN + Placeholders.Player.DISPLAY_NAME + GRAY + ".");
+    public static final LangKey COMMAND_WARPS_LIST_OTHERS = LangKey.of("Warps.Command.Warps.List.Others", "Opened Warps GUI for " + GREEN + Placeholders.PLAYER_DISPLAY_NAME + GRAY + ".");
 
     public static final LangKey WARP_ERROR_INVALID = LangKey.of("Warps.Warp.Error.Invalid", RED + "Invalid warp!");
 

@@ -5,10 +5,12 @@ import net.md_5.bungee.api.ChatColor;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import su.nexmedia.engine.api.config.JYML;
-import su.nexmedia.engine.hooks.Hooks;
 import su.nexmedia.engine.lang.LangManager;
 import su.nexmedia.engine.utils.Colorizer;
-import su.nexmedia.engine.utils.MessageUtil;
+import su.nexmedia.engine.utils.EngineUtils;
+import su.nexmedia.engine.utils.PlayerUtil;
+import su.nexmedia.engine.utils.StringUtil;
+import su.nexmedia.engine.utils.message.NexParser;
 import su.nightexpress.sunlight.module.chat.util.Placeholders;
 
 public class ChatPlayerFormat {
@@ -54,15 +56,15 @@ public class ChatPlayerFormat {
             .replace(Placeholders.FORMAT_PLAYER_NAME, this.getNameFormat())
             .replace(Placeholders.FORMAT_PLAYER_MESSAGE, Placeholders.GENERIC_MESSAGE)
             .replace(Placeholders.FORMAT_PLAYER_COLOR, this.getColor().toString())
-            .replace(Placeholders.PLAYER_PREFIX, Hooks.getPrefix(player))
-            .replace(Placeholders.PLAYER_SUFFIX, Hooks.getSuffix(player))
+            .replace(Placeholders.PLAYER_PREFIX, PlayerUtil.getPrefix(player))
+            .replace(Placeholders.PLAYER_SUFFIX, PlayerUtil.getSuffix(player))
             .replace(Placeholders.PLAYER_DISPLAY_NAME, player.getDisplayName())
             .replace(Placeholders.PLAYER_NAME, player.getName())
             .replace(Placeholders.PLAYER_WORLD, LangManager.getWorld(player.getWorld()));
-        if (Hooks.hasPlaceholderAPI()) {
+        if (EngineUtils.hasPlaceholderAPI()) {
             format = PlaceholderAPI.setPlaceholders(player, format);
         }
-        return format;
+        return StringUtil.oneSpace(format);
     }
 
     @NotNull
@@ -70,8 +72,8 @@ public class ChatPlayerFormat {
         // If player's message already contains some Json elements (mentions, item showcase, etc),
         // we need to 'fix' the message by replacing non-json parts with the Player Format before other placeholders.
         // Player Format can also contain Json elements, but Engine can not handle json in json, this is why we need to do this.
-        if (MessageUtil.hasJson(message)) {
-            for (String nonJson : MessageUtil.extractNonJson(message)) {
+        if (NexParser.contains(message)) {
+            for (String nonJson : NexParser.getPlainParts(message)) {
                 message = message.replace(nonJson, this.getMessageFormat(player).replace(Placeholders.GENERIC_MESSAGE, nonJson));
             }
         }
@@ -99,7 +101,7 @@ public class ChatPlayerFormat {
     @NotNull
     public String getMessageFormat(@NotNull Player player) {
         String format = this.getMessageFormat();
-        if (Hooks.hasPlaceholderAPI()) {
+        if (EngineUtils.hasPlaceholderAPI()) {
             format = PlaceholderAPI.setPlaceholders(player, format);
         }
         return format;

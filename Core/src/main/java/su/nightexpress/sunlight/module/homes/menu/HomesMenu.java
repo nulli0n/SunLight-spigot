@@ -103,8 +103,8 @@ public class HomesMenu extends ConfigMenu<SunLight> implements AutoPaged<Home> {
         ItemStack item = new ItemStack(home.getIcon());
         ItemUtil.mapMeta(item, meta -> {
             List<String> lore = this.homeLoreDefault;
-            lore = StringUtil.replace(lore, PLACEHOLDER_RESPAWN, false, home.isRespawnPoint() ? this.homeLoreRespawn : Collections.emptyList());
-            lore = StringUtil.replace(lore, PLACEHOLDER_IS_DEFAULT, false, home.isDefault() ? this.homeLoreIsDefault : Collections.emptyList());
+            lore = StringUtil.replaceInList(lore, PLACEHOLDER_RESPAWN, home.isRespawnPoint() ? this.homeLoreRespawn : Collections.emptyList());
+            lore = StringUtil.replaceInList(lore, PLACEHOLDER_IS_DEFAULT, home.isDefault() ? this.homeLoreIsDefault : Collections.emptyList());
 
             meta.setDisplayName(this.homeName);
             meta.setLore(lore);

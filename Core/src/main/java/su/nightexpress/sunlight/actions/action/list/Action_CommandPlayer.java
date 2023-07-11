@@ -20,7 +20,7 @@ public class Action_CommandPlayer extends AbstractActionExecutor {
         String text = (String) result.getValue(ParameterId.MESSAGE);
         if (text == null) return;
 
-        text = Placeholders.Player.replacer(player).apply(text);
+        text = Placeholders.forPlayer(player).apply(text);
         player.performCommand(text);
     }
 }

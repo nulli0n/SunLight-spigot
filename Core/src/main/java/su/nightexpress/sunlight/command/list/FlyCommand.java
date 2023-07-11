@@ -35,7 +35,7 @@ public class FlyCommand extends ToggleCommand {
         }
         if (sender != target) {
             plugin.getMessage(Lang.COMMAND_FLY_TARGET)
-                .replace(Placeholders.Player.replacer(target))
+                .replace(Placeholders.forPlayer(target))
                 .replace(Placeholders.GENERIC_STATE, Lang.getEnable(target.getAllowFlight())).send(sender);
         }
     }

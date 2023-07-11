@@ -68,12 +68,6 @@ public class IgnoreListMenu extends ConfigMenu<SunLight> implements AutoPaged<Ig
 
     @Override
     @NotNull
-    public Comparator<IgnoredUser> getObjectSorter() {
-        return ((o1, o2) -> 0);
-    }
-
-    @Override
-    @NotNull
     public List<IgnoredUser> getObjects(@NotNull Player player) {
         UUID playerId = this.otherCache.get(player);
         SunUser user = plugin.getUserManager().getUserData(playerId == null ? player.getUniqueId() : playerId);

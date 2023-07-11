@@ -58,7 +58,7 @@ public class IgnoreRemoveCommand extends AbstractCommand<SunLight> {
         }
 
         plugin.getMessage(Lang.COMMAND_IGNORE_REMOVE_DONE)
-            .replace(Placeholders.Player.NAME, ignoredUser.getUserInfo().getName())
+            .replace(Placeholders.PLAYER_NAME, ignoredUser.getUserInfo().getName())
             .send(sender);
     }
 }

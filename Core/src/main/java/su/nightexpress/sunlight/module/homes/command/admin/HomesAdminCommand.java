@@ -2,13 +2,12 @@ package su.nightexpress.sunlight.module.homes.command.admin;
 
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
+import su.nexmedia.engine.api.command.CommandResult;
 import su.nexmedia.engine.api.command.GeneralCommand;
 import su.nexmedia.engine.command.list.HelpSubCommand;
 import su.nightexpress.sunlight.SunLight;
 import su.nightexpress.sunlight.module.homes.HomesModule;
 import su.nightexpress.sunlight.module.homes.config.HomesLang;
-
-import java.util.Map;
 
 public class HomesAdminCommand extends GeneralCommand<SunLight> {
 
@@ -39,7 +38,7 @@ public class HomesAdminCommand extends GeneralCommand<SunLight> {
     }
 
     @Override
-    protected void onExecute(@NotNull CommandSender sender, @NotNull String label, @NotNull String[] args, @NotNull Map<String, String> flags) {
+    protected void onExecute(@NotNull CommandSender commandSender, @NotNull CommandResult commandResult) {
 
     }
 }

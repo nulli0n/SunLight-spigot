@@ -8,7 +8,6 @@ import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.jetbrains.annotations.NotNull;
 import su.nexmedia.engine.api.command.CommandResult;
 import su.nexmedia.engine.api.manager.AbstractListener;
-import su.nexmedia.engine.api.manager.ICleanable;
 import su.nightexpress.sunlight.Perms;
 import su.nightexpress.sunlight.Placeholders;
 import su.nightexpress.sunlight.SunLight;
@@ -17,8 +16,9 @@ import su.nightexpress.sunlight.command.api.ToggleCommand;
 import su.nightexpress.sunlight.config.Lang;
 import su.nightexpress.sunlight.data.impl.SunUser;
 import su.nightexpress.sunlight.data.impl.settings.UserSetting;
+import su.nightexpress.sunlight.utils.Cleanable;
 
-public class FoodGodCommand extends ToggleCommand implements ICleanable {
+public class FoodGodCommand extends ToggleCommand implements Cleanable {
 
     public static final String NAME = "foodgod";
     public static final UserSetting<Boolean> FOOD_GOD = UserSetting.asBoolean("food_god", false, true);
@@ -53,7 +53,7 @@ public class FoodGodCommand extends ToggleCommand implements ICleanable {
 
         if (sender != target) {
             plugin.getMessage(Lang.COMMAND_FOOD_GOD_TARGET)
-                .replace(Placeholders.Player.replacer(target))
+                .replace(Placeholders.forPlayer(target))
                 .replace(Placeholders.GENERIC_STATE, Lang.getEnable(state))
                 .send(sender);
         }

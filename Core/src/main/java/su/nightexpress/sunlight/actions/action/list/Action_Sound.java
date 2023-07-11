@@ -3,8 +3,8 @@ package su.nightexpress.sunlight.actions.action.list;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import su.nexmedia.engine.utils.CollectionsUtil;
-import su.nexmedia.engine.utils.MessageUtil;
+import su.nexmedia.engine.utils.PlayerUtil;
+import su.nexmedia.engine.utils.StringUtil;
 import su.nightexpress.sunlight.actions.action.AbstractActionExecutor;
 import su.nightexpress.sunlight.actions.action.ActionId;
 import su.nightexpress.sunlight.actions.parameter.ParameterId;
@@ -22,9 +22,9 @@ public class Action_Sound extends AbstractActionExecutor {
         String name = (String) result.getValue(ParameterId.NAME);
         if (name == null) return;
 
-        Sound sound = CollectionsUtil.getEnum(name, Sound.class);
+        Sound sound = StringUtil.getEnum(name, Sound.class).orElse(null);
         if (sound == null) return;
 
-        MessageUtil.sound(player, sound);
+        PlayerUtil.sound(player, sound);
     }
 }

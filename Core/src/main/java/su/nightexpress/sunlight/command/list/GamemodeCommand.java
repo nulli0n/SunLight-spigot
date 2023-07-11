@@ -58,7 +58,7 @@ public class GamemodeCommand extends TargetCommand {
 
         if (sender != target) {
             plugin.getMessage(Lang.COMMAND_GAME_MODE_TARGET)
-                .replace(Placeholders.Player.replacer(target))
+                .replace(Placeholders.forPlayer(target))
                 .replace(Placeholders.GENERIC_TYPE, plugin.getLangManager().getEnum(mode))
                 .send(sender);
         }

@@ -6,7 +6,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
-import su.nexmedia.engine.api.manager.ICleanable;
 import su.nexmedia.engine.api.placeholder.Placeholder;
 import su.nexmedia.engine.api.placeholder.PlaceholderMap;
 import su.nexmedia.engine.lang.LangManager;
@@ -27,7 +26,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-public class Home implements ICleanable, Placeholder {
+public class Home implements Placeholder {
 
     private static final ItemStack DEFAULT_ICON = new ItemStack(Material.PLAYER_HEAD);
 
@@ -120,7 +119,6 @@ public class Home implements ICleanable, Placeholder {
         return editor;
     }
 
-    @Override
     public void clear() {
         if (this.editor != null) {
             this.editor.clear();

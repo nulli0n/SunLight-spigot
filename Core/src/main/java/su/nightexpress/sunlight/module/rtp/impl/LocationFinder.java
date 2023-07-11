@@ -103,7 +103,7 @@ public class LocationFinder {
         this.plugin.runTaskLater(task -> {
             this.player.teleport(location);
             this.plugin.getMessage(RTPLang.TELEPORT_NOTIFY_DONE)
-                .replace(Placeholders.LOCATION.replacer(location))
+                .replace(Placeholders.forLocation(location))
                 .send(this.player);
         }, 5L);
         this.attempts = 0;

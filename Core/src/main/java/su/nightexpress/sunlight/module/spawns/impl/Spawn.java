@@ -5,13 +5,12 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import su.nexmedia.engine.api.config.JYML;
 import su.nexmedia.engine.api.manager.AbstractConfigHolder;
-import su.nexmedia.engine.api.manager.ICleanable;
 import su.nexmedia.engine.api.placeholder.Placeholder;
 import su.nexmedia.engine.api.placeholder.PlaceholderMap;
-import su.nexmedia.engine.hooks.Hooks;
 import su.nexmedia.engine.lang.LangManager;
 import su.nexmedia.engine.utils.Colorizer;
 import su.nexmedia.engine.utils.NumberUtil;
+import su.nexmedia.engine.utils.PlayerUtil;
 import su.nightexpress.sunlight.SunLight;
 import su.nightexpress.sunlight.config.Lang;
 import su.nightexpress.sunlight.module.spawns.SpawnsModule;
@@ -24,7 +23,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
-public class Spawn extends AbstractConfigHolder<SunLight> implements ICleanable, Placeholder {
+public class Spawn extends AbstractConfigHolder<SunLight> implements Placeholder {
 
     private final SpawnsModule   spawnsModule;
     private final PlaceholderMap placeholderMap;
@@ -114,7 +113,6 @@ public class Spawn extends AbstractConfigHolder<SunLight> implements ICleanable,
         cfg.set("Teleport_On_Death.Groups", new ArrayList<>(this.getRespawnTeleportGroups()));
     }
 
-    @Override
     public void clear() {
         if (this.editor != null) {
             this.editor.clear();
@@ -152,14 +150,14 @@ public class Spawn extends AbstractConfigHolder<SunLight> implements ICleanable,
         if (!this.isRespawnTeleportEnabled()) return false;
         if (this.getRespawnTeleportGroups().contains(Placeholders.WILDCARD)) return true;
 
-        return Hooks.getPermissionGroups(player).stream().anyMatch(this.getRespawnTeleportGroups()::contains);
+        return PlayerUtil.getPermissionGroups(player).stream().anyMatch(this.getRespawnTeleportGroups()::contains);
     }
 
     public boolean isLoginTeleportEnabled(@NotNull Player player) {
         if (!this.isLoginTeleportEnabled()) return false;
         if (this.getLoginTeleportGroups().contains(Placeholders.WILDCARD)) return true;
 
-        return Hooks.getPermissionGroups(player).stream().anyMatch(this.getLoginTeleportGroups()::contains);
+        return PlayerUtil.getPermissionGroups(player).stream().anyMatch(this.getLoginTeleportGroups()::contains);
     }
 
     public boolean hasPermission(@NotNull Player player) {

@@ -5,8 +5,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.permissions.Permission;
 import org.jetbrains.annotations.NotNull;
+import su.nexmedia.engine.api.command.CommandResult;
 import su.nexmedia.engine.api.command.GeneralCommand;
 import su.nexmedia.engine.utils.*;
+import su.nexmedia.engine.utils.message.NexParser;
 import su.nightexpress.sunlight.SunLight;
 import su.nightexpress.sunlight.api.event.PlayerPrivateMessageEvent;
 import su.nightexpress.sunlight.data.impl.IgnoredUser;
@@ -59,11 +61,11 @@ public abstract class PrivateMessageCommand extends GeneralCommand<SunLight> {
     }
 
     @Override
-    public final void onExecute(@NotNull CommandSender sender, @NotNull String label, @NotNull String[] args, @NotNull Map<String, String> flags) {
+    public final void onExecute(@NotNull CommandSender sender, @NotNull CommandResult result) {
         String receiverName;
 
         if (this.getType() == Type.REPLY) {
-            if (args.length == 0) {
+            if (result.length() == 0) {
                 this.printUsage(sender);
                 return;
             }
@@ -75,12 +77,12 @@ public abstract class PrivateMessageCommand extends GeneralCommand<SunLight> {
         }
         else {
             // Check if /tell contains player name and text.
-            if (args.length < 2) {
+            if (result.length() < 2) {
                 this.printUsage(sender);
                 return;
             }
             // Get player name from the command arguments.
-            receiverName = args[0];
+            receiverName = result.getArg(0);
         }
 
         // Get receiver by a player name or just Console.
@@ -105,8 +107,8 @@ public abstract class PrivateMessageCommand extends GeneralCommand<SunLight> {
             }
         }
 
-        String text = Stream.of(args).skip(this.getType() == Type.INITIAL ? 1 : 0).collect(Collectors.joining(" "));
-        String message = ChatUtils.legalizeMessage(MessageUtil.stripJson(Colorizer.strip(text.trim()))).strip();
+        String text = Stream.of(result.getArgs()).skip(this.getType() == Type.INITIAL ? 1 : 0).collect(Collectors.joining(" "));
+        String message = ChatUtils.legalizeMessage(NexParser.removeFrom(Colorizer.strip(text.trim()))).strip();
 
         boolean isItemLink = ChatConfig.ITEM_SHOW_ENABLED.get() && message.contains(ChatConfig.ITEM_SHOW_PLACEHOLDER.get());
         if (isItemLink) {
@@ -124,31 +126,31 @@ public abstract class PrivateMessageCommand extends GeneralCommand<SunLight> {
             LAST_MESSAGE.put(receiver, sender.getName());
 
             ChatConfig.PM_FORMAT_OUTGOING.get()
-                .replace(Placeholders.GENERIC_MESSAGE, message).replace(Placeholders.Player.replacer(receiver)).send(sender);
+                .replace(Placeholders.GENERIC_MESSAGE, message).replace(Placeholders.forSender(receiver)).send(sender);
 
             ChatConfig.PM_FORMAT_INCOMING.get()
-                .replace(Placeholders.GENERIC_MESSAGE, message).replace(Placeholders.Player.replacer(sender)).send(receiver);
+                .replace(Placeholders.GENERIC_MESSAGE, message).replace(Placeholders.forSender(sender)).send(receiver);
         }
 
         if (isItemLink && sender instanceof Player player) {
             ItemStack item = player.getInventory().getItemInMainHand();
             String itemName = ItemUtil.getItemName(item);
-            String itemValue = String.valueOf(ItemUtil.toBase64(item));
+            String itemValue = String.valueOf(ItemUtil.compress(item));
 
             // Call custom plugin event.
             PlayerPrivateMessageEvent messageEvent = new PlayerPrivateMessageEvent(sender, receiver, itemName);
             plugin.getPluginManager().callEvent(messageEvent);
             if (messageEvent.isCancelled()) return;
 
-            String formatOut = Placeholders.Player.replacer(player).apply(ChatConfig.ITEM_SHOW_FORMAT_PM_OUT.get())
+            String formatOut = Placeholders.forPlayer(player).apply(ChatConfig.ITEM_SHOW_FORMAT_PM_OUT.get())
                 .replace(Placeholders.ITEM_NAME, itemName)
                 .replace(Placeholders.ITEM_VALUE, itemValue);
-            MessageUtil.sendWithJson(sender, formatOut);
+            PlayerUtil.sendRichMessage(sender, formatOut);
 
-            String formatIn = Placeholders.Player.replacer(player).apply(ChatConfig.ITEM_SHOW_FORMAT_PM_IN.get())
+            String formatIn = Placeholders.forPlayer(player).apply(ChatConfig.ITEM_SHOW_FORMAT_PM_IN.get())
                 .replace(Placeholders.ITEM_NAME, itemName)
                 .replace(Placeholders.ITEM_VALUE, itemValue);
-            MessageUtil.sendWithJson(receiver, formatIn);
+            PlayerUtil.sendRichMessage(receiver, formatIn);
         }
     }
 }

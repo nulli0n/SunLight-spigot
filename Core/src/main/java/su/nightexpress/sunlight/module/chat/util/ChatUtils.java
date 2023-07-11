@@ -20,7 +20,7 @@ public class ChatUtils {
     private static final Map<String, Map<String, Long>> NEXT_MESSAGE_IN = new HashMap<>();
     private static final Map<String, Long>              NEXT_COMMAND_IN = new HashMap<>();
     private static final Map<String, Map<String, Long>> NEXT_MENTION_IN = new HashMap<>();
-    private static final String[] BANNED_CHARACTERS = {"}", "{", ";"};
+    private static final String[] BANNED_CHARACTERS = {"<?", "?>", "</>"};
 
     public static void clear(@NotNull Player player) {
         String key = player.getName();

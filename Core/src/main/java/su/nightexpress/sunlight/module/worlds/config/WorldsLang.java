@@ -1,7 +1,7 @@
 package su.nightexpress.sunlight.module.worlds.config;
 
+import su.nexmedia.engine.api.lang.LangColors;
 import su.nexmedia.engine.api.lang.LangKey;
-import su.nightexpress.sunlight.config.LangColors;
 import su.nightexpress.sunlight.module.worlds.util.Placeholders;
 
 public class WorldsLang implements LangColors {

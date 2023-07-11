@@ -3,6 +3,7 @@ package su.nightexpress.sunlight.module.warps.command.basic;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import su.nexmedia.engine.api.command.CommandResult;
 import su.nexmedia.engine.utils.CollectionsUtil;
 import su.nightexpress.sunlight.module.ModuleCommand;
 import su.nightexpress.sunlight.module.warps.WarpsModule;
@@ -12,7 +13,6 @@ import su.nightexpress.sunlight.module.warps.util.Placeholders;
 import su.nightexpress.sunlight.module.warps.util.WarpsPerms;
 
 import java.util.List;
-import java.util.Map;
 
 public class WarpsTeleportCommand extends ModuleCommand<WarpsModule> {
 
@@ -54,25 +54,25 @@ public class WarpsTeleportCommand extends ModuleCommand<WarpsModule> {
     }
 
     @Override
-    public void onExecute(@NotNull CommandSender sender, @NotNull String label, @NotNull String[] args, @NotNull Map<String, String> flags) {
-        if (args.length < 2) {
+    public void onExecute(@NotNull CommandSender sender, @NotNull CommandResult result) {
+        if (result.length() < 2) {
             this.printUsage(sender);
             return;
         }
 
-        if (args.length >= 3 && !sender.hasPermission(WarpsPerms.COMMAND_WARPS_TELEPORT_OTHERS)) {
+        if (result.length() >= 3 && !sender.hasPermission(WarpsPerms.COMMAND_WARPS_TELEPORT_OTHERS)) {
             this.errorPermission(sender);
             return;
         }
 
-        String warpId = args[1];
+        String warpId = result.getArg(1);
         Warp warp = this.module.getWarpById(warpId);
         if (warp == null) {
             this.plugin.getMessage(WarpsLang.WARP_ERROR_INVALID).send(sender);
             return;
         }
 
-        String pName = args.length >= 3 ? args[2] : sender.getName();
+        String pName = result.length() >= 3 ? result.getArg(2) : sender.getName();
         Player player = plugin.getServer().getPlayer(pName);
         if (player == null) {
             this.errorPlayer(sender);
@@ -82,7 +82,7 @@ public class WarpsTeleportCommand extends ModuleCommand<WarpsModule> {
         boolean isForced = !(sender.equals(player));
         if (isForced) {
             this.plugin.getMessage(WarpsLang.COMMAND_WARPS_TELEPORT_OTHERS)
-                .replace(Placeholders.Player.replacer(player))
+                .replace(Placeholders.forPlayer(player))
                 .replace(warp.replacePlaceholders())
                 .send(sender);
         }

@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import su.nexmedia.engine.api.data.config.DataConfig;
 import su.nexmedia.engine.api.lang.LangMessage;
-import su.nexmedia.engine.hooks.Hooks;
+import su.nexmedia.engine.utils.PlayerUtil;
 import su.nexmedia.engine.utils.TimeUtil;
 import su.nexmedia.engine.utils.regex.RegexUtil;
 import su.nightexpress.sunlight.SunLight;
@@ -61,7 +61,7 @@ public class BansModule extends Module {
     public void onLoad() {
         this.getConfig().initializeOptions(BansConfig.class);
         this.plugin.getLangManager().loadMissing(BansLang.class);
-        this.plugin.getLangManager().setupEnum(PunishmentType.class);
+        this.plugin.getLangManager().loadEnum(PunishmentType.class);
         this.plugin.getLang().saveChanges();
         this.plugin.registerPermissions(BansPerms.class);
 
@@ -127,12 +127,12 @@ public class BansModule extends Module {
 
     @NotNull
     public Map<PunishmentType, Set<Punishment>> getPunishments(@NotNull String user) {
-        return this.punishmentMap.computeIfAbsent(user.toLowerCase(), k -> new HashMap<>());
+        return this.punishmentMap.computeIfAbsent(user.toLowerCase(), k -> new ConcurrentHashMap<>());
     }
 
     @NotNull
     public Set<Punishment> getPunishments(@NotNull String user, @NotNull PunishmentType type) {
-        return this.getPunishments(user.toLowerCase()).computeIfAbsent(type, k -> new HashSet<>());
+        return this.getPunishments(user.toLowerCase()).computeIfAbsent(type, k -> ConcurrentHashMap.newKeySet());
     }
 
     @NotNull
@@ -200,7 +200,7 @@ public class BansModule extends Module {
         if (!punisher.hasPermission(BansPerms.BYPASS_DURATION_LIMIT) && punisher instanceof Player admin) {
             Map<String, Map<PunishmentType, RankDuration>> durationMap = BansConfig.PUNISHMENTS_RANK_MAX_TIMES.get();
             Set<RankDuration> durations = new HashSet<>();
-            for (String rank : Hooks.getPermissionGroups(admin)) {
+            for (String rank : PlayerUtil.getPermissionGroups(admin)) {
                 RankDuration duration = durationMap.getOrDefault(rank, Collections.emptyMap()).get(type);
                 if (duration != null) {
                     durations.add(duration);
@@ -264,7 +264,7 @@ public class BansModule extends Module {
         if (type == PunishmentType.WARN) {
             List<String> commands = BansConfig.PUNISHMENTS_WARN_AUTO_COMMANDS.get().getOrDefault(punishmentsAmount, Collections.emptyList());
             commands.forEach(command -> {
-                plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), command.replace(Placeholders.Player.NAME, userName));
+                plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), command.replace(Placeholders.PLAYER_NAME, userName));
             });
         }
     }

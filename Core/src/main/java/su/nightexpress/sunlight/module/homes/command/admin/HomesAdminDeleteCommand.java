@@ -3,6 +3,7 @@ package su.nightexpress.sunlight.module.homes.command.admin;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import su.nexmedia.engine.api.command.CommandResult;
 import su.nexmedia.engine.utils.CollectionsUtil;
 import su.nightexpress.sunlight.module.ModuleCommand;
 import su.nightexpress.sunlight.module.homes.HomesModule;
@@ -54,14 +55,14 @@ public class HomesAdminDeleteCommand extends ModuleCommand<HomesModule> {
     }
 
     @Override
-    protected void onExecute(@NotNull CommandSender sender, @NotNull String label, @NotNull String[] args, @NotNull Map<String, String> flags) {
-        if (args.length < 2) {
+    protected void onExecute(@NotNull CommandSender sender, @NotNull CommandResult result) {
+        if (result.length() < 2) {
             this.printUsage(sender);
             return;
         }
 
-        String userName = args[1];
-        String homeId = args.length >= 3 ? args[2].toLowerCase() : Placeholders.DEFAULT;
+        String userName = result.getArg(1);
+        String homeId = result.length() >= 3 ? result.getArg(2).toLowerCase() : Placeholders.DEFAULT;
         this.plugin.getUserManager().getUserDataAsync(userName).thenAcceptAsync(user -> {
             if (user == null) {
                 this.errorPlayer(sender);
@@ -76,7 +77,7 @@ public class HomesAdminDeleteCommand extends ModuleCommand<HomesModule> {
                 this.module.unloadHomes(userId);
                 this.plugin.getData().deleteHomes(userId);
                 this.plugin.getMessage(HomesLang.COMMAND_HOMES_ADMIN_DELETE_DONE_ALL)
-                    .replace(Placeholders.Player.NAME, user.getName())
+                    .replace(Placeholders.PLAYER_NAME, user.getName())
                     .send(sender);
             }
             else {
@@ -87,7 +88,7 @@ public class HomesAdminDeleteCommand extends ModuleCommand<HomesModule> {
                 this.module.deleteHome(new UserInfo(user), homeId);
                 this.plugin.getMessage(HomesLang.COMMAND_HOMES_ADMIN_DELETE_DONE_SINGLE)
                     .replace(Placeholders.HOME_ID, homeId)
-                    .replace(Placeholders.Player.NAME, user.getName())
+                    .replace(Placeholders.PLAYER_NAME, user.getName())
                     .send(sender);
             }
         });

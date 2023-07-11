@@ -38,7 +38,7 @@ public class ChairsCommand extends ToggleCommand {
 
         if (sender != target) {
             this.plugin.getMessage(ExtrasLang.COMMAND_CHAIRS_TARGET)
-                .replace(Placeholders.Player.replacer(target))
+                .replace(Placeholders.forPlayer(target))
                 .replace(Placeholders.GENERIC_STATE, Lang.getEnable(state))
                 .send(sender);
         }

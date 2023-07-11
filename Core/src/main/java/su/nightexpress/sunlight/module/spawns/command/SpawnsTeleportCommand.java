@@ -3,16 +3,16 @@ package su.nightexpress.sunlight.module.spawns.command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import su.nexmedia.engine.api.command.CommandResult;
 import su.nexmedia.engine.utils.CollectionsUtil;
 import su.nightexpress.sunlight.module.ModuleCommand;
-import su.nightexpress.sunlight.module.spawns.impl.Spawn;
 import su.nightexpress.sunlight.module.spawns.SpawnsModule;
 import su.nightexpress.sunlight.module.spawns.config.SpawnsLang;
+import su.nightexpress.sunlight.module.spawns.impl.Spawn;
 import su.nightexpress.sunlight.module.spawns.util.Placeholders;
 import su.nightexpress.sunlight.module.spawns.util.SpawnsPerms;
 
 import java.util.List;
-import java.util.Map;
 
 public class SpawnsTeleportCommand extends ModuleCommand<SpawnsModule> {
 
@@ -52,19 +52,19 @@ public class SpawnsTeleportCommand extends ModuleCommand<SpawnsModule> {
     }
 
     @Override
-    public void onExecute(@NotNull CommandSender sender, @NotNull String label, @NotNull String[] args, @NotNull Map<String, String> flags) {
-        if (args.length >= 3 && !sender.hasPermission(SpawnsPerms.COMMAND_SPAWNS_TELEPORT_OTHERS)) {
+    public void onExecute(@NotNull CommandSender sender, @NotNull CommandResult result) {
+        if (result.length() >= 3 && !sender.hasPermission(SpawnsPerms.COMMAND_SPAWNS_TELEPORT_OTHERS)) {
             this.errorPermission(sender);
             return;
         }
 
-        Spawn spawn = (args.length >= 2 ? this.module.getSpawnById(args[1]) : this.module.getSpawnByDefault()).orElse(null);
+        Spawn spawn = (result.length() >= 2 ? this.module.getSpawnById(result.getArg(1)) : this.module.getSpawnByDefault()).orElse(null);
         if (spawn == null) {
             this.plugin.getMessage(SpawnsLang.SPAWN_ERROR_INVALID).send(sender);
             return;
         }
 
-        String pName = args.length >= 3 ? args[2] : sender.getName();
+        String pName = result.length() >= 3 ? result.getArg(2) : sender.getName();
         Player pTarget = this.plugin.getServer().getPlayer(pName);
         if (pTarget == null) {
             this.errorPlayer(sender);
@@ -76,7 +76,7 @@ public class SpawnsTeleportCommand extends ModuleCommand<SpawnsModule> {
             if (isForced) {
                 this.plugin.getMessage(SpawnsLang.COMMAND_SPAWNS_TELEPORT_NOTIFY)
                     .replace(spawn.replacePlaceholders())
-                    .replace(Placeholders.Player.replacer(pTarget))
+                    .replace(Placeholders.forPlayer(pTarget))
                     .send(sender);
             }
         }

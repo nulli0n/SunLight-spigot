@@ -114,17 +114,11 @@ public class WorldRulesEditor extends EditorMenu<SunLight, WorldConfig> implemen
             }
             else if (gameRule.getType() == Integer.class) {
                 GameRule<Integer> gInt = (GameRule<Integer>) gameRule;
-                this.startEdit(viewer.getPlayer(), plugin.getMessage(WorldsLang.EDITOR_ENTER_VALUE), chat -> {
-                    world.setGameRule(gInt, StringUtil.getInteger(chat.getMessage(), 0));
+                this.handleInput(viewer, WorldsLang.EDITOR_ENTER_VALUE, wrapper -> {
+                    world.setGameRule(gInt, StringUtil.getInteger(wrapper.getText(), 0));
                     return true;
                 });
             }
         };
-    }
-
-    @Override
-    @NotNull
-    public Comparator<GameRule<?>> getObjectSorter() {
-        return ((o1, o2) -> 0);
     }
 }

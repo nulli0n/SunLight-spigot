@@ -33,7 +33,7 @@ public class EnchantingCommand extends TargetCommand {
             plugin.getMessage(Lang.COMMAND_ENCHANTING_NOTIFY).send(target);
         }
         if (sender != target) {
-            plugin.getMessage(Lang.COMMAND_ENCHANTING_TARGET).replace(Placeholders.Player.replacer(target)).send(sender);
+            plugin.getMessage(Lang.COMMAND_ENCHANTING_TARGET).replace(Placeholders.forPlayer(target)).send(sender);
         }
     }
 }

@@ -103,7 +103,7 @@ public class DataHandler extends AbstractUserDataHandler<SunLight, SunUser> {
                 UUID ownerId = UUID.fromString(resultSet.getString(HOME_OWNER_ID.getName()));
                 String ownerName = resultSet.getString(HOME_OWNER_NAME.getName());
                 String name = resultSet.getString(HOME_NAME.getName());
-                ItemStack icon = ItemUtil.fromBase64(resultSet.getString(HOME_ICON.getName()));
+                ItemStack icon = ItemUtil.decompress(resultSet.getString(HOME_ICON.getName()));
                 if (icon == null) icon = new ItemStack(Material.GRASS_BLOCK);
 
                 Location location = LocationUtil.deserialize(resultSet.getString(HOME_LOCATION.getName()));
@@ -285,7 +285,7 @@ public class DataHandler extends AbstractUserDataHandler<SunLight, SunUser> {
             HOME_OWNER_ID.toValue(home.getOwner().getId().toString()),
             HOME_OWNER_NAME.toValue(home.getOwner().getName()),
             HOME_NAME.toValue(home.getName()),
-            HOME_ICON.toValue(String.valueOf(ItemUtil.toBase64(home.getIcon()))),
+            HOME_ICON.toValue(String.valueOf(ItemUtil.compress(home.getIcon()))),
             HOME_LOCATION.toValue(String.valueOf(LocationUtil.serialize(home.getLocation()))),
             HOME_TYPE.toValue(home.getType().name()),
             HOME_INVITED_PLAYERS.toValue(this.gson.toJson(home.getInvitedPlayers())),
@@ -300,7 +300,7 @@ public class DataHandler extends AbstractUserDataHandler<SunLight, SunUser> {
                 HOME_OWNER_ID.toValue(home.getOwner().getId().toString()),
                 HOME_OWNER_NAME.toValue(home.getOwner().getName()),
                 HOME_NAME.toValue(home.getName()),
-                HOME_ICON.toValue(String.valueOf(ItemUtil.toBase64(home.getIcon()))),
+                HOME_ICON.toValue(String.valueOf(ItemUtil.compress(home.getIcon()))),
                 HOME_LOCATION.toValue(String.valueOf(LocationUtil.serialize(home.getLocation()))),
                 HOME_TYPE.toValue(home.getType().name()),
                 HOME_INVITED_PLAYERS.toValue(this.gson.toJson(home.getInvitedPlayers())),

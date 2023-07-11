@@ -101,9 +101,9 @@ public class KitsMenu extends ConfigMenu<SunLight> implements AutoPaged<Kit> {
         long cooldown = user.getCooldown(kit).map(CooldownInfo::getExpireDate).orElse(0L);
 
         List<String> lore = new ArrayList<>(this.kitLoreAll);
-        lore = StringUtil.replace(lore, PLACEHOLDER_NO_MONEY, false, !kit.canAfford(player) ? this.kitLoreNoMoney : Collections.emptyList());
-        lore = StringUtil.replace(lore, PLACEHOLDER_NO_PERMISSION, false, !kit.hasPermission(player) ? this.kitLoreNoPerm : Collections.emptyList());
-        lore = StringUtil.replace(lore, PLACEHOLDER_COOLDOWN, false, kit.isOnCooldown(player) ? this.kitLoreCooldown : Collections.emptyList());
+        lore = StringUtil.replaceInList(lore, PLACEHOLDER_NO_MONEY, !kit.canAfford(player) ? this.kitLoreNoMoney : Collections.emptyList());
+        lore = StringUtil.replaceInList(lore, PLACEHOLDER_NO_PERMISSION, !kit.hasPermission(player) ? this.kitLoreNoPerm : Collections.emptyList());
+        lore = StringUtil.replaceInList(lore, PLACEHOLDER_COOLDOWN, kit.isOnCooldown(player) ? this.kitLoreCooldown : Collections.emptyList());
         lore.replaceAll(line -> line
             .replace(Placeholders.GENERIC_COOLDOWN, cooldown < 0 ? plugin.getMessage(Lang.OTHER_NEVER).getLocalized() : TimeUtil.formatTimeLeft(cooldown))
         );

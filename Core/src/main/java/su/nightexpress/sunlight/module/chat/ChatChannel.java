@@ -4,7 +4,8 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import su.nexmedia.engine.api.config.JOption;
 import su.nexmedia.engine.api.config.JYML;
-import su.nexmedia.engine.api.manager.IPlaceholder;
+import su.nexmedia.engine.api.placeholder.Placeholder;
+import su.nexmedia.engine.api.placeholder.PlaceholderMap;
 import su.nexmedia.engine.utils.Colorizer;
 import su.nightexpress.sunlight.module.chat.util.Placeholders;
 
@@ -12,9 +13,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.UnaryOperator;
 
-public class ChatChannel implements IPlaceholder {
+public class ChatChannel implements Placeholder {
 
     public static final Map<String, ChatChannel> CHANNELS = new HashMap<>();
     public static final Map<String, String>      PLAYER_CHANNEL_ACTIVE = new HashMap<>();
@@ -35,6 +35,7 @@ public class ChatChannel implements IPlaceholder {
     private final String  commandAlias;
     private final String    messagePrefix;
     private final String    format;
+    private final PlaceholderMap placeholderMap;
 
     public ChatChannel(@NotNull String id, @NotNull String name, boolean isDefault, boolean isAutoJoin,
                        boolean isPermissionRequiredHear, boolean isPermissionRequiredSpeak,
@@ -52,6 +53,12 @@ public class ChatChannel implements IPlaceholder {
         this.commandAlias = commandAlias;
         this.messagePrefix = messagePrefix;
         this.format = Colorizer.apply(format);
+
+        this.placeholderMap = new PlaceholderMap()
+            .add(Placeholders.CHANNEL_ID, this::getId)
+            .add(Placeholders.CHANNEL_NAME, this::getName)
+            .add(Placeholders.CHANNEL_RADIUS, () -> String.valueOf(this.getDistance()))
+        ;
     }
 
     public static void loadChannels(@NotNull ChatModule module) {
@@ -137,12 +144,8 @@ public class ChatChannel implements IPlaceholder {
 
     @Override
     @NotNull
-    public UnaryOperator<String> replacePlaceholders() {
-        return str -> str
-            .replace(Placeholders.CHANNEL_ID, this.getId())
-            .replace(Placeholders.CHANNEL_NAME, this.getName())
-            .replace(Placeholders.CHANNEL_RADIUS, String.valueOf(this.getDistance()))
-            ;
+    public PlaceholderMap getPlaceholders() {
+        return this.placeholderMap;
     }
 
     @NotNull

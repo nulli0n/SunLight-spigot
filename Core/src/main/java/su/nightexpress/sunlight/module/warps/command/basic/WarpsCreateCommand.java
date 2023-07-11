@@ -3,12 +3,11 @@ package su.nightexpress.sunlight.module.warps.command.basic;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import su.nexmedia.engine.api.command.CommandResult;
 import su.nightexpress.sunlight.module.ModuleCommand;
 import su.nightexpress.sunlight.module.warps.WarpsModule;
 import su.nightexpress.sunlight.module.warps.config.WarpsLang;
 import su.nightexpress.sunlight.module.warps.util.WarpsPerms;
-
-import java.util.Map;
 
 public class WarpsCreateCommand extends ModuleCommand<WarpsModule> {
 
@@ -36,14 +35,14 @@ public class WarpsCreateCommand extends ModuleCommand<WarpsModule> {
     }
 
     @Override
-    public void onExecute(@NotNull CommandSender sender, @NotNull String label, @NotNull String[] args, @NotNull Map<String, String> flags) {
-        if (args.length < 2) {
+    public void onExecute(@NotNull CommandSender sender, @NotNull CommandResult result) {
+        if (result.length() < 2) {
             this.printUsage(sender);
             return;
         }
 
         Player player = (Player) sender;
-        String id = args[1];
+        String id = result.getArg(1);
         this.module.create(player, id, false);
     }
 }

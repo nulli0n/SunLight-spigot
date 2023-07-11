@@ -2,8 +2,8 @@ package su.nightexpress.sunlight.actions.action.list;
 
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import su.nexmedia.engine.utils.MessageUtil;
 import su.nexmedia.engine.utils.Placeholders;
+import su.nexmedia.engine.utils.PlayerUtil;
 import su.nightexpress.sunlight.actions.action.AbstractActionExecutor;
 import su.nightexpress.sunlight.actions.action.ActionId;
 import su.nightexpress.sunlight.actions.parameter.ParameterId;
@@ -21,8 +21,8 @@ public class Action_MessageChat extends AbstractActionExecutor {
         String text = (String) result.getValue(ParameterId.MESSAGE);
         if (text == null) return;
 
-        text = Placeholders.Player.replacer(player).apply(text);
+        text = Placeholders.forPlayer(player).apply(text);
 
-        MessageUtil.sendWithJson(player, text);
+        PlayerUtil.sendRichMessage(player, text);
     }
 }

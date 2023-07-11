@@ -3,6 +3,7 @@ package su.nightexpress.sunlight.module.spawns.command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import su.nexmedia.engine.api.command.CommandResult;
 import su.nightexpress.sunlight.module.ModuleCommand;
 import su.nightexpress.sunlight.module.spawns.SpawnsModule;
 import su.nightexpress.sunlight.module.spawns.config.SpawnsLang;
@@ -10,7 +11,6 @@ import su.nightexpress.sunlight.module.spawns.impl.Spawn;
 import su.nightexpress.sunlight.module.spawns.util.SpawnsPerms;
 
 import java.util.List;
-import java.util.Map;
 
 public class SpawnsDeleteCommand extends ModuleCommand<SpawnsModule> {
 
@@ -47,13 +47,13 @@ public class SpawnsDeleteCommand extends ModuleCommand<SpawnsModule> {
     }
 
     @Override
-    public void onExecute(@NotNull CommandSender sender, @NotNull String label, @NotNull String[] args, @NotNull Map<String, String> flags) {
-        if (args.length <= 2) {
+    public void onExecute(@NotNull CommandSender sender, @NotNull CommandResult result) {
+        if (result.length() <= 2) {
             this.printUsage(sender);
             return;
         }
 
-        Spawn spawn = this.module.getSpawnById(args[1]).orElse(null);
+        Spawn spawn = this.module.getSpawnById(result.getArg(1)).orElse(null);
         if (spawn == null) {
             this.plugin.getMessage(SpawnsLang.SPAWN_ERROR_INVALID);
             return;

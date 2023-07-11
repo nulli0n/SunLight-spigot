@@ -4,7 +4,9 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import su.nexmedia.engine.api.command.AbstractCommand;
+import su.nexmedia.engine.api.command.CommandResult;
 import su.nexmedia.engine.utils.CollectionsUtil;
+import su.nexmedia.engine.utils.StringUtil;
 import su.nightexpress.sunlight.Placeholders;
 import su.nightexpress.sunlight.SunLight;
 import su.nightexpress.sunlight.config.Lang;
@@ -15,7 +17,6 @@ import su.nightexpress.sunlight.module.chat.util.ChatSpyType;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 public class LoggerSubCommand extends AbstractCommand<SunLight> {
 
@@ -61,28 +62,26 @@ public class LoggerSubCommand extends AbstractCommand<SunLight> {
     }
 
     @Override
-    protected void onExecute(@NotNull CommandSender sender, @NotNull String label, @NotNull String[] args,
-                             @NotNull Map<String, String> flags) {
-
-        if (args.length < 4) {
+    protected void onExecute(@NotNull CommandSender sender, @NotNull CommandResult result) {
+        if (result.length() < 4) {
             this.printUsage(sender);
             return;
         }
 
-        boolean isAdd = args[1].equalsIgnoreCase(ADD);
-        boolean isRemove = args[1].equals(REMOVE);
+        boolean isAdd = result.getArg(1).equalsIgnoreCase(ADD);
+        boolean isRemove = result.getArg(1).equals(REMOVE);
         if (!isAdd && !isRemove) {
             this.printUsage(sender);
             return;
         }
 
-        ChatSpyType spyType = CollectionsUtil.getEnum(args[2], ChatSpyType.class);
+        ChatSpyType spyType = StringUtil.getEnum(result.getArg(2), ChatSpyType.class).orElse(null);
         if (spyType == null) {
             this.printUsage(sender);
             return;
         }
 
-        SunUser userTarget = plugin.getUserManager().getUserData(args[3]);
+        SunUser userTarget = plugin.getUserManager().getUserData(result.getArg(3));
         if (userTarget == null) {
             this.errorPlayer(sender);
             return;
@@ -92,7 +91,7 @@ public class LoggerSubCommand extends AbstractCommand<SunLight> {
 
         Player targetPlayer = userTarget.getPlayer();
         plugin.getMessage(ChatLang.COMMAND_SPY_LOGGER_DONE)
-            .replace(Placeholders.replacer(targetPlayer, userTarget))
+            .replace(Placeholders.PLAYER_NAME, userTarget.getName())
             .replace(Placeholders.GENERIC_TYPE, plugin.getLangManager().getEnum(spyType))
             .replace(Placeholders.GENERIC_STATE, plugin.getMessage(Lang.getEnabled(isAdd)).getLocalized())
             .send(sender);

@@ -29,7 +29,7 @@ public class AnvilCommand extends TargetCommand {
 
         plugin.getSunNMS().openAnvil(target);
         if (target != sender) {
-            plugin.getMessage(Lang.COMMAND_ANVIL_TARGET).replace(Placeholders.Player.replacer(target)).send(sender);
+            plugin.getMessage(Lang.COMMAND_ANVIL_TARGET).replace(Placeholders.forPlayer(target)).send(sender);
         }
         if (!result.hasFlag(CommandFlags.SILENT)) {
             plugin.getMessage(Lang.COMMAND_ANVIL_NOTIFY).send(target);

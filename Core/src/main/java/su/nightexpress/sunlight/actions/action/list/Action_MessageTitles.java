@@ -37,8 +37,8 @@ public class Action_MessageTitles extends AbstractActionExecutor {
         int stay = (int) numberStay.getValue(0);
         int fadeOut = (int) numberOut.getValue(0);
 
-        String title2 = title == null ? "" : Placeholders.Player.replacer(player).apply(title);
-        String subtitle2 = subtitle == null ? "" : Placeholders.Player.replacer(player).apply(subtitle);
+        String title2 = title == null ? "" : Placeholders.forPlayer(player).apply(title);
+        String subtitle2 = subtitle == null ? "" : Placeholders.forPlayer(player).apply(subtitle);
 
         player.sendTitle(title2, subtitle2, fadeIn, stay, fadeOut);
     }

@@ -9,8 +9,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import su.nexmedia.engine.Version;
 import su.nexmedia.engine.command.CommandRegister;
-import su.nexmedia.engine.hooks.Hooks;
 import su.nexmedia.engine.utils.*;
+import su.nexmedia.engine.utils.message.NexParser;
 import su.nexmedia.engine.utils.regex.RegexUtil;
 import su.nightexpress.sunlight.SunLight;
 import su.nightexpress.sunlight.api.event.PlayerPrivateMessageEvent;
@@ -69,7 +69,7 @@ public class ChatModule extends Module {
     protected void onLoad() {
         this.plugin.registerPermissions(ChatPerms.class);
         this.plugin.getLangManager().loadMissing(ChatLang.class);
-        this.plugin.getLangManager().setupEnum(ChatSpyType.class);
+        this.plugin.getLangManager().loadEnum(ChatSpyType.class);
         this.plugin.getLang().saveChanges();
         this.getConfig().initializeOptions(ChatConfig.class);
         ChatChannel.loadChannels(this);
@@ -109,7 +109,7 @@ public class ChatModule extends Module {
             this.plugin.getCommandRegulator().register(ChatSpyCommand.NAME, (cfg1, aliases) -> new ChatSpyCommand(this.plugin, aliases), "spy");
         }
 
-        if (ChatConfig.DISABLE_CHAT_REPORTS.get() && Hooks.hasPlugin(HookId.PROTOCOL_LIB) && Version.isAbove(Version.V1_18_R2)) {
+        if (ChatConfig.DISABLE_CHAT_REPORTS.get() && EngineUtils.hasPlugin(HookId.PROTOCOL_LIB) && Version.isAbove(Version.V1_18_R2)) {
             ChatReportDisabler.setup(this.plugin);
         }
 
@@ -118,7 +118,7 @@ public class ChatModule extends Module {
 
     @Override
     protected void onShutdown() {
-        if (ChatConfig.DISABLE_CHAT_REPORTS.get() && Hooks.hasPlugin(HookId.PROTOCOL_LIB)) {
+        if (ChatConfig.DISABLE_CHAT_REPORTS.get() && EngineUtils.hasPlugin(HookId.PROTOCOL_LIB)) {
             ChatReportDisabler.shutdown(this.plugin);
         }
 
@@ -143,7 +143,7 @@ public class ChatModule extends Module {
 
     @Nullable
     public static ChatPlayerFormat getPlayerFormat(@NotNull Player player) {
-        Set<String> ranks = Hooks.getPermissionGroups(player);
+        Set<String> ranks = PlayerUtil.getPermissionGroups(player);
         Map<String, ChatPlayerFormat> map = ChatConfig.FORMAT_PLAYER.get();
 
         return map.entrySet().stream()
@@ -273,7 +273,8 @@ public class ChatModule extends Module {
         String msgReal = player.hasPermission(ChatPerms.COLOR) ? Colorizer.legacyHex(e.getMessage()) : Colorizer.restrip(e.getMessage());
 
         // Strip all non-expected Json elements, aka avoid hacking.
-        msgReal = MessageUtil.stripJson(msgReal);
+        //msgReal = MessageUtil.stripJson(msgReal);
+        msgReal = NexParser.toPlainText(msgReal);
         // Remove all unallowed characters to prevent JSON chat breaking.
         if (ChatConfig.CHAT_JSON.get()) {
             msgReal = ChatUtils.legalizeMessage(msgReal);
@@ -370,7 +371,7 @@ public class ChatModule extends Module {
                     Player mentioned = channelPlayers.stream().filter(p -> p.getName().equalsIgnoreCase(mentionName)).findFirst().orElse(null);
                     if (mentioned == null) continue;
                     toMention.add(mentioned);
-                    mentionFormat = Placeholders.Player.replacer(mentioned).apply(ChatConfig.MENTIONS_FORMAT.get());
+                    mentionFormat = Placeholders.forPlayer(mentioned).apply(ChatConfig.MENTIONS_FORMAT.get());
                 }
                 msgReal = msgReal.replace(mentionFull, mentionFormat);
 
@@ -385,15 +386,15 @@ public class ChatModule extends Module {
             ItemStack item = player.getInventory().getItemInMainHand();
             String itemFormat = ChatConfig.ITEM_SHOW_FORMAT_CHAT.get()
                 .replace(Placeholders.ITEM_NAME, ItemUtil.getItemName(item))
-                .replace(Placeholders.ITEM_VALUE, String.valueOf(ItemUtil.toBase64(item)));
+                .replace(Placeholders.ITEM_VALUE, String.valueOf(ItemUtil.compress(item)));
             msgReal = msgReal.replace(ChatConfig.ITEM_SHOW_PLACEHOLDER.get(), itemFormat);
         }
 
         String message = playerFormat.prepareMessage(player, msgReal);
         String format = playerFormat.prepareFormat(player, channelActive.getFormat());
 
-        e.setMessage(MessageUtil.toSimpleText(message));
-        e.setFormat(MessageUtil.toSimpleText(format.replace(Placeholders.GENERIC_MESSAGE, "%2$s")));
+        e.setMessage(NexParser.toPlainText(message));
+        e.setFormat(NexParser.toPlainText(format.replace(Placeholders.GENERIC_MESSAGE, "%2$s")));
 
         AsyncSunlightPlayerChatEvent event = new AsyncSunlightPlayerChatEvent(player, channelActive, e.getRecipients(), message, format);
         plugin.getPluginManager().callEvent(event);
@@ -405,11 +406,11 @@ public class ChatModule extends Module {
         if (ChatConfig.CHAT_JSON.get()) {
             String finalFormat = event.getFinalFormat();
             e.setCancelled(true);
-            event.getRecipients().forEach(receiver -> MessageUtil.sendWithJson(receiver, finalFormat));
-            MessageUtil.sendWithJson(this.plugin.getServer().getConsoleSender(), MessageUtil.toSimpleText(finalFormat));
+            event.getRecipients().forEach(receiver -> PlayerUtil.sendRichMessage(receiver, finalFormat));
+            PlayerUtil.sendRichMessage(this.plugin.getServer().getConsoleSender(), NexParser.toPlainText(finalFormat));
         }
 
-        toMention.forEach(mentioned -> ChatConfig.MENTIONS_NOTIFY.get().replace(Placeholders.Player.replacer(player)).send(mentioned));
+        toMention.forEach(mentioned -> ChatConfig.MENTIONS_NOTIFY.get().replace(Placeholders.forPlayer(player)).send(mentioned));
 
         if (!player.hasPermission(ChatPerms.BYPASS_ANTISPAM)) {
             ChatUtils.setLastMessage(player, e.getMessage());
@@ -487,7 +488,7 @@ public class ChatModule extends Module {
     private String getSpyFormat(@NotNull ChatSpyType spyType, @NotNull CommandSender player, @NotNull String message) {
         String format = ChatConfig.SPY_FORMAT.get().getOrDefault(spyType, "")
             .replace(Placeholders.GENERIC_MESSAGE, message);
-        format = Placeholders.Player.replacer(player).apply(format);
+        format = Placeholders.forSender(player).apply(format);
         return format;
     }
 
@@ -514,7 +515,7 @@ public class ChatModule extends Module {
     private void handleSpyMode(@NotNull CommandSender sender, @NotNull String format, @NotNull ChatSpyType spyType, @Nullable Predicate<Player> spyFilter) {
         this.getSpies(spyType).stream()
             .filter(spy -> !spy.equals(sender) && (spyFilter == null || spyFilter.test(spy)))
-            .forEach(spy -> MessageUtil.sendWithJson(spy, format));
+            .forEach(spy -> PlayerUtil.sendRichMessage(spy, format));
     }
 
     public void handleSpyLog(@NotNull CommandSender sender, @NotNull String format, @NotNull ChatSpyType spyType) {
@@ -529,7 +530,7 @@ public class ChatModule extends Module {
         String filePath = this.getAbsolutePath() + "/spy_logs/" + player.getName() + "_" + spyType.name().toLowerCase() + ".log";
         FileUtil.create(new File(filePath));
 
-        this.plugin.runTask(c -> {
+        this.plugin.runTaskAsync(c -> {
             BufferedWriter output;
             try {
                 output = new BufferedWriter(new FileWriter(filePath, true));
@@ -540,6 +541,6 @@ public class ChatModule extends Module {
             catch (IOException e) {
                 e.printStackTrace();
             }
-        }, true);
+        });
     }
 }

@@ -46,7 +46,7 @@ public class DisposalCommand extends TargetCommand {
             plugin.getMessage(Lang.COMMAND_DISPOSAL_NOTIFY).send(target);
         }
         if (target != sender) {
-            plugin.getMessage(Lang.COMMAND_DISPOSAL_TARGET).replace(Placeholders.Player.replacer(target)).send(sender);
+            plugin.getMessage(Lang.COMMAND_DISPOSAL_TARGET).replace(Placeholders.forPlayer(target)).send(sender);
         }
     }
 }

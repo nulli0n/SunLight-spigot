@@ -1,8 +1,8 @@
 package su.nightexpress.sunlight.module.bans.config;
 
 import org.jetbrains.annotations.NotNull;
+import su.nexmedia.engine.api.lang.LangColors;
 import su.nexmedia.engine.api.lang.LangKey;
-import su.nightexpress.sunlight.config.LangColors;
 import su.nightexpress.sunlight.module.bans.punishment.Punishment;
 import su.nightexpress.sunlight.module.bans.punishment.PunishmentType;
 import su.nightexpress.sunlight.module.bans.util.Placeholders;

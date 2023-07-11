@@ -47,7 +47,7 @@ public class ScoreboardCommand extends ToggleCommand {
 
         if (sender != target) {
             this.plugin.getMessage(SBLang.COMMAND_SCOREBOARD_TARGET)
-                .replace(Placeholders.Player.replacer(target))
+                .replace(Placeholders.forPlayer(target))
                 .replace(Placeholders.GENERIC_STATE, Lang.getEnable(state))
                 .send(sender);
         }

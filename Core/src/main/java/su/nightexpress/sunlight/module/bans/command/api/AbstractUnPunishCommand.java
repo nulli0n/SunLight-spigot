@@ -4,6 +4,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import su.nexmedia.engine.api.command.CommandResult;
 import su.nexmedia.engine.api.server.JPermission;
 import su.nightexpress.sunlight.module.bans.BansModule;
 import su.nightexpress.sunlight.module.bans.punishment.Punishment;
@@ -11,7 +12,6 @@ import su.nightexpress.sunlight.module.bans.punishment.PunishmentType;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Predicate;
 
 public abstract class AbstractUnPunishCommand extends AbstractPunishCommand {
@@ -38,13 +38,13 @@ public abstract class AbstractUnPunishCommand extends AbstractPunishCommand {
     }
 
     @Override
-    public void onExecute(@NotNull CommandSender sender, @NotNull String label, @NotNull String[] args, @NotNull Map<String, String> flags) {
-        if (args.length != 1) {
+    protected void onExecute(@NotNull CommandSender sender, @NotNull CommandResult result) {
+        if (result.length() < 1) {
             this.printUsage(sender);
             return;
         }
 
-        String userName = this.fineUserName(sender, args[0]);
+        String userName = this.fineUserName(sender, result.getArg(0));
         if (!this.checkUserName(sender, userName)) return;
 
         this.module.unpunish(userName, sender, this.type);

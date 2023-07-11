@@ -74,14 +74,14 @@ public class TeleportLocationCommand extends TargetCommand {
 
         if (sender != target) {
             plugin.getMessage(Lang.COMMAND_TELEPORT_LOCATION_DONE_TARGET)
-                .replace(Placeholders.Player.replacer(target))
-                .replace(Placeholders.LOCATION.replacer(location))
+                .replace(Placeholders.forPlayer(target))
+                .replace(Placeholders.forLocation(location))
                 .send(sender);
         }
         if (!result.hasFlag(CommandFlags.SILENT)) {
             plugin.getMessage(Lang.COMMAND_TELEPORT_LOCATION_DONE_NOTIFY)
-                .replace(Placeholders.Player.replacer(sender))
-                .replace(Placeholders.LOCATION.replacer(location))
+                .replace(Placeholders.forSender(sender))
+                .replace(Placeholders.forLocation(location))
                 .send(target);
         }
     }

@@ -85,13 +85,13 @@ public class ItemGiveCommand extends TargetCommand {
         PlayerUtil.addItem(target, item, amount);
 
         plugin.getMessage(Lang.COMMAND_ITEM_GIVE_DONE)
-            .replace(Placeholders.Player.replacer(target))
+            .replace(Placeholders.forPlayer(target))
             .replace(Placeholders.GENERIC_AMOUNT, amount)
             .replace(Placeholders.GENERIC_TYPE, ItemUtil.getItemName(item))
             .send(sender);
 
         plugin.getMessage(Lang.COMMAND_ITEM_GIVE_NOTIFY)
-            .replace(Placeholders.Player.NAME, sender.getName())
+            .replace(Placeholders.PLAYER_NAME, sender.getName())
             .replace(Placeholders.GENERIC_AMOUNT, amount)
             .replace(Placeholders.GENERIC_TYPE, ItemUtil.getItemName(item))
             .send(target);

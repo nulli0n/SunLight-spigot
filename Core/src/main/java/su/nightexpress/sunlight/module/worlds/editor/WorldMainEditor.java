@@ -89,8 +89,8 @@ public class WorldMainEditor extends EditorMenu<SunLight, WorldConfig> {
                 return;
             }
             if (event.isRightClick()) {
-                this.startEdit(viewer.getPlayer(), plugin.getMessage(WorldsLang.EDITOR_ENTER_SECONDS), chat -> {
-                    worldConfig.setWipeInterval(StringUtil.getInteger(Colorizer.restrip(chat.getMessage()), -1));
+                this.handleInput(viewer, WorldsLang.EDITOR_ENTER_SECONDS, wrapper -> {
+                    worldConfig.setWipeInterval(wrapper.asAnyInt(-1));
                     worldConfig.save();
                     return true;
                 });
@@ -112,15 +112,15 @@ public class WorldMainEditor extends EditorMenu<SunLight, WorldConfig> {
             generators.addAll(WorldUtils.getGeneratorPlugins(worldConfig.getId()).stream().map(Plugin::getName).toList());
             EditorManager.suggestValues(viewer.getPlayer(), generators, true);
 
-            this.startEdit(viewer.getPlayer(), plugin.getMessage(WorldsLang.EDITOR_ENTER_GENERATOR), chat -> {
-                worldConfig.setGenerator(Colorizer.restrip(chat.getMessage()));
+            this.handleInput(viewer, WorldsLang.EDITOR_ENTER_GENERATOR, wrapper -> {
+                worldConfig.setGenerator(Colorizer.restrip(wrapper.getTextRaw()));
                 worldConfig.save();
                 return true;
             });
         }).getOptions().setVisibilityPolicy(viewer -> !worldConfig.hasData());
 
         this.addItem(Material.DEAD_BUSH, EditorLocales.WORLD_ENVIRONMENT, 22).setClick((viewer, event) -> {
-            worldConfig.getCreator().environment(CollectionsUtil.next(worldConfig.getCreator().environment()));
+            worldConfig.setEnvironment(CollectionsUtil.next(worldConfig.getEnvironment()));
             this.plugin.runTask(task -> this.open(viewer.getPlayer(), viewer.getPage()));
         }).getOptions().setVisibilityPolicy(viewer -> !worldConfig.hasData());
 
@@ -152,8 +152,8 @@ public class WorldMainEditor extends EditorMenu<SunLight, WorldConfig> {
 
         this.addItem(Material.TROPICAL_FISH_SPAWN_EGG, EditorLocales.WORLD_SPAWN_LIMITS, 32).setClick((viewer, event) -> {
             EditorManager.suggestValues(viewer.getPlayer(), CollectionsUtil.getEnumsList(SpawnCategory.class), false);
-            this.startEdit(viewer.getPlayer(), plugin.getMessage(WorldsLang.EDITOR_ENTER_SPAWNS), chat -> {
-                String[] split = Colorizer.restrip(chat.getMessage()).split(" ");
+            this.handleInput(viewer, WorldsLang.EDITOR_ENTER_SPAWNS, wrapper -> {
+                String[] split = Colorizer.restrip(wrapper.getTextRaw()).split(" ");
                 SpawnCategory category = StringUtil.getEnum(split[0], SpawnCategory.class).orElse(null);
                 if (category == null || category == SpawnCategory.MISC) return true;
 
@@ -166,8 +166,8 @@ public class WorldMainEditor extends EditorMenu<SunLight, WorldConfig> {
 
         this.addItem(Material.EGG, EditorLocales.WORLD_SPAWN_TICKS, 33).setClick((viewer, event) -> {
             EditorManager.suggestValues(viewer.getPlayer(), CollectionsUtil.getEnumsList(SpawnCategory.class), false);
-            this.startEdit(viewer.getPlayer(), plugin.getMessage(WorldsLang.EDITOR_ENTER_SPAWNS), chat -> {
-                String[] split = Colorizer.restrip(chat.getMessage()).split(" ");
+            this.handleInput(viewer, WorldsLang.EDITOR_ENTER_SPAWNS, wrapper -> {
+                String[] split = Colorizer.restrip(wrapper.getTextRaw()).split(" ");
                 SpawnCategory category = StringUtil.getEnum(split[0], SpawnCategory.class).orElse(null);
                 if (category == null || category == SpawnCategory.MISC) return true;
 

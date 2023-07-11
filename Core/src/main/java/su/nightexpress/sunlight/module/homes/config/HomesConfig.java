@@ -1,11 +1,12 @@
 package su.nightexpress.sunlight.module.homes.config;
 
 import su.nexmedia.engine.api.config.JOption;
+import su.nexmedia.engine.utils.PlayerRankMap;
+import su.nightexpress.sunlight.module.homes.util.HomesPerms;
 import su.nightexpress.sunlight.module.homes.util.Placeholders;
 
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class HomesConfig {
 
@@ -19,12 +20,17 @@ public class HomesConfig {
     public static final JOption<Set<String>> REGION_BLACKLIST = JOption.create("Creation.Region_Blacklist", Set.of("pvp_arena"),
         "A list of WorldGuard regions, where homes can not be created.");
 
-    public static final JOption<Map<String, Integer>> HOMES_PER_RANK = new JOption<Map<String, Integer>>("Creation.Amount_Per_Rank",
-        (cfg, path, def) -> cfg.getSection(path).stream().collect(Collectors.toMap(String::toLowerCase, v -> cfg.getInt(path + "." + v))),
-        () -> Map.of(Placeholders.DEFAULT, 1, "premium", 3, "admin", -1),
+    public static final JOption<PlayerRankMap<Integer>> HOMES_PER_RANK = new JOption<PlayerRankMap<Integer>>("Creation.Amount_Per_Rank",
+        (cfg, path, def) -> PlayerRankMap.read(cfg, path, Integer.class),
+        () -> new PlayerRankMap<>(Map.of(Placeholders.DEFAULT, 1, "premium", 3, "admin", -1)),
         "Amount of possible homes to create for certain permission groups.",
-        "If player has multiple groups, the best value will be used.",
+        "If player is in multiple groups listed here, the greater value will be used.",
+        "If player is not in any group listed here, the 'default' value will be used if present.",
+        "-*-",
+        "If you want to use this based on player's permissions rather than groups, you can do so by",
+        "giving '" + HomesPerms.PREFIX_AMOUNT + "[name]' permission, where '[name]' is name from this list.",
+        "-*-",
         "You must have Vault and permissions plugin installed for this feature to work.",
-        "Use -1 for unlimited amount.")
-        .setWriter((cfg, path, map) -> map.forEach((rank, amount) -> cfg.set(path + "." + rank, amount)));
+        "Use -1 for unlimited amount."
+    ).mapReader(map -> map.setNegativeBetter(true).setCheckAsPermission(HomesPerms.PREFIX_AMOUNT)).setWriter((cfg, path, map) -> map.write(cfg, path));
 }

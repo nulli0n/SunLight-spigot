@@ -153,11 +153,11 @@ public class BansConfig {
             return map;
         },
         () -> Map.of(
-            3, Collections.singletonList("mute " + Placeholders.Player.NAME + " 15min"),
-            5, Collections.singletonList("kick " + Placeholders.Player.NAME)
+            3, Collections.singletonList("mute " + Placeholders.PLAYER_NAME + " 15min"),
+            5, Collections.singletonList("kick " + Placeholders.PLAYER_NAME)
         ),
         "A list of commands to be executed when player got certain amount of warnings.",
         "Commands get executed from the server console.",
-        "Use '" + Placeholders.Player.NAME + "' placeholder for a player name."
+        "Use '" + Placeholders.PLAYER_NAME + "' placeholder for a player name."
     ).setWriter((cfg, path, map) -> map.forEach((amount, commands) -> cfg.set(path + "." + amount, commands)));
 }

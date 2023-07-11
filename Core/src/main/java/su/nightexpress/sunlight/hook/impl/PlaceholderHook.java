@@ -1,6 +1,7 @@
 package su.nightexpress.sunlight.hook.impl;
 
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
+import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -208,7 +209,6 @@ public class PlaceholderHook {
             else if (prefix.equalsIgnoreCase("worlds")) {
                 WorldsModule module = this.plugin.getModuleManager().getModule(WorldsModule.class).orElse(null);
                 return null;
-
             }
             else {
                 if (params.equalsIgnoreCase("god_state")) {
@@ -236,6 +236,14 @@ public class PlaceholderHook {
                     return user.getCustomName().orElse(user.getName());
                 }
 
+                if (params.startsWith("world_name_localized_")) {
+                    String worldRaw = params.substring("name_localized_".length());
+                    World world = this.plugin.getServer().getWorld(worldRaw);
+                    return world == null ? null : LangManager.getWorld(world);
+                }
+                if (params.startsWith("world_name_localized")) {
+                    return LangManager.getWorld(player.getWorld());
+                }
                 if (params.startsWith("command_is_on_cooldown_")) {
                     String name = params.substring("command_is_on_cooldown_".length());
                     Command command = CommandRegister.getCommand(name).orElse(null);

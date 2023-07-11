@@ -80,7 +80,7 @@ public class InventoryCopyCommand extends AbstractCommand<SunLight> {
 
         if (sender == target) {
             plugin.getMessage(Lang.COMMAND_INVENTORY_COPY_DONE_NOTIFY)
-                .replace(Placeholders.Player.replacer(source))
+                .replace(Placeholders.forPlayer(source))
                 .send(sender);
         }
         else {

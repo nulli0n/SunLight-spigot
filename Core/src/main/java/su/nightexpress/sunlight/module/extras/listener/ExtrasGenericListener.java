@@ -15,7 +15,6 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import su.nexmedia.engine.api.manager.AbstractListener;
-import su.nexmedia.engine.hooks.Hooks;
 import su.nexmedia.engine.utils.Colorizer;
 import su.nexmedia.engine.utils.EntityUtil;
 import su.nexmedia.engine.utils.ItemUtil;
@@ -90,7 +89,7 @@ public class ExtrasGenericListener extends AbstractListener<SunLight> {
         Player player = e.getEntity();
         if (EntityUtil.isNPC(player)) return;
 
-        Set<String> ranks = Hooks.getPermissionGroups(player);
+        Set<String> ranks = PlayerUtil.getPermissionGroups(player);
         if (ranks.stream().anyMatch(rank -> ExtrasConfig.KEEP_INVENTORY_EXP_RANKS.get().contains(rank))) {
             e.setKeepLevel(true);
             e.setDroppedExp(0);

@@ -3,6 +3,7 @@ package su.nightexpress.sunlight.module.kits.command.kits;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import su.nexmedia.engine.api.command.CommandResult;
 import su.nexmedia.engine.utils.CollectionsUtil;
 import su.nightexpress.sunlight.module.ModuleCommand;
 import su.nightexpress.sunlight.module.kits.Kit;
@@ -12,7 +13,6 @@ import su.nightexpress.sunlight.module.kits.util.KitsPerms;
 import su.nightexpress.sunlight.module.kits.util.Placeholders;
 
 import java.util.List;
-import java.util.Map;
 
 public class KitsPreviewCommand extends ModuleCommand<KitsModule> {
 
@@ -50,20 +50,20 @@ public class KitsPreviewCommand extends ModuleCommand<KitsModule> {
     }
 
     @Override
-    protected void onExecute(@NotNull CommandSender sender, @NotNull String label, @NotNull String[] args, @NotNull Map<String, String> flags) {
-        if (args.length < 2) {
+    public void onExecute(@NotNull CommandSender sender, @NotNull CommandResult result) {
+        if (result.length() < 2) {
             this.printUsage(sender);
             return;
         }
 
-        String kitId = args[1];
+        String kitId = result.getArg(1);
         Kit kit = this.module.getKitById(kitId);
         if (kit == null) {
             this.plugin.getMessage(KitsLang.KIT_ERROR_INVALID_KIT).replace(Placeholders.KIT_ID, kitId).send(sender);
             return;
         }
 
-        Player pTarget = plugin.getServer().getPlayer(args.length >= 3 && sender.hasPermission(KitsPerms.COMMAND_KITS_PREVIEW_OTHERS) ? args[2] : sender.getName());
+        Player pTarget = plugin.getServer().getPlayer(result.length() >= 3 && sender.hasPermission(KitsPerms.COMMAND_KITS_PREVIEW_OTHERS) ? result.getArg(2) : sender.getName());
         if (pTarget == null) {
             this.errorPlayer(sender);
             return;

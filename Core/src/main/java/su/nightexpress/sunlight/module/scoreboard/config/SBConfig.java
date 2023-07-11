@@ -1,7 +1,7 @@
 package su.nightexpress.sunlight.module.scoreboard.config;
 
 import su.nexmedia.engine.api.config.JOption;
-import su.nexmedia.engine.hooks.Hooks;
+import su.nexmedia.engine.utils.EngineUtils;
 import su.nightexpress.sunlight.Placeholders;
 import su.nightexpress.sunlight.module.scoreboard.impl.BoardConfig;
 
@@ -42,6 +42,6 @@ public class SBConfig {
         "If player has multiple groups, scoreboard with the highest priority will be used.",
         "Put '" + Placeholders.WILDCARD + "' to 'Groups' and/or 'Worlds' options to include all possible worlds/groups.",
         "To insert animation, use '%animation:[name]%' format. Where [name] is animation name from animations config.",
-        "You can use " + Hooks.PLACEHOLDER_API + " here."
+        "You can use " + EngineUtils.PLACEHOLDER_API + " here."
     ).setWriter((cfg, path, map) -> map.forEach((id, conf) -> conf.write(cfg, path + "." + id)));
 }

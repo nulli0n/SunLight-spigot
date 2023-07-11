@@ -37,7 +37,7 @@ public class FeedCommand extends TargetCommand {
 
         if (sender != target) {
             plugin.getMessage(Lang.COMMAND_FEED_TARGET)
-                .replace(Placeholders.Player.replacer(target))
+                .replace(Placeholders.forPlayer(target))
                 .send(sender);
         }
         if (!result.hasFlag(CommandFlags.SILENT)) {

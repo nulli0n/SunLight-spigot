@@ -3,13 +3,13 @@ package su.nightexpress.sunlight.command.children;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import su.nexmedia.engine.api.command.CommandResult;
 import su.nexmedia.engine.command.list.ReloadSubCommand;
 import su.nightexpress.sunlight.Perms;
 import su.nightexpress.sunlight.SunLight;
 import su.nightexpress.sunlight.module.Module;
 
 import java.util.List;
-import java.util.Map;
 
 @Deprecated // Draft
 public class ReloadCommand extends ReloadSubCommand<SunLight> {
@@ -27,12 +27,12 @@ public class ReloadCommand extends ReloadSubCommand<SunLight> {
     }
 
     @Override
-    public void onExecute(@NotNull CommandSender sender, @NotNull String label, @NotNull String[] args, @NotNull Map<String, String> flags) {
-        if (args.length <= 1) {
-            super.onExecute(sender, label, args, flags);
+    protected void onExecute(@NotNull CommandSender sender, @NotNull CommandResult result) {
+        if (result.length() <= 1) {
+            super.onExecute(sender, result);
             return;
         }
-        String moduleId = args[1];
+        String moduleId = result.getArg(1);
         Module module = plugin.getModuleManager().getModule(moduleId);
         if (module != null) {
             this.plugin.getLang().reload();

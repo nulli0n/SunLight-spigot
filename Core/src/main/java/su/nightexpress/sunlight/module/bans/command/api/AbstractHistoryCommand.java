@@ -4,6 +4,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import su.nexmedia.engine.api.command.CommandResult;
 import su.nexmedia.engine.api.server.JPermission;
 import su.nexmedia.engine.utils.regex.RegexUtil;
 import su.nightexpress.sunlight.data.impl.SunUser;
@@ -13,7 +14,6 @@ import su.nightexpress.sunlight.module.bans.punishment.Punishment;
 import su.nightexpress.sunlight.module.bans.punishment.PunishmentType;
 
 import java.util.List;
-import java.util.Map;
 
 public abstract class AbstractHistoryCommand extends GeneralModuleCommand<BansModule> {
 
@@ -41,15 +41,15 @@ public abstract class AbstractHistoryCommand extends GeneralModuleCommand<BansMo
     }
 
     @Override
-    public void onExecute(@NotNull CommandSender sender, @NotNull String label, @NotNull String[] args, @NotNull Map<String, String> flags) {
-        Player player = (Player) sender;
-        if (args.length < 1) {
+    protected void onExecute(@NotNull CommandSender sender, @NotNull CommandResult result) {
+        if (result.length() < 1) {
             this.printUsage(sender);
             return;
         }
 
+        Player player = (Player) sender;
         // Get the user name to view history of.
-        String userName = args[0];
+        String userName = result.getArg(0);
 
         // If 'userName' is not an IP address, we have to check if user is exists.
         // not needed to open menu for non-existent users.

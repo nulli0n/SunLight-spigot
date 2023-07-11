@@ -115,7 +115,7 @@ public class ItemSpawnCommand extends AbstractCommand<SunLight> {
         plugin.getMessage(Lang.COMMAND_ITEM_SPAWN_DONE)
             .replace(Placeholders.GENERIC_AMOUNT, amount)
             .replace(Placeholders.GENERIC_TYPE, ItemUtil.getItemName(item))
-            .replace(Placeholders.LOCATION.replacer(location))
+            .replace(Placeholders.forLocation(location))
             .send(sender);
     }
 }

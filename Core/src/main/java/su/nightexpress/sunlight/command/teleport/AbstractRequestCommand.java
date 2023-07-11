@@ -73,7 +73,7 @@ abstract class AbstractRequestCommand extends AbstractCommand<SunLight> {
         // Check if 'accepter' disaled requests so request should be declined.
         if (!userTarget.getSettings().get(TeleportRequest.SETTING_REQUESTS)) {
             plugin.getMessage(Lang.COMMAND_TELEPORT_ERROR_REQUESTS_DISABLED)
-                .replace(Placeholders.Player.replacer(target))
+                .replace(Placeholders.forPlayer(target))
                 .send(sender);
             return;
         }
@@ -116,7 +116,7 @@ abstract class AbstractRequestCommand extends AbstractCommand<SunLight> {
         TeleportRequest.addRequest(target.getUniqueId(), request, false);
 
         // Send teleport notifications.
-        this.getMessageForTarget().replace(Placeholders.Player.replacer(player)).send(target);
-        this.getMessageForSender().replace(Placeholders.Player.replacer(target)).send(sender);
+        this.getMessageForTarget().replace(Placeholders.forPlayer(player)).send(target);
+        this.getMessageForSender().replace(Placeholders.forPlayer(target)).send(sender);
     }
 }

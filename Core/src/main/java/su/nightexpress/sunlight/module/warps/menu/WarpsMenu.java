@@ -155,10 +155,10 @@ public class WarpsMenu extends ConfigMenu<SunLight> implements AutoPaged<Warp> {
             loreNoMoney = this.loreNoMoney;
         }
 
-        lore = StringUtil.replace(lore, PLACEHOLDER_TIMES, false, loreTimes);
-        lore = StringUtil.replace(lore, PLACEHOLDER_COOLDOWN, false, loreCooldown);
-        lore = StringUtil.replace(lore, PLACEHOLDER_NO_MONEY, false, loreNoMoney);
-        lore = StringUtil.replace(lore, PLACEHOLDER_NO_PERMISSION, false, loreNoPerm);
+        lore = StringUtil.replaceInList(lore, PLACEHOLDER_TIMES, loreTimes);
+        lore = StringUtil.replaceInList(lore, PLACEHOLDER_COOLDOWN, loreCooldown);
+        lore = StringUtil.replaceInList(lore, PLACEHOLDER_NO_MONEY, loreNoMoney);
+        lore = StringUtil.replaceInList(lore, PLACEHOLDER_NO_PERMISSION, loreNoPerm);
 
         List<String> lore2 = lore;
         ItemUtil.mapMeta(item, meta -> {

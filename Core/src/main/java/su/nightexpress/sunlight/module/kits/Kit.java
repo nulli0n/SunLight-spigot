@@ -9,10 +9,9 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import su.nexmedia.engine.api.config.JYML;
 import su.nexmedia.engine.api.manager.AbstractConfigHolder;
-import su.nexmedia.engine.api.manager.ICleanable;
 import su.nexmedia.engine.api.placeholder.Placeholder;
 import su.nexmedia.engine.api.placeholder.PlaceholderMap;
-import su.nexmedia.engine.hooks.external.VaultHook;
+import su.nexmedia.engine.integration.VaultHook;
 import su.nexmedia.engine.lang.LangManager;
 import su.nexmedia.engine.utils.*;
 import su.nightexpress.sunlight.SunLight;
@@ -31,7 +30,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class Kit extends AbstractConfigHolder<SunLight> implements ICleanable, Placeholder {
+public class Kit extends AbstractConfigHolder<SunLight> implements Placeholder {
 
     private final KitsModule module;
 
@@ -98,9 +97,9 @@ public class Kit extends AbstractConfigHolder<SunLight> implements ICleanable, P
         this.setPriority(cfg.getInt("Priority"));
         this.setIcon(cfg.getItem("Icon"));
         this.setCommands(cfg.getStringList("Commands"));
-        this.setItems(ItemUtil.fromBase64(cfg.getStringList("Items")));
-        this.setArmor(ItemUtil.fromBase64(cfg.getStringList("Armor")));
-        this.setExtras(ItemUtil.fromBase64(cfg.getStringList("Extras")));
+        this.setItems(ItemUtil.decompress(cfg.getStringList("Items")));
+        this.setArmor(ItemUtil.decompress(cfg.getStringList("Armor")));
+        this.setExtras(ItemUtil.decompress(cfg.getStringList("Extras")));
         return true;
     }
 
@@ -114,12 +113,11 @@ public class Kit extends AbstractConfigHolder<SunLight> implements ICleanable, P
         cfg.set("Priority", this.getPriority());
         cfg.setItem("Icon", this.getIcon());
         cfg.set("Commands", this.getCommands());
-        cfg.set("Items", ItemUtil.toBase64(this.getItems()));
-        cfg.set("Armor", ItemUtil.toBase64(this.getArmor()));
-        cfg.set("Extras", ItemUtil.toBase64(this.getExtras()));
+        cfg.set("Items", ItemUtil.compress(this.getItems()));
+        cfg.set("Armor", ItemUtil.compress(this.getArmor()));
+        cfg.set("Extras", ItemUtil.compress(this.getExtras()));
     }
 
-    @Override
     public void clear() {
         if (this.editor != null) {
             this.editor.clear();
@@ -314,6 +312,7 @@ public class Kit extends AbstractConfigHolder<SunLight> implements ICleanable, P
     }
 
     public boolean canAfford(@NotNull Player player) {
+        if (!EngineUtils.hasVault()) return true;
         if (!VaultHook.hasEconomy() || player.hasPermission(KitsPerms.BYPASS_COST_MONEY)) return true;
 
         return VaultHook.getBalance(player) >= this.getCost();

@@ -2,14 +2,13 @@ package su.nightexpress.sunlight.module.spawns.command;
 
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
+import su.nexmedia.engine.api.command.CommandResult;
 import su.nexmedia.engine.api.command.GeneralCommand;
 import su.nexmedia.engine.command.list.HelpSubCommand;
 import su.nightexpress.sunlight.SunLight;
 import su.nightexpress.sunlight.module.spawns.SpawnsModule;
 import su.nightexpress.sunlight.module.spawns.config.SpawnsLang;
 import su.nightexpress.sunlight.module.spawns.util.SpawnsPerms;
-
-import java.util.Map;
 
 public class SpawnsCommand extends GeneralCommand<SunLight> {
 
@@ -42,7 +41,7 @@ public class SpawnsCommand extends GeneralCommand<SunLight> {
     }
 
     @Override
-    public void onExecute(@NotNull CommandSender sender, @NotNull String label, @NotNull String[] args, @NotNull Map<String, String> flags) {
+    protected void onExecute(@NotNull CommandSender commandSender, @NotNull CommandResult commandResult) {
 
     }
 }

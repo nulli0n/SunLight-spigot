@@ -52,7 +52,7 @@ public class FireCommand extends ChangeCommand {
             .replace(Placeholders.GENERIC_TOTAL, NumberUtil.format(current))
             .replace(Placeholders.GENERIC_AMOUNT, NumberUtil.format(amount))
             .replace(Placeholders.GENERIC_TIME, NumberUtil.format(seconds))
-            .replace(Placeholders.Player.replacer(target))
+            .replace(Placeholders.forPlayer(target))
             .send(sender);
     }
 }

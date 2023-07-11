@@ -4,11 +4,11 @@ import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import su.nexmedia.engine.api.config.JYML;
-import su.nexmedia.engine.hooks.Hooks;
+import su.nexmedia.engine.utils.EngineUtils;
 import su.nightexpress.sunlight.SunLight;
+import su.nightexpress.sunlight.SunLightAPI;
 import su.nightexpress.sunlight.actions.action.AbstractActionExecutor;
 import su.nightexpress.sunlight.actions.condition.AbstractConditionValidator;
-import su.nightexpress.sunlight.SunLightAPI;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -49,7 +49,7 @@ public class ActionManipulator {
 
     public static boolean processConditions(@NotNull Player player, @NotNull List<String> conditionsRaw) {
         for (String conditionRaw : conditionsRaw) {
-            if (Hooks.hasPlaceholderAPI()) {
+            if (EngineUtils.hasPlaceholderAPI()) {
                 conditionRaw = PlaceholderAPI.setPlaceholders(player, conditionRaw);
             }
 
@@ -95,7 +95,7 @@ public class ActionManipulator {
 
         // Run actions
         for (String actionRaw : actionSection.getActionExecutors()) {
-            if (Hooks.hasPlaceholderAPI()) {
+            if (EngineUtils.hasPlaceholderAPI()) {
                 actionRaw = PlaceholderAPI.setPlaceholders(player, actionRaw);
             }
 

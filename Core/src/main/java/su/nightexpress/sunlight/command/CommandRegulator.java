@@ -4,7 +4,6 @@ import org.jetbrains.annotations.NotNull;
 import su.nexmedia.engine.api.command.GeneralCommand;
 import su.nexmedia.engine.api.config.JYML;
 import su.nexmedia.engine.api.manager.AbstractManager;
-import su.nexmedia.engine.api.manager.ICleanable;
 import su.nexmedia.engine.command.CommandRegister;
 import su.nexmedia.engine.utils.FileUtil;
 import su.nexmedia.engine.utils.Pair;
@@ -18,6 +17,7 @@ import su.nightexpress.sunlight.command.mob.MobCommand;
 import su.nightexpress.sunlight.command.nick.NickCommand;
 import su.nightexpress.sunlight.command.teleport.TeleportCommand;
 import su.nightexpress.sunlight.command.time.TimeCommand;
+import su.nightexpress.sunlight.utils.Cleanable;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -93,7 +93,7 @@ public class CommandRegulator extends AbstractManager<SunLight> {
     @Override
     public void onShutdown() {
         new HashSet<>(this.plugin.getCommandManager().getCommands()).forEach(command -> {
-            if (command instanceof ICleanable cleanable) {
+            if (command instanceof Cleanable cleanable) {
                 cleanable.clear();
             }
             this.plugin.getCommandManager().unregisterCommand(command);

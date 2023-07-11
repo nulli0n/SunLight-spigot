@@ -80,7 +80,7 @@ public class EnderchestCopyCommand extends AbstractCommand<SunLight> {
 
         if (sender == target) {
             plugin.getMessage(Lang.COMMAND_ENDERCHEST_COPY_DONE_EXECUTOR)
-                .replace(Placeholders.Player.replacer(source))
+                .replace(Placeholders.forPlayer(source))
                 .send(sender);
         }
         else {

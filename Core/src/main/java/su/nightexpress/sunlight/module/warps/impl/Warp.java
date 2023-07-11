@@ -9,11 +9,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import su.nexmedia.engine.api.config.JYML;
 import su.nexmedia.engine.api.manager.AbstractConfigHolder;
-import su.nexmedia.engine.api.manager.ICleanable;
 import su.nexmedia.engine.api.placeholder.Placeholder;
 import su.nexmedia.engine.api.placeholder.PlaceholderMap;
 import su.nexmedia.engine.command.CommandRegister;
-import su.nexmedia.engine.hooks.external.VaultHook;
+import su.nexmedia.engine.integration.VaultHook;
 import su.nexmedia.engine.lang.LangManager;
 import su.nexmedia.engine.utils.*;
 import su.nightexpress.sunlight.SunLight;
@@ -33,7 +32,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.*;
 
-public class Warp extends AbstractConfigHolder<SunLight> implements ICleanable, Placeholder {
+public class Warp extends AbstractConfigHolder<SunLight> implements Placeholder {
 
     public static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ISO_LOCAL_TIME;
 
@@ -156,7 +155,6 @@ public class Warp extends AbstractConfigHolder<SunLight> implements ICleanable, 
         return this.placeholderMap;
     }
 
-    @Override
     public void clear() {
         if (this.editor != null) {
             this.editor.clear();
@@ -288,7 +286,7 @@ public class Warp extends AbstractConfigHolder<SunLight> implements ICleanable, 
     }
 
     public boolean hasVisitCost() {
-        return VaultHook.hasEconomy() && this.getVisitCostMoney() > 0D;
+        return EngineUtils.hasVault() && VaultHook.hasEconomy() && this.getVisitCostMoney() > 0D;
     }
 
     public boolean canAffordVisit(@NotNull Player player) {

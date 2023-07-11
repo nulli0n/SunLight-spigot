@@ -47,7 +47,7 @@ public class ItemAmountCommand extends AbstractCommand<SunLight> {
         Player player = (Player) sender;
         ItemStack item = player.getInventory().getItemInMainHand();
         if (item.getType().isAir()) {
-            plugin.getMessage(Lang.ERROR_ITEM_INVALID).send(sender);
+            plugin.getMessage(Lang.COMMAND_ITEM_ERROR_EMPTY_HAND).send(sender);
             return;
         }
 

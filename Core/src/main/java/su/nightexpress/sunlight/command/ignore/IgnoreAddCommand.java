@@ -53,7 +53,7 @@ public class IgnoreAddCommand extends AbstractCommand<SunLight> {
         user.saveData(this.plugin);
 
         plugin.getMessage(Lang.COMMAND_IGNORE_ADD_DONE)
-            .replace(Placeholders.Player.NAME, userTarget.getName())
+            .replace(Placeholders.PLAYER_NAME, userTarget.getName())
             .send(sender);
     }
 }

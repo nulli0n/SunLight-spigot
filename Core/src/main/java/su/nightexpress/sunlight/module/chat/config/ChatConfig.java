@@ -6,8 +6,9 @@ import org.bukkit.Sound;
 import org.bukkit.event.EventPriority;
 import su.nexmedia.engine.api.config.JOption;
 import su.nexmedia.engine.api.lang.LangMessage;
-import su.nexmedia.engine.utils.CollectionsUtil;
 import su.nexmedia.engine.utils.Colorizer;
+import su.nexmedia.engine.utils.StringUtil;
+import su.nexmedia.engine.utils.message.NexParser;
 import su.nightexpress.sunlight.SunLightAPI;
 import su.nightexpress.sunlight.module.chat.ChatPerms;
 import su.nightexpress.sunlight.module.chat.util.ChatSpyType;
@@ -53,8 +54,26 @@ public class ChatConfig {
     public static final JOption<Map<String, ChatPlayerFormat>> FORMAT_PLAYER = new JOption<Map<String, ChatPlayerFormat>>("Format",
         (cfg, path, def) -> cfg.getSection(path).stream().collect(Collectors.toMap(String::toLowerCase, v -> ChatPlayerFormat.read(cfg, path + "." + v))),
         () -> Map.of(
-            Placeholders.DEFAULT, new ChatPlayerFormat(0, "{json: ~text: " + Placeholders.PLAYER_PREFIX + "; ~showText: &fConsider #c1fd9f/donate &fto get special ranks; ~runCommand: /donate}{json: ~text: " + Placeholders.PLAYER_DISPLAY_NAME + "; ~showText: #c59ffdPlayer: #fd9ff3" + Placeholders.PLAYER_NAME + " #c59ffdNickname: #fd9ff3" + Placeholders.PLAYER_DISPLAY_NAME + "|#c59ffdBalance: #fd9ff3$%vault_eco_balance_formatted%|&7|&7(Click to send private message); ~suggestCommand: /tell " + Placeholders.PLAYER_NAME + " ;}" + Placeholders.PLAYER_SUFFIX, "{json: ~text: " + Placeholders.FORMAT_PLAYER_COLOR + Placeholders.GENERIC_MESSAGE + "; ~showText: &7&oMessage was sent at: #c1fd9f%localtime_time_HH:MM:ss%;}", ChatColor.GRAY.getName()),
-            "owner", new ChatPlayerFormat(100, "{json: ~text: " + Placeholders.PLAYER_PREFIX + "; ~showText: &fThis player is the server #c1fd9fOwner;}{json: ~text: " + Placeholders.PLAYER_DISPLAY_NAME + "; ~showText: #fe9e3ePlayer: #fbb671" + Placeholders.PLAYER_NAME + " #fe9e3eNickname: #fbb671" + Placeholders.PLAYER_DISPLAY_NAME + "|#fe9e3eBalance: #fbb671$%vault_eco_balance_formatted%|&7|&7(Click to send private message); ~suggestCommand: /tell " + Placeholders.PLAYER_NAME + " ;}" + Placeholders.PLAYER_SUFFIX, "{json: ~text: " + Placeholders.FORMAT_PLAYER_COLOR + Placeholders.GENERIC_MESSAGE + "; ~showText: &7&oMessage was sent at: #c1fd9f%localtime_time_HH:MM:ss%;}", ChatColor.GRAY.getName())
+            Placeholders.DEFAULT, new ChatPlayerFormat(0,
+                "<? show_text:\"&fConsider #c1fd9f/donate &fto get special ranks\" run_command:\"/donate\" ?>" + Placeholders.PLAYER_PREFIX + "</>" +
+                    "<? " +
+                    "show_text:\"#c59ffdPlayer: #fd9ff3" + Placeholders.PLAYER_NAME + " #c59ffdNickname: #fd9ff3" + Placeholders.PLAYER_DISPLAY_NAME + NexParser.TAG_NEWLINE + "#c59ffdBalance: #fd9ff3$%vault_eco_balance_formatted%" + NexParser.TAG_NEWLINE + "&7" + NexParser.TAG_NEWLINE + "&7(Click to send private message)\" " +
+                    "suggest_command:\"/tell " + Placeholders.PLAYER_NAME + "\" "  +
+                    "?>" +
+                    Placeholders.PLAYER_DISPLAY_NAME +
+                    "</>" +
+                    Placeholders.PLAYER_SUFFIX,
+                "<? show_text:\"&7&oMessage was sent at: #c1fd9f%localtime_time_HH:MM:ss%\" ?>" + Placeholders.FORMAT_PLAYER_COLOR + Placeholders.GENERIC_MESSAGE + "</>",
+                ChatColor.GRAY.getName()),
+
+            "owner", new ChatPlayerFormat(100,
+                "<? show_text:\"&fThis player is the server #c1fd9fOwner\" ?>" + Placeholders.PLAYER_PREFIX + "</>" +
+                    "<? " +
+                    "show_text:\"#fe9e3ePlayer: #fbb671" + Placeholders.PLAYER_NAME + " #fe9e3eNickname: #fbb671" + Placeholders.PLAYER_DISPLAY_NAME + NexParser.TAG_NEWLINE + "#fe9e3eBalance: #fbb671$%vault_eco_balance_formatted%" + NexParser.TAG_NEWLINE + "&7" + NexParser.TAG_NEWLINE + "&7(Click to send private message)\" " +
+                    "suggest_command:\"/tell " + Placeholders.PLAYER_NAME + "\" " +
+                    "?>" + Placeholders.PLAYER_DISPLAY_NAME + "</>" + Placeholders.PLAYER_SUFFIX,
+                "<? show_text:\"&7&oMessage was sent at: #c1fd9f%localtime_time_HH:MM:ss%\" ?>" + Placeholders.FORMAT_PLAYER_COLOR + Placeholders.GENERIC_MESSAGE + "</>",
+                ChatColor.GRAY.getName())
         ),
         "In this section you can set custom format for each Permision Group",
         "If player has multiple permission groups, format with the highest priority will be used.",
@@ -81,7 +100,7 @@ public class ChatConfig {
 
     public static final JOption<LangMessage> PM_FORMAT_INCOMING = new JOption<>("Private_Messages.Format.Incoming",
         (cfg, path, def) -> new LangMessage(SunLightAPI.PLUGIN, cfg.getString(path, "")),
-        new LangMessage(SunLightAPI.PLUGIN, "{message: ~sound: " + Sound.BLOCK_NOTE_BLOCK_BELL.name() + "; ~prefix: false;}{json: ~text: &d[Private] &f" + Placeholders.Player.DISPLAY_NAME + " &7whispers:&7 " + Placeholders.GENERIC_MESSAGE + "; ~showText: &bClick to reply!; ~suggestCommand: /tell " + Placeholders.Player.NAME + " ;}"),
+        new LangMessage(SunLightAPI.PLUGIN, "<! sound:\"" + Sound.BLOCK_NOTE_BLOCK_BELL.name() + "\" prefix:\"false\" !><? show_text:\"&bClick to reply!\" suggest_command:\"/tell " + Placeholders.PLAYER_NAME + "\" ?>" + "&d[Private] &f" + Placeholders.PLAYER_DISPLAY_NAME + " &7whispers:&7 " + Placeholders.GENERIC_MESSAGE + "</>"),
         "Sets the format for incoming private messages.",
         "Use " + Placeholders.GENERIC_MESSAGE + " placeholder for a message text.",
         "You can use 'Player' placeholders: " + Placeholders.ENGINE_URL_PLACEHOLDERS,
@@ -90,7 +109,7 @@ public class ChatConfig {
 
     public static final JOption<LangMessage> PM_FORMAT_OUTGOING = new JOption<>("Private_Messages.Format.Outgoing",
         (cfg, path, def) -> new LangMessage(SunLightAPI.PLUGIN, cfg.getString(path, "")),
-        new LangMessage(SunLightAPI.PLUGIN, "{message: ~sound: " + Sound.UI_BUTTON_CLICK.name() + "; ~prefix: false;}&d[Private] &7whisper to &f" + Placeholders.Player.DISPLAY_NAME + ":&7 " + Placeholders.GENERIC_MESSAGE),
+        new LangMessage(SunLightAPI.PLUGIN, "<! sound:\"" + Sound.UI_BUTTON_CLICK.name() + "\" prefix:\"false\" !>&d[Private] &7whisper to &f" + Placeholders.PLAYER_DISPLAY_NAME + ":&7 " + Placeholders.GENERIC_MESSAGE),
         "Sets the format for outgoing private messages.",
         "Use " + Placeholders.GENERIC_MESSAGE + " placeholder for a message text.",
         "You can use 'Player' placeholders: " + Placeholders.ENGINE_URL_PLACEHOLDERS,
@@ -122,7 +141,7 @@ public class ChatConfig {
     );
 
     public static final JOption<String> MENTIONS_FORMAT = JOption.create("Mentions.Format",
-        "&a@" + Placeholders.Player.DISPLAY_NAME + Placeholders.FORMAT_PLAYER_COLOR,
+        "&a@" + Placeholders.PLAYER_DISPLAY_NAME + Placeholders.FORMAT_PLAYER_COLOR,
         "A text that will replace mention if player is valid.",
         "You can use 'Player' placeholders: " + Placeholders.ENGINE_URL_PLACEHOLDERS,
         "JSON and Message Options are allowed: " + Placeholders.ENGINE_URL_LANG_JSON,
@@ -132,7 +151,7 @@ public class ChatConfig {
 
     public static final JOption<LangMessage> MENTIONS_NOTIFY = new JOption<>("Mentions.Notify",
         (cfg, path, def) -> new LangMessage(SunLightAPI.PLUGIN, cfg.getString(path, "")),
-        new LangMessage(SunLightAPI.PLUGIN, "{message: ~type: TITLES; ~fadeIn: 20; ~stay: 50; ~fadeOut: 20; ~sound: " + Sound.BLOCK_NOTE_BLOCK_BELL.name() + ";}&a&lMentioned!\\n&a" + Placeholders.Player.DISPLAY_NAME + "&7 mentioned you in chat."),
+        new LangMessage(SunLightAPI.PLUGIN, "<! type:\"titles:20:50:20\" sound:\"" + Sound.BLOCK_NOTE_BLOCK_BELL.name() + "\" !>&a&lMentioned!\\n&a" + Placeholders.PLAYER_DISPLAY_NAME + "&7 mentioned you in chat."),
         "This is the message, that will be sent to mentioned player(s).",
         "You can use 'Player' placeholders: " + Placeholders.ENGINE_URL_PLACEHOLDERS,
         "You can use all Lang Message features: " + Placeholders.ENGINE_URL_LANG,
@@ -161,14 +180,14 @@ public class ChatConfig {
     );
     public static final JOption<Map<ChatSpyType, String>> SPY_FORMAT = new JOption<Map<ChatSpyType, String>>("SpyOps.Format",
         (cfg, path, def) -> {
-            return cfg.getSection(path).stream().map(typeRaw -> CollectionsUtil.getEnum(typeRaw, ChatSpyType.class))
+            return cfg.getSection(path).stream().map(typeRaw -> StringUtil.getEnum(typeRaw, ChatSpyType.class).orElse(null))
                 .filter(Objects::nonNull).collect(Collectors.toMap(k -> k, v -> Colorizer.apply(cfg.getString(path + "." + v.name(), ""))));
         },
         () -> {
         Map<ChatSpyType, String> map = new HashMap<>();
-        map.put(ChatSpyType.SOCIAL, Colorizer.apply("&c[SocialSpy] &4" + Placeholders.Player.NAME + " &7-> &4%player_target%&7: &c" + Placeholders.GENERIC_MESSAGE));
-        map.put(ChatSpyType.COMMAND, Colorizer.apply("&c[CommandSpy] &4" + Placeholders.Player.NAME + " &7executed a command: &c" + Placeholders.GENERIC_MESSAGE));
-        map.put(ChatSpyType.CHAT, Colorizer.apply("&c[ChatSpy] &7[&f" + Placeholders.CHANNEL_NAME + "&7] &4" + Placeholders.Player.NAME + "&7: &c" + Placeholders.GENERIC_MESSAGE));
+        map.put(ChatSpyType.SOCIAL, Colorizer.apply("&c[SocialSpy] &4" + Placeholders.PLAYER_NAME + " &7-> &4%player_target%&7: &c" + Placeholders.GENERIC_MESSAGE));
+        map.put(ChatSpyType.COMMAND, Colorizer.apply("&c[CommandSpy] &4" + Placeholders.PLAYER_NAME + " &7executed a command: &c" + Placeholders.GENERIC_MESSAGE));
+        map.put(ChatSpyType.CHAT, Colorizer.apply("&c[ChatSpy] &7[&f" + Placeholders.CHANNEL_NAME + "&7] &4" + Placeholders.PLAYER_NAME + "&7: &c" + Placeholders.GENERIC_MESSAGE));
         return map;
         },
         "Sets the format for each Spy Mode.",
@@ -237,7 +256,7 @@ public class ChatConfig {
         "This placeholder will be replaced in player message with an item from their hand using the format below."
     );
     public static final JOption<String> ITEM_SHOW_FORMAT_CHAT = JOption.create("Item_Show.Format.Chat",
-        "&7<{json: ~text: &f" + Placeholders.ITEM_NAME + "; ~showItem: " + Placeholders.ITEM_VALUE + ";}&7>" + Placeholders.FORMAT_PLAYER_COLOR,
+        "&7<<? show_item:\"" + Placeholders.ITEM_VALUE + "\" ?>&f" + Placeholders.ITEM_NAME + "</>&7>" + Placeholders.FORMAT_PLAYER_COLOR,
         "Format for the item showcase in main chat. Item placeholder will be replaced by this text.",
         "You can use JSON format here: " + Placeholders.ENGINE_URL_LANG_JSON,
         "You can use 'Player' placeholders: " + Placeholders.ENGINE_URL_PLACEHOLDERS,
@@ -245,8 +264,9 @@ public class ChatConfig {
         "- " + Placeholders.ITEM_NAME + " - Item display name.",
         "- " + Placeholders.ITEM_VALUE + " - Item Base64 value (for 'showItem' JSON argument)."
     ).mapReader(Colorizer::apply);
+
     public static final JOption<String> ITEM_SHOW_FORMAT_PM_IN = JOption.create("Item_Show.Format.Private.Incoming",
-        "&d[Private] &f" + Placeholders.Player.DISPLAY_NAME + " &7shows you &7<{json: ~text: &f" + Placeholders.ITEM_NAME + "; ~showItem: " + Placeholders.ITEM_VALUE + ";}&7>",
+        "&d[Private] &f" + Placeholders.PLAYER_DISPLAY_NAME + " &7shows you &7<<? show_item:\"" + Placeholders.ITEM_VALUE + "\" ?>&f" + Placeholders.ITEM_NAME + "</>&7>",
         "Format for the incoming private message, when players uses 'Item_Show.Placeholder' in his message.",
         "This message will be sent next to the original message.",
         "You can use JSON format here: " + Placeholders.ENGINE_URL_LANG_JSON,
@@ -255,8 +275,9 @@ public class ChatConfig {
         "- " + Placeholders.ITEM_NAME + " - Item display name.",
         "- " + Placeholders.ITEM_VALUE + " - Item Base64 value (for 'showItem' JSON argument)."
     ).mapReader(Colorizer::apply);
+
     public static final JOption<String> ITEM_SHOW_FORMAT_PM_OUT = JOption.create("Item_Show.Format.Private.Outgoing",
-        "&d[Private] &7You showed &7<{json: ~text: &f" + Placeholders.ITEM_NAME + "; ~showItem: " + Placeholders.ITEM_VALUE + ";}&7> to &f" + Placeholders.Player.DISPLAY_NAME + "&7.",
+        "&d[Private] &7You showed " + "&7<<? show_item:\"" + Placeholders.ITEM_VALUE + "\" ?>&f" + Placeholders.ITEM_NAME + "</>&7>" + " to &f" + Placeholders.PLAYER_DISPLAY_NAME + "&7.",
         "Format for the outgoing private message, when players uses 'Item_Show.Placeholder' in his message.",
         "This message will be sent next to the original message.",
         "You can use JSON format here: " + Placeholders.ENGINE_URL_LANG_JSON,

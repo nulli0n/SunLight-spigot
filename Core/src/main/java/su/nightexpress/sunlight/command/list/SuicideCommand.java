@@ -24,6 +24,6 @@ public class SuicideCommand extends GeneralCommand<SunLight> {
     protected void onExecute(@NotNull CommandSender sender, @NotNull CommandResult result) {
         Player target = (Player) sender;
         target.setHealth(0);
-        plugin.getMessage(Lang.COMMAND_SUICIDE_DONE).replace(Placeholders.Player.replacer(target)).broadcast();
+        plugin.getMessage(Lang.COMMAND_SUICIDE_DONE).replace(Placeholders.forPlayer(target)).broadcast();
     }
 }

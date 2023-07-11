@@ -63,10 +63,10 @@ public class SpeedCommand extends TargetCommand {
         }
 
         if (!result.hasFlag(CommandFlags.SILENT)) {
-            msgNotify.replace(Placeholders.Player.replacer(sender)).replace(Placeholders.GENERIC_AMOUNT, speed).send(target);
+            msgNotify.replace(Placeholders.forSender(sender)).replace(Placeholders.GENERIC_AMOUNT, speed).send(target);
         }
         if (sender != target) {
-            msgTarget.replace(Placeholders.Player.replacer(target)).replace(Placeholders.GENERIC_AMOUNT, speed).send(sender);
+            msgTarget.replace(Placeholders.forPlayer(target)).replace(Placeholders.GENERIC_AMOUNT, speed).send(sender);
         }
     }
 }

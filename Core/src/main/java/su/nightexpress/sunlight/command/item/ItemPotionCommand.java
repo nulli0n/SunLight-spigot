@@ -53,7 +53,7 @@ public class ItemPotionCommand extends GeneralCommand<SunLight> {
         Player player = (Player) sender;
         ItemStack item = player.getInventory().getItemInMainHand();
         if (item.getType().isAir()) {
-            this.errorItem(sender);
+            this.plugin.getMessage(Lang.COMMAND_ITEM_ERROR_EMPTY_HAND).send(sender);
             return;
         }
 

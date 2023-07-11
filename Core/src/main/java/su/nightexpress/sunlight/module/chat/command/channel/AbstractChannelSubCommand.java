@@ -6,13 +6,13 @@ import org.bukkit.permissions.Permission;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import su.nexmedia.engine.api.command.AbstractCommand;
+import su.nexmedia.engine.api.command.CommandResult;
 import su.nightexpress.sunlight.SunLight;
 import su.nightexpress.sunlight.module.chat.ChatChannel;
 import su.nightexpress.sunlight.module.chat.ChatModule;
 import su.nightexpress.sunlight.module.chat.config.ChatLang;
 
 import java.util.List;
-import java.util.Map;
 
 abstract class AbstractChannelSubCommand extends AbstractCommand<SunLight> {
 
@@ -40,13 +40,13 @@ abstract class AbstractChannelSubCommand extends AbstractCommand<SunLight> {
     }
 
     @Override
-    protected void onExecute(@NotNull CommandSender sender, @NotNull String label, @NotNull String[] args, @NotNull Map<String, String> flags) {
-        if (args.length < 2) {
+    protected void onExecute(@NotNull CommandSender sender, @NotNull CommandResult result) {
+        if (result.length() < 2) {
             this.printUsage(sender);
             return;
         }
 
-        ChatChannel channel = this.chatModule.getChannel(args[1]);
+        ChatChannel channel = this.chatModule.getChannel(result.getArg(1));
         if (channel == null) {
             this.plugin.getMessage(ChatLang.Channel_Error_Invalid).send(sender);
             return;

@@ -39,12 +39,12 @@ public class TeleportSummonCommand extends TargetCommand {
         SunUtils.teleport(target, player);
 
         plugin.getMessage(Lang.COMMAND_TELEPORT_SUMMON_TARGET)
-            .replace(Placeholders.Player.replacer(target))
+            .replace(Placeholders.forPlayer(target))
             .send(sender);
 
         if (!result.hasFlag(CommandFlags.SILENT)) {
             plugin.getMessage(Lang.COMMAND_TELEPORT_SUMMON_NOTIFY)
-                .replace(Placeholders.Player.replacer(sender))
+                .replace(Placeholders.forSender(sender))
                 .send(target);
         }
     }

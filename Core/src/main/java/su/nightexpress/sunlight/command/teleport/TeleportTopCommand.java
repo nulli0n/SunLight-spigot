@@ -41,12 +41,12 @@ public class TeleportTopCommand extends TargetCommand {
 
         if (sender != target) {
             plugin.getMessage(Lang.COMMAND_TELEPORT_TOP_TARGET)
-                .replace(Placeholders.Player.replacer(target))
+                .replace(Placeholders.forPlayer(target))
                 .send(sender);
         }
         if (!result.hasFlag(CommandFlags.SILENT)) {
             plugin.getMessage(Lang.COMMAND_TELEPORT_TOP_NOTIFY)
-                .replace(Placeholders.Player.replacer(sender))
+                .replace(Placeholders.forSender(sender))
                 .send(target);
         }
     }

@@ -11,6 +11,7 @@ public class HomesPerms {
     private static final String PREFIX         = Perms.PREFIX + ModuleId.HOMES + ".";
     private static final String PREFIX_COMMAND = PREFIX + "command.";
     private static final String PREFIX_BYPASS  = PREFIX + "bypass.";
+    public static final String PREFIX_AMOUNT = PREFIX + "amount.";
 
     public static final JPermission MODULE  = new JPermission(PREFIX + Placeholders.WILDCARD, "Access to all Homes Module features.");
     public static final JPermission COMMAND = new JPermission(PREFIX_COMMAND + Placeholders.WILDCARD, "Access to all Homes Module commands.");

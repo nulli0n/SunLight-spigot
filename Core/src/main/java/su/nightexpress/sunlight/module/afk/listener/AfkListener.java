@@ -34,7 +34,7 @@ public class AfkListener extends AbstractListener<SunLight> {
 
         if (this.module.isAfk(target)) {
             CommandSender from = e.getSender();
-            this.plugin.getMessage(AfkLang.AFK_NOTIFY_PM).replace(Placeholders.Player.replacer(target)).send(from);
+            this.plugin.getMessage(AfkLang.AFK_NOTIFY_PM).replace(Placeholders.forPlayer(target)).send(from);
         }
     }
 
@@ -46,7 +46,7 @@ public class AfkListener extends AbstractListener<SunLight> {
         if (from == null || target == null) return;
 
         if (this.module.isAfk(target)) {
-            this.plugin.getMessage(AfkLang.AFK_NOTIFY_TELEPORT).replace(Placeholders.Player.replacer(target)).send(from);
+            this.plugin.getMessage(AfkLang.AFK_NOTIFY_TELEPORT).replace(Placeholders.forPlayer(target)).send(from);
         }
     }
 

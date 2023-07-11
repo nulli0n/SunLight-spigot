@@ -4,7 +4,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import su.nexmedia.engine.api.config.JYML;
-import su.nexmedia.engine.api.manager.ILoadable;
+import su.nexmedia.engine.api.manager.Loadable;
 import su.nexmedia.engine.utils.regex.RegexUtil;
 import su.nightexpress.sunlight.SunLight;
 import su.nightexpress.sunlight.module.chat.ChatModule;
@@ -16,7 +16,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class ChatRuleManager implements ILoadable {
+public class ChatRuleManager implements Loadable {
 
     private final SunLight   plugin;
     private final ChatModule chatModule;

@@ -17,7 +17,7 @@ public class TabNameFormat {
 
     public static TabNameFormat read(@NotNull JYML cfg, @NotNull String path) {
         int priority = cfg.getInt(path + ".Priority");
-        String format = cfg.getString(path + ".Format", Placeholders.Player.DISPLAY_NAME);
+        String format = cfg.getString(path + ".Format", Placeholders.PLAYER_DISPLAY_NAME);
 
         return new TabNameFormat(priority, format);
     }

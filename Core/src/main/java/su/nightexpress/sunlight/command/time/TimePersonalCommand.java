@@ -63,7 +63,7 @@ public class TimePersonalCommand extends TargetCommand {
 
         if (sender != target) {
             plugin.getMessage(Lang.COMMAND_TIME_PERSONAL_TARGET)
-                .replace(Placeholders.Player.NAME, target.getName())
+                .replace(Placeholders.forPlayer(target))
                 .replace(Placeholders.GENERIC_TIME, time.format(Config.GENERAL_TIME_FORMAT.get()))
                 .replace(Placeholders.GENERIC_TOTAL, NumberUtil.format(ticks))
                 .send(sender);

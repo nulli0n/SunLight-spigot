@@ -41,7 +41,7 @@ public class TeleportToCommand extends TargetCommand {
         player.teleport(target);
 
         plugin.getMessage(Lang.COMMAND_TELEPORT_TO_DONE)
-            .replace(Placeholders.Player.replacer(target))
+            .replace(Placeholders.forPlayer(target))
             .send(sender);
     }
 }

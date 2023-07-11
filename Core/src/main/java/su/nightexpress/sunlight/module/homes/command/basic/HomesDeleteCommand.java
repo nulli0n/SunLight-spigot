@@ -3,6 +3,7 @@ package su.nightexpress.sunlight.module.homes.command.basic;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import su.nexmedia.engine.api.command.CommandResult;
 import su.nexmedia.engine.utils.Placeholders;
 import su.nightexpress.sunlight.module.ModuleCommand;
 import su.nightexpress.sunlight.module.homes.HomesModule;
@@ -11,7 +12,6 @@ import su.nightexpress.sunlight.module.homes.impl.Home;
 import su.nightexpress.sunlight.module.homes.util.HomesPerms;
 
 import java.util.List;
-import java.util.Map;
 
 public class HomesDeleteCommand extends ModuleCommand<HomesModule> {
 
@@ -48,9 +48,9 @@ public class HomesDeleteCommand extends ModuleCommand<HomesModule> {
     }
 
     @Override
-    public void onExecute(@NotNull CommandSender sender, @NotNull String label, @NotNull String[] args, @NotNull Map<String, String> flags) {
+    public void onExecute(@NotNull CommandSender sender, @NotNull CommandResult result) {
         Player player = (Player) sender;
-        String homeId = args.length >= 2 ? args[1] : Placeholders.DEFAULT;
+        String homeId = result.length() >= 2 ? result.getArg(1) : Placeholders.DEFAULT;
         this.module.removeHome(player, homeId);
     }
 }

@@ -6,7 +6,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class ChatRuleGenerator {
+public class ChatRuleLazyGen {
 
     private static final Map<Character, String[]> CHAR_MAPPER = new HashMap<>();
     private static final String ANY_CHAR_REGEX = "[^a-zA-ZА-Яа-я]|\\s";

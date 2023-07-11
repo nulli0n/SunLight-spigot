@@ -4,12 +4,11 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import su.nexmedia.engine.api.command.CommandResult;
 import su.nexmedia.engine.api.server.JPermission;
 import su.nightexpress.sunlight.module.GeneralModuleCommand;
 import su.nightexpress.sunlight.module.bans.BansModule;
 import su.nightexpress.sunlight.module.bans.punishment.PunishmentType;
-
-import java.util.Map;
 
 public abstract class AbstractListCommand extends GeneralModuleCommand<BansModule> {
 
@@ -33,7 +32,7 @@ public abstract class AbstractListCommand extends GeneralModuleCommand<BansModul
     }
 
     @Override
-    protected void onExecute(@NotNull CommandSender sender, @NotNull String label, @NotNull String[] args, @NotNull Map<String, String> flags) {
+    protected void onExecute(@NotNull CommandSender sender, @NotNull CommandResult result) {
         Player player = (Player) sender;
         this.module.getListMenu().open(player, this.punishmentType);
     }

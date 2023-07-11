@@ -8,7 +8,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import su.nexmedia.engine.api.config.JYML;
 import su.nexmedia.engine.command.CommandRegister;
-import su.nexmedia.engine.hooks.Hooks;
 import su.nexmedia.engine.utils.StringUtil;
 import su.nightexpress.sunlight.Perms;
 import su.nightexpress.sunlight.SunLight;
@@ -47,8 +46,8 @@ public class WarpsModule extends Module {
     public void onLoad() {
         this.plugin.registerPermissions(WarpsPerms.class);
         this.plugin.getLangManager().loadMissing(WarpsLang.class);
-        this.plugin.getLangManager().setupEnum(WarpSortType.class);
-        this.plugin.getLangManager().setupEnum(WarpType.class);
+        this.plugin.getLangManager().loadEnum(WarpSortType.class);
+        this.plugin.getLangManager().loadEnum(WarpType.class);
         this.plugin.getLang().saveChanges();
         this.getConfig().initializeOptions(WarpsConfig.class);
 
@@ -145,7 +144,7 @@ public class WarpsModule extends Module {
     }
 
     public int getWarpsMaxAmount(@NotNull Player player) {
-        return Hooks.getGroupValueInt(player, WarpsConfig.WARP_SET_AMOUNT_PER_GROUP.get(), true);
+        return WarpsConfig.WARP_SET_AMOUNT_PER_GROUP.get().getBestValue(player, 0);
     }
 
     public int getWarpsCreatedAmount(@NotNull Player player) {

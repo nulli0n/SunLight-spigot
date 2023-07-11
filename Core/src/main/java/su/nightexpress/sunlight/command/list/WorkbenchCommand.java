@@ -34,7 +34,7 @@ public class WorkbenchCommand extends TargetCommand {
         }
         if (sender != target) {
             plugin.getMessage(Lang.COMMAND_WORKBENCH_TARGET)
-                .replace(Placeholders.Player.replacer(target))
+                .replace(Placeholders.forPlayer(target))
                 .send(sender);
         }
     }

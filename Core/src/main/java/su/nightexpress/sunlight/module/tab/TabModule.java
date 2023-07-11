@@ -5,10 +5,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import su.nexmedia.engine.api.config.JYML;
-import su.nexmedia.engine.hooks.Hooks;
-import su.nexmedia.engine.utils.Colorizer;
-import su.nexmedia.engine.utils.EntityUtil;
-import su.nexmedia.engine.utils.Placeholders;
+import su.nexmedia.engine.utils.*;
 import su.nightexpress.sunlight.SunLight;
 import su.nightexpress.sunlight.hook.HookId;
 import su.nightexpress.sunlight.module.Module;
@@ -56,7 +53,7 @@ public class TabModule extends Module {
         this.tablistUpdateTask = new TablistUpdateTask(this, TabConfig.TABLIST_UPDATE_INTERVAL.get());
         this.tablistUpdateTask.start();
 
-        if (Hooks.hasPlugin(HookId.PROTOCOL_LIB)) {
+        if (EngineUtils.hasPlugin(HookId.PROTOCOL_LIB)) {
             this.nametagUpdateTask = new NametagUpdateTask(this, TabConfig.NAMETAG_UPDATE_INTERVAL.get());
             this.nametagUpdateTask.start();
         }
@@ -80,7 +77,7 @@ public class TabModule extends Module {
 
     @Nullable
     public TabListFormat getPlayerListFormat(@NotNull Player player) {
-        Set<String> groups = Hooks.getPermissionGroups(player);
+        Set<String> groups = PlayerUtil.getPermissionGroups(player);
         return TabConfig.TABLIST_FORMAT_MAP.get().values().stream()
             .filter(format -> format.getWorlds().contains(player.getWorld().getName()) || format.getWorlds().contains(Placeholders.WILDCARD))
             .filter(format -> groups.stream().anyMatch(pRank -> format.getGroups().contains(pRank)) || format.getGroups().contains(Placeholders.WILDCARD))
@@ -90,7 +87,7 @@ public class TabModule extends Module {
 
     @Nullable
     public TabNameFormat getPlayerListName(@NotNull Player player) {
-        Set<String> groups = Hooks.getPermissionGroups(player);
+        Set<String> groups = PlayerUtil.getPermissionGroups(player);
         return TabConfig.TABLIST_NAME_FORMAT.get().entrySet().stream()
             .filter(entry -> groups.contains(entry.getKey()) || entry.getKey().equalsIgnoreCase(Placeholders.DEFAULT))
             .map(Entry::getValue).max(Comparator.comparingInt(TabNameFormat::getPriority))
@@ -99,7 +96,7 @@ public class TabModule extends Module {
 
     @Nullable
     public NametagFormat getPlayerNametag(@NotNull Player player) {
-        Set<String> groups = Hooks.getPermissionGroups(player);
+        Set<String> groups = PlayerUtil.getPermissionGroups(player);
         return TabConfig.NAMETAG_FORMAT.get().entrySet().stream()
             .filter(entry -> groups.contains(entry.getKey()) || entry.getKey().equalsIgnoreCase(Placeholders.DEFAULT))
             .map(Entry::getValue).max(Comparator.comparingInt(NametagFormat::getPriority))
@@ -125,7 +122,7 @@ public class TabModule extends Module {
             header = animator.replace(header);
             footer = animator.replace(footer);
         }
-        if (Hooks.hasPlaceholderAPI()) {
+        if (EngineUtils.hasPlaceholderAPI()) {
             header = Colorizer.apply(PlaceholderAPI.setPlaceholders(player, header));
             footer = Colorizer.apply(PlaceholderAPI.setPlaceholders(player, footer));
         }
@@ -139,8 +136,8 @@ public class TabModule extends Module {
         TabNameFormat listName = this.getPlayerListName(player);
         if (listName == null) return;
 
-        String format = Placeholders.Player.replacer(player).apply(listName.getFormat());
-        if (Hooks.hasPlaceholderAPI()) {
+        String format = Placeholders.forPlayer(player).apply(listName.getFormat());
+        if (EngineUtils.hasPlaceholderAPI()) {
             format = Colorizer.apply(PlaceholderAPI.setPlaceholders(player, format));
         }
 
@@ -154,7 +151,7 @@ public class TabModule extends Module {
     }
 
     public void updateNameTagsAndSortTab(@NotNull Player player) {
-        if (!Hooks.hasPlugin(HookId.PROTOCOL_LIB)) return;
+        if (!EngineUtils.hasPlugin(HookId.PROTOCOL_LIB)) return;
         if (EntityUtil.isNPC(player)) return;
 
         NametagFormat tag = this.getPlayerNametag(player);

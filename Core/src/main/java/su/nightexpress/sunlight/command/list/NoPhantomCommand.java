@@ -5,7 +5,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import su.nexmedia.engine.api.command.CommandResult;
-import su.nexmedia.engine.api.manager.ICleanable;
 import su.nexmedia.engine.api.server.AbstractTask;
 import su.nightexpress.sunlight.Perms;
 import su.nightexpress.sunlight.Placeholders;
@@ -15,8 +14,9 @@ import su.nightexpress.sunlight.command.api.ToggleCommand;
 import su.nightexpress.sunlight.config.Lang;
 import su.nightexpress.sunlight.data.impl.SunUser;
 import su.nightexpress.sunlight.data.impl.settings.UserSetting;
+import su.nightexpress.sunlight.utils.Cleanable;
 
-public class NoPhantomCommand extends ToggleCommand implements ICleanable {
+public class NoPhantomCommand extends ToggleCommand implements Cleanable {
 
     public static final String NAME = "nophantom";
     public static final UserSetting<Boolean> ANTI_PHANTOM = UserSetting.asBoolean("anti_phantom", false, true);
@@ -56,7 +56,7 @@ public class NoPhantomCommand extends ToggleCommand implements ICleanable {
         if (sender != target) {
             plugin.getMessage(Lang.COMMAND_NO_PHANTOM_TOGGLE_TARGET)
                 .replace(Placeholders.GENERIC_STATE, Lang.getEnable(state))
-                .replace(Placeholders.Player.replacer(target))
+                .replace(Placeholders.forPlayer(target))
                 .send(sender);
         }
         if (!result.hasFlag(CommandFlags.SILENT)) {

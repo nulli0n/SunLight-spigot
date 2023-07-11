@@ -5,12 +5,9 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import su.nexmedia.engine.api.config.JYML;
-import su.nexmedia.engine.api.manager.ILoadable;
-import su.nexmedia.engine.api.task.AbstractTask;
-import su.nexmedia.engine.hooks.Hooks;
-import su.nexmedia.engine.utils.Colorizer;
-import su.nexmedia.engine.utils.MessageUtil;
-import su.nexmedia.engine.utils.Placeholders;
+import su.nexmedia.engine.api.manager.Loadable;
+import su.nexmedia.engine.api.server.AbstractTask;
+import su.nexmedia.engine.utils.*;
 import su.nexmedia.engine.utils.random.Rnd;
 import su.nightexpress.sunlight.SunLight;
 import su.nightexpress.sunlight.module.chat.ChatModule;
@@ -18,7 +15,7 @@ import su.nightexpress.sunlight.module.chat.ChatModule;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class ChatAnnounceManager implements ILoadable {
+public class ChatAnnounceManager implements Loadable {
 
     private final SunLight   plugin;
     private final ChatModule chatModule;
@@ -70,7 +67,7 @@ public class ChatAnnounceManager implements ILoadable {
 
     @Nullable
     public Announcer getAnnouncer(@NotNull Player player, int lastIndex) {
-        Set<String> playerGroups = Hooks.getPermissionGroups(player);
+        Set<String> playerGroups = PlayerUtil.getPermissionGroups(player);
         List<String> keys = new ArrayList<>(this.announcers.entrySet().stream()
             .filter(entry -> entry.getValue().getGroups().stream()
                 .anyMatch(anGroup -> playerGroups.contains(anGroup) || anGroup.equalsIgnoreCase(Placeholders.WILDCARD)))
@@ -117,7 +114,7 @@ public class ChatAnnounceManager implements ILoadable {
 
         @Override
         public void action() {
-            boolean papi = Hooks.hasPlaceholderAPI();
+            boolean papi = EngineUtils.hasPlaceholderAPI();
 
             for (Player player : plugin.getServer().getOnlinePlayers()) {
                 int lastIndex = this.lastIndex.getOrDefault(player, -1);
@@ -128,7 +125,7 @@ public class ChatAnnounceManager implements ILoadable {
                 for (String line : announcer.getText()) {
                     if (papi) line = PlaceholderAPI.setBracketPlaceholders(player, line);
                     line = line.replace("%player%", player.getDisplayName());
-                    MessageUtil.sendWithJSON(player, line);
+                    PlayerUtil.sendRichMessage(player, line);
                 }
             }
         }

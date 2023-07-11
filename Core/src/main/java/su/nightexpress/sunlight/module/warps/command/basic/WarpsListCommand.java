@@ -3,6 +3,7 @@ package su.nightexpress.sunlight.module.warps.command.basic;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import su.nexmedia.engine.api.command.CommandResult;
 import su.nexmedia.engine.utils.CollectionsUtil;
 import su.nightexpress.sunlight.module.ModuleCommand;
 import su.nightexpress.sunlight.module.warps.WarpsModule;
@@ -11,7 +12,6 @@ import su.nightexpress.sunlight.module.warps.util.Placeholders;
 import su.nightexpress.sunlight.module.warps.util.WarpsPerms;
 
 import java.util.List;
-import java.util.Map;
 
 public class WarpsListCommand extends ModuleCommand<WarpsModule> {
 
@@ -48,13 +48,13 @@ public class WarpsListCommand extends ModuleCommand<WarpsModule> {
     }
 
     @Override
-    protected void onExecute(@NotNull CommandSender sender, @NotNull String label, @NotNull String[] args, @NotNull Map<String, String> flags) {
-        if (args.length >= 2 && !sender.hasPermission(WarpsPerms.COMMAND_WARPS_LIST_OTHERS)) {
+    public void onExecute(@NotNull CommandSender sender, @NotNull CommandResult result) {
+        if (result.length() >= 2 && !sender.hasPermission(WarpsPerms.COMMAND_WARPS_LIST_OTHERS)) {
             this.errorPermission(sender);
             return;
         }
 
-        String pName = args.length >= 2 ? args[1] : sender.getName();
+        String pName = result.length() >= 2 ? result.getArg(1) : sender.getName();
         Player player = plugin.getServer().getPlayer(pName);
         if (player == null) {
             this.errorPlayer(sender);
@@ -65,7 +65,7 @@ public class WarpsListCommand extends ModuleCommand<WarpsModule> {
 
         if (!player.equals(sender)) {
             this.plugin.getMessage(WarpsLang.COMMAND_WARPS_LIST_OTHERS)
-                .replace(Placeholders.Player.replacer(player))
+                .replace(Placeholders.forPlayer(player))
                 .send(sender);
         }
     }

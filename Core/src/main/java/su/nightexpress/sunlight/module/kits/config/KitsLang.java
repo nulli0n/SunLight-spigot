@@ -1,10 +1,11 @@
 package su.nightexpress.sunlight.module.kits.config;
 
 import org.bukkit.Sound;
+import su.nexmedia.engine.api.lang.LangColors;
 import su.nexmedia.engine.api.lang.LangKey;
 import su.nightexpress.sunlight.module.kits.util.Placeholders;
 
-public class KitsLang {
+public class KitsLang implements LangColors {
 
     public static final LangKey COMMAND_KITS_DESC  = LangKey.of("Kits.Command.Kits.Desc", "Kits Management.");
     public static final LangKey COMMAND_KITS_USAGE = LangKey.of("Kits.Command.Kits.Usage", "[help]");
@@ -16,8 +17,8 @@ public class KitsLang {
 
     public static final LangKey COMMAND_KITS_GIVE_DESC   = LangKey.of("Kits.Command.Kits.Give.Desc", "Give kit to a player.");
     public static final LangKey COMMAND_KITS_GIVE_USAGE  = LangKey.of("Kits.Command.Kits.Give.Usage", "<kit> <player>");
-    public static final LangKey COMMAND_KITS_GIVE_DONE   = LangKey.of("Kits.Command.Kits.Give.Done", "Given &a" + Placeholders.KIT_NAME + " &7kit to &a" + Placeholders.Player.DISPLAY_NAME + "&7!");
-    public static final LangKey COMMAND_KITS_GIVE_NOTIFY = LangKey.of("Kits.Command.Kits.Give.Notify", "<! prefix:\"false\" !>#5d6d7e&oYou were given #aeb6bf&o" + Placeholders.KIT_NAME + " #5d6d7e&okit from #aeb6bf&o" + Placeholders.Player.DISPLAY_NAME + "#5d6d7e&o.");
+    public static final LangKey COMMAND_KITS_GIVE_DONE   = LangKey.of("Kits.Command.Kits.Give.Done", "Given &a" + Placeholders.KIT_NAME + " &7kit to &a" + Placeholders.PLAYER_DISPLAY_NAME + "&7!");
+    public static final LangKey COMMAND_KITS_GIVE_NOTIFY = LangKey.of("Kits.Command.Kits.Give.Notify", "<! prefix:\"false\" !>#5d6d7e&oYou were given #aeb6bf&o" + Placeholders.KIT_NAME + " #5d6d7e&okit from #aeb6bf&o" + Placeholders.PLAYER_DISPLAY_NAME + "#5d6d7e&o.");
 
     public static final LangKey COMMAND_KITS_GET_DESC  = LangKey.of("Kits.Command.Kits.Get.Desc", "Get specified kit.");
     public static final LangKey COMMAND_KITS_GET_USAGE = LangKey.of("Kits.Command.Kits.Get.Usage", "<kit>");

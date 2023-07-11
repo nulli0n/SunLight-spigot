@@ -3,6 +3,7 @@ package su.nightexpress.sunlight.module.kits.command.kits;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import su.nexmedia.engine.api.command.CommandResult;
 import su.nexmedia.engine.utils.CollectionsUtil;
 import su.nightexpress.sunlight.module.ModuleCommand;
 import su.nightexpress.sunlight.module.kits.KitsModule;
@@ -10,7 +11,6 @@ import su.nightexpress.sunlight.module.kits.config.KitsLang;
 import su.nightexpress.sunlight.module.kits.util.KitsPerms;
 
 import java.util.List;
-import java.util.Map;
 
 public class KitsListCommand extends ModuleCommand<KitsModule> {
 
@@ -45,8 +45,8 @@ public class KitsListCommand extends ModuleCommand<KitsModule> {
     }
 
     @Override
-    protected void onExecute(@NotNull CommandSender sender, @NotNull String label, @NotNull String[] args, @NotNull Map<String, String> flags) {
-        Player pTarget = plugin.getServer().getPlayer(args.length >= 2 && sender.hasPermission(KitsPerms.COMMAND_KITS_LIST_OTHERS) ? args[1] : sender.getName());
+    public void onExecute(@NotNull CommandSender sender, @NotNull CommandResult result) {
+        Player pTarget = plugin.getServer().getPlayer(result.length() >= 2 && sender.hasPermission(KitsPerms.COMMAND_KITS_LIST_OTHERS) ? result.getArg(1) : sender.getName());
         if (pTarget == null) {
             this.errorPlayer(sender);
             return;

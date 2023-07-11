@@ -8,15 +8,15 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import su.nexmedia.engine.api.command.CommandResult;
 import su.nexmedia.engine.api.command.GeneralCommand;
-import su.nexmedia.engine.utils.CollectionsUtil;
+import su.nexmedia.engine.utils.StringUtil;
 import su.nightexpress.sunlight.Perms;
 import su.nightexpress.sunlight.SunLight;
 import su.nightexpress.sunlight.config.Lang;
 import su.nightexpress.sunlight.utils.SunUtils;
 
 import java.util.List;
-import java.util.Map;
 
 // TODO Spawners module
 @Deprecated
@@ -56,8 +56,8 @@ public class SpawnerCommand extends GeneralCommand<SunLight> {
     }
 
     @Override
-    public void onExecute(@NotNull CommandSender sender, @NotNull String label, @NotNull String[] args, @NotNull Map<String, String> flags) {
-        if (args.length == 0) {
+    protected void onExecute(@NotNull CommandSender sender, @NotNull CommandResult result) {
+        if (result.length() < 1) {
             this.printUsage(sender);
             return;
         }
@@ -69,7 +69,7 @@ public class SpawnerCommand extends GeneralCommand<SunLight> {
             return;
         }
 
-        EntityType entityType = CollectionsUtil.getEnum(args[0], EntityType.class);
+        EntityType entityType = StringUtil.getEnum(result.getArg(0), EntityType.class).orElse(null);
         if (entityType == null || !entityType.isSpawnable()) {
             plugin.getMessage(Lang.Command_Spawner_Error_Type).send(sender);
             return;

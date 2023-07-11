@@ -53,12 +53,6 @@ public class WorldListEditor extends EditorMenu<SunLight, WorldsModule> implemen
 
     @Override
     @NotNull
-    public Comparator<WorldConfig> getObjectSorter() {
-        return ((o1, o2) -> 0);
-    }
-
-    @Override
-    @NotNull
     public ItemStack getObjectStack(@NotNull Player player, @NotNull WorldConfig world) {
         ItemStack item = ItemUtil.createCustomHead(TEXTURE_CUSTOM_WORLD);
         ItemUtil.mapMeta(item, meta -> {
