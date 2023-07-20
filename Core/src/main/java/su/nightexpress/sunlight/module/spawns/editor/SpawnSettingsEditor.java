@@ -1,6 +1,7 @@
 package su.nightexpress.sunlight.module.spawns.editor;
 
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.jetbrains.annotations.NotNull;
 import su.nexmedia.engine.api.menu.impl.EditorMenu;
 import su.nexmedia.engine.api.menu.impl.MenuViewer;
@@ -49,6 +50,13 @@ public class SpawnSettingsEditor extends EditorMenu<SunLight, Spawn> {
         }).getOptions().addDisplayModifier((viewer, item) -> item.setType(spawn.isDefault() ? Material.LIME_DYE : Material.GRAY_DYE));
 
         this.addItem(Material.COMPASS, EditorLocales.SPAWN_LOCATION, 15).setClick((viewer, event) -> {
+            if (event.isRightClick()) {
+                World world = spawn.getLocation().getWorld();
+                if (world == null) return;
+
+                world.setSpawnLocation(spawn.getLocation());
+                return;
+            }
             spawn.setLocation(viewer.getPlayer().getLocation());
             this.save(viewer);
         });

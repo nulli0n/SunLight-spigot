@@ -7,7 +7,7 @@ import su.nexmedia.engine.api.command.CommandResult;
 import su.nightexpress.sunlight.module.ModuleCommand;
 import su.nightexpress.sunlight.module.warps.WarpsModule;
 import su.nightexpress.sunlight.module.warps.config.WarpsLang;
-import su.nightexpress.sunlight.module.warps.util.WarpsPerms;
+import su.nightexpress.sunlight.module.warps.config.WarpsPerms;
 
 public class WarpsCreateCommand extends ModuleCommand<WarpsModule> {
 

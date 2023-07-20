@@ -8,7 +8,7 @@ import su.nexmedia.engine.command.list.HelpSubCommand;
 import su.nightexpress.sunlight.SunLight;
 import su.nightexpress.sunlight.module.warps.WarpsModule;
 import su.nightexpress.sunlight.module.warps.config.WarpsLang;
-import su.nightexpress.sunlight.module.warps.util.WarpsPerms;
+import su.nightexpress.sunlight.module.warps.config.WarpsPerms;
 
 public class WarpsCommand extends GeneralCommand<SunLight> {
 

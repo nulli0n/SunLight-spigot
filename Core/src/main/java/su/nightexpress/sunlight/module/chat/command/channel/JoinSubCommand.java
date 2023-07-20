@@ -4,7 +4,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import su.nightexpress.sunlight.module.chat.ChatChannel;
 import su.nightexpress.sunlight.module.chat.ChatModule;
-import su.nightexpress.sunlight.module.chat.ChatPerms;
+import su.nightexpress.sunlight.module.chat.config.ChatPerms;
 import su.nightexpress.sunlight.module.chat.config.ChatLang;
 
 class JoinSubCommand extends AbstractChannelSubCommand {

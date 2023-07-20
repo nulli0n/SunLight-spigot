@@ -11,6 +11,7 @@ import su.nexmedia.engine.api.lang.LangMessage;
 import su.nexmedia.engine.api.server.JPermission;
 import su.nexmedia.engine.utils.CollectionsUtil;
 import su.nexmedia.engine.utils.TimeUtil;
+import su.nightexpress.sunlight.Perms;
 import su.nightexpress.sunlight.Placeholders;
 import su.nightexpress.sunlight.SunLight;
 import su.nightexpress.sunlight.api.event.PlayerTeleportRequestEvent;
@@ -18,6 +19,7 @@ import su.nightexpress.sunlight.command.teleport.impl.TeleportRequest;
 import su.nightexpress.sunlight.config.Lang;
 import su.nightexpress.sunlight.data.impl.IgnoredUser;
 import su.nightexpress.sunlight.data.impl.SunUser;
+import su.nightexpress.sunlight.data.impl.settings.DefaultSettings;
 
 import java.util.List;
 
@@ -71,7 +73,7 @@ abstract class AbstractRequestCommand extends AbstractCommand<SunLight> {
         SunUser userTarget = plugin.getUserManager().getUserData(target);
 
         // Check if 'accepter' disaled requests so request should be declined.
-        if (!userTarget.getSettings().get(TeleportRequest.SETTING_REQUESTS)) {
+        if (!userTarget.getSettings().get(DefaultSettings.TELEPORT_REQUESTS) && !sender.hasPermission(Perms.BYPASS_TELEPORT_REQUESTS_DISABLED)) {
             plugin.getMessage(Lang.COMMAND_TELEPORT_ERROR_REQUESTS_DISABLED)
                 .replace(Placeholders.forPlayer(target))
                 .send(sender);
@@ -80,7 +82,7 @@ abstract class AbstractRequestCommand extends AbstractCommand<SunLight> {
 
         // Check if 'accepter' is ignoring 'sended' so request should be declined.
         IgnoredUser ignoredUser = userTarget.getIgnoredUser(player);
-        if (ignoredUser != null && ignoredUser.isDenyTeleports()) {
+        if (ignoredUser != null && ignoredUser.isDenyTeleports() && !sender.hasPermission(Perms.BYPASS_IGNORE_TELEPORTS)) {
             this.errorPermission(sender);
             return;
         }

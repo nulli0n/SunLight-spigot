@@ -1,7 +1,7 @@
 package su.nightexpress.sunlight.data.impl.cooldown;
 
-import org.bukkit.command.Command;
 import org.jetbrains.annotations.NotNull;
+import su.nightexpress.sunlight.command.CommandCooldown;
 import su.nightexpress.sunlight.module.kits.Kit;
 import su.nightexpress.sunlight.module.warps.impl.Warp;
 
@@ -29,8 +29,8 @@ public class CooldownInfo {
     }
 
     @NotNull
-    public static CooldownInfo of(@NotNull Command command, int cooldown) {
-        return new CooldownInfo(CooldownType.COMMAND, command.getLabel(), System.currentTimeMillis() + cooldown * 1000L);
+    public static CooldownInfo of(@NotNull CommandCooldown command, int cooldown) {
+        return new CooldownInfo(CooldownType.COMMAND, command.getId(), System.currentTimeMillis() + cooldown * 1000L);
     }
 
     public boolean isSimilar(@NotNull CooldownInfo other) {

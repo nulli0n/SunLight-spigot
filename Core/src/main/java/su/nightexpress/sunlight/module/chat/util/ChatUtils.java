@@ -5,6 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import su.nexmedia.engine.utils.CollectionsUtil;
 import su.nexmedia.engine.utils.Colorizer;
+import su.nexmedia.engine.utils.Pair;
 import su.nightexpress.sunlight.module.chat.ChatChannel;
 import su.nightexpress.sunlight.module.chat.config.ChatConfig;
 
@@ -14,8 +15,8 @@ import java.util.Map;
 
 public class ChatUtils {
 
-    private static final Map<String, String> LAST_MESSAGE = new HashMap<>();
-    private static final Map<String, String> LAST_COMMAND = new HashMap<>();
+    private static final Map<String, Pair<String, Long>> LAST_MESSAGE = new HashMap<>();
+    private static final Map<String, Pair<String, Long>> LAST_COMMAND = new HashMap<>();
 
     private static final Map<String, Map<String, Long>> NEXT_MESSAGE_IN = new HashMap<>();
     private static final Map<String, Long>              NEXT_COMMAND_IN = new HashMap<>();
@@ -41,21 +42,33 @@ public class ChatUtils {
 
 
     public static void setLastMessage(@NotNull Player player, @NotNull String message) {
-        LAST_MESSAGE.put(player.getName(), Colorizer.strip(message));
+        int cooldown = ChatConfig.ANTI_SPAM_BLOCK_SIMILAR_COOLDOWN.get();
+        long expireDate = cooldown <= 0 ? -1 : System.currentTimeMillis() + cooldown * 1000L;
+
+        LAST_MESSAGE.put(player.getName(), Pair.of(Colorizer.strip(message), expireDate));
     }
 
     @Nullable
     public static String getLastMessage(@NotNull Player player) {
-        return LAST_MESSAGE.get(player.getName());
+        var last = LAST_MESSAGE.get(player.getName());
+        if (last == null || last.getSecond() > 0 && System.currentTimeMillis() > last.getSecond()) return null;
+
+        return last.getFirst();
     }
 
     public static void setLastCommand(@NotNull Player player, @NotNull String command) {
-        LAST_COMMAND.put(player.getName(), Colorizer.strip(command));
+        int cooldown = ChatConfig.ANTI_SPAM_BLOCK_SIMILAR_COOLDOWN.get();
+        long expireDate = cooldown <= 0 ? -1 : System.currentTimeMillis() + cooldown * 1000L;
+
+        LAST_COMMAND.put(player.getName(), Pair.of(Colorizer.strip(command), expireDate));
     }
 
     @Nullable
     public static String getLastCommand(@NotNull Player player) {
-        return LAST_COMMAND.get(player.getName());
+        var last = LAST_COMMAND.get(player.getName());
+        if (last == null || last.getSecond() > 0 && System.currentTimeMillis() > last.getSecond()) return null;
+
+        return last.getFirst();
     }
 
 

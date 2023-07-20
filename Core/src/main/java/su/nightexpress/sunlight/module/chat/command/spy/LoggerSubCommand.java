@@ -11,7 +11,7 @@ import su.nightexpress.sunlight.Placeholders;
 import su.nightexpress.sunlight.SunLight;
 import su.nightexpress.sunlight.config.Lang;
 import su.nightexpress.sunlight.data.impl.SunUser;
-import su.nightexpress.sunlight.module.chat.ChatPerms;
+import su.nightexpress.sunlight.module.chat.config.ChatPerms;
 import su.nightexpress.sunlight.module.chat.config.ChatLang;
 import su.nightexpress.sunlight.module.chat.util.ChatSpyType;
 

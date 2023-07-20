@@ -48,7 +48,7 @@ public class SpawnsDeleteCommand extends ModuleCommand<SpawnsModule> {
 
     @Override
     public void onExecute(@NotNull CommandSender sender, @NotNull CommandResult result) {
-        if (result.length() <= 2) {
+        if (result.length() < 2) {
             this.printUsage(sender);
             return;
         }

@@ -21,7 +21,7 @@ import su.nightexpress.sunlight.SunLight;
 import su.nightexpress.sunlight.module.warps.config.WarpsConfig;
 import su.nightexpress.sunlight.module.warps.config.WarpsLang;
 import su.nightexpress.sunlight.module.warps.impl.Warp;
-import su.nightexpress.sunlight.module.warps.util.WarpsPerms;
+import su.nightexpress.sunlight.module.warps.config.WarpsPerms;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeParseException;

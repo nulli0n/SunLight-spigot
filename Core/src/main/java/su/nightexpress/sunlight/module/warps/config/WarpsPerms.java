@@ -1,8 +1,9 @@
-package su.nightexpress.sunlight.module.warps.util;
+package su.nightexpress.sunlight.module.warps.config;
 
 import su.nexmedia.engine.api.server.JPermission;
 import su.nightexpress.sunlight.Perms;
 import su.nightexpress.sunlight.module.warps.command.basic.WarpsCommand;
+import su.nightexpress.sunlight.module.warps.util.Placeholders;
 
 public class WarpsPerms {
 
@@ -11,6 +12,7 @@ public class WarpsPerms {
     private static final String PREFIX_BYPASS  = PREFIX + "bypass.";
     private static final String PREFIX_EDITOR  = PREFIX + "editor.";
     public static final String  PREFIX_WARP    = PREFIX + "warp.";
+    public static final String PREFIX_AMOUNT = PREFIX + "amount.";
 
     public static final JPermission MODULE  = new JPermission(PREFIX + Placeholders.WILDCARD, "Access to all Warps Module features.");
     public static final JPermission COMMAND = new JPermission(PREFIX_COMMAND + Placeholders.WILDCARD, "Access to all Warps Module commands.");

@@ -1,4 +1,4 @@
-package su.nightexpress.sunlight.module.chat;
+package su.nightexpress.sunlight.module.chat.config;
 
 import su.nexmedia.engine.api.server.JPermission;
 import su.nightexpress.sunlight.Perms;
@@ -6,11 +6,12 @@ import su.nightexpress.sunlight.Placeholders;
 import su.nightexpress.sunlight.module.chat.command.ClearchatCommand;
 import su.nightexpress.sunlight.module.chat.command.MeCommand;
 import su.nightexpress.sunlight.module.chat.command.channel.ChatChannelCommand;
+import su.nightexpress.sunlight.module.chat.command.pm.TogglePMCommand;
 import su.nightexpress.sunlight.module.chat.command.spy.ChatSpyCommand;
 import su.nightexpress.sunlight.module.chat.command.spy.LoggerSubCommand;
 import su.nightexpress.sunlight.module.chat.command.spy.ModeSubCommand;
-import su.nightexpress.sunlight.module.chat.command.tell.ReplyCommand;
-import su.nightexpress.sunlight.module.chat.command.tell.TellCommand;
+import su.nightexpress.sunlight.module.chat.command.pm.ReplyCommand;
+import su.nightexpress.sunlight.module.chat.command.pm.TellCommand;
 
 public class ChatPerms {
 
@@ -40,7 +41,10 @@ public class ChatPerms {
     public static final JPermission COMMAND_SPY_MODE        = new JPermission(PREFIX_COMMAND + ModeSubCommand.NAME, "Access to the 'mode' sub-command of the 'chatspy' command.");
     public static final JPermission COMMAND_SPY_MODE_OTHERS = new JPermission(PREFIX_COMMAND + ModeSubCommand.NAME + ".others", "Access to the 'mode' sub-command of the 'chatspy' command on other players.");
     public static final JPermission COMMAND_SPY_LOGGER      = new JPermission(PREFIX_COMMAND + LoggerSubCommand.NAME, "Access to the 'logger' sub-command of the 'chatspy' command.");
+    public static final JPermission COMMAND_TOGGLE_PM = new JPermission(PREFIX_COMMAND + TogglePMCommand.NAME, "Access to the 'togglepm' sub-command.");
+    public static final JPermission COMMAND_TOGGLE_PM_OTHERS = new JPermission(PREFIX_COMMAND + TogglePMCommand.NAME + ".others", "Access to the 'togglepm' sub-command on other players.");
 
+    public static final JPermission BYPASS_PM_DISABLED = new JPermission(PREFIX_BYPASS + "pm.disabled", "Allows to send Private Messages even if target player disabled them.");
     public static final JPermission BYPASS_MENTION_COOLDOWN       = new JPermission(PREFIX_BYPASS + "mention.cooldown", "Bypasses Mentions cooldown.");
     public static final JPermission BYPASS_MENTION_AMOUNT         = new JPermission(PREFIX_BYPASS + "mention.amount", "Bypasses Mentions maximum limit.");
     public static final JPermission BYPASS_CHANNEL_DISTANCE_HEAR  = new JPermission(PREFIX_BYPASS + "channel.distance.hear", "Bypasses channel distance when receiving message from a channel.");
@@ -60,7 +64,9 @@ public class ChatPerms {
             COMMAND_SPY_MODE, COMMAND_SPY_MODE_OTHERS, COMMAND_SPY_LOGGER,
             COMMAND_CLEARCHAT);
 
-        CHAT_BYPASS.addChildren(BYPASS_MENTION_COOLDOWN, BYPASS_MENTION_AMOUNT,
+        CHAT_BYPASS.addChildren(
+            BYPASS_PM_DISABLED,
+            BYPASS_MENTION_COOLDOWN, BYPASS_MENTION_AMOUNT,
             BYPASS_CHANNEL_DISTANCE_HEAR, BYPASS_CHANNEL_DISTANCE_SPEAK,
             BYPASS_COOLDOWN_COMMAND, BYPASS_COOLDOWN_MESSAGE, BYPASS_ANTICAPS, BYPASS_ANTISPAM, BYPASS_RULES);
     }

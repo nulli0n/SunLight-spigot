@@ -4,8 +4,8 @@ import org.bukkit.GameMode;
 import org.bukkit.inventory.EquipmentSlot;
 import su.nexmedia.engine.api.config.JOption;
 import su.nexmedia.engine.utils.Pair;
+import su.nexmedia.engine.utils.PlayerRankMap;
 import su.nexmedia.engine.utils.StringUtil;
-import su.nightexpress.sunlight.Placeholders;
 import su.nightexpress.sunlight.command.api.ChangeCommand;
 import su.nightexpress.sunlight.command.enderchest.EnderchestClearCommand;
 import su.nightexpress.sunlight.command.enderchest.EnderchestCommand;
@@ -19,13 +19,16 @@ import su.nightexpress.sunlight.command.inventory.InventoryCommand;
 import su.nightexpress.sunlight.command.inventory.InventoryOpenCommand;
 import su.nightexpress.sunlight.command.item.*;
 import su.nightexpress.sunlight.command.list.*;
-import su.nightexpress.sunlight.command.teleport.TeleportCommand;
+import su.nightexpress.sunlight.command.teleport.*;
 import su.nightexpress.sunlight.command.time.TimeCommand;
 import su.nightexpress.sunlight.command.time.TimeSetCommand;
-import su.nightexpress.sunlight.module.homes.command.basic.HomesCommand;
+import su.nightexpress.sunlight.module.homes.command.basic.*;
 import su.nightexpress.sunlight.module.kits.command.kits.KitsCommand;
 import su.nightexpress.sunlight.module.spawns.command.SpawnsCommand;
-import su.nightexpress.sunlight.module.warps.command.basic.WarpsCommand;
+import su.nightexpress.sunlight.module.spawns.command.SpawnsCreateCommand;
+import su.nightexpress.sunlight.module.spawns.command.SpawnsDeleteCommand;
+import su.nightexpress.sunlight.module.spawns.command.SpawnsTeleportCommand;
+import su.nightexpress.sunlight.module.warps.command.basic.*;
 import su.nightexpress.sunlight.module.worlds.commands.main.*;
 
 import java.util.*;
@@ -50,11 +53,11 @@ public class CommandConfig {
         () -> {
             Map<String, List<Pair<String[], String[]>>> map = new HashMap<>();
             map.put(TeleportCommand.NAME, Arrays.asList(
-                Pair.of(new String[]{"tpa,tpr,call"}, new String[]{"request"}),
-                Pair.of(new String[]{"tpi"}, new String[]{"invite"}),
-                Pair.of(new String[]{"tploc"}, new String[]{"location"}),
-                Pair.of(new String[]{"tpyes"}, new String[]{"accept"}),
-                Pair.of(new String[]{"tpno"}, new String[]{"decline"})
+                Pair.of(new String[]{"tpa,tpr,call"}, new String[]{TeleportRequestCommand.NAME}),
+                Pair.of(new String[]{"tpi"}, new String[]{TeleportInviteCommand.NAME}),
+                Pair.of(new String[]{"tploc"}, new String[]{TeleportLocationCommand.NAME}),
+                Pair.of(new String[]{"tpyes"}, new String[]{TeleportAcceptCommand.NAME}),
+                Pair.of(new String[]{"tpno"}, new String[]{TeleportDeclineCommand.NAME})
             ));
             map.put(GamemodeCommand.NAME, Arrays.asList(
                 Pair.of(new String[]{"gms"}, new String[]{GameMode.SURVIVAL.name().toLowerCase()}),
@@ -99,22 +102,22 @@ public class CommandConfig {
                 Pair.of(new String[]{"fix"}, new String[]{ItemDamageCommand.NAME + " 0"})
             ));
             map.put(HomesCommand.NAME, Arrays.asList(
-                Pair.of(new String[]{"home"}, new String[]{"teleport"}),
-                Pair.of(new String[]{"sethome"}, new String[]{"set"}),
-                Pair.of(new String[]{"delhome"}, new String[]{"delete"}),
-                Pair.of(new String[]{"homelist"}, new String[]{"list"}),
-                Pair.of(new String[]{"visithome"}, new String[]{"visit"})
+                Pair.of(new String[]{"home"}, new String[]{HomesTeleportCommand.NAME}),
+                Pair.of(new String[]{"sethome"}, new String[]{HomesSetCommand.NAME}),
+                Pair.of(new String[]{"delhome"}, new String[]{HomesDeleteCommand.NAME}),
+                Pair.of(new String[]{"homelist"}, new String[]{HomesListCommand.NAME}),
+                Pair.of(new String[]{"visithome"}, new String[]{HomesVisitCommand.NAME})
             ));
             map.put(SpawnsCommand.NAME, Arrays.asList(
-                Pair.of(new String[]{"spawn"}, new String[]{"teleport"}),
-                Pair.of(new String[]{"setspawn"}, new String[]{"create"}),
-                Pair.of(new String[]{"delspawn"}, new String[]{"delete"})
+                Pair.of(new String[]{"spawn"}, new String[]{SpawnsTeleportCommand.NAME}),
+                Pair.of(new String[]{"setspawn"}, new String[]{SpawnsCreateCommand.NAME}),
+                Pair.of(new String[]{"delspawn"}, new String[]{SpawnsDeleteCommand.NAME})
             ));
             map.put(WarpsCommand.NAME, Arrays.asList(
-                Pair.of(new String[]{"warp"}, new String[]{"teleport"}),
-                Pair.of(new String[]{"setwarp"}, new String[]{"create"}),
-                Pair.of(new String[]{"delwarp"}, new String[]{"delete"}),
-                Pair.of(new String[]{"warplist"}, new String[]{"list"})
+                Pair.of(new String[]{"warp"}, new String[]{WarpsTeleportCommand.NAME}),
+                Pair.of(new String[]{"setwarp"}, new String[]{WarpsCreateCommand.NAME}),
+                Pair.of(new String[]{"delwarp"}, new String[]{WarpsDeleteCommand.NAME}),
+                Pair.of(new String[]{"warplist"}, new String[]{WarpsListCommand.NAME})
             ));
             map.put(KitsCommand.NAME, Arrays.asList(
                 Pair.of(new String[]{"kit"}, new String[]{"get"}),
@@ -150,30 +153,29 @@ public class CommandConfig {
         "A list of SunLight (!) commands that won't be registered into the server at all.",
         "You can put here any command alias from the 'Aliases' section.");
 
-    public static final JOption<Map<String, Map<String, Integer>>> COOLDOWNS = new JOption<Map<String, Map<String, Integer>>>(
-        "Cooldowns",
-        (cfg, path, def) -> {
-            Map<String, Map<String, Integer>> map = new HashMap<>();
-            for (String rank : cfg.getSection(path)) {
-                for (String command : cfg.getSection(path + "." + rank)) {
-                    int cooldown = cfg.getInt(path + "." + rank + "." + command);
-                    if (cooldown == 0) continue;
+    public static final JOption<Map<String, CommandCooldown>> COOLDOWNS = JOption.forMap("Cooldowns",
+        (cfg, path, key) -> CommandCooldown.read(cfg, path + "." + key, key),
+        () -> {
+            List<String[]> args1 = new ArrayList<>();
+            args1.add(new String[]{"teleport", "tp"});
 
-                    map.computeIfAbsent(rank.toLowerCase(), k -> new HashMap<>()).put(command.toLowerCase(), cooldown);
-                }
-            }
-            return map;
+            return Map.of(
+                "heal", new CommandCooldown("heal", HealCommand.NAME, Collections.emptyList(), new PlayerRankMap<>(Map.of("vip", 60, "gold", 30))),
+                "feed", new CommandCooldown("feed", FeedCommand.NAME, Collections.emptyList(), new PlayerRankMap<>(Map.of("vip", 60, "gold", 30))),
+                "home_tp", new CommandCooldown("home_tp", HomesCommand.NAME, args1, new PlayerRankMap<>(Map.of("default", 30, "vip", 10)))
+            );
         },
-        () -> Map.of(
-            Placeholders.DEFAULT, Map.of(FeedCommand.NAME, 30, HealCommand.NAME, 60),
-            "vip", Map.of(FeedCommand.NAME, 20, HealCommand.NAME, 40),
-            "gold", Map.of(FeedCommand.NAME, 10, HealCommand.NAME, 20)
-        ),
-        "A list of custom rank-based command cooldowns (in seconds).",
-        "This works for ALL server commands, not only SunLight commands.",
-        "You need to put only ONE command alias, don't bother to put multiple aliases of the same command.",
-        "If player has multiple ranks, the SMALLEST cooldown will be used.",
-        "You can put cooldown as '-1' to make command(s) one-timed.",
-        "You must have Vault installed for this feature to work."
-    ).setWriter((cfg, path, map) -> map.forEach((rank, cds) -> cds.forEach((cmd, cd) -> cfg.set(path + "." + rank + "." + cmd, cd))));
+        "Here you can create custom cooldowns for ALL server commands including command arguments.",
+        "===== Options Description =====",
+        "[Command] - This is command name to add cooldown for. It will auto-detect all its aliases and will work for all of them.",
+        "[Arguments] - List of additional arguments to be checked in command line. Each line = new argument.",
+        "        You can provide multiple arguments on the same line (split them with commas).",
+        "        It can be useful if argument has aliases like: '/home teleport' and '/home tp', where 'teleport' and 'tp' does the same thing.",
+        "        If arguments amount is greater than in executed command, the cooldown will be skipped.",
+        "        If arguments amount is smaller or equals to arguments in executed command, the cooldown will be applied.",
+        "[Cooldown] - Rank-based cooldown (in seconds) before player can use this command again.",
+        "        If player has multiple ranks, the SMALLEST cooldown will be used.",
+        "        You can put cooldown as '-1' to make command one-timed.",
+        "        Set cooldown to 0 to disable it for certain rank(s)."
+    ).setWriter((cfg, path, map) -> map.forEach((id, cd) -> cd.write(cfg, path + "." + id)));
 }

@@ -18,8 +18,8 @@ public class Lang extends EngineLang {
     private static final String ACTION_BAR = "<! type:\"action_bar\" !>";
     private static final String NO_PREFIX = "<! prefix:\"false\" !>";
 
-    public static final LangKey Generic_Command_Cooldown_Default = new LangKey("Generic.Command.Cooldown.Default", NO_PREFIX + "&cYou have to wait &c%time% &cbefore you can use &e%cmd% &cagain.");
-    public static final LangKey Generic_Command_Cooldown_Onetime = new LangKey("Generic.Command.Cooldown.Onetime", NO_PREFIX + "&cThis command is one-time and you already have used it.");
+    public static final LangKey GENERIC_COMMAND_COOLDOWN_DEFAULT  = LangKey.of("Generic.Command.Cooldown.Default", NO_PREFIX + RED + "You have to wait " + ORANGE + Placeholders.GENERIC_TIME + RED + " before you can use " + ORANGE + Placeholders.GENERIC_COMMAND + RED + " again.");
+    public static final LangKey GENERIC_COMMAND_COOLDOWN_ONE_TIME = LangKey.of("Generic.Command.Cooldown.OneTime", NO_PREFIX + RED + "This command is one-time and you already have used it.");
 
     public static final LangKey COMMAND_AIR_DESC          = LangKey.of("Command.Air.Desc", "Manage [player's] air ticks.");
     public static final LangKey COMMAND_AIR_USAGE         = LangKey.of("Command.Air.Usage", "<action> <amount> [player] [-max] [-s]");
@@ -247,7 +247,7 @@ public class Lang extends EngineLang {
     public static final LangKey COMMAND_ITEM_AMOUNT_USAGE = LangKey.of("Command.Item.Amount.Usage", "[amount]");
     public static final LangKey COMMAND_ITEM_AMOUNT_DONE  = LangKey.of("Command.Item.Amount.Done", "<! sound:\"" + Sound.ENTITY_ITEM_PICKUP.name() + "\" !>" + LIGHT_YELLOW + "Set " + ORANGE + Placeholders.GENERIC_ITEM + LIGHT_YELLOW + " amount to x" + ORANGE + Placeholders.GENERIC_AMOUNT + LIGHT_YELLOW + ".");
 
-    public static final LangKey COMMAND_ITEM_DAMAGE_DESC  = LangKey.of("Command.Item.Damage.Desc", "Change item's damage'.");
+    public static final LangKey COMMAND_ITEM_DAMAGE_DESC  = LangKey.of("Command.Item.Damage.Desc", "Change item's damage.");
     public static final LangKey COMMAND_ITEM_DAMAGE_USAGE = LangKey.of("Command.Item.Damage.Usage", "[amount]");
     public static final LangKey COMMAND_ITEM_DAMAGE_DONE  = LangKey.of("Command.Item.Damage.Done", "<! sound:\"" + Sound.BLOCK_ANVIL_USE.name() + "\" !>" + LIGHT_YELLOW + "Set " + ORANGE + Placeholders.GENERIC_ITEM + LIGHT_YELLOW + " damage to " + ORANGE + Placeholders.GENERIC_AMOUNT + LIGHT_YELLOW + ".");
     public static final LangKey COMMAND_ITEM_DAMAGE_ERROR_BAD_ITEM  = LangKey.of("Command.Item.Damage.Error.NotDamageable", "<! sound:\"" + Sound.ENTITY_VILLAGER_NO.name() + "\" !>" + ORANGE + Placeholders.GENERIC_ITEM + RED + " can not be damaged.");
@@ -313,6 +313,11 @@ public class Lang extends EngineLang {
     public static final LangKey COMMAND_ITEM_SPAWN_USAGE = LangKey.of("Command.Item.Spawn.Usage", "<material> <amount> [world] [x] [y] [z] [-name <name>] [-lore <text>] [-ench <enchant:level]");
     public static final LangKey COMMAND_ITEM_SPAWN_DONE  = LangKey.of("Command.Item.Spawn.Done", "<! sound:\"" + Sound.ENTITY_ITEM_PICKUP.name() + "\" !>" + LIGHT_YELLOW + "Created " + ORANGE + "x" + Placeholders.GENERIC_AMOUNT + LIGHT_YELLOW + " " + ORANGE + Placeholders.GENERIC_TYPE + LIGHT_YELLOW + " at " + ORANGE + Placeholders.LOCATION_X + ", " + Placeholders.LOCATION_Y + ", " + Placeholders.LOCATION_Z + LIGHT_YELLOW + " in " + ORANGE + Placeholders.LOCATION_WORLD + LIGHT_YELLOW + "!");
 
+    public static final LangKey COMMAND_ITEM_UNBREAKABLE_DESC           = LangKey.of("Command.Item.Unbreakable.Desc", "Makes item (un)breakable.");
+    public static final LangKey COMMAND_ITEM_UNBREAKABLE_USAGE          = LangKey.of("Command.Item.Unbreakable.Usage", "");
+    public static final LangKey COMMAND_ITEM_UNBREAKABLE_DONE           = LangKey.of("Command.Item.Unbreakable.Done", "<! sound:\"" + Sound.BLOCK_ANVIL_USE.name() + "\" !>" + LIGHT_YELLOW + "Set " + ORANGE + Placeholders.GENERIC_ITEM + LIGHT_YELLOW + " Unbreakable: " + ORANGE + Placeholders.GENERIC_STATE + LIGHT_YELLOW + ".");
+    public static final LangKey COMMAND_ITEM_UNBREAKABLE_ERROR_BAD_ITEM = LangKey.of("Command.Item.Unbreakable.Error.NotDamageable", "<! sound:\"" + Sound.ENTITY_VILLAGER_NO.name() + "\" !>" + ORANGE + Placeholders.GENERIC_ITEM + RED + " can not be (un)breakable.");
+
     public static final LangKey COMMAND_MOB_DESC  = LangKey.of("Command.Mob.Desc", "Mob management tools.");
     public static final LangKey COMMAND_MOB_USAGE = LangKey.of("Command.Mob.Usage", "[help]");
 
@@ -362,6 +367,11 @@ public class Lang extends EngineLang {
     public static final LangKey COMMAND_NO_PHANTOM_USAGE         = LangKey.of("Command.NoPhantom.Usage", "[player] [-on] [-off] [-s]");
     public static final LangKey COMMAND_NO_PHANTOM_TOGGLE_NOTIFY = LangKey.of("Command.NoPhantom.Toggle.Notify", LIGHT_YELLOW + "Anti-Phantom mode " + ORANGE + Placeholders.GENERIC_STATE + LIGHT_YELLOW + ".");
     public static final LangKey COMMAND_NO_PHANTOM_TOGGLE_TARGET = LangKey.of("Command.NoPhantom.Toggle.Target", LIGHT_YELLOW + "Set Anti-Phantom mode " + ORANGE + Placeholders.GENERIC_STATE + LIGHT_YELLOW + " for " + ORANGE + Placeholders.PLAYER_NAME + LIGHT_YELLOW + ".");
+
+    public static final LangKey COMMAND_NO_MOB_TARGET_DESC          = LangKey.of("Command.NoMobTarget.Desc", "Toggle mob targetting [for player].");
+    public static final LangKey COMMAND_NO_MOB_TARGET_USAGE         = LangKey.of("Command.NoMobTarget.Usage", "[player] [-on] [-off] [-s]");
+    public static final LangKey COMMAND_NO_MOB_TARGET_TOGGLE_NOTIFY = LangKey.of("Command.NoMobTarget.Toggle.Notify", LIGHT_YELLOW + "Anti-MobTarget mode " + ORANGE + Placeholders.GENERIC_STATE + LIGHT_YELLOW + ".");
+    public static final LangKey COMMAND_NO_MOB_TARGET_TOGGLE_TARGET = LangKey.of("Command.NoMobTarget.Toggle.Target", LIGHT_YELLOW + "Set Anti-MobTarget mode " + ORANGE + Placeholders.GENERIC_STATE + LIGHT_YELLOW + " for " + ORANGE + Placeholders.PLAYER_NAME + LIGHT_YELLOW + ".");
 
     public static final LangKey COMMAND_PLAYER_INFO_DESC  = LangKey.of("Command.PlayerInfo.Desc", "Show player info.");
     public static final LangKey COMMAND_PLAYER_INFO_USAGE = LangKey.of("Command.PlayerInfo.Usage", "<player>");

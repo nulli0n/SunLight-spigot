@@ -13,18 +13,18 @@ import su.nightexpress.sunlight.command.CommandFlags;
 import su.nightexpress.sunlight.command.api.ToggleCommand;
 import su.nightexpress.sunlight.config.Lang;
 import su.nightexpress.sunlight.data.impl.SunUser;
+import su.nightexpress.sunlight.data.impl.settings.DefaultSettings;
 import su.nightexpress.sunlight.data.impl.settings.UserSetting;
 import su.nightexpress.sunlight.utils.Cleanable;
 
 public class NoPhantomCommand extends ToggleCommand implements Cleanable {
 
     public static final String NAME = "nophantom";
-    public static final UserSetting<Boolean> ANTI_PHANTOM = UserSetting.asBoolean("anti_phantom", false, true);
 
     private PhantomTask phantomTask;
 
     public NoPhantomCommand(@NotNull SunLight plugin, @NotNull String[] aliases) {
-        super(plugin, aliases, Perms.COMMAND_NOPHANTOM, Perms.COMMAND_NOPHANTOM_OTHERS);
+        super(plugin, aliases, Perms.COMMAND_NO_PHANTOM, Perms.COMMAND_NO_PHANTOM_OTHERS);
         this.setAllowDataLoad();
         this.setDescription(plugin.getMessage(Lang.COMMAND_NO_PHANTOM_DESC));
         this.setUsage(plugin.getMessage(Lang.COMMAND_NO_PHANTOM_USAGE));
@@ -48,9 +48,10 @@ public class NoPhantomCommand extends ToggleCommand implements Cleanable {
 
         SunUser user = plugin.getUserManager().getUserData(target);
         Mode mode = this.getMode(sender, result);
-        boolean state = mode.apply(user.getSettings().get(ANTI_PHANTOM));
+        UserSetting<Boolean> setting = DefaultSettings.ANTI_PHANTOM;
+        boolean state = mode.apply(user.getSettings().get(setting));
 
-        user.getSettings().set(ANTI_PHANTOM, state);
+        user.getSettings().set(setting, state);
         user.saveData(this.plugin);
 
         if (sender != target) {
@@ -76,7 +77,7 @@ public class NoPhantomCommand extends ToggleCommand implements Cleanable {
         public void action() {
             for (Player player : plugin.getServer().getOnlinePlayers()) {
                 SunUser user = plugin.getUserManager().getUserData(player);
-                if (!user.getSettings().get(ANTI_PHANTOM)) continue;
+                if (!user.getSettings().get(DefaultSettings.ANTI_PHANTOM)) continue;
 
                 player.setStatistic(Statistic.TIME_SINCE_REST, 0);
             }

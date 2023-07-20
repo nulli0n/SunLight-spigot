@@ -22,7 +22,7 @@ import su.nightexpress.sunlight.module.homes.listener.HomeListener;
 import su.nightexpress.sunlight.module.homes.menu.HomesMenu;
 import su.nightexpress.sunlight.module.homes.task.HomesCleanupTask;
 import su.nightexpress.sunlight.module.homes.util.HomesCache;
-import su.nightexpress.sunlight.module.homes.util.HomesPerms;
+import su.nightexpress.sunlight.module.homes.config.HomesPerms;
 import su.nightexpress.sunlight.utils.UserInfo;
 
 import java.util.HashMap;

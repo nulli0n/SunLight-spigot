@@ -23,13 +23,11 @@ import su.nightexpress.sunlight.module.chat.command.ClearchatCommand;
 import su.nightexpress.sunlight.module.chat.command.MeCommand;
 import su.nightexpress.sunlight.module.chat.command.ShortChannelCommand;
 import su.nightexpress.sunlight.module.chat.command.channel.ChatChannelCommand;
+import su.nightexpress.sunlight.module.chat.command.pm.TogglePMCommand;
 import su.nightexpress.sunlight.module.chat.command.spy.ChatSpyCommand;
-import su.nightexpress.sunlight.module.chat.command.tell.ReplyCommand;
-import su.nightexpress.sunlight.module.chat.command.tell.TellCommand;
-import su.nightexpress.sunlight.module.chat.config.ChatConfig;
-import su.nightexpress.sunlight.module.chat.config.ChatLang;
-import su.nightexpress.sunlight.module.chat.config.ChatMention;
-import su.nightexpress.sunlight.module.chat.config.ChatPlayerFormat;
+import su.nightexpress.sunlight.module.chat.command.pm.ReplyCommand;
+import su.nightexpress.sunlight.module.chat.command.pm.TellCommand;
+import su.nightexpress.sunlight.module.chat.config.*;
 import su.nightexpress.sunlight.module.chat.event.AsyncSunlightPlayerChatEvent;
 import su.nightexpress.sunlight.module.chat.listener.ChatListener;
 import su.nightexpress.sunlight.module.chat.module.ChatAnnounceManager;
@@ -104,6 +102,7 @@ public class ChatModule extends Module {
         if (ChatConfig.PM_ENABLED.get()) {
             this.plugin.getCommandRegulator().register(TellCommand.NAME, (cfg1, aliases) -> new TellCommand(this.plugin, aliases), "t", "pm", "whisper", "w", "dm", "msg");
             this.plugin.getCommandRegulator().register(ReplyCommand.NAME, (cfg1, aliases) -> new ReplyCommand(this.plugin, aliases), "r");
+            this.plugin.getCommandRegulator().register(TogglePMCommand.NAME, (cfg1, aliases) -> new TogglePMCommand(this.plugin, aliases));
         }
         if (ChatConfig.SPY_ENABLED.get()) {
             this.plugin.getCommandRegulator().register(ChatSpyCommand.NAME, (cfg1, aliases) -> new ChatSpyCommand(this.plugin, aliases), "spy");

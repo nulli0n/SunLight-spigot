@@ -27,6 +27,15 @@ public class AfkConfig {
     public static final JOption<Integer> AFK_COOLDOWN = JOption.create("AFK.Cooldown", 60,
         "Sets period of time (in seconds) while player will be unable to enter AFK mode for idleness after leaving it.");
 
+    public static final JOption<String> AFK_PLACEHOLDER_IN = JOption.create("AFK.Placeholder.In",
+        LangColors.GRAY + " AFK " + Placeholders.GENERIC_TIME,
+        "Sets the placeholder text for a player in AFK mode.",
+        "Use '" + Placeholders.GENERIC_TIME + "' placeholder to display AFK time.").mapReader(Colorizer::apply);
+
+    public static final JOption<String> AFK_PLACEHOLDER_OUT = JOption.create("AFK.Placeholder.Out",
+        "",
+        "Sets the placeholder text for a player in NO AFK mode.").mapReader(Colorizer::apply);
+
     public static final JOption<PlayerRankMap<Integer>> AFK_IDLE_TIMES = new JOption<>("AFK.Idle_Time",
         (cfg, path, def) -> PlayerRankMap.read(cfg, path, Integer.class),
         new PlayerRankMap<>(Map.of(Placeholders.DEFAULT, 300)),

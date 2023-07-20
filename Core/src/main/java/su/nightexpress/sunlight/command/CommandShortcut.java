@@ -54,8 +54,10 @@ public class CommandShortcut extends GeneralCommand<SunLight> {
 
     @Override
     protected void onExecute(@NotNull CommandSender sender, @NotNull CommandResult result) {
-        String[] args = result.getArgs();
-        String fined = String.join(" ", this.extraArgs) + " " + String.join(" ", args);
+        String fined = String.join(" ", this.extraArgs) + " " + String.join(" ", result.getArgs());
+        if (sender instanceof Player player) {
+            if (!this.plugin.getUserManager().checkCommandCooldown(player, "/" + this.fallback.getFallback().getLabel() + " " + fined)) return;
+        }
         this.fallback.onCommand(sender, this.fallback.getFallback(), result.getLabel(), fined.split(" "));
     }
 }

@@ -45,6 +45,7 @@ public class ItemCommand extends GeneralCommand<SunLight> {
         this.addChildren(new ItemTakeCommand(plugin));
         this.addChildren(new ItemSpawnCommand(plugin));
         this.addChildren(new ItemPotionCommand(plugin));
+        this.addChildren(new ItemUnbreakableCommand(plugin));
     }
 
     @Override

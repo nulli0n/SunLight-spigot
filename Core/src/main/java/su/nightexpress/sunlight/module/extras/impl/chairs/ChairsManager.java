@@ -15,6 +15,7 @@ import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import su.nexmedia.engine.Version;
 import su.nexmedia.engine.api.manager.AbstractManager;
 import su.nexmedia.engine.utils.LocationUtil;
 import su.nightexpress.sunlight.SunLight;
@@ -174,7 +175,7 @@ public class ChairsManager extends AbstractManager<SunLight> {
         if (data instanceof Slab) {
             return ExtrasConfig.CHAIRS_ALLOW_SLABS.get();
         }
-        if (Tag.WOOL_CARPETS.isTagged(block.getType())) {
+        if (Version.isAtLeast(Version.V1_19_R3) && Tag.WOOL_CARPETS.isTagged(block.getType())) {
             return ExtrasConfig.CHAIRS_ALLOW_CARPETS.get();
         }
 

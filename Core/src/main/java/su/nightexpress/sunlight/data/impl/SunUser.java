@@ -1,17 +1,17 @@
 package su.nightexpress.sunlight.data.impl;
 
-import org.bukkit.command.Command;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import su.nexmedia.engine.api.data.AbstractUser;
 import su.nexmedia.engine.utils.Colorizer;
 import su.nightexpress.sunlight.SunLight;
+import su.nightexpress.sunlight.command.CommandCooldown;
+import su.nightexpress.sunlight.data.impl.cooldown.CooldownInfo;
+import su.nightexpress.sunlight.data.impl.cooldown.CooldownType;
 import su.nightexpress.sunlight.data.impl.settings.BasicSettings;
 import su.nightexpress.sunlight.module.kits.Kit;
 import su.nightexpress.sunlight.module.warps.impl.Warp;
-import su.nightexpress.sunlight.data.impl.cooldown.CooldownInfo;
-import su.nightexpress.sunlight.data.impl.cooldown.CooldownType;
 import su.nightexpress.sunlight.utils.UserInfo;
 
 import java.util.*;
@@ -97,8 +97,8 @@ public class SunUser extends AbstractUser<SunLight> {
     }
 
     @NotNull
-    public Optional<CooldownInfo> getCooldown(@NotNull Command command) {
-        return this.getCooldown(CooldownType.COMMAND, command.getLabel());
+    public Optional<CooldownInfo> getCooldown(@NotNull CommandCooldown cooldown) {
+        return this.getCooldown(CooldownType.COMMAND, cooldown.getId());
     }
 
     @NotNull

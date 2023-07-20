@@ -8,14 +8,12 @@ import org.jetbrains.annotations.Nullable;
 import su.nexmedia.engine.utils.Placeholders;
 import su.nightexpress.sunlight.SunLightAPI;
 import su.nightexpress.sunlight.config.Lang;
-import su.nightexpress.sunlight.data.impl.settings.UserSetting;
 
 import java.util.*;
 
 public class TeleportRequest {
 
     private static final Map<UUID, List<TeleportRequest>> REQUEST_MAP = new HashMap<>();
-    public static final UserSetting<Boolean> SETTING_REQUESTS = UserSetting.asBoolean("teleport_requests", true, true);
 
     private final String  target;
     private final String  sender;

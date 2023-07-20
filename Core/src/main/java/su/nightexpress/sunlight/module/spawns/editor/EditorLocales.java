@@ -25,7 +25,7 @@ public class EditorLocales extends su.nexmedia.engine.api.editor.EditorLocales {
         .name("Location")
         .text("This is where players will be teleported.").breakLine()
         .currentHeader().current("Location", Placeholders.SPAWN_LOCATION_X + ", " + Placeholders.SPAWN_LOCATION_Y + ", " + Placeholders.SPAWN_LOCATION_Z + " in " + Placeholders.SPAWN_LOCATION_WORLD).breakLine()
-        .actionsHeader().action("Left-Click", "Set to Your")
+        .actionsHeader().action("Left-Click", "Set to Your Position").action("Right-Click", "Sync with World Spawn")
         .build();
 
     public static final EditorLocale SPAWN_PERMISSION = builder(PREFIX_OLD + "SPAWN_CHANGE_PERMISSION")

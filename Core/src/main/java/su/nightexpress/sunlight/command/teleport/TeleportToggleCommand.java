@@ -9,9 +9,9 @@ import su.nightexpress.sunlight.Placeholders;
 import su.nightexpress.sunlight.SunLight;
 import su.nightexpress.sunlight.command.CommandFlags;
 import su.nightexpress.sunlight.command.api.ToggleCommand;
-import su.nightexpress.sunlight.command.teleport.impl.TeleportRequest;
 import su.nightexpress.sunlight.config.Lang;
 import su.nightexpress.sunlight.data.impl.SunUser;
+import su.nightexpress.sunlight.data.impl.settings.DefaultSettings;
 
 public class TeleportToggleCommand extends ToggleCommand {
 
@@ -31,8 +31,8 @@ public class TeleportToggleCommand extends ToggleCommand {
 
         Mode mode = this.getMode(sender, result);
         SunUser user = plugin.getUserManager().getUserData(target);
-        boolean state = mode.apply(user.getSettings().get(TeleportRequest.SETTING_REQUESTS));
-        user.getSettings().set(TeleportRequest.SETTING_REQUESTS, state);
+        boolean state = mode.apply(user.getSettings().get(DefaultSettings.TELEPORT_REQUESTS));
+        user.getSettings().set(DefaultSettings.TELEPORT_REQUESTS, state);
         user.saveData(this.plugin);
 
         if (sender != target) {

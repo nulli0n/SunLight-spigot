@@ -9,7 +9,7 @@ import su.nightexpress.sunlight.module.ModuleCommand;
 import su.nightexpress.sunlight.module.warps.WarpsModule;
 import su.nightexpress.sunlight.module.warps.config.WarpsLang;
 import su.nightexpress.sunlight.module.warps.util.Placeholders;
-import su.nightexpress.sunlight.module.warps.util.WarpsPerms;
+import su.nightexpress.sunlight.module.warps.config.WarpsPerms;
 
 import java.util.List;
 

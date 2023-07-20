@@ -7,6 +7,7 @@ import su.nexmedia.engine.api.config.JYML;
 import su.nexmedia.engine.api.placeholder.Placeholder;
 import su.nexmedia.engine.api.placeholder.PlaceholderMap;
 import su.nexmedia.engine.utils.Colorizer;
+import su.nightexpress.sunlight.module.chat.config.ChatPerms;
 import su.nightexpress.sunlight.module.chat.util.Placeholders;
 
 import java.util.HashMap;

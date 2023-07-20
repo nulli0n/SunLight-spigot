@@ -6,7 +6,7 @@ import su.nexmedia.engine.api.command.CommandResult;
 import su.nexmedia.engine.api.command.GeneralCommand;
 import su.nexmedia.engine.command.list.HelpSubCommand;
 import su.nightexpress.sunlight.SunLight;
-import su.nightexpress.sunlight.module.chat.ChatPerms;
+import su.nightexpress.sunlight.module.chat.config.ChatPerms;
 import su.nightexpress.sunlight.module.chat.config.ChatLang;
 
 public class ChatSpyCommand extends GeneralCommand<SunLight> {

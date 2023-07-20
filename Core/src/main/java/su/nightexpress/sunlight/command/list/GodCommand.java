@@ -26,6 +26,7 @@ import su.nightexpress.sunlight.command.CommandFlags;
 import su.nightexpress.sunlight.command.api.ToggleCommand;
 import su.nightexpress.sunlight.config.Lang;
 import su.nightexpress.sunlight.data.impl.SunUser;
+import su.nightexpress.sunlight.data.impl.settings.DefaultSettings;
 import su.nightexpress.sunlight.data.impl.settings.UserSetting;
 import su.nightexpress.sunlight.utils.Cleanable;
 
@@ -38,7 +39,6 @@ import java.util.stream.Collectors;
 public class GodCommand extends ToggleCommand implements Cleanable {
 
     public static final String NAME = "god";
-    public static final UserSetting<Boolean> GOD_MODE = UserSetting.asBoolean("god_mode", false, false);
 
     private final Set<DamageSource> disabledIncoming;
     private final Set<DamageSource> disabledOutgoing;
@@ -135,22 +135,24 @@ public class GodCommand extends ToggleCommand implements Cleanable {
         Mode mode = this.getMode(sender, result);
 
         SunUser user = plugin.getUserManager().getUserData(target);
-        user.getSettings().set(GOD_MODE, mode.apply(user.getSettings().get(GOD_MODE)));
+        UserSetting<Boolean> setting = DefaultSettings.GOD_MODE;
+        user.getSettings().set(setting, mode.apply(user.getSettings().get(setting)));
+        user.saveData(this.plugin);
 
         // Notify about god mode in disabled world.
-        if (user.getSettings().get(GOD_MODE) && !this.isAllowedWorld(target)) {
+        if (user.getSettings().get(setting) && !this.isAllowedWorld(target)) {
             plugin.getMessage(Lang.COMMAND_GOD_NOTIFY_BAD_WORLD).send(target);
         }
 
         if (sender != target) {
             plugin.getMessage(Lang.COMMAND_GOD_TOGGLE_TARGET)
-                .replace(Placeholders.GENERIC_STATE, Lang.getEnable(user.getSettings().get(GOD_MODE)))
+                .replace(Placeholders.GENERIC_STATE, Lang.getEnable(user.getSettings().get(setting)))
                 .replace(Placeholders.forPlayer(target))
                 .send(sender);
         }
         if (!result.hasFlag(CommandFlags.SILENT)) {
             plugin.getMessage(Lang.COMMAND_GOD_TOGGLE_NOTIFY)
-                .replace(Placeholders.GENERIC_STATE, Lang.getEnable(user.getSettings().get(GOD_MODE)))
+                .replace(Placeholders.GENERIC_STATE, Lang.getEnable(user.getSettings().get(setting)))
                 .send(target);
         }
     }
@@ -168,7 +170,7 @@ public class GodCommand extends ToggleCommand implements Cleanable {
 
             // Notify about god mode in disabled world.
             SunUser user = plugin.getUserManager().getUserData(player);
-            if (user.getSettings().get(GOD_MODE) && !isAllowedWorld(player)) {
+            if (user.getSettings().get(DefaultSettings.GOD_MODE) && !isAllowedWorld(player)) {
                 plugin.getMessage(Lang.COMMAND_GOD_NOTIFY_BAD_WORLD).send(player);
             }
         }
@@ -180,7 +182,7 @@ public class GodCommand extends ToggleCommand implements Cleanable {
             if (EntityUtil.isNPC(player) || !isAllowedWorld(player)) return;
 
             SunUser user = plugin.getUserManager().getUserData(player);
-            if (user.getSettings().get(GOD_MODE) && disabledIncoming.contains(DamageSource.getIncoming(e))) {
+            if (user.getSettings().get(DefaultSettings.GOD_MODE) && disabledIncoming.contains(DamageSource.getIncoming(e))) {
                 e.setCancelled(true);
             }
         }
@@ -199,7 +201,7 @@ public class GodCommand extends ToggleCommand implements Cleanable {
             if (EntityUtil.isNPC(damager) || !isAllowedWorld(damager)) return;
 
             SunUser user = this.plugin.getUserManager().getUserData(damager);
-            if (user.getSettings().get(GOD_MODE) && disabledOutgoing.contains(DamageSource.getOutgoing(e))) {
+            if (user.getSettings().get(DefaultSettings.GOD_MODE) && disabledOutgoing.contains(DamageSource.getOutgoing(e))) {
                 plugin.getMessage(Lang.COMMAND_GOD_DAMAGE_NOTIFY_OUT).send(damager);
                 e.setCancelled(true);
             }

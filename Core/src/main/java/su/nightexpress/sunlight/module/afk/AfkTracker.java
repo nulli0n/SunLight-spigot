@@ -88,6 +88,10 @@ public class AfkTracker {
         this.wakeUpTimeout = 0L;
     }
 
+    public void resetSleepCooldown() {
+        this.sleepCooldown = 0L;
+    }
+
     public void setSleepCooldown() {
         this.sleepCooldown = System.currentTimeMillis() + AfkConfig.AFK_COOLDOWN.get() * 1000L;
     }

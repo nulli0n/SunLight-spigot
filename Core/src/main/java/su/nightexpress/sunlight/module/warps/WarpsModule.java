@@ -19,7 +19,7 @@ import su.nightexpress.sunlight.module.warps.impl.Warp;
 import su.nightexpress.sunlight.module.warps.menu.WarpsMenu;
 import su.nightexpress.sunlight.module.warps.type.WarpSortType;
 import su.nightexpress.sunlight.module.warps.type.WarpType;
-import su.nightexpress.sunlight.module.warps.util.WarpsPerms;
+import su.nightexpress.sunlight.module.warps.config.WarpsPerms;
 import su.nightexpress.sunlight.utils.SunUtils;
 import su.nightexpress.sunlight.utils.UserInfo;
 

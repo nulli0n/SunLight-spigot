@@ -68,6 +68,7 @@ public class CommandRegulator extends AbstractManager<SunLight> {
         this.register(MobCommand.NAME, (cfg, aliases) -> new MobCommand(plugin, aliases));
         this.register(NearCommand.NAME, (cfg, aliases) -> new NearCommand(plugin, cfg, aliases));
         this.register(NickCommand.NAME, (cfg, aliases) -> new NickCommand(plugin, cfg, aliases));
+        this.register(NoMobTargetCommand.NAME, (cfg, aliases) -> new NoMobTargetCommand(plugin, aliases));
         this.register(NoPhantomCommand.NAME, (cfg, aliases) -> new NoPhantomCommand(plugin, aliases));
         this.register(PlayerInfoCommand.NAME, (cfg, aliases) -> new PlayerInfoCommand(plugin, cfg, aliases), "pinfo");
         this.register(PlayerListCommand.NAME, (cfg, aliases) -> new PlayerListCommand(plugin, cfg, aliases), "plist");

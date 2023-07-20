@@ -8,7 +8,7 @@ import su.nexmedia.engine.api.command.CommandResult;
 import su.nightexpress.sunlight.module.GeneralModuleCommand;
 import su.nightexpress.sunlight.module.chat.ChatChannel;
 import su.nightexpress.sunlight.module.chat.ChatModule;
-import su.nightexpress.sunlight.module.chat.ChatPerms;
+import su.nightexpress.sunlight.module.chat.config.ChatPerms;
 import su.nightexpress.sunlight.module.chat.config.ChatLang;
 
 import java.util.HashSet;

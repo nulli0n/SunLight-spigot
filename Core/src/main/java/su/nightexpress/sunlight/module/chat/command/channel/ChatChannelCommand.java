@@ -6,7 +6,7 @@ import su.nexmedia.engine.api.command.CommandResult;
 import su.nexmedia.engine.command.list.HelpSubCommand;
 import su.nightexpress.sunlight.module.GeneralModuleCommand;
 import su.nightexpress.sunlight.module.chat.ChatModule;
-import su.nightexpress.sunlight.module.chat.ChatPerms;
+import su.nightexpress.sunlight.module.chat.config.ChatPerms;
 import su.nightexpress.sunlight.module.chat.config.ChatLang;
 
 public class ChatChannelCommand extends GeneralModuleCommand<ChatModule> {

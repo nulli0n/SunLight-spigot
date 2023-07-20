@@ -8,7 +8,7 @@ import su.nexmedia.engine.utils.Placeholders;
 import su.nightexpress.sunlight.module.ModuleCommand;
 import su.nightexpress.sunlight.module.homes.HomesModule;
 import su.nightexpress.sunlight.module.homes.config.HomesLang;
-import su.nightexpress.sunlight.module.homes.util.HomesPerms;
+import su.nightexpress.sunlight.module.homes.config.HomesPerms;
 
 import java.util.Collections;
 import java.util.List;

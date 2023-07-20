@@ -1,9 +1,10 @@
 package su.nightexpress.sunlight.module.chat.config;
 
+import su.nexmedia.engine.api.lang.LangColors;
 import su.nexmedia.engine.api.lang.LangKey;
 import su.nightexpress.sunlight.module.chat.util.Placeholders;
 
-public class ChatLang {
+public class ChatLang implements LangColors {
 
     private static final String NO_PREFIX = "<! prefix:\"false\" !>";
 
@@ -22,6 +23,11 @@ public class ChatLang {
     public static final LangKey COMMAND_CHANNEL_LEAVE_USAGE = new LangKey("Chat.Command.Channel.Leave.Usage", "<channel>");
     public static final LangKey COMMAND_CHANNEL_SET_DESC  = new LangKey("Chat.Command.Channel.Set.Desc", "Set default channel.");
     public static final LangKey COMMAND_CHANNEL_SET_USAGE = new LangKey("Chat.Command.Channel.Set.Usage", "<channel>");
+
+    public static final LangKey COMMAND_TOGGLE_PM_DESC              = LangKey.of("Command.TogglePM.Desc", "Toggle [player's] Private Messages.");
+    public static final LangKey COMMAND_TOGGLE_PM_USAGE             = LangKey.of("Command.TogglePM.Usage", "[player] [-on] [-off] [-s]");
+    public static final LangKey COMMAND_TOGGLE_PM_TOGGLE_NOTIFY     = LangKey.of("Command.TogglePM.Toggle.Notify", LIGHT_YELLOW + "Your Private Messages has been " + ORANGE + Placeholders.GENERIC_STATE + LIGHT_YELLOW + ".");
+    public static final LangKey COMMAND_TOGGLE_PM_TOGGLE_TARGET     = LangKey.of("Command.TogglePM.Toggle.Target", LIGHT_YELLOW + "Set Private Messages " + ORANGE + Placeholders.GENERIC_STATE + LIGHT_YELLOW + " for " + ORANGE + Placeholders.PLAYER_NAME + LIGHT_YELLOW + ".");
 
     public static final LangKey Channel_Join_Success            = new LangKey("Chat.Channel.Join.Success", NO_PREFIX + "&7You joined the &a" + Placeholders.CHANNEL_NAME + " &7chat channel.");
     public static final LangKey Channel_Join_Error_NoPermission = new LangKey("Chat.Channel.Join.Error.NoPermission", NO_PREFIX + "&cYou don't have permissions to join this channel.");
@@ -50,4 +56,6 @@ public class ChatLang {
     public static final LangKey COMMAND_SPY_LOGGER_USAGE     = new LangKey("Chat.Command.Spy.Logger.Usage", "<add | remove> <type> <player>");
     public static final LangKey COMMAND_SPY_LOGGER_DONE      = new LangKey("Chat.Command.Spy.Logger.Done.Add", "Set &c" + Placeholders.GENERIC_TYPE + " &7Spy Logger for &c" + Placeholders.PLAYER_DISPLAY_NAME + " &7to &f" + Placeholders.GENERIC_STATE);
     //public static final LangKey Channel_Speak_NoPermission = new LangKey(this, "&cYou don't have permission to speak in this chat channel!");
+
+    public static final LangKey PRIVATE_MESSAGE_ERROR_DISABLED = LangKey.of("PrivateMessage.Error.Disabled", ORANGE + Placeholders.PLAYER_DISPLAY_NAME + RED + " disabled Private Messages.");
 }

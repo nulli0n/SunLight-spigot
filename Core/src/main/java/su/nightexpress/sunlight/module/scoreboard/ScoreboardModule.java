@@ -73,8 +73,10 @@ public class ScoreboardModule extends Module {
         this.boardTask = new BoardUpdateTask(this);
         this.boardTask.start();
 
-        this.plugin.getServer().getOnlinePlayers().forEach(player -> {
-            if (this.isScoreboardEnabled(player)) this.addBoard(player);
+        this.plugin.runTask(task -> {
+            this.plugin.getServer().getOnlinePlayers().forEach(player -> {
+                if (this.isScoreboardEnabled(player)) this.addBoard(player);
+            });
         });
     }
 

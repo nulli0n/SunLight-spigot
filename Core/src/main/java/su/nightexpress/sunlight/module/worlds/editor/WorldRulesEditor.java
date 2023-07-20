@@ -29,7 +29,7 @@ public class WorldRulesEditor extends EditorMenu<SunLight, WorldConfig> implemen
     private final WorldConfig worldConfig;
 
     public WorldRulesEditor(@NotNull SunLight plugin, @NotNull WorldConfig worldConfig) {
-        super(plugin, worldConfig, EditorLocales.TITLE_WORLD_RULES, 45);
+        super(plugin, worldConfig, "Game Rules for: " + worldConfig.getId(), 45);
         this.worldConfig = worldConfig;
 
         this.addNextPage(44);

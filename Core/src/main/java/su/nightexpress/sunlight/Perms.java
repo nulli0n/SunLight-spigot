@@ -25,9 +25,7 @@ public class Perms {
 
     public static final String PREFIX         = "sunlight.";
     public static final String PREFIX_COMMAND = PREFIX + "command.";
-
-    @Deprecated
-    public static final  String CMD_BYPASS_COOLDOWN = PREFIX + "bypass.command.cooldown";
+    public static final String PREFIX_BYPASS  = PREFIX + "bypass.";
 
     @NotNull
     public static JPermission forCommand(@NotNull String name) {
@@ -49,10 +47,16 @@ public class Perms {
         return new JPermission(PREFIX_COMMAND + parent + "." + child + ".others", "Access to the '/" + parent + " " + child + "' command on other players.");
     }
 
-    public static final JPermission PLUGIN  = new JPermission(PREFIX + Placeholders.WILDCARD, "Access to all the plugin functions.");
-    public static final JPermission COMMAND = new JPermission(PREFIX_COMMAND + Placeholders.WILDCARD, "Access to all the plugin commands.");
+    public static final JPermission PLUGIN  = new JPermission(PREFIX + Placeholders.WILDCARD, "Access to all plugin functions (including modules).");
+    public static final JPermission COMMAND = new JPermission(PREFIX_COMMAND + Placeholders.WILDCARD, "Access to all plugin basic (non-module) commands.");
+    public static final JPermission BYPASS  = new JPermission(PREFIX_BYPASS + Placeholders.WILDCARD, "Bypassed all basic (non-module) restrictions.");
 
-    public static final JPermission COMMAND_RELOAD = new JPermission(PREFIX_COMMAND + "reload", "Access to the '/sunlight reload' command.");
+    public static final JPermission BYPASS_COMMAND_COOLDOWN           = new JPermission(PREFIX_BYPASS + "command.cooldown");
+    public static final JPermission BYPASS_TELEPORT_REQUESTS_DISABLED = new JPermission(PREFIX_BYPASS + "teleport.requests.disabled");
+    public static final JPermission BYPASS_IGNORE_PM                  = new JPermission(PREFIX_BYPASS + "ignore.pm");
+    public static final JPermission BYPASS_IGNORE_TELEPORTS           = new JPermission(PREFIX_BYPASS + "ignore.teleports");
+
+    public static final JPermission COMMAND_RELOAD = new JPermission(PREFIX_COMMAND + "reload", "Access to the '/sunlight reload' sub-command.");
 
     public static final JPermission COMMAND_AIR          = forCommand(AirCommand.NAME);
     public static final JPermission COMMAND_AIR_OTHERS   = forCommandOthers(AirCommand.NAME);
@@ -125,27 +129,30 @@ public class Perms {
     public static final JPermission COMMAND_INVENTORY_REPAIR        = forCommand(InventoryCommand.NAME, InventoryRepairCommand.NAME);
     public static final JPermission COMMAND_INVENTORY_REPAIR_OTHERS = forCommandOthers(InventoryCommand.NAME, InventoryRepairCommand.NAME);
 
-    public static final JPermission COMMAND_ITEM         = forCommand(ItemCommand.NAME);
-    public static final JPermission COMMAND_ITEM_AMOUNT  = forCommand(ItemCommand.NAME, ItemAmountCommand.NAME);
-    public static final JPermission COMMAND_ITEM_DAMAGE  = forCommand(ItemCommand.NAME, ItemDamageCommand.NAME);
-    public static final JPermission COMMAND_ITEM_ENCHANT = forCommand(ItemCommand.NAME, ItemEnchantCommand.NAME);
-    public static final JPermission COMMAND_ITEM_FLAG    = forCommand(ItemCommand.NAME, ItemFlagCommand.NAME);
-    public static final JPermission COMMAND_ITEM_GET     = forCommand(ItemCommand.NAME, ItemGetCommand.NAME);
-    public static final JPermission COMMAND_ITEM_GIVE    = forCommand(ItemCommand.NAME, ItemGiveCommand.NAME);
-    public static final JPermission COMMAND_ITEM_MODEL   = forCommand(ItemCommand.NAME, ItemModelCommand.NAME);
-    public static final JPermission COMMAND_ITEM_NAME    = forCommand(ItemCommand.NAME, ItemNameCommand.NAME);
-    public static final JPermission COMMAND_ITEM_LORE    = forCommand(ItemCommand.NAME, ItemLoreCommand.NAME);
-    public static final JPermission COMMAND_ITEM_TAKE    = forCommand(ItemCommand.NAME, ItemTakeCommand.NAME);
-    public static final JPermission COMMAND_ITEM_SPAWN   = forCommand(ItemCommand.NAME, ItemSpawnCommand.NAME);
-    public static final JPermission COMMAND_ITEM_POTION  = forCommand(ItemCommand.NAME, ItemPotionCommand.NAME);
+    public static final JPermission COMMAND_ITEM             = forCommand(ItemCommand.NAME);
+    public static final JPermission COMMAND_ITEM_AMOUNT      = forCommand(ItemCommand.NAME, ItemAmountCommand.NAME);
+    public static final JPermission COMMAND_ITEM_DAMAGE      = forCommand(ItemCommand.NAME, ItemDamageCommand.NAME);
+    public static final JPermission COMMAND_ITEM_UNBREAKABLE = forCommand(ItemCommand.NAME, ItemUnbreakableCommand.NAME);
+    public static final JPermission COMMAND_ITEM_ENCHANT     = forCommand(ItemCommand.NAME, ItemEnchantCommand.NAME);
+    public static final JPermission COMMAND_ITEM_FLAG        = forCommand(ItemCommand.NAME, ItemFlagCommand.NAME);
+    public static final JPermission COMMAND_ITEM_GET         = forCommand(ItemCommand.NAME, ItemGetCommand.NAME);
+    public static final JPermission COMMAND_ITEM_GIVE        = forCommand(ItemCommand.NAME, ItemGiveCommand.NAME);
+    public static final JPermission COMMAND_ITEM_MODEL       = forCommand(ItemCommand.NAME, ItemModelCommand.NAME);
+    public static final JPermission COMMAND_ITEM_NAME        = forCommand(ItemCommand.NAME, ItemNameCommand.NAME);
+    public static final JPermission COMMAND_ITEM_LORE        = forCommand(ItemCommand.NAME, ItemLoreCommand.NAME);
+    public static final JPermission COMMAND_ITEM_TAKE        = forCommand(ItemCommand.NAME, ItemTakeCommand.NAME);
+    public static final JPermission COMMAND_ITEM_SPAWN       = forCommand(ItemCommand.NAME, ItemSpawnCommand.NAME);
+    public static final JPermission COMMAND_ITEM_POTION      = forCommand(ItemCommand.NAME, ItemPotionCommand.NAME);
 
     public static final JPermission COMMAND_MOB       = forCommand(MobCommand.NAME);
     public static final JPermission COMMAND_MOB_KILL  = forCommand(MobCommand.NAME, MobKillCommand.NAME);
     public static final JPermission COMMAND_MOB_SPAWN = forCommand(MobCommand.NAME, MobSpawnCommand.NAME);
 
-    public static final JPermission COMMAND_NEAR             = forCommand(NearCommand.NAME);
-    public static final JPermission COMMAND_NOPHANTOM        = forCommand(NoPhantomCommand.NAME);
-    public static final JPermission COMMAND_NOPHANTOM_OTHERS = forCommandOthers(NoPhantomCommand.NAME);
+    public static final JPermission COMMAND_NEAR                 = forCommand(NearCommand.NAME);
+    public static final JPermission COMMAND_NO_PHANTOM           = forCommand(NoPhantomCommand.NAME);
+    public static final JPermission COMMAND_NO_PHANTOM_OTHERS    = forCommandOthers(NoPhantomCommand.NAME);
+    public static final JPermission COMMAND_NO_MOB_TARGET        = forCommand(NoMobTargetCommand.NAME);
+    public static final JPermission COMMAND_NO_MOB_TARGET_OTHERS = forCommandOthers(NoMobTargetCommand.NAME);
 
     public static final JPermission COMMAND_NICK               = forCommand(NickCommand.NAME);
     public static final JPermission COMMAND_NICK_SET           = forCommand(NickCommand.NAME, NickSetCommand.NAME);
@@ -199,7 +206,13 @@ public class Perms {
     public static final JPermission COMMAND_WORKBENCH_OTHERS = forCommandOthers(WorkbenchCommand.NAME);
 
     static {
-        PLUGIN.addChildren(COMMAND);
+        PLUGIN.addChildren(COMMAND, BYPASS);
+
+        BYPASS.addChildren(
+            BYPASS_COMMAND_COOLDOWN,
+            BYPASS_TELEPORT_REQUESTS_DISABLED,
+            BYPASS_IGNORE_PM, BYPASS_IGNORE_TELEPORTS
+        );
 
         COMMAND.addChildren(
             COMMAND_RELOAD,
@@ -246,12 +259,12 @@ public class Perms {
             COMMAND_ITEM, COMMAND_ITEM_AMOUNT, COMMAND_ITEM_ENCHANT, COMMAND_ITEM_FLAG,
             COMMAND_ITEM_GET, COMMAND_ITEM_GIVE, COMMAND_ITEM_LORE, COMMAND_ITEM_MODEL,
             COMMAND_ITEM_NAME, COMMAND_ITEM_SPAWN, COMMAND_ITEM_TAKE, COMMAND_ITEM_POTION,
-            COMMAND_ITEM_DAMAGE,
+            COMMAND_ITEM_DAMAGE, COMMAND_ITEM_UNBREAKABLE,
 
             COMMAND_MOB, COMMAND_MOB_KILL, COMMAND_MOB_SPAWN,
 
             COMMAND_NEAR,
-            COMMAND_NOPHANTOM, COMMAND_NOPHANTOM_OTHERS,
+            COMMAND_NO_PHANTOM, COMMAND_NO_PHANTOM_OTHERS,
 
             COMMAND_NICK, COMMAND_NICK_CHANGE, COMMAND_NICK_SET, COMMAND_NICK_CLEAR, COMMAND_NICK_CLEAR_OTHERS,
             COMMAND_NICK_BYPASS_LENGTH, COMMAND_NICK_BYPASS_WORDS,

@@ -33,7 +33,7 @@ public class WorldMainEditor extends EditorMenu<SunLight, WorldConfig> {
     private static final String TEXTURE_EYE_BLUE = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZmQwNjMzMDE4ZDA5ZmFlYTU5NWYxYWMxMDc1YTNiMDRhNDAwYzFmMDM2ZTJhOTY5ZWNkN2Y5NWM1ZmZlNjVmMCJ9fX0=";
 
     public WorldMainEditor(@NotNull WorldsModule worldsModule, @NotNull WorldConfig worldConfig) {
-        super(worldConfig.plugin(), worldConfig, EditorLocales.TITLE_WORLDS_EDITOR, 54);
+        super(worldConfig.plugin(), worldConfig, "World Editor: " + worldConfig.getId(), 54);
 
         this.addReturn(49).setClick((viewer, event) -> {
             this.plugin.runTask(task -> worldsModule.getEditor().open(viewer.getPlayer(), 1));

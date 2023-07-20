@@ -13,7 +13,7 @@ import su.nexmedia.engine.utils.message.NexParser;
 import su.nightexpress.sunlight.Placeholders;
 import su.nightexpress.sunlight.SunLight;
 import su.nightexpress.sunlight.module.chat.ChatModule;
-import su.nightexpress.sunlight.module.chat.ChatPerms;
+import su.nightexpress.sunlight.module.chat.config.ChatPerms;
 import su.nightexpress.sunlight.module.chat.config.ChatLang;
 
 import java.util.List;

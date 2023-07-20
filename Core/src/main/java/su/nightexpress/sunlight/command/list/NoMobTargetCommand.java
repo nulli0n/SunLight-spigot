@@ -4,7 +4,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.entity.FoodLevelChangeEvent;
+import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
 import org.jetbrains.annotations.NotNull;
 import su.nexmedia.engine.api.command.CommandResult;
 import su.nexmedia.engine.api.manager.AbstractListener;
@@ -19,17 +19,17 @@ import su.nightexpress.sunlight.data.impl.settings.DefaultSettings;
 import su.nightexpress.sunlight.data.impl.settings.UserSetting;
 import su.nightexpress.sunlight.utils.Cleanable;
 
-public class FoodGodCommand extends ToggleCommand implements Cleanable {
+public class NoMobTargetCommand extends ToggleCommand implements Cleanable {
 
-    public static final String NAME = "foodgod";
+    public static final String NAME = "nomobtarget";
 
     private final Listener listener;
 
-    public FoodGodCommand(@NotNull SunLight plugin, @NotNull String[] aliases) {
-        super(plugin, aliases, Perms.COMMAND_FOOD_GOD, Perms.COMMAND_FOOD_GOD_OTHERS);
+    public NoMobTargetCommand(@NotNull SunLight plugin, @NotNull String[] aliases) {
+        super(plugin, aliases, Perms.COMMAND_NO_MOB_TARGET, Perms.COMMAND_NO_MOB_TARGET_OTHERS);
+        this.setDescription(plugin.getMessage(Lang.COMMAND_NO_MOB_TARGET_DESC));
+        this.setUsage(plugin.getMessage(Lang.COMMAND_NO_MOB_TARGET_USAGE));
         this.setAllowDataLoad();
-        this.setDescription(plugin.getMessage(Lang.COMMAND_FOOD_GOD_DESC));
-        this.setUsage(plugin.getMessage(Lang.COMMAND_FOOD_GOD_USAGE));
 
         this.listener = new Listener(plugin);
         this.listener.registerListeners();
@@ -45,21 +45,22 @@ public class FoodGodCommand extends ToggleCommand implements Cleanable {
         Player target = this.getCommandTarget(sender, result);
         if (target == null) return;
 
-        SunUser user = plugin.getUserManager().getUserData(target);
         Mode mode = this.getMode(sender, result);
-        UserSetting<Boolean> setting = DefaultSettings.FOOD_GOD;
+        UserSetting<Boolean> setting = DefaultSettings.NO_MOB_TARGET;
+        SunUser user = this.plugin.getUserManager().getUserData(target);
         boolean state = mode.apply(user.getSettings().get(setting));
+
         user.getSettings().set(setting, state);
         user.saveData(this.plugin);
 
         if (sender != target) {
-            plugin.getMessage(Lang.COMMAND_FOOD_GOD_TARGET)
-                .replace(Placeholders.forPlayer(target))
+            plugin.getMessage(Lang.COMMAND_NO_MOB_TARGET_TOGGLE_TARGET)
                 .replace(Placeholders.GENERIC_STATE, Lang.getEnable(state))
+                .replace(Placeholders.forPlayer(target))
                 .send(sender);
         }
         if (!result.hasFlag(CommandFlags.SILENT)) {
-            plugin.getMessage(Lang.COMMAND_FOOD_GOD_NOTIFY)
+            plugin.getMessage(Lang.COMMAND_NO_MOB_TARGET_TOGGLE_NOTIFY)
                 .replace(Placeholders.GENERIC_STATE, Lang.getEnable(state))
                 .send(target);
         }
@@ -71,12 +72,14 @@ public class FoodGodCommand extends ToggleCommand implements Cleanable {
             super(plugin);
         }
 
-        @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-        public void onFoodChange(FoodLevelChangeEvent e) {
-            if (!(e.getEntity() instanceof Player player)) return;
+        @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+        public void onMobTarget(EntityTargetLivingEntityEvent event) {
+            if (!(event.getTarget() instanceof Player player)) return;
 
-            SunUser user = plugin.getUserManager().getUserData(player);
-            e.setCancelled(user.getSettings().get(DefaultSettings.FOOD_GOD));
+            SunUser user = this.plugin.getUserManager().getUserData(player);
+            if (user.getSettings().get(DefaultSettings.NO_MOB_TARGET)) {
+                event.setCancelled(true);
+            }
         }
     }
 }

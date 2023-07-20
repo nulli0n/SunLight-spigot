@@ -2,24 +2,21 @@ package su.nightexpress.sunlight.hook.impl;
 
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.World;
-import org.bukkit.command.Command;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import su.nexmedia.engine.command.CommandRegister;
 import su.nexmedia.engine.lang.LangManager;
 import su.nexmedia.engine.utils.NumberUtil;
 import su.nexmedia.engine.utils.TimeUtil;
+import su.nightexpress.sunlight.Placeholders;
 import su.nightexpress.sunlight.SunLight;
-import su.nightexpress.sunlight.command.list.FoodGodCommand;
-import su.nightexpress.sunlight.command.list.GodCommand;
-import su.nightexpress.sunlight.command.list.NoPhantomCommand;
-import su.nightexpress.sunlight.command.list.VanishCommand;
-import su.nightexpress.sunlight.command.teleport.impl.TeleportRequest;
 import su.nightexpress.sunlight.config.Lang;
 import su.nightexpress.sunlight.data.impl.SunUser;
 import su.nightexpress.sunlight.data.impl.cooldown.CooldownInfo;
+import su.nightexpress.sunlight.data.impl.cooldown.CooldownType;
+import su.nightexpress.sunlight.data.impl.settings.DefaultSettings;
 import su.nightexpress.sunlight.module.afk.AfkModule;
+import su.nightexpress.sunlight.module.afk.config.AfkConfig;
 import su.nightexpress.sunlight.module.bans.BansModule;
 import su.nightexpress.sunlight.module.chat.ChatModule;
 import su.nightexpress.sunlight.module.extras.impl.chairs.ChairsManager;
@@ -93,9 +90,12 @@ public class PlaceholderHook {
                 AfkModule module = this.plugin.getModuleManager().getModule(AfkModule.class).orElse(null);
                 if (module == null) return null;
 
-                // TODO AFK Text placeholder ?
                 if (rest.equalsIgnoreCase("state")) {
                     return LangManager.getBoolean(module.isAfk(player));
+                }
+                if (rest.equalsIgnoreCase("mode")) {
+                    String placeholder = AfkModule.isAfk(user) ? AfkConfig.AFK_PLACEHOLDER_IN.get() : AfkConfig.AFK_PLACEHOLDER_OUT.get();
+                    return placeholder.replace(Placeholders.GENERIC_TIME, TimeUtil.formatTime(AfkModule.getIdleTime(user) * 1000L));
                 }
                 if (rest.equalsIgnoreCase("idle_time")) {
                     return NumberUtil.format(AfkModule.getIdleTime(user));
@@ -212,19 +212,19 @@ public class PlaceholderHook {
             }
             else {
                 if (params.equalsIgnoreCase("god_state")) {
-                    return LangManager.getBoolean(user.getSettings().get(GodCommand.GOD_MODE));
+                    return LangManager.getBoolean(user.getSettings().get(DefaultSettings.GOD_MODE));
                 }
                 if (params.equalsIgnoreCase("foodgod_state")) {
-                    return LangManager.getBoolean(user.getSettings().get(FoodGodCommand.FOOD_GOD));
+                    return LangManager.getBoolean(user.getSettings().get(DefaultSettings.FOOD_GOD));
                 }
                 if (params.equalsIgnoreCase("teleport_requests_state")) {
-                    return LangManager.getBoolean(user.getSettings().get(TeleportRequest.SETTING_REQUESTS));
+                    return LangManager.getBoolean(user.getSettings().get(DefaultSettings.TELEPORT_REQUESTS));
                 }
                 if (params.equalsIgnoreCase("nophantom_state")) {
-                    return LangManager.getBoolean(user.getSettings().get(NoPhantomCommand.ANTI_PHANTOM));
+                    return LangManager.getBoolean(user.getSettings().get(DefaultSettings.ANTI_PHANTOM));
                 }
                 if (params.equalsIgnoreCase("vanish_state")) {
-                    return LangManager.getBoolean(user.getSettings().get(VanishCommand.VANISH));
+                    return LangManager.getBoolean(user.getSettings().get(DefaultSettings.VANISH));
                 }
                 if (params.equalsIgnoreCase("chairs_state")) {
                     return LangManager.getBoolean(user.getSettings().get(ChairsManager.SETTING_CHAIRS));
@@ -246,13 +246,11 @@ public class PlaceholderHook {
                 }
                 if (params.startsWith("command_is_on_cooldown_")) {
                     String name = params.substring("command_is_on_cooldown_".length());
-                    Command command = CommandRegister.getCommand(name).orElse(null);
-                    if (command != null) return LangManager.getBoolean(user.getCooldown(command).isPresent());
+                    return LangManager.getBoolean(user.getCooldown(CooldownType.COMMAND, name).isPresent());
                 }
                 if (params.startsWith("command_cooldown_")) {
                     String name = params.substring("command_cooldown_".length());
-                    Command command = CommandRegister.getCommand(name).orElse(null);
-                    if (command != null) return user.getCooldown(command).map(c -> TimeUtil.formatTimeLeft(c.getExpireDate())).orElse("-");
+                    return user.getCooldown(CooldownType.COMMAND, name).map(c -> TimeUtil.formatTimeLeft(c.getExpireDate())).orElse("-");
                 }
             }
 

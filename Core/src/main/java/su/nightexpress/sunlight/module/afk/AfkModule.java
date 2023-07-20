@@ -137,6 +137,7 @@ public class AfkModule extends Module {
         setAfkState(user, true);
         setAfkSince(user, System.currentTimeMillis());
         this.getTrack(player).setLastPosition();
+        this.getTrack(player).resetSleepCooldown();
 
         PlayerAfkEvent event = new PlayerAfkEvent(player, user, true);
         this.plugin.getPluginManager().callEvent(event);

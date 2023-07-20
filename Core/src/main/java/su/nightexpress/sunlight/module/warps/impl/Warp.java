@@ -24,7 +24,7 @@ import su.nightexpress.sunlight.module.warps.config.WarpsLang;
 import su.nightexpress.sunlight.module.warps.menu.WarpSettingsMenu;
 import su.nightexpress.sunlight.module.warps.type.WarpType;
 import su.nightexpress.sunlight.module.warps.util.Placeholders;
-import su.nightexpress.sunlight.module.warps.util.WarpsPerms;
+import su.nightexpress.sunlight.module.warps.config.WarpsPerms;
 import su.nightexpress.sunlight.utils.UserInfo;
 
 import java.time.LocalTime;

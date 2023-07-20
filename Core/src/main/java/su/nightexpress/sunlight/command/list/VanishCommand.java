@@ -15,13 +15,13 @@ import su.nightexpress.sunlight.command.CommandFlags;
 import su.nightexpress.sunlight.command.api.ToggleCommand;
 import su.nightexpress.sunlight.config.Lang;
 import su.nightexpress.sunlight.data.impl.SunUser;
-import su.nightexpress.sunlight.data.impl.settings.UserSetting;
+import su.nightexpress.sunlight.data.impl.settings.DefaultSettings;
 import su.nightexpress.sunlight.utils.Cleanable;
 
+@Deprecated
 public class VanishCommand extends ToggleCommand implements Cleanable {
 
     public static final String NAME = "vanish";
-    public static final UserSetting<Boolean> VANISH = UserSetting.asBoolean("vanish", false, false);
 
     private final Listener listener;
 
@@ -46,9 +46,9 @@ public class VanishCommand extends ToggleCommand implements Cleanable {
         SunUser user = plugin.getUserManager().getUserData(target);
 
         Mode mode = this.getMode(sender, result);
-        boolean state = mode.apply(user.getSettings().get(VANISH));
+        boolean state = mode.apply(user.getSettings().get(DefaultSettings.VANISH));
 
-        user.getSettings().set(VANISH, state);
+        user.getSettings().set(DefaultSettings.VANISH, state);
         this.vanish(target, state);
 
         if (!result.hasFlag(CommandFlags.SILENT)) {
@@ -90,7 +90,7 @@ public class VanishCommand extends ToggleCommand implements Cleanable {
                 if (target == player) continue;
 
                 SunUser user = plugin.getUserManager().getUserData(target);
-                if (user.getSettings().get(VANISH)) {
+                if (user.getSettings().get(DefaultSettings.VANISH)) {
                     player.hidePlayer(plugin, target);
                 }
             }

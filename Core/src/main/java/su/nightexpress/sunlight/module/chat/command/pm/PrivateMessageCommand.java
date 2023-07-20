@@ -1,4 +1,4 @@
-package su.nightexpress.sunlight.module.chat.command.tell;
+package su.nightexpress.sunlight.module.chat.command.pm;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -9,12 +9,15 @@ import su.nexmedia.engine.api.command.CommandResult;
 import su.nexmedia.engine.api.command.GeneralCommand;
 import su.nexmedia.engine.utils.*;
 import su.nexmedia.engine.utils.message.NexParser;
+import su.nightexpress.sunlight.Perms;
 import su.nightexpress.sunlight.SunLight;
 import su.nightexpress.sunlight.api.event.PlayerPrivateMessageEvent;
 import su.nightexpress.sunlight.data.impl.IgnoredUser;
 import su.nightexpress.sunlight.data.impl.SunUser;
+import su.nightexpress.sunlight.data.impl.settings.DefaultSettings;
 import su.nightexpress.sunlight.module.chat.config.ChatConfig;
 import su.nightexpress.sunlight.module.chat.config.ChatLang;
+import su.nightexpress.sunlight.module.chat.config.ChatPerms;
 import su.nightexpress.sunlight.module.chat.util.ChatUtils;
 import su.nightexpress.sunlight.module.chat.util.Placeholders;
 
@@ -100,8 +103,15 @@ public abstract class PrivateMessageCommand extends GeneralCommand<SunLight> {
         Player pReceiver = receiver instanceof Player ? (Player) receiver : null;
         if (pReceiver != null) {
             SunUser userGeter = plugin.getUserManager().getUserData(pReceiver);
+            if (!userGeter.getSettings().get(DefaultSettings.ACCEPT_PM) && !sender.hasPermission(ChatPerms.BYPASS_PM_DISABLED)) {
+                this.plugin.getMessage(ChatLang.PRIVATE_MESSAGE_ERROR_DISABLED)
+                    .replace(Placeholders.forPlayer(pReceiver))
+                    .send(sender);
+                return;
+            }
+
             IgnoredUser ignoredUser = userGeter.getIgnoredUser(nameFrom);
-            if (ignoredUser != null && ignoredUser.isDenyConversations()) {
+            if (ignoredUser != null && ignoredUser.isDenyConversations() && !sender.hasPermission(Perms.BYPASS_IGNORE_PM)) {
                 this.errorPermission(sender);
                 return;
             }

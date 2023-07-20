@@ -10,7 +10,6 @@ import su.nexmedia.engine.utils.Colorizer;
 import su.nexmedia.engine.utils.StringUtil;
 import su.nexmedia.engine.utils.message.NexParser;
 import su.nightexpress.sunlight.SunLightAPI;
-import su.nightexpress.sunlight.module.chat.ChatPerms;
 import su.nightexpress.sunlight.module.chat.util.ChatSpyType;
 import su.nightexpress.sunlight.module.chat.util.Placeholders;
 
@@ -229,17 +228,26 @@ public class ChatConfig {
         "When 'true', enables the AntiSpam auto-moderation feature.",
         "This feature will prevent players from spamming (the same) messages/commands too fast."
     );
-    public static final JOption<Double>      ANTI_SPAM_BLOCK_SIMILAR_PERCENT = JOption.create("Anti_Spam.Block_Similar_Messages.Percentage",
+
+    public static final JOption<Double> ANTI_SPAM_BLOCK_SIMILAR_PERCENT = JOption.create("Anti_Spam.Block_Similar_Messages.Percentage",
         90D,
         "How many (in percent) previous and current player message/command should match each other for the AntiSpam to trigger?",
         "Set this to 0 to disable."
     );
+
+    public static final JOption<Integer> ANTI_SPAM_BLOCK_SIMILAR_COOLDOWN = JOption.create("Anti_Spam.Block_Similar_Messages.Cooldown",
+        2,
+        "For how long (in seconds) previous player message/command will be stored to compare it with next ones.",
+        "Set this to 0 to disable."
+    );
+
     public static final JOption<Double>      ANTI_SPAM_COMMAND_COOLDOWN = JOption.create("Anti_Spam.Command_Cooldown",
         2D,
     "Sets the cooldown between ALL player commands.",
         "For a chat message cooldown, check the channels config.",
         "Set this to 0 to disable."
     );
+
     public static final JOption<Set<String>> ANTI_SPAM_COMMAND_WHITELIST = JOption.create("Anti_Spam.Command_Whitelist",
         Sets.newHashSet("tell", "reply", "spawn", "home", "warp", "sethome", "delhome", "kit"),
         "A list of commands, that will be completely excluded from the AntiSpam checks.",

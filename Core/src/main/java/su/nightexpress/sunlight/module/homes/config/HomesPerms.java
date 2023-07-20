@@ -1,10 +1,11 @@
-package su.nightexpress.sunlight.module.homes.util;
+package su.nightexpress.sunlight.module.homes.config;
 
 import su.nexmedia.engine.api.server.JPermission;
 import su.nightexpress.sunlight.Perms;
 import su.nightexpress.sunlight.module.ModuleId;
 import su.nightexpress.sunlight.module.homes.command.admin.HomesAdminCommand;
 import su.nightexpress.sunlight.module.homes.command.basic.*;
+import su.nightexpress.sunlight.module.homes.util.Placeholders;
 
 public class HomesPerms {
 

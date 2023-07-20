@@ -1,8 +1,8 @@
-package su.nightexpress.sunlight.module.chat.command.tell;
+package su.nightexpress.sunlight.module.chat.command.pm;
 
 import org.jetbrains.annotations.NotNull;
 import su.nightexpress.sunlight.SunLight;
-import su.nightexpress.sunlight.module.chat.ChatPerms;
+import su.nightexpress.sunlight.module.chat.config.ChatPerms;
 import su.nightexpress.sunlight.module.chat.config.ChatLang;
 
 public class ReplyCommand extends PrivateMessageCommand {

@@ -9,7 +9,7 @@ import su.nightexpress.sunlight.module.ModuleCommand;
 import su.nightexpress.sunlight.module.homes.HomesModule;
 import su.nightexpress.sunlight.module.homes.config.HomesLang;
 import su.nightexpress.sunlight.module.homes.impl.Home;
-import su.nightexpress.sunlight.module.homes.util.HomesPerms;
+import su.nightexpress.sunlight.module.homes.config.HomesPerms;
 
 import java.util.List;
 
