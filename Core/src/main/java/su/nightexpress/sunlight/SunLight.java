@@ -23,7 +23,6 @@ import su.nightexpress.sunlight.data.impl.SunUser;
 import su.nightexpress.sunlight.hook.impl.PlaceholderHook;
 import su.nightexpress.sunlight.module.ModuleManager;
 import su.nightexpress.sunlight.nms.SunNMS;
-import su.nightexpress.sunlight.nms.v1_17_R1.V1_17_R1;
 import su.nightexpress.sunlight.nms.v1_18_R2.V1_18_R2;
 import su.nightexpress.sunlight.nms.v1_19_R3.V1_19_R3;
 import su.nightexpress.sunlight.nms.v1_20_R1.V1_20_R1;
@@ -94,12 +93,10 @@ public class SunLight extends NexPlugin<SunLight> implements UserDataHolder<SunL
 
     private void setupInternalNMS() {
         this.sunNMS = switch (Version.getCurrent()) {
-            case V1_19_R1, V1_19_R2, UNKNOWN -> null;
-
-            case V1_17_R1 -> new V1_17_R1();
             case V1_18_R2 -> new V1_18_R2();
             case V1_19_R3 -> new V1_19_R3();
             case V1_20_R1 -> new V1_20_R1();
+            default -> null;
         };
     }
 

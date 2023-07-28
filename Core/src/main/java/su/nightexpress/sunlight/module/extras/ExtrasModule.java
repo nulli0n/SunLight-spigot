@@ -9,6 +9,7 @@ import su.nightexpress.sunlight.module.extras.config.ExtrasLang;
 import su.nightexpress.sunlight.module.extras.config.ExtrasPerms;
 import su.nightexpress.sunlight.module.extras.impl.chairs.ChairsManager;
 import su.nightexpress.sunlight.module.extras.impl.chestsort.SortManager;
+import su.nightexpress.sunlight.module.extras.impl.nerfphantoms.PhantomsListener;
 import su.nightexpress.sunlight.module.extras.listener.ExtrasGenericListener;
 import su.nightexpress.sunlight.module.extras.listener.PhysicsExplosionListener;
 
@@ -38,6 +39,9 @@ public class ExtrasModule extends Module {
         }
         if (ExtrasConfig.PHYSIC_EXPLOSIONS_ENABLED.get()) {
             this.addListener(new PhysicsExplosionListener(plugin));
+        }
+        if (ExtrasConfig.NERF_PHANTOMS_ENABLED.get()) {
+            this.addListener(new PhantomsListener(plugin));
         }
         this.addListener(new ExtrasGenericListener(this));
     }

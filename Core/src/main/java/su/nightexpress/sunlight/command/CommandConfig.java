@@ -28,7 +28,11 @@ import su.nightexpress.sunlight.module.spawns.command.SpawnsCommand;
 import su.nightexpress.sunlight.module.spawns.command.SpawnsCreateCommand;
 import su.nightexpress.sunlight.module.spawns.command.SpawnsDeleteCommand;
 import su.nightexpress.sunlight.module.spawns.command.SpawnsTeleportCommand;
-import su.nightexpress.sunlight.module.warps.command.basic.*;
+import su.nightexpress.sunlight.module.warps.command.warps.*;
+import su.nightexpress.sunlight.module.warps.command.warps.child.CreateSubCommand;
+import su.nightexpress.sunlight.module.warps.command.warps.child.DeleteSubCommand;
+import su.nightexpress.sunlight.module.warps.command.warps.child.ListSubCommand;
+import su.nightexpress.sunlight.module.warps.command.warps.child.TeleportSubCommand;
 import su.nightexpress.sunlight.module.worlds.commands.main.*;
 
 import java.util.*;
@@ -114,18 +118,18 @@ public class CommandConfig {
                 Pair.of(new String[]{"delspawn"}, new String[]{SpawnsDeleteCommand.NAME})
             ));
             map.put(WarpsCommand.NAME, Arrays.asList(
-                Pair.of(new String[]{"warp"}, new String[]{WarpsTeleportCommand.NAME}),
-                Pair.of(new String[]{"setwarp"}, new String[]{WarpsCreateCommand.NAME}),
-                Pair.of(new String[]{"delwarp"}, new String[]{WarpsDeleteCommand.NAME}),
-                Pair.of(new String[]{"warplist"}, new String[]{WarpsListCommand.NAME})
+                Pair.of(new String[]{"warp"}, new String[]{TeleportSubCommand.NAME}),
+                Pair.of(new String[]{"setwarp"}, new String[]{CreateSubCommand.NAME}),
+                Pair.of(new String[]{"delwarp"}, new String[]{DeleteSubCommand.NAME}),
+                Pair.of(new String[]{"warplist"}, new String[]{ListSubCommand.NAME})
             ));
             map.put(KitsCommand.NAME, Arrays.asList(
                 Pair.of(new String[]{"kit"}, new String[]{"get"}),
                 Pair.of(new String[]{"kitlist"}, new String[]{"list"})
             ));
             map.put(WorldsCommand.NAME, Arrays.asList(
-                Pair.of(new String[]{"createworld"}, new String[]{CreateSubCommand.NAME}),
-                Pair.of(new String[]{"deleteworld"}, new String[]{DeleteSubCommand.NAME}),
+                Pair.of(new String[]{"createworld"}, new String[]{su.nightexpress.sunlight.module.worlds.commands.main.CreateSubCommand.NAME}),
+                Pair.of(new String[]{"deleteworld"}, new String[]{su.nightexpress.sunlight.module.worlds.commands.main.DeleteSubCommand.NAME}),
                 Pair.of(new String[]{"loadworld"}, new String[]{LoadSubCommand.NAME}),
                 Pair.of(new String[]{"unloadworld"}, new String[]{UnloadSubCommand.NAME})
             ));

@@ -27,6 +27,10 @@ public class InventoryOpenCommand extends TargetCommand {
     protected void onExecute(@NotNull CommandSender sender, @NotNull CommandResult result) {
         Player target = this.getCommandTarget(sender, result);
         if (target == null) return;
+        if (target == sender) {
+            this.plugin.getMessage(Lang.ERROR_COMMAND_SELF).send(sender);
+            return;
+        }
 
         Player player = (Player) sender;
         Inventory inventory = plugin.getSunNMS().getPlayerInventory(target);

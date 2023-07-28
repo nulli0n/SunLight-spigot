@@ -1,4 +1,4 @@
-package su.nightexpress.sunlight.module.warps.command.basic;
+package su.nightexpress.sunlight.module.warps.command.warps.child;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -12,29 +12,14 @@ import su.nightexpress.sunlight.module.warps.config.WarpsPerms;
 
 import java.util.List;
 
-public class WarpsDeleteCommand extends ModuleCommand<WarpsModule> {
+public class DeleteSubCommand extends ModuleCommand<WarpsModule> {
 
     public static final String NAME = "delete";
 
-    public WarpsDeleteCommand(@NotNull WarpsModule module) {
+    public DeleteSubCommand(@NotNull WarpsModule module) {
         super(module, new String[]{NAME}, WarpsPerms.COMMAND_WARPS_DELETE);
-    }
-
-    @Override
-    @NotNull
-    public String getUsage() {
-        return this.plugin.getMessage(WarpsLang.COMMAND_WARPS_DELETE_USAGE).getLocalized();
-    }
-
-    @Override
-    @NotNull
-    public String getDescription() {
-        return this.plugin.getMessage(WarpsLang.COMMAND_WARPS_DELETE_DESC).getLocalized();
-    }
-
-    @Override
-    public boolean isPlayerOnly() {
-        return true;
+        this.setDescription(plugin.getMessage(WarpsLang.COMMAND_WARPS_DELETE_DESC));
+        this.setUsage(plugin.getMessage(WarpsLang.COMMAND_WARPS_DELETE_USAGE));
     }
 
     @Override

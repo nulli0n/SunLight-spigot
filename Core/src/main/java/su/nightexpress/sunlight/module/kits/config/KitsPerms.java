@@ -1,9 +1,10 @@
-package su.nightexpress.sunlight.module.kits.util;
+package su.nightexpress.sunlight.module.kits.config;
 
 import su.nexmedia.engine.api.server.JPermission;
 import su.nightexpress.sunlight.Perms;
 import su.nightexpress.sunlight.module.ModuleId;
 import su.nightexpress.sunlight.module.kits.command.kits.KitsCommand;
+import su.nightexpress.sunlight.module.kits.util.Placeholders;
 
 public class KitsPerms {
 
@@ -25,6 +26,8 @@ public class KitsPerms {
     public static final JPermission COMMAND_KITS_GIVE           = new JPermission(PREFIX_COMMAND + KitsCommand.NAME + ".give", "Access to the '/" + KitsCommand.NAME + " give' command.");
     public static final JPermission COMMAND_KITS_LIST           = new JPermission(PREFIX_COMMAND + KitsCommand.NAME + ".list", "Access to the '/" + KitsCommand.NAME + " list' command.");
     public static final JPermission COMMAND_KITS_LIST_OTHERS    = new JPermission(PREFIX_COMMAND + KitsCommand.NAME + ".list.others", "Access to the '/" + KitsCommand.NAME + " list' command on other players.");
+    public static final JPermission COMMAND_KITS_RESET_COOLDOWN = new JPermission(PREFIX_COMMAND + KitsCommand.NAME + ".resetcooldown", "Access to the '/" + KitsCommand.NAME + " resetcooldown' command.");
+    public static final JPermission COMMAND_KITS_SET_COOLDOWN   = new JPermission(PREFIX_COMMAND + KitsCommand.NAME + ".setcooldown", "Access to the '/" + KitsCommand.NAME + " setcooldown' command.");
 
     public static final JPermission BYPASS_COST_MONEY = new JPermission(PREFIX_BYPASS + "cost.money", "Bypasses kit money costs.");
     public static final JPermission BYPASS_COOLDOWN   = new JPermission(PREFIX_BYPASS + "cooldown", "Bypasses kit cooldowns.");
@@ -34,10 +37,13 @@ public class KitsPerms {
 
         MODULE.addChildren(COMMAND, BYPASS, KIT);
 
-        COMMAND.addChildren(COMMAND_KITS, COMMAND_KITS_EDITOR,
+        COMMAND.addChildren(
+            COMMAND_KITS, COMMAND_KITS_EDITOR,
             COMMAND_KITS_PREVIEW, COMMAND_KITS_PREVIEW_OTHERS,
             COMMAND_KITS_GET, COMMAND_KITS_GIVE,
-            COMMAND_KITS_LIST, COMMAND_KITS_LIST_OTHERS);
+            COMMAND_KITS_LIST, COMMAND_KITS_LIST_OTHERS,
+            COMMAND_KITS_RESET_COOLDOWN, COMMAND_KITS_SET_COOLDOWN
+        );
 
         BYPASS.addChildren(BYPASS_COOLDOWN, BYPASS_COST_MONEY);
     }

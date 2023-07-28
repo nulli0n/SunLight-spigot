@@ -1,4 +1,4 @@
-package su.nightexpress.sunlight.module.warps.command.basic;
+package su.nightexpress.sunlight.module.warps.command.warps.child;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -13,29 +13,14 @@ import su.nightexpress.sunlight.module.warps.config.WarpsPerms;
 
 import java.util.List;
 
-public class WarpsListCommand extends ModuleCommand<WarpsModule> {
+public class ListSubCommand extends ModuleCommand<WarpsModule> {
 
     public static final String NAME = "list";
 
-    public WarpsListCommand(@NotNull WarpsModule module) {
+    public ListSubCommand(@NotNull WarpsModule module) {
         super(module, new String[]{NAME}, WarpsPerms.COMMAND_WARPS_LIST);
-    }
-
-    @Override
-    @NotNull
-    public String getUsage() {
-        return this.plugin.getMessage(WarpsLang.COMMAND_WARPS_LIST_USAGE).getLocalized();
-    }
-
-    @Override
-    @NotNull
-    public String getDescription() {
-        return this.plugin.getMessage(WarpsLang.COMMAND_WARPS_LIST_DESC).getLocalized();
-    }
-
-    @Override
-    public boolean isPlayerOnly() {
-        return false;
+        this.setDescription(plugin.getMessage(WarpsLang.COMMAND_WARPS_LIST_DESC));
+        this.setUsage(plugin.getMessage(WarpsLang.COMMAND_WARPS_LIST_USAGE));
     }
 
     @Override
@@ -54,18 +39,18 @@ public class WarpsListCommand extends ModuleCommand<WarpsModule> {
             return;
         }
 
-        String pName = result.length() >= 2 ? result.getArg(1) : sender.getName();
-        Player player = plugin.getServer().getPlayer(pName);
-        if (player == null) {
+        String name = result.getArg(1, sender.getName());
+        Player target = plugin.getServer().getPlayer(name);
+        if (target == null) {
             this.errorPlayer(sender);
             return;
         }
 
-        this.module.getWarpsMenu().open(player, 1);
+        this.module.getWarpsMenu().open(target, 1);
 
-        if (!player.equals(sender)) {
+        if (sender != target) {
             this.plugin.getMessage(WarpsLang.COMMAND_WARPS_LIST_OTHERS)
-                .replace(Placeholders.forPlayer(player))
+                .replace(Placeholders.forPlayer(target))
                 .send(sender);
         }
     }

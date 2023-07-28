@@ -1,4 +1,4 @@
-package su.nightexpress.sunlight.module.warps.command.basic;
+package su.nightexpress.sunlight.module.warps.command.warps;
 
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
@@ -7,6 +7,7 @@ import su.nexmedia.engine.api.command.GeneralCommand;
 import su.nexmedia.engine.command.list.HelpSubCommand;
 import su.nightexpress.sunlight.SunLight;
 import su.nightexpress.sunlight.module.warps.WarpsModule;
+import su.nightexpress.sunlight.module.warps.command.warps.child.*;
 import su.nightexpress.sunlight.module.warps.config.WarpsLang;
 import su.nightexpress.sunlight.module.warps.config.WarpsPerms;
 
@@ -17,10 +18,12 @@ public class WarpsCommand extends GeneralCommand<SunLight> {
     public WarpsCommand(@NotNull WarpsModule module, @NotNull String[] aliases) {
         super(module.plugin(), aliases, WarpsPerms.COMMAND_WARPS);
         this.addDefaultCommand(new HelpSubCommand<>(module.plugin()));
-        this.addChildren(new WarpsCreateCommand(module));
-        this.addChildren(new WarpsDeleteCommand(module));
-        this.addChildren(new WarpsListCommand(module));
-        this.addChildren(new WarpsTeleportCommand(module));
+        this.addChildren(new CreateSubCommand(module));
+        this.addChildren(new DeleteSubCommand(module));
+        this.addChildren(new ListSubCommand(module));
+        this.addChildren(new TeleportSubCommand(module));
+        this.addChildren(new ResetCooldownSubCommand(module));
+        this.addChildren(new SetCooldownSubCommand(module));
     }
 
     @Override

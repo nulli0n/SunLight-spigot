@@ -2,7 +2,7 @@ package su.nightexpress.sunlight.module.warps.config;
 
 import su.nexmedia.engine.api.server.JPermission;
 import su.nightexpress.sunlight.Perms;
-import su.nightexpress.sunlight.module.warps.command.basic.WarpsCommand;
+import su.nightexpress.sunlight.module.warps.command.warps.WarpsCommand;
 import su.nightexpress.sunlight.module.warps.util.Placeholders;
 
 public class WarpsPerms {
@@ -29,6 +29,8 @@ public class WarpsPerms {
     public static final JPermission COMMAND_WARPS_TELEPORT_OTHERS = new JPermission(PREFIX_COMMAND + WarpsCommand.NAME + ".teleport.others", "Access to the '/" + WarpsCommand.NAME + " teleport' command on other players.");
     public static final JPermission COMMAND_WARPS_LIST            = new JPermission(PREFIX_COMMAND + WarpsCommand.NAME + ".list", "Access to the '/" + WarpsCommand.NAME + " list' command.");
     public static final JPermission COMMAND_WARPS_LIST_OTHERS     = new JPermission(PREFIX_COMMAND + WarpsCommand.NAME + ".list.others", "Access to the '/" + WarpsCommand.NAME + " list' command on other players.");
+    public static final JPermission COMMAND_WARPS_RESET_COOLDOWN = new JPermission(PREFIX_COMMAND + WarpsCommand.NAME + ".resetcooldown", "Access to the '/" + WarpsCommand.NAME + " resetcooldown' command.");
+    public static final JPermission COMMAND_WARPS_SET_COOLDOWN   = new JPermission(PREFIX_COMMAND + WarpsCommand.NAME + ".setcooldown", "Access to the '/" + WarpsCommand.NAME + " setcooldown' command.");
 
     public static final JPermission EDITOR_OTHERS           = new JPermission(PREFIX_EDITOR + "others", "Allows to edit other's warps.");
     public static final JPermission EDITOR_VISIT_COST       = new JPermission(PREFIX_EDITOR + "visit.cost", "Allows to set warp's visit cost.");
@@ -50,10 +52,12 @@ public class WarpsPerms {
 
         MODULE.addChildren(COMMAND, BYPASS, EDITOR, WARP);
 
-        COMMAND.addChildren(COMMAND_WARPS,
+        COMMAND.addChildren(
+            COMMAND_WARPS,
             COMMAND_WARPS_CREATE, COMMAND_WARPS_CREATE_OTHERS,
             COMMAND_WARPS_DELETE, COMMAND_WARPS_DELETE_OTHERS,
-            COMMAND_WARPS_LIST, COMMAND_WARPS_TELEPORT, COMMAND_WARPS_TELEPORT_OTHERS
+            COMMAND_WARPS_LIST, COMMAND_WARPS_TELEPORT, COMMAND_WARPS_TELEPORT_OTHERS,
+            COMMAND_WARPS_RESET_COOLDOWN, COMMAND_WARPS_SET_COOLDOWN
         );
 
         EDITOR.addChildren(EDITOR_COMMAND_SHORTCUT,

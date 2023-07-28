@@ -19,17 +19,27 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_19_R3.CraftServer;
 import org.bukkit.craftbukkit.v1_19_R3.CraftWorld;
+import org.bukkit.craftbukkit.v1_19_R3.entity.CraftFallingBlock;
 import org.bukkit.craftbukkit.v1_19_R3.entity.CraftPlayer;
+import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.jetbrains.annotations.NotNull;
 import su.nightexpress.sunlight.nms.SunNMS;
 import su.nightexpress.sunlight.nms.v1_19_R3.container.AnvilContainer;
 import su.nightexpress.sunlight.nms.v1_19_R3.container.EnchantingContainer;
+import su.nightexpress.sunlight.nms.v1_19_R3.container.GrindstoneContainer;
+import su.nightexpress.sunlight.nms.v1_19_R3.container.LoomContainer;
 
 import java.util.UUID;
 
 public class V1_19_R3 implements SunNMS {
+
+    @Override
+    public void dropFallingContent(@NotNull FallingBlock fallingBlock) {
+        CraftFallingBlock craft = (CraftFallingBlock) fallingBlock;
+        craft.getHandle().spawnAtLocation(craft.getHandle().getBlockState().getBlock());
+    }
 
     @NotNull
     public Object fineChatPacket(@NotNull Object packet) {
@@ -116,12 +126,25 @@ public class V1_19_R3 implements SunNMS {
         int counter = nmsPlayer.nextContainerCounter();
         EnchantingContainer container = new EnchantingContainer(counter, nmsPlayer);
         player.openInventory(container.getBukkitView());
+    }
 
-        //Component title = CraftChatMessage.fromStringOrNull("ENCHANT CUSTOM");
-        //nmsPlayer.containerMenu = nmsPlayer.inventoryMenu;
-        //nmsPlayer.connection.send(new ClientboundOpenScreenPacket(counter, MenuType.ENCHANTMENT, title));
-        //nmsPlayer.containerMenu = container;
-        //nmsPlayer.initMenu(container);
-        //serverPlayer.a(enchant);
+    @Override
+    public void openGrindstone(@NotNull Player player) {
+        CraftPlayer craftPlayer = (CraftPlayer) player;
+        ServerPlayer nmsPlayer = craftPlayer.getHandle();
+
+        int counter = nmsPlayer.nextContainerCounter();
+        GrindstoneContainer container = new GrindstoneContainer(counter, nmsPlayer);
+        player.openInventory(container.getBukkitView());
+    }
+
+    @Override
+    public void openLoom(@NotNull Player player) {
+        CraftPlayer craftPlayer = (CraftPlayer) player;
+        ServerPlayer nmsPlayer = craftPlayer.getHandle();
+
+        int counter = nmsPlayer.nextContainerCounter();
+        LoomContainer container = new LoomContainer(counter, nmsPlayer);
+        player.openInventory(container.getBukkitView());
     }
 }

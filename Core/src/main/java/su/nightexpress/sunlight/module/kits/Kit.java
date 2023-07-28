@@ -22,7 +22,7 @@ import su.nightexpress.sunlight.module.kits.config.KitsConfig;
 import su.nightexpress.sunlight.module.kits.config.KitsLang;
 import su.nightexpress.sunlight.module.kits.editor.KitSettingsEditor;
 import su.nightexpress.sunlight.module.kits.menu.KitPreviewMenu;
-import su.nightexpress.sunlight.module.kits.util.KitsPerms;
+import su.nightexpress.sunlight.module.kits.config.KitsPerms;
 import su.nightexpress.sunlight.module.kits.util.KitsUtils;
 import su.nightexpress.sunlight.module.kits.util.Placeholders;
 

@@ -49,7 +49,7 @@ public class ExpCommand extends ChangeCommand {
         int expHas = target.getTotalExperience();
 
         if (result.hasFlag(FLAG_LEVEL)) {
-            int levelFinal = Math.max(0, mode.modify(levelHas, amount));
+            int levelFinal = (int) Math.max(0, mode.modify(levelHas, amount));
             int expBasic = 0;
             int expLeft = (int) (this.getExpRequired(levelFinal) * target.getExp());
             for (int level = 0; level < levelFinal; level++) {
@@ -58,7 +58,7 @@ public class ExpCommand extends ChangeCommand {
             expHas = expBasic + expLeft;
         }
         else {
-            expHas = Math.max(0, mode.modify(expHas, amount));
+            expHas = (int) Math.max(0, mode.modify(expHas, amount));
         }
         target.setExp(0F);
         target.setTotalExperience(0);

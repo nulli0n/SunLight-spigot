@@ -1,4 +1,4 @@
-package su.nightexpress.sunlight.module.warps.command.basic;
+package su.nightexpress.sunlight.module.warps.command.warps.child;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -14,29 +14,14 @@ import su.nightexpress.sunlight.module.warps.config.WarpsPerms;
 
 import java.util.List;
 
-public class WarpsTeleportCommand extends ModuleCommand<WarpsModule> {
+public class TeleportSubCommand extends ModuleCommand<WarpsModule> {
 
     public static final String NAME = "teleport";
 
-    public WarpsTeleportCommand(@NotNull WarpsModule module) {
+    public TeleportSubCommand(@NotNull WarpsModule module) {
         super(module, new String[]{NAME, "tp"}, WarpsPerms.COMMAND_WARPS_TELEPORT);
-    }
-
-    @Override
-    @NotNull
-    public String getUsage() {
-        return this.plugin.getMessage(WarpsLang.COMMAND_WARPS_TELEPORT_USAGE).getLocalized();
-    }
-
-    @Override
-    @NotNull
-    public String getDescription() {
-        return this.plugin.getMessage(WarpsLang.COMMAND_WARPS_TELEPORT_DESC).getLocalized();
-    }
-
-    @Override
-    public boolean isPlayerOnly() {
-        return false;
+        this.setDescription(plugin.getMessage(WarpsLang.COMMAND_WARPS_TELEPORT_DESC));
+        this.setUsage(plugin.getMessage(WarpsLang.COMMAND_WARPS_TELEPORT_USAGE));
     }
 
     @Override
@@ -72,20 +57,20 @@ public class WarpsTeleportCommand extends ModuleCommand<WarpsModule> {
             return;
         }
 
-        String pName = result.length() >= 3 ? result.getArg(2) : sender.getName();
-        Player player = plugin.getServer().getPlayer(pName);
-        if (player == null) {
+        String name = result.getArg(2, sender.getName());
+        Player target = plugin.getServer().getPlayer(name);
+        if (target == null) {
             this.errorPlayer(sender);
             return;
         }
 
-        boolean isForced = !(sender.equals(player));
+        boolean isForced = sender != target;
         if (isForced) {
             this.plugin.getMessage(WarpsLang.COMMAND_WARPS_TELEPORT_OTHERS)
-                .replace(Placeholders.forPlayer(player))
+                .replace(Placeholders.forPlayer(target))
                 .replace(warp.replacePlaceholders())
                 .send(sender);
         }
-        warp.teleport(player, isForced);
+        warp.teleport(target, isForced);
     }
 }

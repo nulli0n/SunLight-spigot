@@ -105,6 +105,11 @@ public class Lang extends EngineLang {
     public static final LangKey COMMAND_ENCHANTING_NOTIFY = LangKey.of("Command.Enchanting.Notify", ACTION_BAR + LIGHT_YELLOW + "You opened enchanting table.");
     public static final LangKey COMMAND_ENCHANTING_TARGET = LangKey.of("Command.Enchanting.Target", LIGHT_YELLOW + "Opened enchanting table for " + ORANGE + Placeholders.PLAYER_NAME + LIGHT_YELLOW + ".");
 
+    public static final LangKey COMMAND_ENCHANTMENT_SEED_DESC   = LangKey.of("Command.EnchantmentSeed.Desc", "Regenerate [player's] enchantment seed.");
+    public static final LangKey COMMAND_ENCHANTMENT_SEED_USAGE  = LangKey.of("Command.EnchantmentSeed.Usage", "[player] [-s]");
+    public static final LangKey COMMAND_ENCHANTMENT_SEED_NOTIFY = LangKey.of("Command.EnchantmentSeed.Notify", LIGHT_YELLOW + "Your enchantment seed has been updated. New enchantment offers are available.");
+    public static final LangKey COMMAND_ENCHANTMENT_SEED_TARGET = LangKey.of("Command.EnchantmentSeed.Target", LIGHT_YELLOW + "Updated enchantment seed for " + ORANGE + Placeholders.PLAYER_NAME + LIGHT_YELLOW + ".");
+
     public static final LangKey COMMAND_EXP_DESC          = LangKey.of("Command.Exp.Desc", "Manage [player's] exp points.");
     public static final LangKey COMMAND_EXP_USAGE         = LangKey.of("Command.Exp.Usage", "<action> <amount> [player] [-s] [-l]");
     public static final LangKey COMMAND_EXP_ADD_TARGET    = LangKey.of("Command.Exp.Give.Target", LIGHT_YELLOW + "Added " + ORANGE + Placeholders.GENERIC_AMOUNT + LIGHT_YELLOW + " exp/levels to " + ORANGE + Placeholders.PLAYER_NAME + LIGHT_YELLOW + ". XP: " + ORANGE + Placeholders.GENERIC_TOTAL + LIGHT_YELLOW + ", Level: " + ORANGE + Placeholders.GENERIC_LEVEL + LIGHT_YELLOW + ".");
@@ -179,6 +184,11 @@ public class Lang extends EngineLang {
     public static final LangKey COMMAND_FOOD_GOD_TARGET = LangKey.of("Command.FoodGod.Target", LIGHT_YELLOW + "Set Food God for " + ORANGE + Placeholders.PLAYER_NAME + LIGHT_YELLOW + " to " + ORANGE + Placeholders.GENERIC_STATE + LIGHT_YELLOW + ".");
     public static final LangKey COMMAND_FOOD_GOD_NOTIFY = LangKey.of("Command.FoodGod.Notify", LIGHT_YELLOW + "Food God " + ORANGE + Placeholders.GENERIC_STATE + LIGHT_YELLOW + ".");
 
+    public static final LangKey COMMAND_GRINDSTONE_DESC   = LangKey.of("Command.Grindstone.Desc", "Open portable grindstone.");
+    public static final LangKey COMMAND_GRINDSTONE_USAGE  = LangKey.of("Command.Grindstone.Usage", "[player] [-s]");
+    public static final LangKey COMMAND_GRINDSTONE_NOTIFY = LangKey.of("Command.Grindstone.Notify", ACTION_BAR + LIGHT_YELLOW + "You opened grindstone.");
+    public static final LangKey COMMAND_GRINDSTONE_TARGET = LangKey.of("Command.Grindstone.Target", LIGHT_YELLOW + "Opened grindstone for " + ORANGE + Placeholders.PLAYER_NAME + LIGHT_YELLOW + ".");
+
     public static final LangKey COMMAND_GAME_MODE_DESC  = LangKey.of("Command.GameMode.Desc", "Change [player's] gamemode.");
     public static final LangKey COMMAND_GAME_MODE_USAGE  = LangKey.of("Command.GameMode.Usage", "<gamemode> [player] [-s]");
     public static final LangKey COMMAND_GAME_MODE_NOTIFY = LangKey.of("Command.GameMode.Notify", LIGHT_YELLOW + "Your game mode has been set to " + ORANGE + Placeholders.GENERIC_TYPE + LIGHT_YELLOW + ".");
@@ -191,12 +201,19 @@ public class Lang extends EngineLang {
     public static final LangKey COMMAND_GOD_TOGGLE_TARGET     = LangKey.of("Command.God.Toggle.Target", LIGHT_YELLOW + "Set God Mode " + ORANGE + Placeholders.GENERIC_STATE + LIGHT_YELLOW + " for " + ORANGE + Placeholders.PLAYER_NAME + LIGHT_YELLOW + ".");
     public static final LangKey COMMAND_GOD_NOTIFY_BAD_WORLD  = LangKey.of("Command.God.Notify.BadWorld", RED + "Warning: " + LIGHT_YELLOW + "God Mode is disabled in this world!");
 
-
-    // H - Commands --------------------------------------------------------
     public static final LangKey COMMAND_HEAL_DESC        = LangKey.of("Command.Heal.Desc", "Restore [player's] health.");
     public static final LangKey COMMAND_HEAL_USAGE       = LangKey.of("Command.Heal.Usage", "[player] [-eff] [-s]");
     public static final LangKey COMMAND_HEAL_NOTIFY = LangKey.of("Command.Heal.Notfiy", LIGHT_YELLOW + "You have been healed!");
     public static final LangKey COMMAND_HEAL_TARGET = LangKey.of("Command.Heal.Target", LIGHT_YELLOW + "Player " + ORANGE + Placeholders.PLAYER_NAME + LIGHT_YELLOW + " has been healed.");
+
+    public static final LangKey COMMAND_HEALTH_DESC          = LangKey.of("Command.Health.Desc", "Manage [player's] health.");
+    public static final LangKey COMMAND_HEALTH_USAGE         = LangKey.of("Command.Health.Usage", "<action> <amount> [player] [-s]");
+    public static final LangKey COMMAND_HEALTH_ADD_TARGET    = LangKey.of("Command.Health.Add.Target", LIGHT_YELLOW + "Added " + ORANGE + Placeholders.GENERIC_AMOUNT + LIGHT_YELLOW + " health to " + ORANGE + Placeholders.PLAYER_NAME + LIGHT_YELLOW + ". New health: " + ORANGE + Placeholders.GENERIC_CURRENT + LIGHT_YELLOW + "/" + ORANGE + Placeholders.GENERIC_MAX + LIGHT_YELLOW + ".");
+    public static final LangKey COMMAND_HEALTH_REMOVE_TARGET = LangKey.of("Command.Health.Remove.Target", LIGHT_YELLOW + "Removed " + ORANGE + Placeholders.GENERIC_AMOUNT + LIGHT_YELLOW + " health from " + ORANGE + Placeholders.PLAYER_NAME + LIGHT_YELLOW + ". New health: " + ORANGE + Placeholders.GENERIC_CURRENT + LIGHT_YELLOW + "/" + ORANGE + Placeholders.GENERIC_MAX + LIGHT_YELLOW + ".");
+    public static final LangKey COMMAND_HEALTH_SET_TARGET    = LangKey.of("Command.Health.Set.Target", LIGHT_YELLOW + "Set " + ORANGE + Placeholders.GENERIC_AMOUNT + LIGHT_YELLOW + " health for " + ORANGE + Placeholders.PLAYER_NAME + LIGHT_YELLOW + ". New health: " + ORANGE + Placeholders.GENERIC_CURRENT + LIGHT_YELLOW + "/" + ORANGE + Placeholders.GENERIC_MAX + LIGHT_YELLOW + ".");
+    public static final LangKey COMMAND_HEALTH_ADD_NOTIFY    = LangKey.of("Command.Health.Add.Notify", ACTION_BAR + LIGHT_YELLOW + "You got " + ORANGE + Placeholders.GENERIC_AMOUNT + LIGHT_YELLOW + " health: " + ORANGE + Placeholders.GENERIC_CURRENT + LIGHT_YELLOW + "/" + ORANGE + Placeholders.GENERIC_MAX + LIGHT_YELLOW + ".");
+    public static final LangKey COMMAND_HEALTH_REMOVE_NOTIFY = LangKey.of("Command.Health.Remove.Notify", ACTION_BAR + LIGHT_YELLOW + "You lost " + ORANGE + Placeholders.GENERIC_AMOUNT + LIGHT_YELLOW + " health: " + ORANGE + Placeholders.GENERIC_CURRENT + LIGHT_YELLOW + "/" + ORANGE + Placeholders.GENERIC_MAX + LIGHT_YELLOW + ".");
+    public static final LangKey COMMAND_HEALTH_SET_NOTIFY    = LangKey.of("Command.Health.Set.Notify", ACTION_BAR + LIGHT_YELLOW + "Your health has been set to " + ORANGE + Placeholders.GENERIC_AMOUNT + LIGHT_YELLOW + "/" + ORANGE + Placeholders.GENERIC_MAX + ".");
 
     // I - Commands --------------------------------------------------------
     public static final LangKey COMMAND_IGNORE_DESC                 = LangKey.of("Command.Ignore.Desc", "Manage your player blacklist.");
@@ -317,6 +334,11 @@ public class Lang extends EngineLang {
     public static final LangKey COMMAND_ITEM_UNBREAKABLE_USAGE          = LangKey.of("Command.Item.Unbreakable.Usage", "");
     public static final LangKey COMMAND_ITEM_UNBREAKABLE_DONE           = LangKey.of("Command.Item.Unbreakable.Done", "<! sound:\"" + Sound.BLOCK_ANVIL_USE.name() + "\" !>" + LIGHT_YELLOW + "Set " + ORANGE + Placeholders.GENERIC_ITEM + LIGHT_YELLOW + " Unbreakable: " + ORANGE + Placeholders.GENERIC_STATE + LIGHT_YELLOW + ".");
     public static final LangKey COMMAND_ITEM_UNBREAKABLE_ERROR_BAD_ITEM = LangKey.of("Command.Item.Unbreakable.Error.NotDamageable", "<! sound:\"" + Sound.ENTITY_VILLAGER_NO.name() + "\" !>" + ORANGE + Placeholders.GENERIC_ITEM + RED + " can not be (un)breakable.");
+
+    public static final LangKey COMMAND_LOOM_DESC   = LangKey.of("Command.Loom.Desc", "Open portable loom.");
+    public static final LangKey COMMAND_LOOM_USAGE  = LangKey.of("Command.Loom.Usage", "[player] [-s]");
+    public static final LangKey COMMAND_LOOM_NOTIFY = LangKey.of("Command.Loom.Notify", ACTION_BAR + LIGHT_YELLOW + "You opened loom.");
+    public static final LangKey COMMAND_LOOM_TARGET = LangKey.of("Command.Loom.Target", LIGHT_YELLOW + "Opened loom for " + ORANGE + Placeholders.PLAYER_NAME + LIGHT_YELLOW + ".");
 
     public static final LangKey COMMAND_MOB_DESC  = LangKey.of("Command.Mob.Desc", "Mob management tools.");
     public static final LangKey COMMAND_MOB_USAGE = LangKey.of("Command.Mob.Usage", "[help]");

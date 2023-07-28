@@ -123,7 +123,7 @@ public class ChatAnnounceManager implements Loadable {
                 if (announcer == null) continue;
 
                 for (String line : announcer.getText()) {
-                    if (papi) line = PlaceholderAPI.setBracketPlaceholders(player, line);
+                    if (papi) line = PlaceholderAPI.setPlaceholders(player, line);
                     line = line.replace("%player%", player.getDisplayName());
                     PlayerUtil.sendRichMessage(player, line);
                 }

@@ -24,6 +24,16 @@ public class WarpsLang implements LangColors {
     public static final LangKey COMMAND_WARPS_LIST_USAGE  = LangKey.of("Warps.Command.Warps.List.Usage", "[player]");
     public static final LangKey COMMAND_WARPS_LIST_OTHERS = LangKey.of("Warps.Command.Warps.List.Others", "Opened Warps GUI for " + GREEN + Placeholders.PLAYER_DISPLAY_NAME + GRAY + ".");
 
+    public static final LangKey COMMAND_WARPS_RESET_COOLDOWN_DESC   = LangKey.of("Warps.Command.Warps.ResetCooldown.Desc", "Reset [player's] warp cooldown.");
+    public static final LangKey COMMAND_WARPS_RESET_COOLDOWN_USAGE  = LangKey.of("Warps.Command.Warps.ResetCooldown.Usage", "<warp> [player] [-s]");
+    public static final LangKey COMMAND_WARPS_RESET_COOLDOWN_DONE   = LangKey.of("Warps.Command.Warps.ResetCooldown.Done", LIGHT_YELLOW + "Reset " + ORANGE + Placeholders.WARP_NAME + LIGHT_YELLOW + " warp cooldown for " + ORANGE + Placeholders.PLAYER_NAME + LIGHT_YELLOW + ".");
+    public static final LangKey COMMAND_WARPS_RESET_COOLDOWN_NOTIFY = LangKey.of("Warps.Command.Warps.ResetCooldown.Notify", LIGHT_YELLOW + "Your " + ORANGE + Placeholders.WARP_NAME + LIGHT_YELLOW + " warp cooldown have been reset!");
+
+    public static final LangKey COMMAND_WARPS_SET_COOLDOWN_DESC   = LangKey.of("Warps.Command.Warps.SetCooldown.Desc", "Set [player's] warp cooldown.");
+    public static final LangKey COMMAND_WARPS_SET_COOLDOWN_USAGE  = LangKey.of("Warps.Command.Warps.SetCooldown.Usage", "<warp> <amount> [player] [-s]");
+    public static final LangKey COMMAND_WARPS_SET_COOLDOWN_DONE   = LangKey.of("Warps.Command.Warps.SetCooldown.Done", LIGHT_YELLOW + "Set " + ORANGE + Placeholders.WARP_NAME + LIGHT_YELLOW + " warp cooldown with " + ORANGE + Placeholders.GENERIC_AMOUNT + LIGHT_YELLOW + " for " + ORANGE + Placeholders.PLAYER_NAME + LIGHT_YELLOW + ".");
+    public static final LangKey COMMAND_WARPS_SET_COOLDOWN_NOTIFY = LangKey.of("Warps.Command.Warps.SetCooldown.Notify", LIGHT_YELLOW + "Your " + ORANGE + Placeholders.WARP_NAME + LIGHT_YELLOW + " warp cooldown have been set to " + ORANGE + Placeholders.GENERIC_AMOUNT + LIGHT_YELLOW + "!");
+
     public static final LangKey WARP_ERROR_INVALID = LangKey.of("Warps.Warp.Error.Invalid", RED + "Invalid warp!");
 
     public static final LangKey WARP_DELETE_DONE   = LangKey.of("Warps.Delete.Done",

@@ -1,10 +1,12 @@
 package su.nightexpress.sunlight.command.list;
 
+import org.bukkit.attribute.Attribute;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import su.nexmedia.engine.api.command.CommandResult;
 import su.nexmedia.engine.api.lang.LangMessage;
+import su.nexmedia.engine.utils.EntityUtil;
 import su.nexmedia.engine.utils.NumberUtil;
 import su.nightexpress.sunlight.Perms;
 import su.nightexpress.sunlight.Placeholders;
@@ -16,15 +18,15 @@ import su.nightexpress.sunlight.config.Lang;
 import java.util.List;
 import java.util.stream.IntStream;
 
-public class FoodCommand extends ChangeCommand {
+public class HealthCommand extends ChangeCommand {
 
-    public static final String NAME = "food";
+    public static final String NAME = "health";
 
-    public FoodCommand(@NotNull SunLight plugin, @NotNull String[] aliases) {
-        super(plugin, aliases, Perms.COMMAND_FOOD, Perms.COMMAND_FOOD_OTHERS);
+    public HealthCommand(@NotNull SunLight plugin, @NotNull String[] aliases) {
+        super(plugin, aliases, Perms.COMMAND_HEALTH, Perms.COMMAND_HEALTH_OTHERS);
         this.setAllowDataLoad();
-        this.setDescription(plugin.getMessage(Lang.COMMAND_FOOD_DESC));
-        this.setUsage(plugin.getMessage(Lang.COMMAND_FOOD_USAGE));
+        this.setDescription(plugin.getMessage(Lang.COMMAND_HEALTH_DESC));
+        this.setUsage(plugin.getMessage(Lang.COMMAND_HEALTH_USAGE));
         this.addFlag(CommandFlags.SILENT);
     }
 
@@ -35,26 +37,26 @@ public class FoodCommand extends ChangeCommand {
 
     @Override
     protected void run(@NotNull CommandSender sender, @NotNull CommandResult result, @NotNull Mode mode, @NotNull Player target, double amount) {
-        int has = target.getFoodLevel();
-        int set = (int) mode.modify(has, amount);
+        double has = target.getHealth();
+        double max = EntityUtil.getAttribute(target, Attribute.GENERIC_MAX_HEALTH);
+        double set = Math.max(0, Math.min(max, mode.modify(has, amount)));
 
-        target.setFoodLevel(set);
+        target.setHealth(set);
         if (!target.isOnline()) target.saveData();
 
         LangMessage message = switch (mode) {
-            case SET -> plugin.getMessage(Lang.COMMAND_FOOD_SET_TARGET);
-            case REMOVE -> plugin.getMessage(Lang.COMMAND_FOOD_REMOVE_TARGET);
-            case ADD -> plugin.getMessage(Lang.COMMAND_FOOD_ADD_TARGET);
+            case SET -> plugin.getMessage(Lang.COMMAND_HEALTH_SET_TARGET);
+            case REMOVE -> plugin.getMessage(Lang.COMMAND_HEALTH_REMOVE_TARGET);
+            case ADD -> plugin.getMessage(Lang.COMMAND_HEALTH_ADD_TARGET);
         };
 
         LangMessage notify = switch (mode) {
-            case ADD -> plugin.getMessage(Lang.COMMAND_FOOD_ADD_NOTIFY);
-            case SET -> plugin.getMessage(Lang.COMMAND_FOOD_SET_NOTIFY);
-            case REMOVE -> plugin.getMessage(Lang.COMMAND_FOOD_REMOVE_NOTIFY);
+            case ADD -> plugin.getMessage(Lang.COMMAND_HEALTH_ADD_NOTIFY);
+            case SET -> plugin.getMessage(Lang.COMMAND_HEALTH_SET_NOTIFY);
+            case REMOVE -> plugin.getMessage(Lang.COMMAND_HEALTH_REMOVE_NOTIFY);
         };
 
-        int current = target.getFoodLevel();
-        int max = 20;
+        double current = target.getHealth();
 
         if (target != sender) {
             message

@@ -74,19 +74,21 @@ public class Perms {
     public static final JPermission COMMAND_DEATHBACK_OTHERS        = forCommandOthers(DeathBackCommand.NAME);
     public static final JPermission COMMAND_DEATHBACK_BYPASS_WORLDS = new JPermission(PREFIX_COMMAND + DeathBackCommand.NAME + ".bypass.worlds", "Bypasses disabled worlds for the '/" + DeathBackCommand.NAME + "' command.");
 
-    public static final JPermission COMMAND_DISPOSAL          = forCommand(DisposalCommand.NAME);
-    public static final JPermission COMMAND_DISPOSAL_OTHERS   = forCommandOthers(DisposalCommand.NAME);
-    public static final JPermission COMMAND_DIMENSION         = forCommand(DimensionCommand.NAME);
-    public static final JPermission COMMAND_DIMENSION_OTHERS  = forCommandOthers(DimensionCommand.NAME);
-    public static final JPermission COMMAND_ENCHANT           = forCommand(EnchantCommand.NAME);
-    public static final JPermission COMMAND_ENCHANT_OTHERS    = forCommandOthers(EnchantCommand.NAME);
-    public static final JPermission COMMAND_ENCHANTING        = forCommand(EnchantingCommand.NAME);
-    public static final JPermission COMMAND_ENCHANTING_OTHERS = forCommandOthers(EnchantingCommand.NAME);
-    public static final JPermission COMMAND_EXP               = forCommand(ExpCommand.NAME);
-    public static final JPermission COMMAND_EXP_OTHERS        = forCommandOthers(ExpCommand.NAME);
-    public static final JPermission COMMAND_EXTINGUISH        = forCommand(ExtinguishCommand.NAME);
-    public static final JPermission COMMAND_EXTINGUISH_OTHERS = forCommandOthers(ExtinguishCommand.NAME);
-    public static final JPermission COMMAND_EQUIP             = forCommand(EquipCommand.NAME);
+    public static final JPermission COMMAND_DISPOSAL                = forCommand(DisposalCommand.NAME);
+    public static final JPermission COMMAND_DISPOSAL_OTHERS         = forCommandOthers(DisposalCommand.NAME);
+    public static final JPermission COMMAND_DIMENSION               = forCommand(DimensionCommand.NAME);
+    public static final JPermission COMMAND_DIMENSION_OTHERS        = forCommandOthers(DimensionCommand.NAME);
+    public static final JPermission COMMAND_ENCHANT                 = forCommand(EnchantCommand.NAME);
+    public static final JPermission COMMAND_ENCHANT_OTHERS          = forCommandOthers(EnchantCommand.NAME);
+    public static final JPermission COMMAND_ENCHANTING              = forCommand(EnchantingCommand.NAME);
+    public static final JPermission COMMAND_ENCHANTING_OTHERS       = forCommandOthers(EnchantingCommand.NAME);
+    public static final JPermission COMMAND_ENCHANTMENT_SEED        = forCommand(EnchantmentSeedCommand.NAME);
+    public static final JPermission COMMAND_ENCHANTMENT_SEED_OTHERS = forCommandOthers(EnchantmentSeedCommand.NAME);
+    public static final JPermission COMMAND_EXP                     = forCommand(ExpCommand.NAME);
+    public static final JPermission COMMAND_EXP_OTHERS              = forCommandOthers(ExpCommand.NAME);
+    public static final JPermission COMMAND_EXTINGUISH              = forCommand(ExtinguishCommand.NAME);
+    public static final JPermission COMMAND_EXTINGUISH_OTHERS       = forCommandOthers(ExtinguishCommand.NAME);
+    public static final JPermission COMMAND_EQUIP                   = forCommand(EquipCommand.NAME);
 
     public static final JPermission COMMAND_ENDERCHEST              = forCommand(EnderchestCommand.NAME);
     public static final JPermission COMMAND_ENDERCHEST_CLEAR        = forCommand(EnderchestCommand.NAME, EnderchestClearCommand.NAME);
@@ -103,19 +105,26 @@ public class Perms {
     public static final JPermission COMMAND_FLY_OTHERS        = forCommandOthers(FlyCommand.NAME);
     public static final JPermission COMMAND_FIRE              = forCommand(FireCommand.NAME);
     public static final JPermission COMMAND_FIRE_OTHERS       = forCommandOthers(FireCommand.NAME);
-    public static final JPermission COMMAND_FEED        = forCommand(FeedCommand.NAME);
-    public static final JPermission COMMAND_FEED_OTHERS = forCommandOthers(FeedCommand.NAME);
-    public static final JPermission COMMAND_FOOD = forCommand(FoodCommand.NAME);
-    public static final JPermission COMMAND_FOOD_OTHERS = forCommandOthers(FoodCommand.NAME);
-    public static final JPermission COMMAND_FOOD_GOD = forCommand(FoodGodCommand.NAME);
-    public static final JPermission COMMAND_FOOD_GOD_OTHERS = forCommandOthers(FoodGodCommand.NAME);
+    public static final JPermission COMMAND_FEED              = forCommand(FeedCommand.NAME);
+    public static final JPermission COMMAND_FEED_OTHERS       = forCommandOthers(FeedCommand.NAME);
+    public static final JPermission COMMAND_FOOD              = forCommand(FoodCommand.NAME);
+    public static final JPermission COMMAND_FOOD_OTHERS       = forCommandOthers(FoodCommand.NAME);
+    public static final JPermission COMMAND_FOOD_GOD          = forCommand(FoodGodCommand.NAME);
+    public static final JPermission COMMAND_FOOD_GOD_OTHERS   = forCommandOthers(FoodGodCommand.NAME);
+
     public static final JPermission COMMAND_GAMEMODE          = forCommand(GamemodeCommand.NAME);
     public static final JPermission COMMAND_GAMEMODE_OTHERS   = forCommandOthers(GamemodeCommand.NAME);
     public static final JPermission COMMAND_GOD               = forCommand(GodCommand.NAME);
     public static final JPermission COMMAND_GOD_OTHERS        = forCommandOthers(GodCommand.NAME);
     public static final JPermission COMMAND_GOD_BYPASS_WORLDS = new JPermission(PREFIX_COMMAND + GodCommand.NAME + ".bypass.worlds", "Bypasses disabled worlds for the God Mode.");
+    public static final JPermission COMMAND_GRINDSTONE = forCommand(GrindstoneCommand.NAME);
+    public static final JPermission COMMAND_GRINDSTONE_OTHERS = forCommandOthers(GrindstoneCommand.NAME);
+
     public static final JPermission COMMAND_HEAL              = forCommand(HealCommand.NAME);
     public static final JPermission COMMAND_HEAL_OTHERS       = forCommandOthers(HealCommand.NAME);
+    public static final JPermission COMMAND_HEALTH            = forCommand(HealthCommand.NAME);
+    public static final JPermission COMMAND_HEALTH_OTHERS     = forCommandOthers(HealthCommand.NAME);
+
     public static final JPermission COMMAND_IGNORE            = forCommand(IgnoreCommand.NAME);
     public static final JPermission COMMAND_IGNORE_OTHERS     = forCommandOthers(IgnoreCommand.NAME);
 
@@ -143,6 +152,9 @@ public class Perms {
     public static final JPermission COMMAND_ITEM_TAKE        = forCommand(ItemCommand.NAME, ItemTakeCommand.NAME);
     public static final JPermission COMMAND_ITEM_SPAWN       = forCommand(ItemCommand.NAME, ItemSpawnCommand.NAME);
     public static final JPermission COMMAND_ITEM_POTION      = forCommand(ItemCommand.NAME, ItemPotionCommand.NAME);
+
+    public static final JPermission COMMAND_LOOM = forCommand(LoomCommand.NAME);
+    public static final JPermission COMMAND_LOOM_OTHERS = forCommandOthers(LoomCommand.NAME);
 
     public static final JPermission COMMAND_MOB       = forCommand(MobCommand.NAME);
     public static final JPermission COMMAND_MOB_KILL  = forCommand(MobCommand.NAME, MobKillCommand.NAME);
@@ -229,6 +241,8 @@ public class Perms {
 
             COMMAND_ENCHANT, COMMAND_ENCHANT_OTHERS,
             COMMAND_ENCHANTING, COMMAND_ENCHANTING_OTHERS,
+            COMMAND_ENCHANTMENT_SEED, COMMAND_ENCHANTMENT_SEED_OTHERS,
+
             COMMAND_EXP, COMMAND_EXP_OTHERS,
             COMMAND_EXTINGUISH, COMMAND_EXTINGUISH_OTHERS,
             COMMAND_EQUIP,
@@ -246,8 +260,10 @@ public class Perms {
 
             COMMAND_GAMEMODE, COMMAND_GAMEMODE_OTHERS,
             COMMAND_GOD, COMMAND_GOD_OTHERS, COMMAND_GOD_BYPASS_WORLDS,
+            COMMAND_GRINDSTONE, COMMAND_GRINDSTONE_OTHERS,
 
             COMMAND_HEAL, COMMAND_HEAL_OTHERS,
+            COMMAND_HEALTH, COMMAND_HEALTH_OTHERS,
 
             COMMAND_IGNORE_OTHERS,
 
@@ -260,6 +276,8 @@ public class Perms {
             COMMAND_ITEM_GET, COMMAND_ITEM_GIVE, COMMAND_ITEM_LORE, COMMAND_ITEM_MODEL,
             COMMAND_ITEM_NAME, COMMAND_ITEM_SPAWN, COMMAND_ITEM_TAKE, COMMAND_ITEM_POTION,
             COMMAND_ITEM_DAMAGE, COMMAND_ITEM_UNBREAKABLE,
+
+            COMMAND_LOOM, COMMAND_LOOM_OTHERS,
 
             COMMAND_MOB, COMMAND_MOB_KILL, COMMAND_MOB_SPAWN,
 

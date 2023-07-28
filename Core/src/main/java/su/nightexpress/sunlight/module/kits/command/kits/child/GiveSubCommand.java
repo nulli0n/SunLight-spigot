@@ -1,40 +1,28 @@
-package su.nightexpress.sunlight.module.kits.command.kits;
+package su.nightexpress.sunlight.module.kits.command.kits.child;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import su.nexmedia.engine.api.command.CommandResult;
 import su.nexmedia.engine.utils.CollectionsUtil;
+import su.nightexpress.sunlight.command.CommandFlags;
 import su.nightexpress.sunlight.module.ModuleCommand;
 import su.nightexpress.sunlight.module.kits.Kit;
 import su.nightexpress.sunlight.module.kits.KitsModule;
 import su.nightexpress.sunlight.module.kits.config.KitsLang;
-import su.nightexpress.sunlight.module.kits.util.KitsPerms;
+import su.nightexpress.sunlight.module.kits.config.KitsPerms;
 import su.nightexpress.sunlight.module.kits.util.Placeholders;
 
 import java.util.List;
 
-public class KitsGiveCommand extends ModuleCommand<KitsModule> {
+public class GiveSubCommand extends ModuleCommand<KitsModule> {
 
-    public KitsGiveCommand(@NotNull KitsModule module) {
+    public GiveSubCommand(@NotNull KitsModule module) {
         super(module, new String[]{"give"}, KitsPerms.COMMAND_KITS_GIVE);
-    }
+        this.setDescription(plugin.getMessage(KitsLang.COMMAND_KITS_GIVE_DESC));
+        this.setUsage(plugin.getMessage(KitsLang.COMMAND_KITS_GIVE_USAGE));
 
-    @Override
-    @NotNull
-    public String getUsage() {
-        return plugin.getMessage(KitsLang.COMMAND_KITS_GIVE_USAGE).getLocalized();
-    }
-
-    @Override
-    @NotNull
-    public String getDescription() {
-        return plugin.getMessage(KitsLang.COMMAND_KITS_GIVE_DESC).getLocalized();
-    }
-
-    @Override
-    public boolean isPlayerOnly() {
-        return false;
+        this.addFlag(CommandFlags.SILENT);
     }
 
     @Override
@@ -58,7 +46,7 @@ public class KitsGiveCommand extends ModuleCommand<KitsModule> {
 
         Kit kit = this.module.getKitById(result.getArg(1));
         if (kit == null) {
-            plugin.getMessage(KitsLang.KIT_ERROR_INVALID_KIT).send(sender);
+            plugin.getMessage(KitsLang.KIT_ERROR_INVALID).send(sender);
             return;
         }
 
@@ -69,16 +57,19 @@ public class KitsGiveCommand extends ModuleCommand<KitsModule> {
         }
 
         kit.give(player, true);
-        if (!sender.equals(player)) {
+
+        if (sender != player) {
             plugin.getMessage(KitsLang.COMMAND_KITS_GIVE_DONE)
                 .replace(kit.replacePlaceholders())
                 .replace(Placeholders.forPlayer(player))
                 .send(sender);
         }
 
-        plugin.getMessage(KitsLang.COMMAND_KITS_GIVE_NOTIFY)
-            .replace(kit.replacePlaceholders())
-            .replace(Placeholders.forSender(sender))
-            .send(player);
+        if (!result.hasFlag(CommandFlags.SILENT)) {
+            plugin.getMessage(KitsLang.COMMAND_KITS_GIVE_NOTIFY)
+                .replace(kit.replacePlaceholders())
+                .replace(Placeholders.forSender(sender))
+                .send(player);
+        }
     }
 }

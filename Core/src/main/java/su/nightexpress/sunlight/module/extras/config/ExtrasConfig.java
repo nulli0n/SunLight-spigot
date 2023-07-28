@@ -1,5 +1,6 @@
 package su.nightexpress.sunlight.module.extras.config;
 
+import org.bukkit.event.entity.CreatureSpawnEvent;
 import su.nexmedia.engine.api.config.JOption;
 import su.nexmedia.engine.utils.CollectionsUtil;
 import su.nexmedia.engine.utils.EngineUtils;
@@ -80,4 +81,21 @@ public class ExtrasConfig {
 
     public static final JOption<Boolean> ANTI_FARM_AUTO_FISHING = JOption.create("AntiFarm.AutoFishing", true,
         "Sets whether or not Auto Fishing farms using note blocks (and not only them) will be disabled.");
+
+    public static final JOption<Boolean> NERF_PHANTOMS_ENABLED = JOption.create("NerfPhantoms.Enabled",
+        false,
+        "Sets whether or not NerfPhantoms feature is enabled.");
+
+    public static final JOption<Set<CreatureSpawnEvent.SpawnReason>> NERF_PHANTOMS_DISABLE_SPAWN = JOption.forSet("NerfPhantoms.Disable_Spawn",
+        raw -> StringUtil.getEnum(raw, CreatureSpawnEvent.SpawnReason.class).orElse(null),
+        Set.of(CreatureSpawnEvent.SpawnReason.NATURAL, CreatureSpawnEvent.SpawnReason.DEFAULT),
+        "Sets a list of SpawnReasons to disable phantoms spawn from.",
+        "https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/event/entity/CreatureSpawnEvent.SpawnReason.html"
+    ).setWriter((cfg, path, set) -> cfg.set(path, set.stream().map(Enum::name).toList()));
+
+    public static final JOption<Double> NERF_PHANTOMS_DAMAGE_MODIFIER = JOption.create("NerfPhantoms.Damage_Modifier", 1D,
+        "Sets phantom's damage modifier to players. PhantomDamage * DamageModifier = Final Damage.");
+
+    public static final JOption<Double> NERF_PHANTOMS_HEALTH = JOption.create("NerfPhantoms.Health", 20D,
+        "Replaces phantom's health with specified value.");
 }

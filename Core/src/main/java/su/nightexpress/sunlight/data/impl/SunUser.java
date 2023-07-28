@@ -96,6 +96,22 @@ public class SunUser extends AbstractUser<SunLight> {
         infos.add(cooldown);
     }
 
+    public boolean removeCooldown(@NotNull Kit kit) {
+        return this.removeCooldown(CooldownType.KIT, kit.getId());
+    }
+
+    public boolean removeCooldown(@NotNull Warp warp) {
+        return this.removeCooldown(CooldownType.WARP, warp.getId());
+    }
+
+    public boolean removeCooldown(@NotNull CommandCooldown cooldown) {
+        return this.removeCooldown(CooldownType.COMMAND, cooldown.getId());
+    }
+
+    public boolean removeCooldown(@NotNull CooldownType type, @NotNull String object) {
+        return this.getCooldowns(type).removeIf(cooldownInfo -> cooldownInfo.isSimilar(object));
+    }
+
     @NotNull
     public Optional<CooldownInfo> getCooldown(@NotNull CommandCooldown cooldown) {
         return this.getCooldown(CooldownType.COMMAND, cooldown.getId());

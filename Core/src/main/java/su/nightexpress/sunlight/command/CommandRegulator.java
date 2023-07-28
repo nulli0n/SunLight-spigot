@@ -50,6 +50,7 @@ public class CommandRegulator extends AbstractManager<SunLight> {
         this.register(DimensionCommand.NAME, ((cfg, aliases) -> new DimensionCommand(plugin, aliases)), "dim");
         this.register(EnchantCommand.NAME, (cfg, aliases) -> new EnchantCommand(plugin, aliases));
         this.register(EnchantingCommand.NAME, (cfg, aliases) -> new EnchantingCommand(plugin, aliases));
+        this.register(EnchantmentSeedCommand.NAME, (cfg, aliases) -> new EnchantmentSeedCommand(plugin, aliases), "enchseed", "xpseed");
         this.register(EnderchestCommand.NAME, (cfg, aliases) -> new EnderchestCommand(plugin, aliases), "echest");
         this.register(ExpCommand.NAME, (cfg, aliases) -> new ExpCommand(plugin, aliases), "xp");
         this.register(ExtinguishCommand.NAME, (cfg, aliases) -> new ExtinguishCommand(plugin, aliases), "ext");
@@ -61,10 +62,13 @@ public class CommandRegulator extends AbstractManager<SunLight> {
         this.register(FoodGodCommand.NAME, (cfg, aliases) -> new FoodGodCommand(plugin, aliases));
         this.register(GamemodeCommand.NAME, (cfg, aliases) -> new GamemodeCommand(plugin, aliases), "gm");
         this.register(GodCommand.NAME, (cfg, aliases) -> new GodCommand(plugin, cfg, aliases));
+        this.register(GrindstoneCommand.NAME, (cfg, aliases) -> new GrindstoneCommand(plugin, aliases));
         this.register(HealCommand.NAME, (cfg, aliases) -> new HealCommand(plugin, aliases));
+        this.register(HealthCommand.NAME, (cfg, aliases) -> new HealthCommand(plugin, aliases));
         this.register(IgnoreCommand.NAME, (cfg, aliases) -> new IgnoreCommand(plugin, aliases));
         this.register(InventoryCommand.NAME, (cfg, aliases) -> new InventoryCommand(plugin, aliases), "inv");
         this.register(ItemCommand.NAME, (cfg, aliases) -> new ItemCommand(plugin, cfg, aliases), "i");
+        this.register(LoomCommand.NAME, (cfg, aliases) -> new LoomCommand(plugin, aliases));
         this.register(MobCommand.NAME, (cfg, aliases) -> new MobCommand(plugin, aliases));
         this.register(NearCommand.NAME, (cfg, aliases) -> new NearCommand(plugin, cfg, aliases));
         this.register(NickCommand.NAME, (cfg, aliases) -> new NickCommand(plugin, cfg, aliases));

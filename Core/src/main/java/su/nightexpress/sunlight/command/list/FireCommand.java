@@ -34,7 +34,7 @@ public class FireCommand extends ChangeCommand {
     @Override
     protected void run(@NotNull CommandSender sender, @NotNull CommandResult result, @NotNull Mode mode, @NotNull Player target, double amount) {
         int has = target.getFireTicks();
-        int set = mode.modify(has, (int) amount);
+        int set = (int) mode.modify(has, amount);
 
         target.setFireTicks(set);
         if (!target.isOnline()) target.saveData();

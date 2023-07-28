@@ -1,4 +1,4 @@
-package su.nightexpress.sunlight.module.warps.command.basic;
+package su.nightexpress.sunlight.module.warps.command.warps.child;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -9,29 +9,15 @@ import su.nightexpress.sunlight.module.warps.WarpsModule;
 import su.nightexpress.sunlight.module.warps.config.WarpsLang;
 import su.nightexpress.sunlight.module.warps.config.WarpsPerms;
 
-public class WarpsCreateCommand extends ModuleCommand<WarpsModule> {
+public class CreateSubCommand extends ModuleCommand<WarpsModule> {
 
     public static final String NAME = "create";
 
-    public WarpsCreateCommand(@NotNull WarpsModule module) {
+    public CreateSubCommand(@NotNull WarpsModule module) {
         super(module, new String[]{NAME, "set"}, WarpsPerms.COMMAND_WARPS_CREATE);
-    }
-
-    @Override
-    @NotNull
-    public String getUsage() {
-        return this.plugin.getMessage(WarpsLang.COMMAND_WARPS_CREATE_USAGE).getLocalized();
-    }
-
-    @Override
-    @NotNull
-    public String getDescription() {
-        return this.plugin.getMessage(WarpsLang.COMMAND_WARPS_CREATE_DESC).getLocalized();
-    }
-
-    @Override
-    public boolean isPlayerOnly() {
-        return true;
+        this.setDescription(plugin.getMessage(WarpsLang.COMMAND_WARPS_CREATE_DESC));
+        this.setUsage(plugin.getMessage(WarpsLang.COMMAND_WARPS_CREATE_USAGE));
+        this.setPlayerOnly(true);
     }
 
     @Override

@@ -1,4 +1,4 @@
-package su.nightexpress.sunlight.module.kits.command.kits;
+package su.nightexpress.sunlight.module.kits.command.kits.child;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -8,32 +8,18 @@ import su.nightexpress.sunlight.module.ModuleCommand;
 import su.nightexpress.sunlight.module.kits.Kit;
 import su.nightexpress.sunlight.module.kits.KitsModule;
 import su.nightexpress.sunlight.module.kits.config.KitsLang;
-import su.nightexpress.sunlight.module.kits.util.KitsPerms;
+import su.nightexpress.sunlight.module.kits.config.KitsPerms;
 import su.nightexpress.sunlight.module.kits.util.Placeholders;
 
 import java.util.List;
 
-public class KitsGetCommand extends ModuleCommand<KitsModule> {
+public class GetSubCommand extends ModuleCommand<KitsModule> {
 
-    public KitsGetCommand(@NotNull KitsModule kitsModule) {
+    public GetSubCommand(@NotNull KitsModule kitsModule) {
         super(kitsModule, new String[]{"get"}, KitsPerms.COMMAND_KITS_GET);
-    }
-
-    @Override
-    @NotNull
-    public String getUsage() {
-        return this.plugin.getMessage(KitsLang.COMMAND_KITS_GET_USAGE).getLocalized();
-    }
-
-    @Override
-    @NotNull
-    public String getDescription() {
-        return this.plugin.getMessage(KitsLang.COMMAND_KITS_GET_DESC).getLocalized();
-    }
-
-    @Override
-    public boolean isPlayerOnly() {
-        return true;
+        this.setDescription(plugin.getMessage(KitsLang.COMMAND_KITS_GET_DESC));
+        this.setUsage(plugin.getMessage(KitsLang.COMMAND_KITS_GET_USAGE));
+        this.setPlayerOnly(true);
     }
 
     @Override
@@ -55,7 +41,7 @@ public class KitsGetCommand extends ModuleCommand<KitsModule> {
         String kitId = result.getArg(1);
         Kit kit = this.module.getKitById(kitId);
         if (kit == null) {
-            this.plugin.getMessage(KitsLang.KIT_ERROR_INVALID_KIT).replace(Placeholders.KIT_ID, kitId).send(sender);
+            this.plugin.getMessage(KitsLang.KIT_ERROR_INVALID).replace(Placeholders.KIT_ID, kitId).send(sender);
             return;
         }
 

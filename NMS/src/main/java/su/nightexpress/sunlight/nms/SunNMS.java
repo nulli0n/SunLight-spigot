@@ -2,6 +2,7 @@ package su.nightexpress.sunlight.nms;
 
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.jetbrains.annotations.NotNull;
@@ -25,4 +26,10 @@ public interface SunNMS {
     void openAnvil(@NotNull Player player);
 
     void openEnchanting(@NotNull Player player);
+
+    void openGrindstone(@NotNull Player player);
+
+    void openLoom(@NotNull Player player);
+
+    void dropFallingContent(@NotNull FallingBlock fallingBlock);
 }

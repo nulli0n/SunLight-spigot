@@ -20,17 +20,17 @@ public abstract class ChangeCommand extends TargetCommand {
     }
 
     public enum Mode {
-        ADD(Integer::sum),
+        ADD(Double::sum),
         SET((in, amount) -> amount),
         REMOVE((in, amount) -> in - amount);
 
-        private final BiFunction<Integer, Integer, Integer> function;
+        private final BiFunction<Double, Double, Double> function;
 
-        Mode(@NotNull BiFunction<Integer, Integer, Integer> function) {
+        Mode(@NotNull BiFunction<Double, Double, Double> function) {
             this.function = function;
         }
 
-        public int modify(int input, int amount) {
+        public double modify(double input, double amount) {
             return this.function.apply(input, amount);
         }
     }

@@ -15,24 +15,9 @@ public class WarpShortcutCommand extends GeneralCommand<SunLight> {
 
     public WarpShortcutCommand(@NotNull Warp warp, @NotNull String alias) {
         super(warp.plugin(), new String[]{alias}, warp.getPermission());
+        this.setDescription(plugin.getMessage(WarpsLang.COMMAND_WARPS_TELEPORT_DESC));
+        this.setPlayerOnly(true);
         this.warp = warp;
-    }
-
-    @Override
-    @NotNull
-    public String getUsage() {
-        return "";
-    }
-
-    @Override
-    @NotNull
-    public String getDescription() {
-        return plugin.getMessage(WarpsLang.COMMAND_WARPS_TELEPORT_DESC).getLocalized();
-    }
-
-    @Override
-    public boolean isPlayerOnly() {
-        return true;
     }
 
     @Override

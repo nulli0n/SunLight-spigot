@@ -14,7 +14,7 @@ import su.nightexpress.sunlight.module.kits.editor.EditorLocales;
 import su.nightexpress.sunlight.module.kits.editor.KitsEditor;
 import su.nightexpress.sunlight.module.kits.listener.KitListener;
 import su.nightexpress.sunlight.module.kits.menu.KitsMenu;
-import su.nightexpress.sunlight.module.kits.util.KitsPerms;
+import su.nightexpress.sunlight.module.kits.config.KitsPerms;
 
 import java.util.*;
 

@@ -12,7 +12,7 @@ import su.nexmedia.engine.utils.StringUtil;
 import su.nightexpress.sunlight.Perms;
 import su.nightexpress.sunlight.SunLight;
 import su.nightexpress.sunlight.module.Module;
-import su.nightexpress.sunlight.module.warps.command.basic.WarpsCommand;
+import su.nightexpress.sunlight.module.warps.command.warps.WarpsCommand;
 import su.nightexpress.sunlight.module.warps.config.WarpsConfig;
 import su.nightexpress.sunlight.module.warps.config.WarpsLang;
 import su.nightexpress.sunlight.module.warps.impl.Warp;
