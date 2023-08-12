@@ -404,8 +404,8 @@ public class ChatModule extends Module {
 
         if (ChatConfig.CHAT_JSON.get()) {
             String finalFormat = event.getFinalFormat();
-            e.setCancelled(true);
             event.getRecipients().forEach(receiver -> PlayerUtil.sendRichMessage(receiver, finalFormat));
+            event.getRecipients().clear();
             PlayerUtil.sendRichMessage(this.plugin.getServer().getConsoleSender(), NexParser.toPlainText(finalFormat));
         }
 
