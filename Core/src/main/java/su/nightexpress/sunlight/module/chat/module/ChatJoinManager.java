@@ -71,7 +71,7 @@ public class ChatJoinManager extends AbstractManager<SunLight> {
     @Nullable
     public String getMessage(@NotNull Player player, @NotNull Map<String, List<String>> map) {
         String group = PlayerUtil.getPermissionGroup(player);
-        List<String> messages = map.getOrDefault(group, Collections.emptyList());
+        List<String> messages = map.getOrDefault(group, map.getOrDefault(Placeholders.DEFAULT, Collections.emptyList()));
         if (messages.isEmpty()) return null;
 
         String message = Rnd.get(messages);

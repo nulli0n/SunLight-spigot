@@ -14,6 +14,7 @@ import org.bukkit.scoreboard.Team;
 import org.jetbrains.annotations.NotNull;
 import su.nexmedia.engine.utils.Colorizer;
 import su.nexmedia.engine.utils.EngineUtils;
+import su.nexmedia.engine.utils.StringUtil;
 import su.nightexpress.sunlight.hook.impl.ProtocolLibHook;
 import su.nightexpress.sunlight.module.tab.impl.NametagFormat;
 
@@ -30,12 +31,15 @@ public class PacketUtils {
 
         String teamPrefix = tag.getPrefix();
         String teamSuffix = tag.getSuffix();
-        ChatColor teamColor = tag.getColor();
+        String teamColorRaw = tag.getColor();
 
         if (EngineUtils.hasPlaceholderAPI()) {
             teamPrefix = Colorizer.apply(PlaceholderAPI.setPlaceholders(playerOfTeam, teamPrefix));
             teamSuffix = Colorizer.apply(PlaceholderAPI.setPlaceholders(playerOfTeam, teamSuffix));
+            teamColorRaw = PlaceholderAPI.setPlaceholders(playerOfTeam, teamColorRaw);
         }
+
+        ChatColor teamColor = StringUtil.getEnum(teamColorRaw, ChatColor.class).orElse(ChatColor.GRAY);
 
         Collection<? extends Player> online = Bukkit.getServer().getOnlinePlayers();
         for (int mode : new int[]{1,0}) {

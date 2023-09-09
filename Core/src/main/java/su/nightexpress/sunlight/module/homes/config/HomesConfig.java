@@ -3,7 +3,6 @@ package su.nightexpress.sunlight.module.homes.config;
 import su.nexmedia.engine.api.config.JOption;
 import su.nexmedia.engine.utils.PlayerRankMap;
 import su.nightexpress.sunlight.module.homes.util.Placeholders;
-import su.nightexpress.sunlight.module.warps.config.WarpsPerms;
 
 import java.util.Map;
 import java.util.Set;
@@ -33,5 +32,5 @@ public class HomesConfig {
         "-*-",
         "You must have Vault and permissions plugin installed for this feature to work.",
         "Use '-1' for unlimited amount."
-    ).mapReader(map -> map.setNegativeBetter(true).setCheckAsPermission(WarpsPerms.PREFIX_AMOUNT)).setWriter((cfg, path, map) -> map.write(cfg, path));
+    ).mapReader(map -> map.setNegativeBetter(true).setCheckAsPermission(HomesPerms.PREFIX_AMOUNT)).setWriter((cfg, path, map) -> map.write(cfg, path));
 }

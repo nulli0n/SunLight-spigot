@@ -66,6 +66,7 @@ public class SunLight extends NexPlugin<SunLight> implements UserDataHolder<SunL
 
         this.moduleManager = new ModuleManager(this);
         this.moduleManager.setup();
+        this.getCommandRegulator().getConfig().saveChanges();
 
         int commands = this.getCommandManager().getCommands().size();
         int subs = this.getCommandManager().getCommands().stream().map(AbstractCommand::getChildrens).mapToInt(Collection::size).sum();

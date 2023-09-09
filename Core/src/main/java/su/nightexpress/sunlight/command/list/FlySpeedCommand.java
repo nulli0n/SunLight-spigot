@@ -14,14 +14,14 @@ import su.nightexpress.sunlight.config.Lang;
 import java.util.List;
 import java.util.stream.IntStream;
 
-public class SpeedCommand extends TargetCommand {
+public class FlySpeedCommand extends TargetCommand {
 
-    public static final String NAME = "speed";
+    public static final String NAME = "flyspeed";
 
-    public SpeedCommand(@NotNull SunLight plugin, @NotNull String[] aliases) {
-        super(plugin, aliases, Perms.COMMAND_SPEED, Perms.COMMAND_SPEED_OTHERS, 1);
-        this.setDescription(plugin.getMessage(Lang.COMMAND_SPEED_DESC));
-        this.setUsage(plugin.getMessage(Lang.COMMAND_SPEED_USAGE));
+    public FlySpeedCommand(@NotNull SunLight plugin, @NotNull String[] aliases) {
+        super(plugin, aliases, Perms.COMMAND_FLY_SPEED, Perms.COMMAND_FLY_SPEED_OTHERS, 1);
+        this.setDescription(plugin.getMessage(Lang.COMMAND_FLY_SPEED_DESC));
+        this.setUsage(plugin.getMessage(Lang.COMMAND_FLY_SPEED_USAGE));
         this.addFlag(CommandFlags.SILENT);
     }
 
@@ -43,16 +43,16 @@ public class SpeedCommand extends TargetCommand {
         if (speed > 10) speed = 10;
         else if (speed < 0) speed = 0;
 
-        float defSpeed = 0.2F;
+        float defSpeed = 0.1F;
         float realSpeed = (float) speed * defSpeed;
 
-        target.setWalkSpeed(realSpeed);
+        target.setFlySpeed(realSpeed);
 
         if (!result.hasFlag(CommandFlags.SILENT)) {
-            plugin.getMessage(Lang.COMMAND_SPEED_DONE_NOTIFY).replace(Placeholders.forSender(sender)).replace(Placeholders.GENERIC_AMOUNT, speed).send(target);
+            plugin.getMessage(Lang.COMMAND_FLY_SPEED_DONE_NOTIFY).replace(Placeholders.forSender(sender)).replace(Placeholders.GENERIC_AMOUNT, speed).send(target);
         }
         if (sender != target) {
-            plugin.getMessage(Lang.COMMAND_SPEED_DONE_TARGET).replace(Placeholders.forPlayer(target)).replace(Placeholders.GENERIC_AMOUNT, speed).send(sender);
+            plugin.getMessage(Lang.COMMAND_FLY_SPEED_DONE_TARGET).replace(Placeholders.forPlayer(target)).replace(Placeholders.GENERIC_AMOUNT, speed).send(sender);
         }
     }
 }

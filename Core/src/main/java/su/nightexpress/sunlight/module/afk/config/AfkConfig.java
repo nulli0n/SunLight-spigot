@@ -56,7 +56,9 @@ public class AfkConfig {
             "",
             LangColors.LIGHT_YELLOW + "&nYou can rejoin now."
         ),
-        "Message displayed to player on disconnect window when kicked for being AFK long enough.").mapReader(Colorizer::apply);
+        "Message displayed to player on disconnect window when kicked for being AFK long enough.",
+        "You can use '" + Placeholders.GENERIC_TIME + "' placeholder for a formatted time value needed for kick."
+    ).mapReader(Colorizer::apply);
 
     public static final JOption<List<String>> AFK_COMMANDS = JOption.create("AFK.Commands",
         Collections.emptyList(),

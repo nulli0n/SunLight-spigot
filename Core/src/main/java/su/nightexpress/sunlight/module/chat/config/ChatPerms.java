@@ -38,9 +38,9 @@ public class ChatPerms {
     public static final JPermission COMMAND_REPLY           = new JPermission(PREFIX_COMMAND + ReplyCommand.NAME, "Access to the 'reply' command.");
     public static final JPermission COMMAND_TELL            = new JPermission(PREFIX_COMMAND + TellCommand.NAME, "Access to the 'tell' command.");
     public static final JPermission COMMAND_SPY             = new JPermission(PREFIX_COMMAND + ChatSpyCommand.NAME, "Access to the 'chatspy' command (without sub-commands).");
-    public static final JPermission COMMAND_SPY_MODE        = new JPermission(PREFIX_COMMAND + ModeSubCommand.NAME, "Access to the 'mode' sub-command of the 'chatspy' command.");
-    public static final JPermission COMMAND_SPY_MODE_OTHERS = new JPermission(PREFIX_COMMAND + ModeSubCommand.NAME + ".others", "Access to the 'mode' sub-command of the 'chatspy' command on other players.");
-    public static final JPermission COMMAND_SPY_LOGGER      = new JPermission(PREFIX_COMMAND + LoggerSubCommand.NAME, "Access to the 'logger' sub-command of the 'chatspy' command.");
+    public static final JPermission COMMAND_SPY_MODE        = new JPermission(PREFIX_COMMAND + ChatSpyCommand.NAME + "." + ModeSubCommand.NAME, "Access to the 'mode' sub-command of the 'chatspy' command.");
+    public static final JPermission COMMAND_SPY_MODE_OTHERS = new JPermission(PREFIX_COMMAND + ChatSpyCommand.NAME + "." + ModeSubCommand.NAME + ".others", "Access to the 'mode' sub-command of the 'chatspy' command on other players.");
+    public static final JPermission COMMAND_SPY_LOGGER      = new JPermission(PREFIX_COMMAND + ChatSpyCommand.NAME + "." + LoggerSubCommand.NAME, "Access to the 'logger' sub-command of the 'chatspy' command.");
     public static final JPermission COMMAND_TOGGLE_PM = new JPermission(PREFIX_COMMAND + TogglePMCommand.NAME, "Access to the 'togglepm' sub-command.");
     public static final JPermission COMMAND_TOGGLE_PM_OTHERS = new JPermission(PREFIX_COMMAND + TogglePMCommand.NAME + ".others", "Access to the 'togglepm' sub-command on other players.");
 

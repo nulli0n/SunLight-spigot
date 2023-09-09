@@ -53,6 +53,8 @@ public class PhysicsExplosionListener extends AbstractListener<SunLight> {
     private void create(@NotNull List<Block> list, @NotNull Location from) {
         list.removeIf(block -> {
             Material type = block.getType();
+            if (type.isInteractable()) return false;
+
             BlockData blockData = block.getBlockData();
 
             // Do not launch non-solid, leaves & glasses.

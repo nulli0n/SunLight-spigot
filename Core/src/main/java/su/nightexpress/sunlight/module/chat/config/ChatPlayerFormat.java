@@ -13,6 +13,11 @@ import su.nexmedia.engine.utils.StringUtil;
 import su.nexmedia.engine.utils.message.NexParser;
 import su.nightexpress.sunlight.module.chat.util.Placeholders;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class ChatPlayerFormat {
 
     private final int priority;
@@ -73,8 +78,30 @@ public class ChatPlayerFormat {
         // we need to 'fix' the message by replacing non-json parts with the Player Format before other placeholders.
         // Player Format can also contain Json elements, but Engine can not handle json in json, this is why we need to do this.
         if (NexParser.contains(message)) {
-            for (String nonJson : NexParser.getPlainParts(message)) {
-                message = message.replace(nonJson, this.getMessageFormat(player).replace(Placeholders.GENERIC_MESSAGE, nonJson));
+            Map<String, String> componentCache = new HashMap<>();
+            String[] plains = NexParser.getPlainParts(message);
+            String[] components = NexParser.getComponentParts(message);
+
+            int count = 0;
+            for (String comp : components) {
+                String temp = "${" + count + "}";
+                message = message.replaceFirst(Pattern.quote(comp), Matcher.quoteReplacement(temp));
+                componentCache.put(temp, comp);
+            }
+
+            for (String nonJson : plains) {
+                String rep = nonJson;
+                for (String temp : componentCache.keySet()) {
+                    rep = rep.replace(temp, "");
+                }
+                if (!StringUtil.noSpace(nonJson).isEmpty()) {
+                    rep = this.getMessageFormat(player).replace(Placeholders.GENERIC_MESSAGE, rep);
+                }
+                message = message.replaceFirst(Pattern.quote(nonJson), Matcher.quoteReplacement(rep));
+            }
+
+            for (Map.Entry<String, String > entry : componentCache.entrySet()) {
+                message = message.replace(entry.getKey(), entry.getValue());
             }
         }
         else {

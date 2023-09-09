@@ -94,9 +94,9 @@ public class TabConfig {
             return map;
         },
         Map.of(
-            "admin", new NametagFormat("admin", 100, "#ff2525Admin ", " #ff2525$%vault_eco_balance_formatted%", ChatColor.GRAY),
-            "vip", new NametagFormat("vip", 10, "#ccff82VIP ", " #ccff82$%vault_eco_balance_formatted%", ChatColor.GRAY),
-            "default", new NametagFormat("default", 1, "#b8fff9Member ", " #b8fff9$%vault_eco_balance_formatted%", ChatColor.GRAY)
+            "admin", new NametagFormat("admin", 100, "#ff2525Admin ", " #ff2525$%vault_eco_balance_formatted%", ChatColor.GRAY.name()),
+            "vip", new NametagFormat("vip", 10, "#ccff82VIP ", " #ccff82$%vault_eco_balance_formatted%", ChatColor.GRAY.name()),
+            "default", new NametagFormat("default", 1, "#b8fff9Member ", " #b8fff9$%vault_eco_balance_formatted%", ChatColor.GRAY.name())
         ),
         "Player nametag format based on their permission group.",
         "If player has multiple groups, format with the highest priority will be used.",

@@ -8,6 +8,7 @@ import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
 import org.jetbrains.annotations.NotNull;
 import su.nexmedia.engine.api.command.CommandResult;
 import su.nexmedia.engine.api.manager.AbstractListener;
+import su.nexmedia.engine.utils.EntityUtil;
 import su.nightexpress.sunlight.Perms;
 import su.nightexpress.sunlight.Placeholders;
 import su.nightexpress.sunlight.SunLight;
@@ -75,6 +76,7 @@ public class NoMobTargetCommand extends ToggleCommand implements Cleanable {
         @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
         public void onMobTarget(EntityTargetLivingEntityEvent event) {
             if (!(event.getTarget() instanceof Player player)) return;
+            if (!EntityUtil.isNPC(player)) return;
 
             SunUser user = this.plugin.getUserManager().getUserData(player);
             if (user.getSettings().get(DefaultSettings.NO_MOB_TARGET)) {

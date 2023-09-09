@@ -58,6 +58,7 @@ public class CommandRegulator extends AbstractManager<SunLight> {
         this.register(FeedCommand.NAME, (cfg, aliases) -> new FeedCommand(plugin, aliases));
         this.register(FireCommand.NAME, (cfg, aliases) -> new FireCommand(plugin, aliases));
         this.register(FlyCommand.NAME, (cfg, aliases) -> new FlyCommand(plugin, aliases));
+        this.register(FlySpeedCommand.NAME, (cfg, aliases) -> new FlySpeedCommand(plugin, aliases));
         this.register(FoodCommand.NAME, (cfg, aliases) -> new FoodCommand(plugin, aliases));
         this.register(FoodGodCommand.NAME, (cfg, aliases) -> new FoodGodCommand(plugin, aliases));
         this.register(GamemodeCommand.NAME, (cfg, aliases) -> new GamemodeCommand(plugin, aliases), "gm");
@@ -92,7 +93,6 @@ public class CommandRegulator extends AbstractManager<SunLight> {
             CustomTextCommand cmdText = new CustomTextCommand(plugin, file);
             this.plugin.getCommandManager().registerCommand(cmdText);
         }
-        this.config.saveChanges();
     }
 
     @Override
@@ -103,6 +103,11 @@ public class CommandRegulator extends AbstractManager<SunLight> {
             }
             this.plugin.getCommandManager().unregisterCommand(command);
         });
+    }
+
+    @NotNull
+    public JYML getConfig() {
+        return config;
     }
 
     public void register(@NotNull String name, @NotNull CommandSupplier commandSupplier, @NotNull String... extraAliases) {

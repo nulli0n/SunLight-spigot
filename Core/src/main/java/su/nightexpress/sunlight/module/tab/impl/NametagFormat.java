@@ -11,21 +11,21 @@ public class NametagFormat {
     private final int       priority;
     private final String    prefix;
     private final String    suffix;
-    private final ChatColor color;
+    private final String  color;
 
     private int index;
 
-    public NametagFormat(@NotNull String id, int priority, @NotNull String prefix, @NotNull String suffix, @NotNull ChatColor color) {
+    public NametagFormat(@NotNull String id, int priority, @NotNull String prefix, @NotNull String suffix, @NotNull String  color) {
         this.id = id.toLowerCase();
         this.priority = priority;
         this.prefix = Colorizer.apply(prefix);
         this.suffix = Colorizer.apply(suffix);
-        if (!color.isColor()) {
+        /*if (!color.isColor()) {
             this.color = ChatColor.GRAY;
         }
-        else {
+        else {*/
             this.color = color;
-        }
+        //}
     }
 
     @NotNull
@@ -33,7 +33,8 @@ public class NametagFormat {
         int priority = cfg.getInt(path + ".Priority");
         String prefix = cfg.getString(path + ".Prefix", "");
         String suffix = cfg.getString(path + ".Suffix", "");
-        ChatColor color = cfg.getEnum(path + ".Color", ChatColor.class, ChatColor.GRAY);
+        //ChatColor color = cfg.getEnum(path + ".Color", ChatColor.class, ChatColor.GRAY);
+        String color = cfg.getString(path + ".Color", ChatColor.GRAY.name());
 
         return new NametagFormat(id, priority, prefix, suffix, color);
     }
@@ -42,7 +43,7 @@ public class NametagFormat {
         cfg.set(path + ".Priority", this.getPriority());
         cfg.set(path + ".Prefix", this.getPrefix());
         cfg.set(path + ".Suffix", this.getSuffix());
-        cfg.set(path + ".Color", this.getColor().name());
+        cfg.set(path + ".Color", this.getColor());//.name());
     }
 
     public int getIndex() {
@@ -73,7 +74,7 @@ public class NametagFormat {
     }
 
     @NotNull
-    public ChatColor getColor() {
+    public String getColor() {
         return color;
     }
 

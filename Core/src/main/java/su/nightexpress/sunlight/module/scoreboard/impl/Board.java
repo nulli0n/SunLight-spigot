@@ -121,6 +121,9 @@ public class Board {
             }
             scores.put(index--, Colorizer.apply(line));
         }
+        if (EngineUtils.hasPlaceholderAPI()) {
+            title = PlaceholderAPI.setPlaceholders(this.player, title);
+        }
         for (SimpleTextAnimator animation : this.module.animationMap.values()) {
             title = animation.replace(title);
         }

@@ -103,6 +103,8 @@ public class Perms {
 
     public static final JPermission COMMAND_FLY               = forCommand(FlyCommand.NAME);
     public static final JPermission COMMAND_FLY_OTHERS        = forCommandOthers(FlyCommand.NAME);
+    public static final JPermission COMMAND_FLY_SPEED        = forCommand(FlySpeedCommand.NAME);
+    public static final JPermission COMMAND_FLY_SPEED_OTHERS = forCommandOthers(FlySpeedCommand.NAME);
     public static final JPermission COMMAND_FIRE              = forCommand(FireCommand.NAME);
     public static final JPermission COMMAND_FIRE_OTHERS       = forCommandOthers(FireCommand.NAME);
     public static final JPermission COMMAND_FEED              = forCommand(FeedCommand.NAME);
@@ -253,6 +255,7 @@ public class Perms {
             COMMAND_ENDERCHEST_REPAIR, COMMAND_ENDERCHEST_REPAIR_OTHERS,
 
             COMMAND_FLY, COMMAND_FLY_OTHERS,
+            COMMAND_FLY_SPEED, COMMAND_FLY_SPEED_OTHERS,
             COMMAND_FIRE, COMMAND_FIRE_OTHERS,
             COMMAND_FEED, COMMAND_FEED_OTHERS,
             COMMAND_FOOD, COMMAND_FOOD_OTHERS,

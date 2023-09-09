@@ -1,6 +1,7 @@
 package su.nightexpress.sunlight.module.worlds.editor;
 
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.entity.SpawnCategory;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.generator.ChunkGenerator;
@@ -120,7 +121,7 @@ public class WorldMainEditor extends EditorMenu<SunLight, WorldConfig> {
         }).getOptions().setVisibilityPolicy(viewer -> !worldConfig.hasData());
 
         this.addItem(Material.DEAD_BUSH, EditorLocales.WORLD_ENVIRONMENT, 22).setClick((viewer, event) -> {
-            worldConfig.setEnvironment(CollectionsUtil.next(worldConfig.getEnvironment()));
+            worldConfig.setEnvironment(CollectionsUtil.next(worldConfig.getEnvironment(), e -> e != World.Environment.CUSTOM));
             this.plugin.runTask(task -> this.open(viewer.getPlayer(), viewer.getPage()));
         }).getOptions().setVisibilityPolicy(viewer -> !worldConfig.hasData());
 

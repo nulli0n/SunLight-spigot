@@ -8,6 +8,7 @@ import org.jetbrains.annotations.Nullable;
 import su.nexmedia.engine.api.command.CommandResult;
 import su.nexmedia.engine.api.command.GeneralCommand;
 import su.nexmedia.engine.utils.CollectionsUtil;
+import su.nexmedia.engine.utils.PlayerUtil;
 import su.nightexpress.sunlight.SunLight;
 import su.nightexpress.sunlight.data.impl.SunUser;
 
@@ -63,7 +64,7 @@ public abstract class TargetCommand extends GeneralCommand<SunLight> {
             }
 
             String name = result.getArg(this.targetIndex);
-            Player target = this.plugin.getServer().getPlayer(name);
+            Player target = PlayerUtil.getPlayer(name);
 
             if (target == null && this.isAllowDataLoad()) {
                 SunUser user = this.plugin.getUserManager().getUserData(name);

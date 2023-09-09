@@ -2,6 +2,8 @@ package su.nightexpress.sunlight.module.afk;
 
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import su.nexmedia.engine.utils.TimeUtil;
+import su.nightexpress.sunlight.Placeholders;
 import su.nightexpress.sunlight.SunLight;
 import su.nightexpress.sunlight.data.impl.SunUser;
 import su.nightexpress.sunlight.module.afk.config.AfkConfig;
@@ -53,7 +55,8 @@ public class AfkTracker {
             int timeToKick = AfkModule.getTimeToKick(this.getPlayer());
             if (timeToKick > 0 && idleTime >= timeToKick) {
                 this.plugin.runTask(task -> {
-                    this.getPlayer().kickPlayer(String.join("\n", AfkConfig.AFK_KICK_MESSAGE.get()));
+                    this.getPlayer().kickPlayer(String.join("\n", AfkConfig.AFK_KICK_MESSAGE.get())
+                        .replace(Placeholders.GENERIC_TIME, TimeUtil.formatTime(timeToKick * 1000L)));
                 });
             }
         }
