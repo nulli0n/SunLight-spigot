@@ -54,7 +54,7 @@ public class IgnoreRemoveCommand extends AbstractCommand<SunLight> {
         }
 
         if (user.removeIgnoredUser(ignoredUser.getUserInfo().getId())) {
-            user.saveData(this.plugin);
+            this.plugin.getUserManager().saveUser(user);
         }
 
         plugin.getMessage(Lang.COMMAND_IGNORE_REMOVE_DONE)

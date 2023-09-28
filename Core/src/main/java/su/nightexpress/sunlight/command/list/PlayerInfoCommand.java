@@ -8,7 +8,6 @@ import org.jetbrains.annotations.NotNull;
 import su.nexmedia.engine.api.command.CommandResult;
 import su.nexmedia.engine.api.config.JOption;
 import su.nexmedia.engine.api.config.JYML;
-import su.nexmedia.engine.api.lang.LangColors;
 import su.nexmedia.engine.api.placeholder.PlaceholderMap;
 import su.nexmedia.engine.lang.LangManager;
 import su.nexmedia.engine.utils.*;
@@ -22,6 +21,8 @@ import su.nightexpress.sunlight.data.impl.SunUser;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import static su.nexmedia.engine.utils.Colors.*;
 
 public class PlayerInfoCommand extends TargetCommand {
 
@@ -46,22 +47,22 @@ public class PlayerInfoCommand extends TargetCommand {
         this.setUsage(plugin.getMessage(Lang.COMMAND_PLAYER_INFO_USAGE));
 
         this.formatOnline = JOption.create("PlayerInfo.Format", Arrays.asList(
-            LangColors.LIGHT_YELLOW,
-            LangColors.LIGHT_YELLOW + "&lPlayer Info:",
-            LangColors.LIGHT_YELLOW,
-            LangColors.LIGHT_YELLOW + "▪ " + LangColors.ORANGE + "Real Name: " + LangColors.LIGHT_YELLOW + Placeholders.PLAYER_NAME,
-            LangColors.LIGHT_YELLOW + "▪ " + LangColors.ORANGE + "Display Name: " + LangColors.LIGHT_YELLOW + Placeholders.PLAYER_DISPLAY_NAME,
-            LangColors.LIGHT_YELLOW + "▪ " + LangColors.ORANGE + "Online: " + LangColors.LIGHT_YELLOW + PLACEHOLDER_IS_ONLINE,
-            LangColors.LIGHT_YELLOW + "▪ " + LangColors.ORANGE + "Last Join: " + LangColors.LIGHT_YELLOW + PLACEHOLDER_LAST_JOIN,
-            LangColors.LIGHT_YELLOW + "▪ " + LangColors.ORANGE + "Last IP: " + LangColors.LIGHT_YELLOW + PLACEHOLDER_IP,
-            LangColors.LIGHT_YELLOW,
-            LangColors.LIGHT_YELLOW + "▪ " + LangColors.ORANGE + "Location: " + LangColors.LIGHT_YELLOW + Placeholders.LOCATION_X + ", " + Placeholders.LOCATION_Y + ", " + Placeholders.LOCATION_Z + " in " + Placeholders.LOCATION_WORLD,
-            LangColors.LIGHT_YELLOW + "▪ " + LangColors.ORANGE + "Game Mode: " + LangColors.LIGHT_YELLOW + PLACEHOLDER_GAMEMODE,
-            LangColors.LIGHT_YELLOW + "▪ " + LangColors.ORANGE + "Can Fly: " + LangColors.LIGHT_YELLOW + PLACEHOLDER_CAN_FLY,
-            LangColors.LIGHT_YELLOW + "▪ " + LangColors.ORANGE + "Food Level: " + LangColors.LIGHT_YELLOW + PLACEHOLDER_FOOD_LEVEL,
-            LangColors.LIGHT_YELLOW + "▪ " + LangColors.ORANGE + "Saturation: " + LangColors.LIGHT_YELLOW + PLACEHOLDER_SATURATION,
-            LangColors.LIGHT_YELLOW + "▪ " + LangColors.ORANGE + "Health: " + LangColors.LIGHT_YELLOW + PLACEHOLDER_HEALTH + "/" + PLACEHOLDER_MAX_HEALTH,
-            LangColors.LIGHT_YELLOW),
+            LIGHT_YELLOW,
+            LIGHT_YELLOW + "&lPlayer Info:",
+            LIGHT_YELLOW,
+            LIGHT_YELLOW + "▪ " + ORANGE + "Real Name: " + LIGHT_YELLOW + Placeholders.PLAYER_NAME,
+            LIGHT_YELLOW + "▪ " + ORANGE + "Display Name: " + LIGHT_YELLOW + Placeholders.PLAYER_DISPLAY_NAME,
+            LIGHT_YELLOW + "▪ " + ORANGE + "Online: " + LIGHT_YELLOW + PLACEHOLDER_IS_ONLINE,
+            LIGHT_YELLOW + "▪ " + ORANGE + "Last Join: " + LIGHT_YELLOW + PLACEHOLDER_LAST_JOIN,
+            LIGHT_YELLOW + "▪ " + ORANGE + "Last IP: " + LIGHT_YELLOW + PLACEHOLDER_IP,
+            LIGHT_YELLOW,
+            LIGHT_YELLOW + "▪ " + ORANGE + "Location: " + LIGHT_YELLOW + Placeholders.LOCATION_X + ", " + Placeholders.LOCATION_Y + ", " + Placeholders.LOCATION_Z + " in " + Placeholders.LOCATION_WORLD,
+            LIGHT_YELLOW + "▪ " + ORANGE + "Game Mode: " + LIGHT_YELLOW + PLACEHOLDER_GAMEMODE,
+            LIGHT_YELLOW + "▪ " + ORANGE + "Can Fly: " + LIGHT_YELLOW + PLACEHOLDER_CAN_FLY,
+            LIGHT_YELLOW + "▪ " + ORANGE + "Food Level: " + LIGHT_YELLOW + PLACEHOLDER_FOOD_LEVEL,
+            LIGHT_YELLOW + "▪ " + ORANGE + "Saturation: " + LIGHT_YELLOW + PLACEHOLDER_SATURATION,
+            LIGHT_YELLOW + "▪ " + ORANGE + "Health: " + LIGHT_YELLOW + PLACEHOLDER_HEALTH + "/" + PLACEHOLDER_MAX_HEALTH,
+            LIGHT_YELLOW),
             "Sets player info format.",
             "You can use " + EngineUtils.PLACEHOLDER_API + " here.",
             "JSON is supported: " + Placeholders.ENGINE_URL_LANG_JSON

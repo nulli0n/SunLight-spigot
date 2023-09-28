@@ -1,10 +1,10 @@
 package su.nightexpress.sunlight.module.chat.config;
 
-import su.nexmedia.engine.api.lang.LangColors;
 import su.nexmedia.engine.api.lang.LangKey;
 import su.nightexpress.sunlight.module.chat.util.Placeholders;
+import static su.nexmedia.engine.utils.Colors.*;
 
-public class ChatLang implements LangColors {
+public class ChatLang {
 
     private static final String NO_PREFIX = "<! prefix:\"false\" !>";
 

@@ -1,10 +1,10 @@
-package su.nightexpress.sunlight.nms.v1_18_R2;
+package su.nightexpress.sunlight.nms.v1_19_R3.container;
 
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.PlayerEnderChestContainer;
-import org.bukkit.craftbukkit.v1_18_R2.entity.CraftHumanEntity;
-import org.bukkit.craftbukkit.v1_18_R2.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_18_R2.inventory.CraftInventory;
+import org.bukkit.craftbukkit.v1_19_R3.entity.CraftHumanEntity;
+import org.bukkit.craftbukkit.v1_19_R3.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_19_R3.inventory.CraftInventory;
 import org.jetbrains.annotations.NotNull;
 import su.nexmedia.engine.utils.Reflex;
 
@@ -16,7 +16,7 @@ public class PlayerEnderChest extends PlayerEnderChestContainer {
     public PlayerEnderChest(CraftPlayer owner) {
         super(owner.getHandle());
         this.owner = owner;
-        Reflex.setFieldValue(this, "c", owner.getHandle().getEnderChestInventory().items);
+        Reflex.setFieldValue(this, "d", owner.getHandle().getEnderChestInventory().items);
     }
 
     @NotNull

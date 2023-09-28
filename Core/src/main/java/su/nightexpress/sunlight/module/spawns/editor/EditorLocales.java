@@ -3,6 +3,8 @@ package su.nightexpress.sunlight.module.spawns.editor;
 import su.nexmedia.engine.api.editor.EditorLocale;
 import su.nightexpress.sunlight.module.spawns.util.Placeholders;
 
+import static su.nexmedia.engine.utils.Colors.*;
+
 public class EditorLocales extends su.nexmedia.engine.api.editor.EditorLocales {
 
     private static final String PREFIX_OLD = "Editor.SpawnsEditorType.";

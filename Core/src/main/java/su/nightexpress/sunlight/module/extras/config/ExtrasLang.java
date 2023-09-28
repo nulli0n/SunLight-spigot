@@ -1,10 +1,10 @@
 package su.nightexpress.sunlight.module.extras.config;
 
-import su.nexmedia.engine.api.lang.LangColors;
 import su.nexmedia.engine.api.lang.LangKey;
 import su.nightexpress.sunlight.Placeholders;
+import static su.nexmedia.engine.utils.Colors.*;
 
-public class ExtrasLang implements LangColors {
+public class ExtrasLang {
 
     public static final LangKey COMMAND_CHAIRS_DESC   = LangKey.of("Extras.Command.Chairs.Desc", "Toggle [player's] chairs feature.");
     public static final LangKey COMMAND_CHAIRS_USAGE  = LangKey.of("Extras.Command.Chairs.Usage", "[player] [-on] [-off] [-s]");

@@ -212,7 +212,7 @@ public class Warp extends AbstractConfigHolder<SunLight> implements Placeholder 
             if (!isForced && this.hasVisitCooldown()) {
                 CooldownInfo info = CooldownInfo.of(this);
                 user.addCooldown(info);
-                user.saveData(this.plugin);
+                this.plugin.getUserManager().saveUser(user);
             }
         }
     }

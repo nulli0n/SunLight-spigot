@@ -13,6 +13,8 @@ import su.nightexpress.sunlight.command.teleport.TeleportCommand;
 import su.nightexpress.sunlight.command.teleport.TeleportDeclineCommand;
 import su.nightexpress.sunlight.command.time.TimeShowCommand;
 
+import static su.nexmedia.engine.utils.Colors.*;
+
 public class Lang extends EngineLang {
 
     private static final String ACTION_BAR = "<! type:\"action_bar\" !>";
@@ -291,16 +293,16 @@ public class Lang extends EngineLang {
     public static final LangKey COMMAND_ITEM_FLAG_CLEAR_DONE   = LangKey.of("Command.Item.Flag.Clear.Done", "<! sound:\"" + Sound.BLOCK_ANVIL_USE.name() + "\" !>" + LIGHT_YELLOW + "Item flags removed!");
 
     public static final LangKey COMMAND_ITEM_GET_DESC  = LangKey.of("Command.Item.Get.Desc", "Get specified item stack.");
-    public static final LangKey COMMAND_ITEM_GET_USAGE = LangKey.of("Command.Item.Get.Usage", "<material> [amount] [-name <name>] [-lore <text>] [-ench <enchant:level]");
+    public static final LangKey COMMAND_ITEM_GET_USAGE = LangKey.of("Command.Item.Get.Usage", "<material> [amount] [-name <name>] [-lore <text>] [-ench <enchant:level] [-model <modelData>]");
     public static final LangKey COMMAND_ITEM_GET_DONE  = LangKey.of("Command.Item.Get.Done", "<! sound:\"" + Sound.ENTITY_ITEM_PICKUP.name() + "\" !>" + LIGHT_YELLOW + "You got " + ORANGE + "x" + Placeholders.GENERIC_AMOUNT + LIGHT_YELLOW + " of " + ORANGE + Placeholders.GENERIC_TYPE + LIGHT_YELLOW + "!");
 
     public static final LangKey COMMAND_ITEM_GIVE_DESC   = LangKey.of("Command.Item.Give.Desc", "Give specified item stack to a player.");
-    public static final LangKey COMMAND_ITEM_GIVE_USAGE  = LangKey.of("Command.Item.Give.Usage", "<player> <material> [amount] [-name <name>] [-lore <text>] [-ench <enchant:level]");
+    public static final LangKey COMMAND_ITEM_GIVE_USAGE  = LangKey.of("Command.Item.Give.Usage", "<player> <material> [amount] [-name <name>] [-lore <text>] [-ench <enchant:level] [-model <modelData>]");
     public static final LangKey COMMAND_ITEM_GIVE_DONE   = LangKey.of("Command.Item.Give.Done", "<! sound:\"" + Sound.ENTITY_ITEM_PICKUP.name() + "\" !>" + LIGHT_YELLOW + "You gave " + ORANGE + "x" + Placeholders.GENERIC_AMOUNT + LIGHT_YELLOW + " of " + ORANGE + Placeholders.GENERIC_TYPE + LIGHT_YELLOW + " to " + ORANGE + Placeholders.PLAYER_DISPLAY_NAME + LIGHT_YELLOW + "!");
     public static final LangKey COMMAND_ITEM_GIVE_NOTIFY = LangKey.of("Command.Item.Give.Notify", "<! sound:\"" + Sound.ENTITY_ITEM_PICKUP.name() + "\" !>" + LIGHT_YELLOW + "You got " + ORANGE + "x" + Placeholders.GENERIC_AMOUNT + LIGHT_YELLOW + " of " + ORANGE + Placeholders.GENERIC_TYPE + LIGHT_YELLOW + "!");
 
     public static final LangKey COMMAND_ITEM_TAKE_DESC             = LangKey.of("Command.Item.Take.Desc", "Take specified item stack from a player.");
-    public static final LangKey COMMAND_ITEM_TAKE_USAGE            = LangKey.of("Command.Item.Take.Usage", "<player> <material> [amount] [-name <name>] [-lore <text>] [-ench <enchant:level]");
+    public static final LangKey COMMAND_ITEM_TAKE_USAGE            = LangKey.of("Command.Item.Take.Usage", "<player> <material> [amount] [-name <name>] [-lore <text>] [-ench <enchant:level] [-model <modelData>]");
     public static final LangKey COMMAND_ITEM_TAKE_DONE             = LangKey.of("Command.Item.Take.Done", "<! sound:\"" + Sound.ENTITY_GLOW_ITEM_FRAME_REMOVE_ITEM.name() + "\" !>" + LIGHT_YELLOW + "You took " + ORANGE + "x" +  Placeholders.GENERIC_AMOUNT + LIGHT_YELLOW + " of " + ORANGE + Placeholders.GENERIC_TYPE + LIGHT_YELLOW + " from " + ORANGE + Placeholders.PLAYER_DISPLAY_NAME + LIGHT_YELLOW + "!");
     public static final LangKey COMMAND_ITEM_TAKE_ERROR_NOT_ENOUGH = LangKey.of("Command.Item.Take.Error.NotEnough", "<! sound:\"" + Sound.ENTITY_VILLAGER_NO.name() + "\" !>" + RED + "Could not take item(s). Player don't have enough " + ORANGE + Placeholders.GENERIC_TYPE + RED + " (" + Placeholders.GENERIC_AMOUNT + "/" + Placeholders.GENERIC_TOTAL + ")!");
     public static final LangKey COMMAND_ITEM_TAKE_NOTIFY           = LangKey.of("Command.Item.Take.Notify", "<! sound:\"" + Sound.ENTITY_GLOW_ITEM_FRAME_REMOVE_ITEM.name() + "\" !>" + ORANGE + "x" + Placeholders.GENERIC_AMOUNT + LIGHT_YELLOW + " of " + ORANGE + Placeholders.GENERIC_TYPE + LIGHT_YELLOW + " has been taken from your inventory!");
@@ -332,7 +334,7 @@ public class Lang extends EngineLang {
     public static final LangKey COMMAND_ITEM_POTION_ADD_DONE             = LangKey.of("Command.Item.Potion.Add.Done", LIGHT_YELLOW + "Potion effect added!");
 
     public static final LangKey COMMAND_ITEM_SPAWN_DESC  = LangKey.of("Command.Item.Spawn.Desc", "Spawn specified item stack.");
-    public static final LangKey COMMAND_ITEM_SPAWN_USAGE = LangKey.of("Command.Item.Spawn.Usage", "<material> <amount> [world] [x] [y] [z] [-name <name>] [-lore <text>] [-ench <enchant:level]");
+    public static final LangKey COMMAND_ITEM_SPAWN_USAGE = LangKey.of("Command.Item.Spawn.Usage", "<material> <amount> [world] [x] [y] [z] [-name <name>] [-lore <text>] [-ench <enchant:level] [-model <modelData>]");
     public static final LangKey COMMAND_ITEM_SPAWN_DONE  = LangKey.of("Command.Item.Spawn.Done", "<! sound:\"" + Sound.ENTITY_ITEM_PICKUP.name() + "\" !>" + LIGHT_YELLOW + "Created " + ORANGE + "x" + Placeholders.GENERIC_AMOUNT + LIGHT_YELLOW + " " + ORANGE + Placeholders.GENERIC_TYPE + LIGHT_YELLOW + " at " + ORANGE + Placeholders.LOCATION_X + ", " + Placeholders.LOCATION_Y + ", " + Placeholders.LOCATION_Z + LIGHT_YELLOW + " in " + ORANGE + Placeholders.LOCATION_WORLD + LIGHT_YELLOW + "!");
 
     public static final LangKey COMMAND_ITEM_UNBREAKABLE_DESC           = LangKey.of("Command.Item.Unbreakable.Desc", "Makes item (un)breakable.");

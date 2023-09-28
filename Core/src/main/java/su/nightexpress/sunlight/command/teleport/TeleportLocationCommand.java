@@ -69,7 +69,8 @@ public class TeleportLocationCommand extends TargetCommand {
         double y = result.getDouble(2, 0);
         double z = result.getDouble(3, 0);
 
-        Location location = new Location(world, x, y, z);
+        Location targetLoc = target.getLocation();
+        Location location = new Location(world, x, y, z, targetLoc.getYaw(), targetLoc.getPitch());
         SunUtils.teleport(target, location);
 
         if (sender != target) {

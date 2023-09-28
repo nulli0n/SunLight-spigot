@@ -49,7 +49,7 @@ public class HomesModule extends Module {
     public void onLoad() {
         this.getConfig().initializeOptions(HomesConfig.class);
         this.plugin.getLangManager().loadMissing(HomesLang.class);
-        this.plugin.getLangManager().setupEnum(HomeType.class);
+        this.plugin.getLangManager().loadEnum(HomeType.class);
         this.plugin.getLang().saveChanges();
         this.plugin.registerPermissions(HomesPerms.class);
         this.plugin.getCommandRegulator().register(HomesCommand.NAME, (cfg1, aliases) -> new HomesCommand(this, aliases));

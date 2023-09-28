@@ -9,6 +9,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import su.nexmedia.engine.api.command.CommandResult;
 import su.nexmedia.engine.utils.CollectionsUtil;
+import su.nexmedia.engine.utils.Colorizer;
 import su.nexmedia.engine.utils.ItemUtil;
 import su.nexmedia.engine.utils.PlayerUtil;
 import su.nightexpress.sunlight.Perms;
@@ -29,7 +30,7 @@ public class ItemGiveCommand extends TargetCommand {
         this.setAllowDataLoad();
         this.setDescription(plugin.getMessage(Lang.COMMAND_ITEM_GIVE_DESC));
         this.setUsage(plugin.getMessage(Lang.COMMAND_ITEM_GIVE_USAGE));
-        this.addFlag(ItemCommand.FLAG_NAME, ItemCommand.FLAG_LORE, ItemCommand.FLAG_ENCHANTS);
+        this.addFlag(ItemCommand.FLAG_NAME, ItemCommand.FLAG_LORE, ItemCommand.FLAG_ENCHANTS, ItemCommand.FLAG_MODEL);
     }
 
     @Override
@@ -70,19 +71,22 @@ public class ItemGiveCommand extends TargetCommand {
         String flagName = result.getFlag(ItemCommand.FLAG_NAME);
         String itemLore = result.getFlag(ItemCommand.FLAG_LORE);
         String flagEnchants = result.getFlag(ItemCommand.FLAG_ENCHANTS);
+        Integer flagModel = result.getFlag(ItemCommand.FLAG_MODEL);
 
         List<String> checkLore = itemLore == null ? new ArrayList<>() : ItemCommand.parseFlagLore(itemLore);
         Map<Enchantment, Integer> itemEnchants = flagEnchants == null ? new HashMap<>() : ItemCommand.parseFlagEnchants(flagEnchants);
 
         ItemMeta meta = item.getItemMeta();
         if (meta != null) {
-            if (flagName != null) meta.setDisplayName(flagName);
-            if (itemLore != null) meta.setLore(checkLore);
+            if (flagName != null) meta.setDisplayName(Colorizer.apply(flagName));
+            if (itemLore != null) meta.setLore(Colorizer.apply(checkLore));
             if (flagEnchants != null) itemEnchants.forEach((enchant, level) -> meta.addEnchant(enchant, level, true));
+            if (flagModel != null) meta.setCustomModelData(flagModel);
         }
         item.setItemMeta(meta);
 
         PlayerUtil.addItem(target, item, amount);
+        if (!target.isOnline()) target.saveData();
 
         plugin.getMessage(Lang.COMMAND_ITEM_GIVE_DONE)
             .replace(Placeholders.forPlayer(target))

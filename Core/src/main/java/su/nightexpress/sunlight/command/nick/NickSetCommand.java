@@ -61,7 +61,7 @@ public class NickSetCommand extends AbstractCommand<SunLight> {
         String nick = Colorizer.apply(Stream.of(result.getArgs()).skip(2).collect(Collectors.joining(" ")));
         user.setCustomName(nick);
         user.updatePlayerName();
-        user.saveData(this.plugin);
+        this.plugin.getUserManager().saveUser(user);
 
         if (sender != user.getPlayer()) {
             plugin.getMessage(Lang.COMMAND_NICK_SET_TARGET)

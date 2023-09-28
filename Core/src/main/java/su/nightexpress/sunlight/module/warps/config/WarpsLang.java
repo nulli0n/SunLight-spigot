@@ -1,11 +1,12 @@
 package su.nightexpress.sunlight.module.warps.config;
 
 import org.bukkit.Sound;
-import su.nexmedia.engine.api.lang.LangColors;
 import su.nexmedia.engine.api.lang.LangKey;
 import su.nightexpress.sunlight.module.warps.util.Placeholders;
 
-public class WarpsLang implements LangColors {
+import static su.nexmedia.engine.utils.Colors.*;
+
+public class WarpsLang {
 
     public static final LangKey COMMAND_WARPS_DESC  = LangKey.of("Warps.Command.Warps.Desc", "Warp management.");
     public static final LangKey COMMAND_WARPS_USAGE = LangKey.of("Warps.Command.Warps.Usage", "[help]");

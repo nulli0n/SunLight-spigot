@@ -1,13 +1,14 @@
 package su.nightexpress.sunlight.module.bans.config;
 
 import org.jetbrains.annotations.NotNull;
-import su.nexmedia.engine.api.lang.LangColors;
 import su.nexmedia.engine.api.lang.LangKey;
 import su.nightexpress.sunlight.module.bans.punishment.Punishment;
 import su.nightexpress.sunlight.module.bans.punishment.PunishmentType;
 import su.nightexpress.sunlight.module.bans.util.Placeholders;
 
-public class BansLang implements LangColors {
+import static su.nexmedia.engine.utils.Colors.*;
+
+public class BansLang {
 
     public static final LangKey COMMAND_HISTORY_MUTE_DESC  = LangKey.of("Bans.Command.History.Mute.Desc", "View player's mutes history.");
     public static final LangKey COMMAND_HISTORY_MUTE_USAGE = LangKey.of("Bans.Command.History.Mute.Usage", "<player>");

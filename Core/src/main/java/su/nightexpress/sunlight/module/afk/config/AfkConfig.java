@@ -1,13 +1,14 @@
 package su.nightexpress.sunlight.module.afk.config;
 
 import su.nexmedia.engine.api.config.JOption;
-import su.nexmedia.engine.api.lang.LangColors;
 import su.nexmedia.engine.utils.Colorizer;
 import su.nexmedia.engine.utils.EngineUtils;
 import su.nexmedia.engine.utils.PlayerRankMap;
 import su.nightexpress.sunlight.Placeholders;
 
 import java.util.*;
+
+import static su.nexmedia.engine.utils.Colors.*;
 
 public class AfkConfig {
 
@@ -28,7 +29,7 @@ public class AfkConfig {
         "Sets period of time (in seconds) while player will be unable to enter AFK mode for idleness after leaving it.");
 
     public static final JOption<String> AFK_PLACEHOLDER_IN = JOption.create("AFK.Placeholder.In",
-        LangColors.GRAY + " AFK " + Placeholders.GENERIC_TIME,
+        GRAY + " AFK " + Placeholders.GENERIC_TIME,
         "Sets the placeholder text for a player in AFK mode.",
         "Use '" + Placeholders.GENERIC_TIME + "' placeholder to display AFK time.").mapReader(Colorizer::apply);
 
@@ -52,9 +53,9 @@ public class AfkConfig {
 
     public static final JOption<List<String>> AFK_KICK_MESSAGE = JOption.create("AFK.Kick_Message",
         Arrays.asList(
-            LangColors.RED + "You have been kicked for being AFK too long!",
+            RED + "You have been kicked for being AFK too long!",
             "",
-            LangColors.LIGHT_YELLOW + "&nYou can rejoin now."
+            LIGHT_YELLOW + "&nYou can rejoin now."
         ),
         "Message displayed to player on disconnect window when kicked for being AFK long enough.",
         "You can use '" + Placeholders.GENERIC_TIME + "' placeholder for a formatted time value needed for kick."

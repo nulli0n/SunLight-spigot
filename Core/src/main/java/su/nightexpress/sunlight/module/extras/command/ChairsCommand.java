@@ -34,7 +34,7 @@ public class ChairsCommand extends ToggleCommand {
         boolean state = mode.apply(ChairsManager.isChairsEnabled(user));
 
         user.getSettings().set(ChairsManager.SETTING_CHAIRS, state);
-        user.saveData(this.plugin);
+        this.plugin.getUserManager().saveUser(user);
 
         if (sender != target) {
             this.plugin.getMessage(ExtrasLang.COMMAND_CHAIRS_TARGET)

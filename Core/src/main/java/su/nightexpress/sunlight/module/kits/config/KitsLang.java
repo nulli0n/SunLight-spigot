@@ -1,11 +1,12 @@
 package su.nightexpress.sunlight.module.kits.config;
 
 import org.bukkit.Sound;
-import su.nexmedia.engine.api.lang.LangColors;
 import su.nexmedia.engine.api.lang.LangKey;
 import su.nightexpress.sunlight.module.kits.util.Placeholders;
 
-public class KitsLang implements LangColors {
+import static su.nexmedia.engine.utils.Colors.*;
+
+public class KitsLang {
 
     public static final LangKey COMMAND_KITS_DESC  = LangKey.of("Kits.Command.Kits.Desc", "Kits Management.");
     public static final LangKey COMMAND_KITS_USAGE = LangKey.of("Kits.Command.Kits.Usage", "[help]");

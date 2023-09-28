@@ -32,7 +32,7 @@ public class ItemSpawnCommand extends AbstractCommand<SunLight> {
         this.setDescription(plugin.getMessage(Lang.COMMAND_ITEM_SPAWN_DESC));
         this.setUsage(plugin.getMessage(Lang.COMMAND_ITEM_SPAWN_USAGE));
 
-        this.addFlag(ItemCommand.FLAG_NAME, ItemCommand.FLAG_LORE, ItemCommand.FLAG_ENCHANTS);
+        this.addFlag(ItemCommand.FLAG_NAME, ItemCommand.FLAG_LORE, ItemCommand.FLAG_ENCHANTS, ItemCommand.FLAG_MODEL);
     }
 
     @Override
@@ -99,17 +99,17 @@ public class ItemSpawnCommand extends AbstractCommand<SunLight> {
         String flagName = result.getFlag(ItemCommand.FLAG_NAME);
         String itemLore = result.getFlag(ItemCommand.FLAG_LORE);
         String flagEnchants = result.getFlag(ItemCommand.FLAG_ENCHANTS);
+        Integer flagModel = result.getFlag(ItemCommand.FLAG_MODEL);
 
         List<String> checkLore = itemLore == null ? new ArrayList<>() : ItemCommand.parseFlagLore(itemLore);
         Map<Enchantment, Integer> itemEnchants = flagEnchants == null ? new HashMap<>() : ItemCommand.parseFlagEnchants(flagEnchants);
 
-        ItemMeta meta = item.getItemMeta();
-        if (meta != null) {
+        ItemUtil.mapMeta(item, meta -> {
             if (flagName != null) meta.setDisplayName(flagName);
             if (itemLore != null) meta.setLore(checkLore);
             if (flagEnchants != null) itemEnchants.forEach((enchant, level) -> meta.addEnchant(enchant, level, true));
-        }
-        item.setItemMeta(meta);
+            if (flagModel != null) meta.setCustomModelData(flagModel);
+        });
         world.dropItemNaturally(location, item);
 
         plugin.getMessage(Lang.COMMAND_ITEM_SPAWN_DONE)

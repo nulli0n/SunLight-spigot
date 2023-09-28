@@ -371,7 +371,7 @@ public class Kit extends AbstractConfigHolder<SunLight> implements Placeholder {
 
         if (!force && this.hasCooldown() && !player.hasPermission(KitsPerms.BYPASS_COOLDOWN)) {
             user.addCooldown(CooldownInfo.of(this));
-            user.saveData(this.plugin);
+            this.plugin.getUserManager().saveUser(user);
         }
 
         plugin.getMessage(KitsLang.KIT_GET).replace(this.replacePlaceholders()).send(player);

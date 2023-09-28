@@ -137,7 +137,7 @@ public class GodCommand extends ToggleCommand implements Cleanable {
         SunUser user = plugin.getUserManager().getUserData(target);
         UserSetting<Boolean> setting = DefaultSettings.GOD_MODE;
         user.getSettings().set(setting, mode.apply(user.getSettings().get(setting)));
-        user.saveData(this.plugin);
+        this.plugin.getUserManager().saveUser(user);
 
         // Notify about god mode in disabled world.
         if (user.getSettings().get(setting) && !this.isAllowedWorld(target)) {

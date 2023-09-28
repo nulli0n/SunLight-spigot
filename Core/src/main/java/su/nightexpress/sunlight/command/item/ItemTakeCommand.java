@@ -30,7 +30,7 @@ public class ItemTakeCommand extends TargetCommand {
         this.setDescription(plugin.getMessage(Lang.COMMAND_ITEM_TAKE_DESC));
         this.setUsage(plugin.getMessage(Lang.COMMAND_ITEM_TAKE_USAGE));
 
-        this.addFlag(ItemCommand.FLAG_NAME, ItemCommand.FLAG_LORE, ItemCommand.FLAG_ENCHANTS);
+        this.addFlag(ItemCommand.FLAG_NAME, ItemCommand.FLAG_LORE, ItemCommand.FLAG_ENCHANTS, ItemCommand.FLAG_MODEL);
     }
 
     @Override
@@ -69,6 +69,7 @@ public class ItemTakeCommand extends TargetCommand {
         String flagName = result.getFlag(ItemCommand.FLAG_NAME);
         String flagLore = result.getFlag(ItemCommand.FLAG_LORE);
         String flagEnchants = result.getFlag(ItemCommand.FLAG_ENCHANTS);
+        Integer flagModel = result.getFlag(ItemCommand.FLAG_MODEL);
 
         List<String> checkLore = flagLore == null ? new ArrayList<>() : ItemCommand.parseFlagLore(flagLore);
         Map<Enchantment, Integer> checkEnchants = flagEnchants == null ? new HashMap<>() : ItemCommand.parseFlagEnchants(flagEnchants);
@@ -77,9 +78,10 @@ public class ItemTakeCommand extends TargetCommand {
             if (itemHas == null || itemHas.getType() != material) return false;
 
             ItemMeta meta = itemHas.getItemMeta();
-            if (flagName != null || flagLore != null || flagEnchants != null) {
+            if (flagName != null || flagLore != null || flagEnchants != null || flagModel != null) {
                 if (meta == null) return false;
                 if (flagName != null && !meta.getDisplayName().contains(flagName)) return false;
+                if (flagModel != null && (!meta.hasCustomModelData() || meta.getCustomModelData() != flagModel)) return false;
                 if (flagLore != null && !checkLore.isEmpty()) {
                     if (meta.getLore() == null) return false;
                     if (checkLore.size() == 1) {

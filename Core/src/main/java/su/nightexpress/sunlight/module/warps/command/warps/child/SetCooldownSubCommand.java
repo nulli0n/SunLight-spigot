@@ -72,7 +72,7 @@ public class SetCooldownSubCommand extends ModuleCommand<WarpsModule> {
             }
 
             user.addCooldown(new CooldownInfo(CooldownType.WARP, warp.getId(), expireDate));
-            user.saveData(this.plugin);
+            this.plugin.getUserManager().saveUser(user);
 
             String time = amount < 0 ? LangManager.getPlain(Lang.OTHER_INFINITY) : TimeUtil.formatTimeLeft(expireDate + 100L);
 

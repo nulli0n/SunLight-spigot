@@ -33,7 +33,7 @@ public class TeleportToggleCommand extends ToggleCommand {
         SunUser user = plugin.getUserManager().getUserData(target);
         boolean state = mode.apply(user.getSettings().get(DefaultSettings.TELEPORT_REQUESTS));
         user.getSettings().set(DefaultSettings.TELEPORT_REQUESTS, state);
-        user.saveData(this.plugin);
+        this.plugin.getUserManager().saveUser(user);
 
         if (sender != target) {
             plugin.getMessage(Lang.COMMAND_TELEPORT_TOGGLE_TARGET)

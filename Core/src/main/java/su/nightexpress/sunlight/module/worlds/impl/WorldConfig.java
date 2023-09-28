@@ -9,15 +9,11 @@ import org.bukkit.entity.SpawnCategory;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import su.nexmedia.engine.api.config.JYML;
-import su.nexmedia.engine.api.lang.LangColors;
 import su.nexmedia.engine.api.manager.AbstractConfigHolder;
 import su.nexmedia.engine.api.placeholder.Placeholder;
 import su.nexmedia.engine.api.placeholder.PlaceholderMap;
 import su.nexmedia.engine.lang.LangManager;
-import su.nexmedia.engine.utils.Colorizer;
-import su.nexmedia.engine.utils.FileUtil;
-import su.nexmedia.engine.utils.StringUtil;
-import su.nexmedia.engine.utils.TimeUtil;
+import su.nexmedia.engine.utils.*;
 import su.nightexpress.sunlight.SunLight;
 import su.nightexpress.sunlight.config.Config;
 import su.nightexpress.sunlight.config.Lang;
@@ -74,10 +70,10 @@ public class WorldConfig extends AbstractConfigHolder<SunLight> implements Place
             .add(Placeholders.WORLD_DIFFICULTY, () -> plugin.getLangManager().getEnum(this.getDifficulty()))
             .add(Placeholders.WORLD_STRUCTURES, () -> LangManager.getBoolean(this.getCreator().generateStructures()))
             .add(Placeholders.WORLD_SPAWN_LIMITS, () -> {
-                return this.getSpawnLimits().entrySet().stream().map(e -> Colorizer.apply(LangColors.GRAY + StringUtil.capitalizeUnderscored(e.getKey().name()) + ": " + LangColors.YELLOW + e.getValue().toString())).collect(Collectors.joining("\n"));
+                return this.getSpawnLimits().entrySet().stream().map(e -> Colorizer.apply(Colors.GRAY + StringUtil.capitalizeUnderscored(e.getKey().name()) + ": " + Colors.YELLOW + e.getValue().toString())).collect(Collectors.joining("\n"));
             })
             .add(Placeholders.WORLD_SPAWN_TICKS, () -> {
-                return this.getTicksPerSpawns().entrySet().stream().map(e -> Colorizer.apply(LangColors.GRAY + StringUtil.capitalizeUnderscored(e.getKey().name()) + ": " + LangColors.YELLOW + e.getValue().toString())).collect(Collectors.joining("\n"));
+                return this.getTicksPerSpawns().entrySet().stream().map(e -> Colorizer.apply(Colors.GRAY + StringUtil.capitalizeUnderscored(e.getKey().name()) + ": " + Colors.YELLOW + e.getValue().toString())).collect(Collectors.joining("\n"));
             })
             .add(Placeholders.WORLD_AUTO_WIPE_ENABLED, () -> LangManager.getBoolean(this.isAutoWipe()))
             .add(Placeholders.WORLD_AUTO_WIPE_INTERVAL, () -> TimeUtil.formatTime(this.getWipeInterval() * 1000L))

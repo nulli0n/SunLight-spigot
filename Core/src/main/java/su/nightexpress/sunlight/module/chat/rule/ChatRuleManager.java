@@ -4,7 +4,6 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import su.nexmedia.engine.api.config.JYML;
-import su.nexmedia.engine.api.manager.Loadable;
 import su.nexmedia.engine.utils.regex.RegexUtil;
 import su.nightexpress.sunlight.SunLight;
 import su.nightexpress.sunlight.module.chat.ChatModule;
@@ -16,7 +15,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class ChatRuleManager implements Loadable {
+public class ChatRuleManager {
 
     private final SunLight   plugin;
     private final ChatModule chatModule;
@@ -28,7 +27,6 @@ public class ChatRuleManager implements Loadable {
         this.chatModule = chatModule;
     }
 
-    @Override
     public void setup() {
         this.plugin.getConfigManager().extractResources(this.chatModule.getLocalPath() + "/rules/");
 
@@ -48,7 +46,6 @@ public class ChatRuleManager implements Loadable {
         this.chatModule.info("Loaded " + this.ruleConfigs.size() + " chat rules!");
     }
 
-    @Override
     public void shutdown() {
         if (this.ruleConfigs != null) {
             this.ruleConfigs.clear();

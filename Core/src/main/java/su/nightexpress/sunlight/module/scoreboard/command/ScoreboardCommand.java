@@ -43,7 +43,7 @@ public class ScoreboardCommand extends ToggleCommand {
             this.module.removeBoard(target);
         }
         user.getSettings().set(ScoreboardModule.SETTING_SCOREBOARD, state);
-        user.saveData(this.plugin);
+        this.plugin.getUserManager().saveUser(user);
 
         if (sender != target) {
             this.plugin.getMessage(SBLang.COMMAND_SCOREBOARD_TARGET)

@@ -89,7 +89,7 @@ public class NickChangeCommand extends AbstractCommand<SunLight> {
         SunUser user = plugin.getUserManager().getUserData(player);
         user.setCustomName(nick);
         user.updatePlayerName();
-        user.saveData(this.plugin);
+        this.plugin.getUserManager().saveUser(user);
 
         plugin.getMessage(Lang.COMMAND_NICK_CHANGE_DONE)
             .replace(Placeholders.GENERIC_NAME, nick)

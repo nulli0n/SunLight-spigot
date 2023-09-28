@@ -50,7 +50,7 @@ public class IgnoreAddCommand extends AbstractCommand<SunLight> {
             plugin.getMessage(Lang.COMMAND_IGNORE_ADD_ERROR_ALREADY_IN).send(sender);
             return;
         }
-        user.saveData(this.plugin);
+        this.plugin.getUserManager().saveUser(user);
 
         plugin.getMessage(Lang.COMMAND_IGNORE_ADD_DONE)
             .replace(Placeholders.PLAYER_NAME, userTarget.getName())

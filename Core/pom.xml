@@ -5,47 +5,42 @@
     <parent>
         <artifactId>SunLight</artifactId>
         <groupId>su.nightexpress.sunlight</groupId>
-        <version>3.9.4</version>
+        <version>3.9.5</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>Core</artifactId>
 
     <properties>
-        <maven.compiler.source>16</maven.compiler.source>
-        <maven.compiler.target>16</maven.compiler.target>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
     </properties>
-
-    <repositories>
-        <repository>
-            <id>essentialsx</id>
-            <url>https://repo.essentialsx.net/releases/</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
 
     <dependencies>
         <dependency>
             <groupId>su.nightexpress.sunlight</groupId>
             <artifactId>NMS</artifactId>
-            <version>3.9.4</version>
+            <version>3.9.5</version>
+        </dependency>
+        <dependency>
+            <groupId>su.nightexpress.sunlight</groupId>
+            <artifactId>V1_20_R2</artifactId>
+            <version>3.9.5</version>
         </dependency>
         <dependency>
             <groupId>su.nightexpress.sunlight</groupId>
             <artifactId>V1_20_R1</artifactId>
-            <version>3.9.4</version>
+            <version>3.9.5</version>
         </dependency>
         <dependency>
             <groupId>su.nightexpress.sunlight</groupId>
             <artifactId>V1_19_R3</artifactId>
-            <version>3.9.4</version>
+            <version>3.9.5</version>
         </dependency>
         <dependency>
             <groupId>su.nightexpress.sunlight</groupId>
             <artifactId>V1_18_R2</artifactId>
-            <version>3.9.4</version>
+            <version>3.9.5</version>
         </dependency>
     </dependencies>
 

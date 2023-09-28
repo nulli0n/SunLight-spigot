@@ -57,7 +57,7 @@ public class ResetCooldownSubCommand extends ModuleCommand<KitsModule> {
             }
 
             if (user.removeCooldown(kit)) {
-                user.saveData(this.plugin);
+                this.plugin.getUserManager().saveUser(user);
             }
 
             if (!user.getName().equalsIgnoreCase(sender.getName())) {

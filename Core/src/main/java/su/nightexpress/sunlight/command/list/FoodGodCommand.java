@@ -50,7 +50,7 @@ public class FoodGodCommand extends ToggleCommand implements Cleanable {
         UserSetting<Boolean> setting = DefaultSettings.FOOD_GOD;
         boolean state = mode.apply(user.getSettings().get(setting));
         user.getSettings().set(setting, state);
-        user.saveData(this.plugin);
+        this.plugin.getUserManager().saveUser(user);
 
         if (sender != target) {
             plugin.getMessage(Lang.COMMAND_FOOD_GOD_TARGET)

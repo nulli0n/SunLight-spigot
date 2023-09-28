@@ -5,7 +5,6 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import su.nexmedia.engine.api.config.JYML;
-import su.nexmedia.engine.api.manager.Loadable;
 import su.nexmedia.engine.api.server.AbstractTask;
 import su.nexmedia.engine.utils.*;
 import su.nexmedia.engine.utils.random.Rnd;
@@ -15,7 +14,7 @@ import su.nightexpress.sunlight.module.chat.ChatModule;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class ChatAnnounceManager implements Loadable {
+public class ChatAnnounceManager {
 
     private final SunLight   plugin;
     private final ChatModule chatModule;
@@ -30,7 +29,6 @@ public class ChatAnnounceManager implements Loadable {
         this.chatModule = chatModule;
     }
 
-    @Override
     public void setup() {
         JYML cfg = JYML.loadOrExtract(plugin, chatModule.getLocalPath(), "announcer.yml");
 
@@ -53,7 +51,6 @@ public class ChatAnnounceManager implements Loadable {
         }
     }
 
-    @Override
     public void shutdown() {
         if (this.announcerTask != null) {
             this.announcerTask.stop();

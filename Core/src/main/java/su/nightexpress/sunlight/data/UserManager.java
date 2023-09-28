@@ -79,7 +79,7 @@ public class UserManager extends AbstractUserManager<SunLight, SunUser> {
             if (seconds == 0) continue;
 
             user.addCooldown(CooldownInfo.of(cooldown, seconds));
-            user.saveData(this.plugin);
+            this.plugin.getUserManager().saveUser(user);
         }
         return true;
     }

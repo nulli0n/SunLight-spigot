@@ -1,13 +1,13 @@
-package su.nightexpress.sunlight.nms.v1_19_R3;
+package su.nightexpress.sunlight.nms.v1_18_R2.container;
 
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import org.bukkit.craftbukkit.v1_19_R3.entity.CraftHumanEntity;
-import org.bukkit.craftbukkit.v1_19_R3.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_19_R3.inventory.CraftInventory;
+import org.bukkit.craftbukkit.v1_18_R2.entity.CraftHumanEntity;
+import org.bukkit.craftbukkit.v1_18_R2.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_18_R2.inventory.CraftInventory;
 import org.jetbrains.annotations.NotNull;
 import su.nexmedia.engine.utils.Pair;
 import su.nexmedia.engine.utils.Reflex;
@@ -26,10 +26,10 @@ public class PlayerInventory extends Inventory {
     }
 
     private void reflectContents(Inventory inventory, NonNullList<ItemStack> items, NonNullList<ItemStack> armor, NonNullList<ItemStack> offhand) {
-        Reflex.setFieldValue(inventory, "i", items);
-        Reflex.setFieldValue(inventory, "j", armor);
-        Reflex.setFieldValue(inventory, "k", offhand);
-        Reflex.setFieldValue(inventory, "o", Arrays.asList(items, armor, offhand));
+        Reflex.setFieldValue(inventory, "h", items);
+        Reflex.setFieldValue(inventory, "i", armor);
+        Reflex.setFieldValue(inventory, "j", offhand);
+        Reflex.setFieldValue(inventory, "n", Arrays.asList(items, armor, offhand));
     }
 
     @NotNull

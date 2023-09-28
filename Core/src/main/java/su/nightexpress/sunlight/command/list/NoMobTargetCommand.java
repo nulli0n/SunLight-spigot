@@ -52,7 +52,7 @@ public class NoMobTargetCommand extends ToggleCommand implements Cleanable {
         boolean state = mode.apply(user.getSettings().get(setting));
 
         user.getSettings().set(setting, state);
-        user.saveData(this.plugin);
+        this.plugin.getUserManager().saveUser(user);
 
         if (sender != target) {
             plugin.getMessage(Lang.COMMAND_NO_MOB_TARGET_TOGGLE_TARGET)

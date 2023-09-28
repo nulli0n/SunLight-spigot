@@ -35,7 +35,7 @@ public class TogglePMCommand extends ToggleCommand {
         UserSetting<Boolean> setting = DefaultSettings.ACCEPT_PM;
         SunUser user = this.plugin.getUserManager().getUserData(target);
         user.getSettings().set(setting, mode.apply(user.getSettings().get(setting)));
-        user.saveData(this.plugin);
+        this.plugin.getUserManager().saveUser(user);
 
         if (sender != target) {
             plugin.getMessage(ChatLang.COMMAND_TOGGLE_PM_TOGGLE_TARGET)

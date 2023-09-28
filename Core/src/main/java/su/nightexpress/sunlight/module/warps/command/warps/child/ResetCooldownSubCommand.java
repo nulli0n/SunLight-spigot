@@ -58,7 +58,7 @@ public class ResetCooldownSubCommand extends ModuleCommand<WarpsModule> {
             }
 
             if (user.removeCooldown(warp)) {
-                user.saveData(this.plugin);
+                this.plugin.getUserManager().saveUser(user);
             }
 
             if (!user.getName().equalsIgnoreCase(sender.getName())) {

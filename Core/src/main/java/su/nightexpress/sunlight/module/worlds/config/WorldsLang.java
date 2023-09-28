@@ -1,10 +1,11 @@
 package su.nightexpress.sunlight.module.worlds.config;
 
-import su.nexmedia.engine.api.lang.LangColors;
 import su.nexmedia.engine.api.lang.LangKey;
 import su.nightexpress.sunlight.module.worlds.util.Placeholders;
 
-public class WorldsLang implements LangColors {
+import static su.nexmedia.engine.utils.Colors.*;
+
+public class WorldsLang {
 
     public static final LangKey COMMAND_WORLDS_DESC = LangKey.of("Worlds.Command.WorldManager.Desc", "World management tools.");
 

@@ -1,14 +1,15 @@
 package su.nightexpress.sunlight.module.homes.config;
 
 import org.bukkit.Sound;
-import su.nexmedia.engine.api.lang.LangColors;
 import su.nexmedia.engine.api.lang.LangKey;
 import su.nightexpress.sunlight.module.homes.command.basic.HomesCommand;
 import su.nightexpress.sunlight.module.homes.command.basic.HomesListCommand;
 import su.nightexpress.sunlight.module.homes.command.basic.HomesTeleportCommand;
 import su.nightexpress.sunlight.module.homes.util.Placeholders;
 
-public class HomesLang implements LangColors {
+import static su.nexmedia.engine.utils.Colors.*;
+
+public class HomesLang {
 
     public static final LangKey COMMAND_HOMES_DESC = LangKey.of("Homes.Command.Homes.Desc", "Home management.");
     public static final LangKey COMMAND_HOMES_USAGE = LangKey.of("Homes.Command.Homes.Usage", "[help]");

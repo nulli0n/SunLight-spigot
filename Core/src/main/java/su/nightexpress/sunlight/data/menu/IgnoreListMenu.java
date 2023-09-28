@@ -100,7 +100,7 @@ public class IgnoreListMenu extends ConfigMenu<SunLight> implements AutoPaged<Ig
             SunUser user = plugin.getUserManager().getUserData(player);
             if (event.isRightClick()) {
                 user.removeIgnoredUser(ignoredUser.getUserInfo().getId());
-                user.saveData(this.plugin);
+                this.plugin.getUserManager().saveUser(user);
                 this.plugin.runTask(task -> this.open(player, viewer.getPage()));
                 return;
             }

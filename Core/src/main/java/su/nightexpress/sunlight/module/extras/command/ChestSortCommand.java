@@ -34,7 +34,7 @@ public class ChestSortCommand extends ToggleCommand {
         boolean state = mode.apply(SortManager.isChestSortEnabled(user));
 
         user.getSettings().set(SortManager.SETTING_CHEST_SORT, state);
-        user.saveData(this.plugin);
+        this.plugin.getUserManager().saveUser(user);
 
         if (sender != target) {
             this.plugin.getMessage(ExtrasLang.COMMAND_CHEST_SORT_TARGET)

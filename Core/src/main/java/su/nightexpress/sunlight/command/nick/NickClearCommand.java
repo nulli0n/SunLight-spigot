@@ -31,7 +31,7 @@ public class NickClearCommand extends TargetCommand {
 
         SunUser user = plugin.getUserManager().getUserData(target);
         user.setCustomName(null);
-        user.saveData(this.plugin);
+        this.plugin.getUserManager().saveUser(user);
         target.setDisplayName(null);
 
         if (sender != target) {

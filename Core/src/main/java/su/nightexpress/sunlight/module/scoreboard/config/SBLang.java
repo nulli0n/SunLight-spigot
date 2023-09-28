@@ -1,10 +1,11 @@
 package su.nightexpress.sunlight.module.scoreboard.config;
 
-import su.nexmedia.engine.api.lang.LangColors;
 import su.nexmedia.engine.api.lang.LangKey;
 import su.nightexpress.sunlight.Placeholders;
 
-public class SBLang implements LangColors {
+import static su.nexmedia.engine.utils.Colors.*;
+
+public class SBLang {
 
     public static final LangKey COMMAND_SCOREBOARD_DESC   = LangKey.of("Scoreboard.Command.Scoreboard.Desc", "Toggle [player's] scoreboard.");
     public static final LangKey COMMAND_SCOREBOARD_USAGE  = LangKey.of("Scoreboard.Command.Scoreboard.Usage", "[player] [-on] [-off] [-s]");

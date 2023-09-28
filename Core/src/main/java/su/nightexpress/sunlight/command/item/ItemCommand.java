@@ -26,6 +26,7 @@ public class ItemCommand extends GeneralCommand<SunLight> {
     static final CommandFlag<String> FLAG_NAME = CommandFlag.stringFlag("name");
     static final CommandFlag<String> FLAG_LORE = CommandFlag.stringFlag("lore");
     static final CommandFlag<String> FLAG_ENCHANTS = CommandFlag.stringFlag("ench");
+    static final CommandFlag<Integer> FLAG_MODEL = CommandFlag.intFlag("model");
 
     public ItemCommand(@NotNull SunLight plugin, @NotNull JYML cfg, @NotNull String[] aliases) {
         super(plugin, aliases, Perms.COMMAND_ITEM);

@@ -71,7 +71,7 @@ public class SetCooldownSubCommand extends ModuleCommand<KitsModule> {
             }
 
             user.addCooldown(new CooldownInfo(CooldownType.KIT, kit.getId(), expireDate));
-            user.saveData(this.plugin);
+            this.plugin.getUserManager().saveUser(user);
 
             String time = amount < 0 ? LangManager.getPlain(Lang.OTHER_INFINITY) : TimeUtil.formatTimeLeft(expireDate + 100L);
 

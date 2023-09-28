@@ -7,7 +7,6 @@ import su.nexmedia.engine.api.command.CommandResult;
 import su.nexmedia.engine.api.command.GeneralCommand;
 import su.nexmedia.engine.api.config.JOption;
 import su.nexmedia.engine.api.config.JYML;
-import su.nexmedia.engine.api.lang.LangColors;
 import su.nexmedia.engine.utils.Colorizer;
 import su.nexmedia.engine.utils.NumberUtil;
 import su.nexmedia.engine.utils.PlayerUtil;
@@ -18,6 +17,8 @@ import su.nightexpress.sunlight.config.Lang;
 
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static su.nexmedia.engine.utils.Colors.*;
 
 public class PlayerListCommand extends GeneralCommand<SunLight> {
 
@@ -43,22 +44,22 @@ public class PlayerListCommand extends GeneralCommand<SunLight> {
             },
             () -> {
                 LinkedHashMap<String, String> map = new LinkedHashMap<>();
-                map.put("admins", LangColors.RED + "Admins");
-                map.put("vip", LangColors.GREEN + "VIPs");
-                map.put(Placeholders.DEFAULT, LangColors.DARK_GRAY + "Members");
+                map.put("admins", RED + "Admins");
+                map.put("vip", GREEN + "VIPs");
+                map.put(Placeholders.DEFAULT, DARK_GRAY + "Members");
                 return map;
             },
             "Place your ranks in order from highest -> lowest for best results."
         ).setWriter((cfg2, path, map) -> map.forEach((rank, name) -> cfg2.set(path + "." + rank, name))).read(cfg);
 
         this.formatList = JOption.create("PlayerList.Format", Arrays.asList(
-            LangColors.LIGHT_YELLOW,
-            LangColors.LIGHT_YELLOW + "&lOnline Players:",
-            LangColors.LIGHT_YELLOW,
-            PLACEHOLDER_RANK + " (" + Placeholders.GENERIC_AMOUNT + "): " + LangColors.GRAY + PLACEHOLDER_PLAYERS,
-            LangColors.LIGHT_YELLOW,
-            LangColors.LIGHT_YELLOW + "Total " + LangColors.ORANGE + Placeholders.GENERIC_TOTAL + LangColors.LIGHT_YELLOW + " players online.",
-            LangColors.LIGHT_YELLOW),
+            LIGHT_YELLOW,
+            LIGHT_YELLOW + "&lOnline Players:",
+            LIGHT_YELLOW,
+            PLACEHOLDER_RANK + " (" + Placeholders.GENERIC_AMOUNT + "): " + GRAY + PLACEHOLDER_PLAYERS,
+            LIGHT_YELLOW,
+            LIGHT_YELLOW + "Total " + ORANGE + Placeholders.GENERIC_TOTAL + LIGHT_YELLOW + " players online.",
+            LIGHT_YELLOW),
             "Sets the format for player list.",
             "JSON is supported here: " + Placeholders.ENGINE_URL_LANG_JSON
         ).mapReader(Colorizer::apply).read(cfg);

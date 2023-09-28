@@ -25,6 +25,6 @@ public class Action_Sound extends AbstractActionExecutor {
         Sound sound = StringUtil.getEnum(name, Sound.class).orElse(null);
         if (sound == null) return;
 
-        PlayerUtil.sound(player, sound);
+        //PlayerUtil.sound(player, sound);
     }
 }

@@ -1,4 +1,4 @@
-package su.nightexpress.sunlight.nms.v1_19_R3;
+package su.nightexpress.sunlight.nms;
 
 import com.mojang.authlib.GameProfile;
 import net.minecraft.core.Registry;
@@ -10,6 +10,7 @@ import net.minecraft.network.protocol.game.ClientboundPlayerChatPacket;
 import net.minecraft.network.protocol.game.ClientboundSystemChatPacket;
 import net.minecraft.server.dedicated.DedicatedPlayerList;
 import net.minecraft.server.dedicated.DedicatedServer;
+import net.minecraft.server.level.ClientInformation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.inventory.*;
@@ -18,20 +19,20 @@ import net.minecraft.world.level.Level;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_19_R3.CraftServer;
-import org.bukkit.craftbukkit.v1_19_R3.CraftWorld;
-import org.bukkit.craftbukkit.v1_19_R3.entity.CraftFallingBlock;
-import org.bukkit.craftbukkit.v1_19_R3.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_20_R2.CraftServer;
+import org.bukkit.craftbukkit.v1_20_R2.CraftWorld;
+import org.bukkit.craftbukkit.v1_20_R2.entity.CraftFallingBlock;
+import org.bukkit.craftbukkit.v1_20_R2.entity.CraftPlayer;
 import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.jetbrains.annotations.NotNull;
-import su.nightexpress.sunlight.nms.SunNMS;
-import su.nightexpress.sunlight.nms.v1_19_R3.container.*;
+import su.nightexpress.sunlight.nms.container.PlayerEnderChest;
+import su.nightexpress.sunlight.nms.container.PlayerInventory;
 
 import java.util.UUID;
 
-public class V1_19_R3 implements SunNMS {
+public class V1_20_R2 implements SunNMS {
 
     @Override
     public void dropFallingContent(@NotNull FallingBlock fallingBlock) {
@@ -69,7 +70,7 @@ public class V1_19_R3 implements SunNMS {
         if (level == null) throw new IllegalStateException("Server level is null");
 
         GameProfile profile = new GameProfile(id, name);
-        ServerPlayer serverPlayer = new ServerPlayer(server, level, profile); // GameMode reset
+        ServerPlayer serverPlayer = new ServerPlayer(server, level, profile, ClientInformation.createDefault()); // GameMode reset
         CompoundTag tag = playerList.playerIo.load(serverPlayer);
         serverPlayer.loadGameTypes(tag); // Save GameMode on load data
         return serverPlayer.getBukkitEntity();
@@ -89,7 +90,8 @@ public class V1_19_R3 implements SunNMS {
         serverPlayer.setPosRaw(location.getX(), location.getY(), location.getZ());
         if (player.getWorld() != location.getWorld() && location.getWorld() != null) {
             CraftWorld craftWorld = (CraftWorld) location.getWorld();
-            serverPlayer.level = craftWorld.getHandle();
+            //serverPlayer.level = craftWorld.getHandle();
+            serverPlayer.setServerLevel(craftWorld.getHandle());
         }
         craftPlayer.saveData();
     }
@@ -146,7 +148,7 @@ public class V1_19_R3 implements SunNMS {
         CraftPlayer craftPlayer = (CraftPlayer) player;
         ServerPlayer nmsPlayer = craftPlayer.getHandle();
         int contId = nmsPlayer.nextContainerCounter();
-        ContainerLevelAccess access = ContainerLevelAccess.create(nmsPlayer.level, nmsPlayer.blockPosition());
+        ContainerLevelAccess access = ContainerLevelAccess.create(nmsPlayer.level(), nmsPlayer.blockPosition());
         net.minecraft.world.entity.player.Inventory inventory = nmsPlayer.getInventory();
 
         AbstractContainerMenu menu;

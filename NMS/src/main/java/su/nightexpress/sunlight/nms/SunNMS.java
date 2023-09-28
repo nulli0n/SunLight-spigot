@@ -31,5 +31,11 @@ public interface SunNMS {
 
     void openLoom(@NotNull Player player);
 
+    void openSmithing(@NotNull Player player);
+
+    void openCartography(@NotNull Player player);
+
+    void openStonecutter(@NotNull Player player);
+
     void dropFallingContent(@NotNull FallingBlock fallingBlock);
 }

@@ -1,11 +1,12 @@
 package su.nightexpress.sunlight.module.rtp.config;
 
 import org.bukkit.Sound;
-import su.nexmedia.engine.api.lang.LangColors;
 import su.nexmedia.engine.api.lang.LangKey;
 import su.nightexpress.sunlight.Placeholders;
 
-public class RTPLang implements LangColors {
+import static su.nexmedia.engine.utils.Colors.*;
+
+public class RTPLang {
 
     public static final LangKey COMMAND_RTP_DESC = LangKey.of("RTP.Command.RTP.Desc", "Teleport to a random place.");
 

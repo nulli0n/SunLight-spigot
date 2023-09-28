@@ -12,6 +12,7 @@ import net.minecraft.server.dedicated.DedicatedPlayerList;
 import net.minecraft.server.dedicated.DedicatedServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.inventory.*;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.Level;
 import org.bukkit.Bukkit;
@@ -108,48 +109,72 @@ public class V1_20_R1 implements SunNMS {
 
     @Override
     public void openAnvil(@NotNull Player player) {
-        CraftPlayer craftPlayer = (CraftPlayer) player;
-        ServerPlayer nmsPlayer = craftPlayer.getHandle();
-
-        int counter = nmsPlayer.nextContainerCounter();
-        AnvilContainer container = new AnvilContainer(counter, nmsPlayer.getInventory());
-        player.openInventory(container.getBukkitView());
+        player.openInventory(this.createContainer(MenuType.ANVIL, player).getBukkitView());
     }
 
     @Override
     public void openEnchanting(@NotNull Player player) {
-        CraftPlayer craftPlayer = (CraftPlayer) player;
-        ServerPlayer nmsPlayer = craftPlayer.getHandle();
-
-        int counter = nmsPlayer.nextContainerCounter();
-        EnchantingContainer container = new EnchantingContainer(counter, nmsPlayer);
-        player.openInventory(container.getBukkitView());
-
-        //Component title = CraftChatMessage.fromStringOrNull("ENCHANT CUSTOM");
-        //nmsPlayer.containerMenu = nmsPlayer.inventoryMenu;
-        //nmsPlayer.connection.send(new ClientboundOpenScreenPacket(counter, MenuType.ENCHANTMENT, title));
-        //nmsPlayer.containerMenu = container;
-        //nmsPlayer.initMenu(container);
-        //serverPlayer.a(enchant);
+        player.openInventory(this.createContainer(MenuType.ENCHANTMENT, player).getBukkitView());
     }
 
     @Override
     public void openGrindstone(@NotNull Player player) {
-        CraftPlayer craftPlayer = (CraftPlayer) player;
-        ServerPlayer nmsPlayer = craftPlayer.getHandle();
-
-        int counter = nmsPlayer.nextContainerCounter();
-        GrindstoneContainer container = new GrindstoneContainer(counter, nmsPlayer);
-        player.openInventory(container.getBukkitView());
+        player.openInventory(this.createContainer(MenuType.GRINDSTONE, player).getBukkitView());
     }
 
     @Override
     public void openLoom(@NotNull Player player) {
+        player.openInventory(this.createContainer(MenuType.LOOM, player).getBukkitView());
+    }
+
+    @Override
+    public void openSmithing(@NotNull Player player) {
+        player.openInventory(this.createContainer(MenuType.SMITHING, player).getBukkitView());
+    }
+
+    @Override
+    public void openCartography(@NotNull Player player) {
+        player.openInventory(this.createContainer(MenuType.CARTOGRAPHY_TABLE, player).getBukkitView());
+    }
+
+    @Override
+    public void openStonecutter(@NotNull Player player) {
+        player.openInventory(this.createContainer(MenuType.STONECUTTER, player).getBukkitView());
+    }
+
+    @NotNull
+    private <T extends AbstractContainerMenu> AbstractContainerMenu createContainer(@NotNull MenuType<T> type, @NotNull Player player) {
         CraftPlayer craftPlayer = (CraftPlayer) player;
         ServerPlayer nmsPlayer = craftPlayer.getHandle();
+        int contId = nmsPlayer.nextContainerCounter();
+        ContainerLevelAccess access = ContainerLevelAccess.create(nmsPlayer.level(), nmsPlayer.blockPosition());
+        net.minecraft.world.entity.player.Inventory inventory = nmsPlayer.getInventory();
 
-        int counter = nmsPlayer.nextContainerCounter();
-        LoomContainer container = new LoomContainer(counter, nmsPlayer);
-        player.openInventory(container.getBukkitView());
+        AbstractContainerMenu menu;
+        if (type == MenuType.ENCHANTMENT) {
+            menu = new EnchantmentMenu(contId, inventory, access);
+        }
+        else if (type == MenuType.ANVIL) {
+            menu = new AnvilMenu(contId, inventory, access);
+        }
+        else if (type == MenuType.LOOM) {
+            menu = new LoomMenu(contId, inventory, access);
+        }
+        else if (type == MenuType.GRINDSTONE) {
+            menu = new GrindstoneMenu(contId, inventory, access);
+        }
+        else if (type == MenuType.SMITHING) {
+            menu = new SmithingMenu(contId, inventory, access);
+        }
+        else if (type == MenuType.CARTOGRAPHY_TABLE) {
+            menu = new CartographyTableMenu(contId, inventory, access);
+        }
+        else if (type == MenuType.STONECUTTER) {
+            menu = new StonecutterMenu(contId, inventory, access);
+        }
+        else throw new UnsupportedOperationException("Container type not supported!");
+
+        menu.checkReachable = false;
+        return menu;
     }
 }

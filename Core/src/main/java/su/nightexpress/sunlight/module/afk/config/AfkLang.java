@@ -1,10 +1,11 @@
 package su.nightexpress.sunlight.module.afk.config;
 
-import su.nexmedia.engine.api.lang.LangColors;
 import su.nexmedia.engine.api.lang.LangKey;
 import su.nightexpress.sunlight.Placeholders;
 
-public class AfkLang implements LangColors {
+import static su.nexmedia.engine.utils.Colors.*;
+
+public class AfkLang {
 
     public static final LangKey COMMAND_AFK_DESC  = LangKey.of("Afk.Command.Afk.Desc", "Toggle [player's] AFK mode.");
     public static final LangKey COMMAND_AFK_USAGE = LangKey.of("Afk.Command.Afk.Usage", "[player] [-on] [-off] [-s]");

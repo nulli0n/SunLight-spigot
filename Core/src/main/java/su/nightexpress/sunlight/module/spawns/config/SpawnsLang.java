@@ -1,12 +1,13 @@
 package su.nightexpress.sunlight.module.spawns.config;
 
-import su.nexmedia.engine.api.lang.LangColors;
 import su.nexmedia.engine.api.lang.LangKey;
 import su.nightexpress.sunlight.module.spawns.command.SpawnsCommand;
 import su.nightexpress.sunlight.module.spawns.command.SpawnsEditorCommand;
 import su.nightexpress.sunlight.module.spawns.util.Placeholders;
 
-public class SpawnsLang implements LangColors {
+import static su.nexmedia.engine.utils.Colors.*;
+
+public class SpawnsLang {
 
     public static final LangKey COMMAND_SPAWNS_DESC = LangKey.of("Spawns.Command.Spawns.Desc", "Spawn management.");
     public static final LangKey COMMAND_SPAWNS_USAGE = LangKey.of("Spawns.Command.Spawns.Usage", "[help]");
