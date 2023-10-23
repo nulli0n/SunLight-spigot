@@ -33,15 +33,14 @@ public final class ChatReportDisabler extends PacketAdapter {
         super(plugin, ListenerPriority.NORMAL,
             PacketType.Play.Server.SERVER_DATA,
             PacketType.Play.Server.CHAT,
-            PacketType.Play.Server.SYSTEM_CHAT,
-            PacketType.Play.Server.PLAYER_CHAT_HEADER);
+            PacketType.Play.Server.SYSTEM_CHAT);
     }
 
     @Override
     public void onPacketSending(PacketEvent event) {
         if (event.getPacketType() == PacketType.Play.Server.SERVER_DATA) {
             PacketContainer container = event.getPacket();
-            if (Version.isBehind(Version.V1_19_R2)) {
+            if (Version.isBehind(Version.V1_19_R3)) {
                 container.getBooleans().write(1, true);
             }
             else {
@@ -85,31 +84,6 @@ public final class ChatReportDisabler extends PacketAdapter {
 
                 container.getStructures().write(0, chatMessage);
             }
-        }
-        else if (event.getPacketType() == PacketType.Play.Server.PLAYER_CHAT_HEADER) {
-            event.setCancelled(true);
-
-            /*PacketContainer container = event.getPacket();
-
-            InternalStructure signedMessageHeader = container.getStructures().read(0); // SignedMessageHeader c
-            InternalStructure messageSignature = container.getStructures().read(1); // MessageSignature d
-
-            // Null previous signature
-            // Null sender's UUID.
-            try {
-                signedMessageHeader.getStructures().write(0, null);
-            }
-            catch (Exception ignored) {
-
-            }
-            signedMessageHeader.getUUIDs().write(0, new UUID(0L, 0L));
-            container.getStructures().write(0, signedMessageHeader);
-
-            // Null signature
-            if (!Bukkit.getServer().getOnlineMode()) {
-                messageSignature.getByteArrays().write(0, new byte[0]);
-                container.getStructures().write(1, messageSignature);
-            }*/
         }
         else if (event.getPacketType() == PacketType.Play.Server.SYSTEM_CHAT) {
             PacketContainer container = event.getPacket();

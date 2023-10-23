@@ -27,7 +27,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.jetbrains.annotations.NotNull;
 import su.nightexpress.sunlight.nms.SunNMS;
-import su.nightexpress.sunlight.nms.v1_19_R3.container.*;
+import su.nightexpress.sunlight.nms.v1_19_R3.container.PlayerEnderChest;
+import su.nightexpress.sunlight.nms.v1_19_R3.container.PlayerInventory;
 
 import java.util.UUID;
 

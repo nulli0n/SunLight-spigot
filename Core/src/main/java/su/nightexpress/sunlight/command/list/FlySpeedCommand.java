@@ -18,6 +18,10 @@ public class FlySpeedCommand extends TargetCommand {
 
     public static final String NAME = "flyspeed";
 
+    private static final float DEF_SPEED = 0.1F;
+    private static final float MAX_SPEED = 1.0F;
+    private static final int SPEEDS_AMOUNT = 10;
+
     public FlySpeedCommand(@NotNull SunLight plugin, @NotNull String[] aliases) {
         super(plugin, aliases, Perms.COMMAND_FLY_SPEED, Perms.COMMAND_FLY_SPEED_OTHERS, 1);
         this.setDescription(plugin.getMessage(Lang.COMMAND_FLY_SPEED_DESC));
@@ -29,7 +33,7 @@ public class FlySpeedCommand extends TargetCommand {
     @NotNull
     public List<String> getTab(@NotNull Player player, int arg, @NotNull String[] args) {
         if (arg == 1) {
-            return IntStream.range(0, 11).boxed().map(String::valueOf).toList();
+            return IntStream.range(0, SPEEDS_AMOUNT + 1).boxed().map(String::valueOf).toList();
         }
         return super.getTab(player, arg, args);
     }
@@ -39,12 +43,11 @@ public class FlySpeedCommand extends TargetCommand {
         Player target = this.getCommandTarget(sender, result);
         if (target == null) return;
 
-        int speed = result.getInt(0, 1);
-        if (speed > 10) speed = 10;
-        else if (speed < 0) speed = 0;
+        int speed = Math.max(0, result.getInt(0, 1));
+        if (speed > SPEEDS_AMOUNT) speed = SPEEDS_AMOUNT;
+        speed -= 1;
 
-        float defSpeed = 0.1F;
-        float realSpeed = (float) speed * defSpeed;
+        float realSpeed = speed < 0 ? DEF_SPEED : DEF_SPEED + (MAX_SPEED - DEF_SPEED) * speed / (SPEEDS_AMOUNT - 1);
 
         target.setFlySpeed(realSpeed);
 

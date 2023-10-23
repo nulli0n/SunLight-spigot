@@ -23,10 +23,10 @@ import su.nightexpress.sunlight.module.chat.command.ClearchatCommand;
 import su.nightexpress.sunlight.module.chat.command.MeCommand;
 import su.nightexpress.sunlight.module.chat.command.ShortChannelCommand;
 import su.nightexpress.sunlight.module.chat.command.channel.ChatChannelCommand;
-import su.nightexpress.sunlight.module.chat.command.pm.TogglePMCommand;
-import su.nightexpress.sunlight.module.chat.command.spy.ChatSpyCommand;
 import su.nightexpress.sunlight.module.chat.command.pm.ReplyCommand;
 import su.nightexpress.sunlight.module.chat.command.pm.TellCommand;
+import su.nightexpress.sunlight.module.chat.command.pm.TogglePMCommand;
+import su.nightexpress.sunlight.module.chat.command.spy.ChatSpyCommand;
 import su.nightexpress.sunlight.module.chat.config.*;
 import su.nightexpress.sunlight.module.chat.event.AsyncSunlightPlayerChatEvent;
 import su.nightexpress.sunlight.module.chat.listener.ChatListener;
@@ -392,8 +392,17 @@ public class ChatModule extends Module {
         String message = playerFormat.prepareMessage(player, msgReal);
         String format = playerFormat.prepareFormat(player, channelActive.getFormat());
 
-        e.setMessage(NexParser.toPlainText(message));
-        e.setFormat(NexParser.toPlainText(format.replace(Placeholders.GENERIC_MESSAGE, "%2$s")));
+        try {
+            e.setMessage(NexParser.toPlainText(message));
+            e.setFormat(NexParser.toPlainText(format.replace(Placeholders.GENERIC_MESSAGE, "%2$s")));
+        }
+        catch (UnknownFormatConversionException exception) {
+            this.plugin.error("Could not set chat format due to bad formation string. Here are what we get:");
+            this.plugin.error("--- Message: " + NexParser.toPlainText(message));
+            this.plugin.error("--- Format: " + NexParser.toPlainText(format));
+            this.plugin.error("Stacktrace for developers:");
+            exception.printStackTrace();
+        }
 
         AsyncSunlightPlayerChatEvent event = new AsyncSunlightPlayerChatEvent(player, channelActive, e.getRecipients(), message, format);
         plugin.getPluginManager().callEvent(event);
@@ -406,7 +415,9 @@ public class ChatModule extends Module {
             String finalFormat = event.getFinalFormat();
             event.getRecipients().forEach(receiver -> PlayerUtil.sendRichMessage(receiver, finalFormat));
             event.getRecipients().clear();
-            PlayerUtil.sendRichMessage(this.plugin.getServer().getConsoleSender(), NexParser.toPlainText(finalFormat));
+            if (ChatConfig.CHAT_JSON_ECHO.get()) {
+                PlayerUtil.sendRichMessage(this.plugin.getServer().getConsoleSender(), NexParser.toPlainText(finalFormat));
+            }
         }
 
         toMention.forEach(mentioned -> ChatConfig.MENTIONS_NOTIFY.get().replace(Placeholders.forPlayer(player)).send(mentioned));

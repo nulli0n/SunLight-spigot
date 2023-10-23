@@ -48,7 +48,9 @@ public class AfkTracker {
         if (!isAfk) {
             int timeToAfk = AfkModule.getTimeToAfk(this.getPlayer());
             if (timeToAfk > 0 && idleTime >= timeToAfk) {
-                this.module.enterAfk(this.getPlayer());
+                this.plugin.runTask(task -> {
+                    this.module.enterAfk(this.getPlayer());
+                });
             }
         }
         else {
@@ -72,7 +74,9 @@ public class AfkTracker {
                 if (this.wakeUpAttempts >= AfkConfig.WAKE_UP_THRESHOLD.get() - 1) {
                     this.wakeUpAttempts = 0;
                     this.wakeUpTimeout = 0L;
-                    this.module.exitAfk(this.getPlayer());
+                    this.plugin.runTask(task -> {
+                        this.module.exitAfk(this.getPlayer());
+                    });
                     return;
                 }
             }

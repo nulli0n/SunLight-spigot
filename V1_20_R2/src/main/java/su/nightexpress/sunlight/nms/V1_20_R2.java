@@ -13,6 +13,7 @@ import net.minecraft.server.dedicated.DedicatedServer;
 import net.minecraft.server.level.ClientInformation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.level.ServerPlayerGameMode;
 import net.minecraft.world.inventory.*;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.Level;
@@ -27,12 +28,17 @@ import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.jetbrains.annotations.NotNull;
+import su.nexmedia.engine.utils.Reflex;
 import su.nightexpress.sunlight.nms.container.PlayerEnderChest;
 import su.nightexpress.sunlight.nms.container.PlayerInventory;
 
+import java.lang.reflect.Method;
 import java.util.UUID;
 
 public class V1_20_R2 implements SunNMS {
+
+    private static final Method SET_GAME_MODE = Reflex.getMethod(ServerPlayerGameMode.class, "a",
+        GameType.class, GameType.class);
 
     @Override
     public void dropFallingContent(@NotNull FallingBlock fallingBlock) {
@@ -80,7 +86,13 @@ public class V1_20_R2 implements SunNMS {
     public void setGameMode(@NotNull Player player, @NotNull GameMode mode) {
         CraftPlayer craftPlayer = (CraftPlayer) player;
         ServerPlayer serverPlayer = craftPlayer.getHandle();
-        serverPlayer.gameMode.changeGameModeForPlayer(GameType.byName(mode.name().toLowerCase()));
+        //serverPlayer.gameMode.changeGameModeForPlayer(GameType.byName(mode.name().toLowerCase()));
+        //craftPlayer.saveData();
+
+        GameType gameType = GameType.byName(mode.name().toLowerCase());
+        GameType previous = serverPlayer.gameMode.getPreviousGameModeForPlayer();
+
+        Reflex.invokeMethod(SET_GAME_MODE, serverPlayer.gameMode, gameType, previous);
         craftPlayer.saveData();
     }
 

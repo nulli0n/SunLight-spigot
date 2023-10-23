@@ -7,7 +7,7 @@
     <groupId>su.nightexpress.sunlight</groupId>
     <artifactId>SunLight</artifactId>
     <packaging>pom</packaging>
-    <version>3.9.5</version>
+    <version>3.9.6</version>
     <modules>
         <module>Core</module>
         <module>NMS</module>
@@ -76,7 +76,7 @@
         <dependency>
             <groupId>com.comphenix.protocol</groupId>
             <artifactId>ProtocolLib</artifactId>
-            <version>5.0.0</version>
+            <version>5.1.0</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

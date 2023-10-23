@@ -3,12 +3,15 @@ package su.nightexpress.sunlight.module.scoreboard.impl;
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.events.InternalStructure;
 import com.comphenix.protocol.events.PacketContainer;
+import com.comphenix.protocol.utility.MinecraftReflection;
 import com.comphenix.protocol.wrappers.EnumWrappers;
 import com.comphenix.protocol.wrappers.WrappedChatComponent;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+import org.bukkit.scoreboard.DisplaySlot;
 import org.jetbrains.annotations.NotNull;
+import su.nexmedia.engine.Version;
 import su.nexmedia.engine.utils.Colorizer;
 import su.nexmedia.engine.utils.EngineUtils;
 import su.nightexpress.sunlight.hook.impl.ProtocolLibHook;
@@ -64,7 +67,12 @@ public class Board {
 
         packet = new PacketContainer(PacketType.Play.Server.SCOREBOARD_DISPLAY_OBJECTIVE);
         packet.getModifier().writeDefaults();
-        packet.getIntegers().write(0, 1); // Position 1: Sidebar
+        if (Version.isAtLeast(Version.V1_20_R2)) {
+            packet.getEnumModifier(DisplaySlot.class, MinecraftReflection.getMinecraftClass("world.scores.DisplaySlot")).write(0, DisplaySlot.SIDEBAR);
+        }
+        else {
+            packet.getIntegers().write(0, 1); // Position 1: Sidebar
+        }
         packet.getStrings().write(0, this.getPlayerIdentifier()); // Objective Name
         ProtocolLibHook.sendPacketServer(this.player, packet);
     }

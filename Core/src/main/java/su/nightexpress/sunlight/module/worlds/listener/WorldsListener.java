@@ -59,7 +59,7 @@ public class WorldsListener extends AbstractListener<SunLight> {
         Player player = e.getPlayer();
         if (player.hasPermission(WorldsPerms.BYPASS_COMMANDS)) return;
 
-        Set<String> deniedCommands = WorldsConfig.COMMAND_BLOCKER_COMMANDS.get().get(player.getWorld().getName());
+        Set<String> deniedCommands = WorldsConfig.COMMAND_BLOCKER_COMMANDS.get().get(player.getWorld().getName().toLowerCase());
         if (deniedCommands == null || deniedCommands.isEmpty()) return;
 
         String command = StringUtil.extractCommandName(e.getMessage());

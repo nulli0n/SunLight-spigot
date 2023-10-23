@@ -31,6 +31,12 @@ public class ChatConfig {
         Placeholders.ENGINE_URL_LANG_JSON,
         "When disabled, all Json content will be converted to regular text."
     );
+
+    public static final JOption<Boolean> CHAT_JSON_ECHO = JOption.create("Chat_JSON_Console_Echo",true,
+        "When enabled together with JSON option, will duplicate player's messages to server console.",
+        "Enable this, if you don't see chat messages in console with JSON enabled.",
+        "Disable this, if you see duplicated chat messages in console with JSON enabled.");
+
     public static final JOption<Boolean> DISABLE_CHAT_REPORTS = JOption.create("Disable_Chat_Reports", true,
         "When 'true' completely disables Chat Reports system from the server.",
         "As well as disables join notifications about messages verification."

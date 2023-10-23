@@ -80,6 +80,8 @@ public class PlaceholderHook {
 
         @Override
         public String onPlaceholderRequest(Player player, @NotNull String params) {
+            if (player == null) return null;
+
             String[] split = params.split("_");
             String prefix = split[0];
             String rest = split.length >= 2 ? Arrays.stream(split).skip(1).collect(Collectors.joining("_")) : prefix;

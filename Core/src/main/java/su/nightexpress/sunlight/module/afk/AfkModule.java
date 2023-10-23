@@ -111,9 +111,11 @@ public class AfkModule extends Module {
         PlayerAfkEvent event = new PlayerAfkEvent(player, user, false);
         this.plugin.getPluginManager().callEvent(event);
 
+        String time = TimeUtil.formatTime(System.currentTimeMillis() - getAfkSince(user));
+
         this.plugin.getMessage(AfkLang.AFK_EXIT)
             .replace(Placeholders.forPlayer(player))
-            .replace(Placeholders.GENERIC_TIME, TimeUtil.formatTime(System.currentTimeMillis() - getAfkSince(user)))
+            .replace(Placeholders.GENERIC_TIME, time)
             .broadcast();
 
         setAfkState(user, false);
@@ -123,6 +125,7 @@ public class AfkModule extends Module {
         this.getTrack(player).setSleepCooldown();
 
         AfkConfig.WAKE_UP_COMMANDS.get().forEach(command -> {
+            command = command.replace(Placeholders.GENERIC_TIME, time);
             if (EngineUtils.hasPlaceholderAPI()) command = PlaceholderAPI.setPlaceholders(player, command);
             plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), Placeholders.forPlayer(player).apply(command));
         });
