@@ -21,6 +21,7 @@ import su.nightexpress.sunlight.data.impl.cooldown.CooldownInfo;
 import su.nightexpress.sunlight.module.warps.WarpsModule;
 import su.nightexpress.sunlight.module.warps.command.WarpShortcutCommand;
 import su.nightexpress.sunlight.module.warps.config.WarpsLang;
+import su.nightexpress.sunlight.module.warps.event.PlayerWarpTeleportEvent;
 import su.nightexpress.sunlight.module.warps.menu.WarpSettingsMenu;
 import su.nightexpress.sunlight.module.warps.type.WarpType;
 import su.nightexpress.sunlight.module.warps.util.Placeholders;
@@ -172,6 +173,12 @@ public class Warp extends AbstractConfigHolder<SunLight> implements Placeholder 
     }
 
     public void teleport(@NotNull Player player, boolean isForced) {
+        if (!isForced) {
+            PlayerWarpTeleportEvent event = new PlayerWarpTeleportEvent(player, this);
+            this.plugin.getPluginManager().callEvent(event);
+            if (event.isCancelled()) return;
+        }
+
         if (!isForced && !this.hasPermission(player)) {
             this.plugin.getMessage(WarpsLang.WARP_TELEPORT_ERROR_NO_PERMISSION).replace(this.replacePlaceholders()).send(player);
             return;
