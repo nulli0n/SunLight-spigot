@@ -16,6 +16,7 @@ import su.nightexpress.sunlight.config.Lang;
 import su.nightexpress.sunlight.module.spawns.SpawnsModule;
 import su.nightexpress.sunlight.module.spawns.config.SpawnsLang;
 import su.nightexpress.sunlight.module.spawns.editor.SpawnSettingsEditor;
+import su.nightexpress.sunlight.module.spawns.event.PlayerSpawnTeleportEvent;
 import su.nightexpress.sunlight.module.spawns.util.Placeholders;
 import su.nightexpress.sunlight.module.spawns.util.SpawnsPerms;
 
@@ -134,6 +135,12 @@ public class Spawn extends AbstractConfigHolder<SunLight> implements Placeholder
     }
 
     public boolean teleport(@NotNull Player player, boolean isForce) {
+        if (!isForce) {
+            PlayerSpawnTeleportEvent event = new PlayerSpawnTeleportEvent(player, this);
+            plugin.getPluginManager().callEvent(event);
+            if (event.isCancelled()) return false;
+        }
+
         if (!isForce && !this.hasPermission(player)) {
             plugin.getMessage(Lang.ERROR_PERMISSION_DENY).send(player);
             return false;
