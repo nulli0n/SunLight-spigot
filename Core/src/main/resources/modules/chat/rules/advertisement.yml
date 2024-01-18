@@ -1,0 +1,21 @@
+Punishments: []
+
+Rules:
+  ips:
+    Enabled: true
+    Matches:
+      - '\b[0-9]{1,3}(\.|dot|\(dot\)|-|;|:|,|(\W|\d|_)*\s)+[0-9]{1,3}(\.|dot|\(dot\)|-|;|:|,|(\W|\d|_)*\s)+[0-9]{1,3}(\.|dot|\(dot\)|-|;|:|,|(\W|\d|_)*\s)+[0-9]{1,3}\b'
+    Action: DENY
+    Replace_With: '***'
+    Ignored_Words:
+      - 127.0.0.1
+  domain:
+    Enabled: true
+    Matches:
+      - '[a-zA-Z0-9\-\.]+\s?(\.|dot|\(dot\)|-|;|:|,)\s?(com|ro|org|net|cz|co|uk|sk|biz|mobi|xxx|eu|me|io|ru|su|tk|ua)\b'
+    Action: DENY
+    Replace_With: '***'
+    Ignored_Words:
+      - google.com
+      - spigotmc.org
+      - play.myservername.com

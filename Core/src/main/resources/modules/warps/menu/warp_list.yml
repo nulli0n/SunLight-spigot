@@ -1,0 +1,93 @@
+Title: '#5d6d7e               &lWarps'
+Size: 45
+Inventory_Type: CHEST
+Use_Mini_Message: false
+
+Warp:
+  Name: '#ee9aff&lWarp: &f%warp_name% &7(ID: &f%warp_id%&7)'
+  Lore:
+    Default:
+      - '%warp_description%'
+      - ''
+      - '#ee9aff&lInfo:'
+      - '#ee9aff▪ #ddeceeOwner: #ee9aff%warp_owner_name%'
+      - '#ee9aff▪ #ddeceeType: #ee9aff%warp_type%'
+      - '#ee9aff▪ #ddeceeWorld: #ee9aff%warp_location_world%'
+      - '#ee9aff▪ #ddeceeVisit Cost: #ee9aff$%warp_visit_cost%'
+      - ''
+      - '%times%'
+      - '%no_permission%'
+      - '%no_money%'
+      - '%cooldown%'
+      - ''
+      - '#9af7ff&lActions:'
+      - '#9af7ff▪ #ddeceeLeft-Click: #9af7ffTeleport'
+      - '#9af7ff▪ #ddeceeRight-Click: #9af7ffSettings'
+    Times_Open:
+      - '#a5ff9a[✓] #ddeceeWarp is open until #a5ff9a%time%#ddecee.'
+    Times_Closed:
+      - '#ff9a9a[!] #ddeceeWarp is closed until #ff9a9a%time%#ddecee.'
+    No_Permission:
+      - '#ff9a9a[!] #ddeceeYou don''t have #ff9a9apermission#ddecee to use this warp.'
+    No_Money:
+      - '#ff9a9a[!] #ddeceeYou don''t have enough #ff9a9amoney#ddecee to use this warp.'
+    Cooldown:
+      - '#ff9a9a[!] #ddeceeYou can visit this warp again in #ff9a9a%cooldown%#ddecee.'
+  Slots: 10,11,12,13,14,15,16,19,20,21,22,23,24,25,28,29,30,31,32,33,34
+
+Content:
+  panes_1:
+    Priority: 0
+    Slots: 0,1,2,3,5,6,7,8,36,37,38,39,41,42,43,44,9,18,27,17,26,35
+    Item:
+      Material: BLACK_STAINED_GLASS_PANE
+      Name: ''
+
+  panes_2:
+    Priority: 1
+    Slots: 0,8,36,44
+    Item:
+      Material: MAGENTA_STAINED_GLASS_PANE
+      Name: ''
+
+  return:
+    Priority: 5
+    Slots: 40
+    Type: CLOSE
+    Item:
+      Material: PLAYER_HEAD
+      Head_Texture: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmViNTg4YjIxYTZmOThhZDFmZjRlMDg1YzU1MmRjYjA1MGVmYzljYWI0MjdmNDYwNDhmMThmYzgwMzQ3NWY3In19fQ==
+      Name: '#FF5733(✕) &lExit'
+
+  page_next:
+    Priority: 5
+    Slots: 41
+    Type: PAGE_NEXT
+    Item:
+      Material: PLAYER_HEAD
+      Head_Texture: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjgyYWQxYjljYjRkZDIxMjU5YzBkNzVhYTMxNWZmMzg5YzNjZWY3NTJiZTM5NDkzMzgxNjRiYWM4NGE5NmUifX19
+      Name: '#e3fbf9(→) &lNext Page'
+
+  page_previous:
+    Priority: 5
+    Slots: 39
+    Type: PAGE_PREVIOUS
+    Item:
+      Material: PLAYER_HEAD
+      Head_Texture: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzdhZWU5YTc1YmYwZGY3ODk3MTgzMDE1Y2NhMGIyYTdkNzU1YzYzMzg4ZmYwMTc1MmQ1ZjQ0MTlmYzY0NSJ9fX0=
+      Name: '#e3fbf9(←) &lPrevious Page'
+
+  sort:
+    Item:
+      Material: HOPPER
+      Name: '#ee9aff&lSorting Mode'
+      Lore:
+        - '#ee9aff▪ #ddeceeCurrent: #ee9aff%sorting_mode%'
+        - ''
+        - '#ddeceeSets the warp display order.'
+        - ''
+        - '#9af7ff&lActions:'
+        - '#9af7ff▪ #ddeceeLeft-Click: #9af7ffChange'
+    Slots: 4
+    Type: SORTING_MODE
+    Priority: 5

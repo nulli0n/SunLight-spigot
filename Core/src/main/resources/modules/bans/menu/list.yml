@@ -1,0 +1,59 @@
+Title: '#5d6d7e&l           %punishment_type% List'
+Size: 54
+Inventory_Type: CHEST
+Use_Mini_Message: false
+
+Punishment:
+  Default_Head_Texture: 'eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMjcwNWZkOTRhMGM0MzE5MjdmYjRlNjM5YjBmY2ZiNDk3MTdlNDEyMjg1YTAyYjQzOWUwMTEyZGEyMmIyZTJlYyJ9fX0='
+  Active:
+    Name: '#ff9a9a&l%punishment_type%: &f%punishment_user%'
+    Lore:
+      - '#ff9a9a&lInfo:'
+      - '#ff9a9a▪ #ddeceePunisher: #ff9a9a%punishment_punisher%'
+      - '#ff9a9a▪ #ddeceeReason: #ff9a9a%punishment_reason%'
+      - '#ff9a9a▪ #ddeceeDate: #ff9a9a%punishment_date_created%'
+      - '#ff9a9a▪ #ddeceeExpires in: #ff9a9a%punishment_expires_in%'
+      - ''
+      - '#a5ff9a&lActions:'
+      - '#a5ff9a▪ #ddeceeShift-Left: #a5ff9aExpire'
+  Expired:
+    Name: '#ffea85&l%punishment_type%: &f%punishment_user%'
+    Lore:
+      - '#ffea85&lInfo:'
+      - '#ffea85▪ #ddeceePunisher: #ffea85%punishment_punisher%'
+      - '#ffea85▪ #ddeceeReason: #ffea85%punishment_reason%'
+      - '#ffea85▪ #ddeceeDate: #ffea85%punishment_date_created%'
+      - '#ffea85▪ #ddeceeExpired: #ffea85%punishment_date_expired%'
+      - ''
+      - '#a5ff9a&lActions:'
+      - '#a5ff9a▪ #ddeceeShift-Right: #a5ff9aDelete fom database'
+  Slots: 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44
+
+Content:
+  return:
+    Priority: 5
+    Item:
+      Material: PLAYER_HEAD
+      Head_Texture: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmU5YWU3YTRiZTY1ZmNiYWVlNjUxODEzODlhMmY3ZDQ3ZTJlMzI2ZGI1OWVhM2ViNzg5YTkyYzg1ZWE0NiJ9fX0=
+      Name: '#e6e4dd(↓) &fClose Menu'
+      Lore: []
+    Slots: 49
+    Type: CLOSE
+
+  page_next:
+    Slots: 53
+    Type: PAGE_NEXT
+    Item:
+      Material: PLAYER_HEAD
+      Head_Texture: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjMyY2E2NjA1NmI3Mjg2M2U5OGY3ZjMyYmQ3ZDk0YzdhMGQ3OTZhZjY5MWM5YWMzYTkxMzYzMzEzNTIyODhmOSJ9fX0=
+      Name: '#e6e4dd(→) &fNext Page'
+    Priority: 5
+
+  page_previous:
+    Slots: 45
+    Type: PAGE_PREVIOUS
+    Item:
+      Material: PLAYER_HEAD
+      Head_Texture: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODY5NzFkZDg4MWRiYWY0ZmQ2YmNhYTkzNjE0NDkzYzYxMmY4Njk2NDFlZDU5ZDFjOTM2M2EzNjY2YTVmYTYifX19
+      Name: '#e6e4dd(←) &fPrevious Page'
+    Priority: 5

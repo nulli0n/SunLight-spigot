@@ -1,0 +1,18 @@
+foot_1:
+  Update_Interval_MS: 5000
+  Texts:
+    - '                 #a0c8ff&n[Discord]#6c6c62 [Store] [Website]                   '
+    - '                 #6c6c62[Discord] #c3ffa0&n[Store]#6c6c62 [Website]                 '
+    - '                 #6c6c62[Discord] [Store] #ffe4a0&n[Website]#6c6c62                 '
+foot_2:
+  Update_Interval_MS: 5000
+  Texts:
+    - '#adadad                 Join our friendly discord community:                 '
+    - '#adadad                 Purchase ranks & crate keys at our store:                 '
+    - '#adadad                 Learn first about new updates at our site:                 '
+foot_3:
+  Update_Interval_MS: 5000
+  Texts:
+    - '                 #a0c8ffdiscord/samplesmp.gg                 '
+    - '                 #c3ffa0store.samplesmp.com                  '
+    - '                 #ffe4a0www.samplesmp.com                    '

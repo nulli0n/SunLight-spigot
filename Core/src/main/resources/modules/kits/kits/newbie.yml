@@ -1,0 +1,64 @@
+Name: '&x&F&F&C&3&0&0&lNewbie'
+Cooldown: -1
+Permission_Required: false
+Cost:
+  Money: 0.0
+Priority: 0
+Items:
+- 2g0004000j9cg01crb9dpim6sj1cpq3ktrfdti6arivedrmusj418006t31cs1g01i4c5mm2pr5000000000400agrfeln78080
+- 1800020009km800fdlkmspb3e9gmct1qc5o70r350400agrfeln78g00
+- 5000080016ip001pmmirj5cdp62pjk79hmuobc0400agrfeln78200
+- 2g0004000j9cg012rb9dpim6sj1cpq3krr1ddfmorr70400agrfeln78800
+- k00010004qb4006mqqbeclhn4ob6egt62qbi0400agrfeln78080
+- k00010004qb4006mqqbeclhn4ob6egt62qbi0400agrfeln78080
+- k00010004qb4006mqqbeclhn4ob6egt62qbi0400agrfeln78080
+- k00010004qb4006mqqbeclhn4ob6egt62qbi0400agrfeln78080
+- k00010004qb4006mqqbeclhn4ob6egt62qbi0400agrfeln78080
+- k00010004qb4006mqqbeclhn4ob6egt62qbi0400agrfeln78080
+- k00010004qb4006mqqbeclhn4ob6egt62qbi0400agrfeln78080
+- k00010004qb4006mqqbeclhn4ob6egt62qbi0400agrfeln78080
+- k00010004qb4006mqqbeclhn4ob6egt62qbi0400agrfeln78080
+- k00010004qb4006mqqbeclhn4ob6egt62qbi0400agrfeln78080
+- k00010004qb4006mqqbeclhn4ob6egt62qbi0400agrfeln78080
+- k00010004qb4006mqqbeclhn4ob6egt62qbi0400agrfeln78080
+- k00010004qb4006mqqbeclhn4ob6egt62qbi0400agrfeln78080
+- k00010004qb4006mqqbeclhn4ob6egt62qbi0400agrfeln78080
+- k00010004qb4006mqqbeclhn4ob6egt62qbi0400agrfeln78080
+- k00010004qb4006mqqbeclhn4ob6egt62qbi0400agrfeln78080
+- k00010004qb4006mqqbeclhn4ob6egt62qbi0400agrfeln78080
+- k00010004qb4006mqqbeclhn4ob6egt62qbi0400agrfeln78080
+- k00010004qb4006mqqbeclhn4ob6egt62qbi0400agrfeln78080
+- k00010004qb4006mqqbeclhn4ob6egt62qbi0400agrfeln78080
+- k00010004qb4006mqqbeclhn4ob6egt62qbi0400agrfeln78080
+- k00010004qb4006mqqbeclhn4ob6egt62qbi0400agrfeln78080
+- k00010004qb4006mqqbeclhn4ob6egt62qbi0400agrfeln78080
+- k00010004qb4006mqqbeclhn4ob6egt62qbi0400agrfeln78080
+- k00010004qb4006mqqbeclhn4ob6egt62qbi0400agrfeln78080
+- k00010004qb4006mqqbeclhn4ob6egt62qbi0400agrfeln78080
+- k00010004qb4006mqqbeclhn4ob6egt62qbi0400agrfeln78080
+- k00010004qb4006mqqbeclhn4ob6egt62qbi0400agrfeln78080
+- k00010004qb4006mqqbeclhn4ob6egt62qbi0400agrfeln78080
+- k00010004qb4006mqqbeclhn4ob6egt62qbi0400agrfeln78080
+- k00010004qb4006mqqbeclhn4ob6egt62qbi0400agrfeln78080
+- k00010004qb4006mqqbeclhn4ob6egt62qbi0400agrfeln78080
+Armor:
+- k00010004qb400bmqqbeclhn4ob6egt6opb1ehk6asivc9nmut3j18006t31cs1g01i4c5mm2pr5000000000400agrfeln78080
+- a0000g002d5i006jdd5n6aoric5j78ejcclgn8q35e9fmopb7ctkmsprj18006t31cs1g01i4c5mm2pr5000000000400agrfeln78080
+- k00010004qb400e6qqbeclhn4ob6egt6opb1ehk6asivcdk6asrke1m62t3518006t31cs1g01i4c5mm2pr5000000000400agrfeln78080
+- 5000080016ip0031mmirj5cdp62pjk79m6aobkd1in4nr8clm6qpbk18006t31cs1g01i4c5mm2pr5000000000400agrfeln78080
+Extras:
+- a0000g002d5i0043dd5n6aoric5j78ejjd1kmar3418006t31cs1g01i4c5mm2pr5000000000400agrfeln78080
+Description:
+- '&7A kit for new players.'
+Commands: []
+Icon:
+  Material: LEATHER_CHESTPLATE
+  Color: 160,101,64,
+  Item_Flags:
+  - HIDE_ENCHANTS
+  - HIDE_ATTRIBUTES
+  - HIDE_UNBREAKABLE
+  - HIDE_DESTROYS
+  - HIDE_PLACED_ON
+  - HIDE_POTION_EFFECTS
+  - HIDE_DYE

@@ -1,0 +1,1 @@
+&eDescribe your server rules in &6/custom_text/rules.txt &efile.

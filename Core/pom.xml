@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>SunLight</artifactId>
+        <groupId>su.nightexpress.sunlight</groupId>
+        <version>3.10.1</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>Core</artifactId>
+
+    <properties>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>su.nightexpress.sunlight</groupId>
+            <artifactId>NMS</artifactId>
+            <version>3.10.1</version>
+        </dependency>
+        <dependency>
+            <groupId>su.nightexpress.sunlight</groupId>
+            <artifactId>V1_20_R3</artifactId>
+            <version>3.10.1</version>
+        </dependency>
+        <dependency>
+            <groupId>su.nightexpress.sunlight</groupId>
+            <artifactId>V1_20_R2</artifactId>
+            <version>3.10.1</version>
+        </dependency>
+        <dependency>
+            <groupId>su.nightexpress.sunlight</groupId>
+            <artifactId>V1_20_R1</artifactId>
+            <version>3.10.1</version>
+        </dependency>
+        <dependency>
+            <groupId>su.nightexpress.sunlight</groupId>
+            <artifactId>V1_19_R3</artifactId>
+            <version>3.10.1</version>
+        </dependency>
+        <dependency>
+            <groupId>su.nightexpress.sunlight</groupId>
+            <artifactId>V1_18_R2</artifactId>
+            <version>3.10.1</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory> <!-- (your resources folder location) -->
+                <filtering>true</filtering> <!-- this is the important part, it's what replaces, filters, all placeholders in the resources folder (such as ${project.version} in plugin.yml) -->
+            </resource>
+        </resources>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.2.4</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <outputFile>${project.parent.basedir}\target\SunLight-${project.version}.jar</outputFile>
+                            <artifactSet>
+                                <includes>
+                                    <include>su.nightexpress.sunlight:*</include>
+                                </includes>
+                            </artifactSet>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

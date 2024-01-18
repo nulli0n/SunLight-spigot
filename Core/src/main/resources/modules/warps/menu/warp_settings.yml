@@ -1,0 +1,157 @@
+Title: '#5d6d7e           &lWarp Settings'
+Size: 45
+
+Content:
+  exit:
+    Priority: 5
+    Slots: 40
+    Type: RETURN
+    Item:
+      Material: PLAYER_HEAD
+      Head_Texture: 'eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmU5YWU3YTRiZTY1ZmNiYWVlNjUxODEzODlhMmY3ZDQ3ZTJlMzI2ZGI1OWVhM2ViNzg5YTkyYzg1ZWE0NiJ9fX0='
+      Name: '#e3fbf9(↓) &lReturn'
+
+  location:
+    Item:
+      Material: COMPASS
+      Name: '#ee9aff&lLocation'
+      Lore:
+        - '#ee9aff▪ #ddeceeWorld: #ee9aff%warp_location_world%'
+        - '#ee9aff▪ #ddeceeX: #ee9aff%warp_location_x%'
+        - '#ee9aff▪ #ddeceeY: #ee9aff%warp_location_y%'
+        - '#ee9aff▪ #ddeceeZ: #ee9aff%warp_location_z%'
+    Slots: 4
+    Type: WARP_CHANGE_LOCATION
+
+  name:
+    Item:
+      Material: NAME_TAG
+      Name: '#ee9aff&lDisplay Name'
+      Lore:
+        - '#ee9aff▪ #ddeceeCurrent: #ee9aff%warp_name%'
+        - ''
+        - '#ddeceeSets the warp display name.'
+        - '#ddeceeIt will be displayed in menus and messages.'
+        - ''
+        - '#9af7ff&lActions:'
+        - '#9af7ff▪ #ddeceeLeft-Click: #9af7ffChange'
+    Slots: 12
+    Type: WARP_CHANGE_NAME
+
+  type:
+    Item:
+      Material: PLAYER_HEAD
+      Head_Texture: 'eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvN2I1NmU0OTA4NWY1NWQ1ZGUyMTVhZmQyNmZjNGYxYWZlOWMzNDMxM2VmZjk4ZTNlNTgyNDVkZWYwNmU1ODU4YyJ9fX0='
+      Name: '#ee9aff&lWarp Type'
+      Lore:
+        - '#ee9aff▪ #ddeceeCurrent: #ee9aff%warp_type%'
+        - ''
+        - '#ddeceeSets the warp type/category for GUI.'
+        - ''
+        - '#9af7ff&lActions:'
+        - '#9af7ff▪ #ddeceeLeft-Click: #9af7ffToggle'
+    Slots: 8
+    Type: WARP_CHANGE_TYPE
+
+  icon:
+    Item:
+      Material: ITEM_FRAME
+      Name: '#ee9aff&lIcon'
+      Lore:
+        - '#ddeceeSets the warp icon to be displayed in GUI.'
+        - ''
+        - '#9af7ff&lActions:'
+        - '#9af7ff▪ #ddeceeDrag & Drop: #9af7ffChange'
+    Slots: 13
+    Type: WARP_CHANGE_ICON
+
+  description:
+    Item:
+      Material: PAPER
+      Name: '#ee9aff&lDescription'
+      Lore:
+        - '#ee9aff▪ #ddeceeCurrent: '
+        - '#ee9aff%warp_description%'
+        - ''
+        - '#ddeceeDescription is displayed in Warps GUI'
+        - '#ddeceeand when visiting the warp.'
+        - ''
+        - '#9af7ff&lActions:'
+        - '#9af7ff▪ #ddeceeLeft-Click: #9af7ffChange'
+    Slots: 14
+    Type: WARP_CHANGE_DESCRIPTION
+
+  shortcut:
+    Item:
+      Material: COMMAND_BLOCK
+      Name: '#ee9aff&lCommand Shortcut'
+      Lore:
+        - '#ee9aff▪ #ddeceeCurrent: #ee9aff/%warp_command_shortcut%'
+        - ''
+        - '#ddeceeCreates custom command for this warp.'
+        - ''
+        - '#ff9a9a[!] #ddeceeThis setting will have effect on module #ff9a9areload#ddecee only.'
+        - ''
+        - '#9af7ff&lActions:'
+        - '#9af7ff▪ #ddeceeLeft-Click: #9af7ffChange'
+        - '#9af7ff▪ #ddeceeRight-Click: #9af7ffDisable'
+    Slots: 31
+    Type: WARP_CHANGE_COMMAND_SHORTCUT
+
+  permission:
+    Item:
+      Material: REDSTONE_TORCH
+      Name: '#ee9aff&lPermission Requirement'
+      Lore:
+        - '#ee9aff▪ #ddeceeEnabled: #ee9aff%warp_permission_required%'
+        - '#ee9aff▪ #ddeceeNode: #ee9aff%warp_permission_node%'
+        - ''
+        - '#ddeceeSets whether player must have permission'
+        - '#ddeceeto be able to use this warp.'
+        - ''
+        - '#9af7ff&lActions:'
+        - '#9af7ff▪ #ddeceeLeft-Click: #9af7ffToggle'
+    Slots: 0
+    Type: WARP_CHANGE_PERMISSION
+
+  visit_cost:
+    Item:
+      Material: GOLD_NUGGET
+      Name: '#ee9aff&lVisit Cost'
+      Lore:
+        - '#ee9aff▪ #ddeceeCurrent: #ee9aff$%warp_visit_cost%'
+        - ''
+        - '#ddeceeSets how much money player will have to pay'
+        - '#ddeceein order to use this warp.'
+        - ''
+        - '#9af7ff&lActions:'
+        - '#9af7ff▪ #ddeceeLeft-Click: #9af7ffChange'
+        - '#9af7ff▪ #ddeceeRight-Click: #9af7ffDisable'
+    Slots: 21
+    Type: WARP_CHANGE_VISIT_COST
+
+  visit_time:
+    Item:
+      Material: CLOCK
+      Name: '#ee9aff&lVisit Times & Cooldown'
+      Lore:
+        - '#ee9aff▪ #ddeceeCooldown: #ee9aff%warp_visit_cooldown%'
+        - '#ee9aff▪ #ddeceeTimes: '
+        - '#ee9aff%warp_visit_times%'
+        - ''
+        - '#ddeceeSets the cooldown for next warp visit per a player.'
+        - '#ddeceeSets the times when this warp is available for visits.'
+        - ''
+        - '#9af7ff&lActions:'
+        - '#9af7ff▪ #ddeceeLeft-Click: #9af7ffChange Cooldown'
+        - '#9af7ff▪ #ddeceeRight-Click: #9af7ffDisable Cooldown'
+        - '#9af7ff▪ #ddeceeShift-Left: #9af7ffAdd Time'
+        - '#9af7ff▪ #ddeceeShift-Right: #9af7ffClear Times'
+    Slots: 23
+    Type: WARP_CHANGE_VISIT_TIMES
+
+
+
+
+
+

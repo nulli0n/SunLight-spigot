@@ -1,0 +1,51 @@
+local:
+  Name: '&bLocal'
+  Default: true
+  Auto_Join: true
+  Permission_Required:
+    Hear: false
+    Speak: false
+  Radius: 100
+  Command_Alias: 'local'
+  Message_Prefix: ''
+  Message_Cooldown: 3
+  Format: '&b[%channel_name%] &7%format_player_name%%format_player_color%: %format_player_message%'
+
+global:
+  Name: '&6Global'
+  Default: false
+  Auto_Join: true
+  Permission_Required:
+    Hear: false
+    Speak: false
+  Radius: -1
+  Command_Alias: 'global'
+  Message_Prefix: '!'
+  Message_Cooldown: 3
+  Format: '&6[%channel_name%] &7%format_player_name%%format_player_color%: %format_player_message%'
+
+trade:
+  Name: '&2Trade'
+  Default: false
+  Auto_Join: false
+  Permission_Required:
+    Hear: false
+    Speak: true
+  Radius: -1
+  Command_Alias: 'trade'
+  Message_Prefix: '$'
+  Message_Cooldown: 20
+  Format: '&2[%channel_name%] &7%format_player_name%%format_player_color%: %format_player_message%'
+
+staff:
+  Name: '&cStaff Chat'
+  Default: false
+  Auto_Join: false
+  Permission_Required:
+    Hear: true
+    Speak: true
+  Radius: -1
+  Command_Alias: 'staffchat'
+  Message_Prefix: ''
+  Message_Cooldown: 0
+  Format: '&c[%channel_name%] &7%format_player_name%%format_player_color%: %format_player_message%'

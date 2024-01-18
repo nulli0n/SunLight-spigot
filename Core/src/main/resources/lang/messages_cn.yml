@@ -1,0 +1,1627 @@
+# 插件版本3.10.0
+# Plugins Versions 3.10.0
+Command:
+  Air:
+    Desc: 管理[玩家]的氧气值
+    Usage: <操作> <数量> [玩家] [-max] [-s]
+    Give:
+      Target: '&e成功向&6%player_name% &e添加了&6%amount% &e个氧气值。现在的氧气值为: &6%current%&e/&6%max%'
+      Notify: '<! type:"action_bar" !>&e你已获得&6%amount%&e个氧气值: &6%current%&e/&6%max%'
+    Take:
+      Target: '&e成功从&6%player_name% &e移除了&6%amount% &e个氧气值。现在的氧气值为: &6%current%&e/&6%max%'
+      Notify: '<! type:"action_bar" !>&e你失去了&6%amount%&e个氧气值: &6%current%&e/&6%max%'
+    Set:
+      Target: '&e成功设置&6%player_name% &e的氧气值为&6%amount%。现在的氧气值为: &6%current%&e/&6%max%'
+      Notify: '<! type:"action_bar" !>&e你的氧气值已设置为&6%amount%: &6%current%&e/&6%max%'
+  Anvil:
+    Desc: 打开便携式铁砧
+    Usage: '[玩家] [-s]'
+    Target: '&e已为&6%player_name%&e打开便携式铁砧'
+    Notify: <! type:"action_bar" !>&e你已经打开了便携式铁砧
+  Back:
+    Desc: 将[玩家]传送回上一个位置
+    Usage: '[玩家] [-s]'
+    Error:
+      Nothing: <! type:"action_bar" sound:"ENTITY_VILLAGER_NO" !>&c你没有返回位置
+    Notify: <! type:"action_bar" sound:"ENTITY_ENDERMAN_TELEPORT" !>&e你已回到你之前的位置
+    Target: '&e玩家&6%player_name%&e传送回了他的之前的位置'
+  Condense:
+    Desc: 将物品压缩成块
+    Usage: ''
+    Error:
+      Nothing: <! type:"action_bar" sound:"ENTITY_VILLAGER_NO" !>&c没有物品可压缩
+      NotEnough: '&e无法将 &c%source% &e压缩为 &c%result%&e。至少需要&c%amount%&e个'
+    Done: '&e已将 &6%%source%x%total% &e压缩成 &6%result%x%amount%%'
+  DeathBack:
+    Desc: 将[玩家]传送回死亡位置
+    Usage: '[玩家] [-s]'
+    Error:
+      Nothing: <! type:"action_bar" sound:"ENTITY_VILLAGER_NO" !>&c你没有死亡位置
+    Notify: <! type:"action_bar" sound:"ENTITY_ENDERMAN_TELEPORT" !>&e你已回到你的死亡位置
+    Target: '&e玩家&6%player_name%&e被传送到他的死亡位置'
+  Disposal:
+    Usage: '[玩家] [-s]'
+    Desc: 打开垃圾箱
+    Target: '&e已为&6%player_name%&e打开垃圾箱'
+    Notify: <! type:"action_bar" sound:"ITEM_ARMOR_EQUIP_LEATHER" !>&e你已打开垃圾箱
+  Dimension:
+    Usage: <世界> [玩家] [-s]
+    Desc: 将[玩家]传送到另一个世界
+    Target: '&e将&6%player_name%&e传送到了&6%world%'
+    Notify: <! type:"action_bar" sound:"ENTITY_ENDERMAN_TELEPORT" !>&e你已传送到&6%world%
+  Enchant:
+    Desc: 为[玩家]指定槽位的物品附魔
+    Usage: <槽位> <附魔> <等级> [玩家] [-s]
+    Enchanted:
+      Target: <! sound:"BLOCK_ENCHANTMENT_TABLE_USE" !>&e在&6%player_name%&e的&6%type%&e槽位上用&6%name% %amount%&e附魔了&6%item%&e!
+      Notify: <! sound:"BLOCK_ENCHANTMENT_TABLE_USE" !>&e你的&6%item%&e已被附魔，使用了&6%name% %amount%&e!
+    Disenchanted:
+      Target: <! sound:"BLOCK_GRINDSTONE_USE" !>&e在&6%player_name%&e的&6%type%&e槽位上将&6%item%&e移除了&6%name%&e的附魔
+      Notify: <! sound:"BLOCK_GRINDSTONE_USE" !>&e你的&6%item%&e已被取消&6%name% %amount%&e的附魔!
+  Enchanting:
+    Desc: 打开便携式附魔台
+    Usage: '[玩家] [-s]'
+    Notify: <! type:"action_bar" !>&e你已打开附魔台
+    Target: '&e已为&6%player_name%&e打开附魔台'
+  Exp:
+    Desc: 管理[玩家]经验点数
+    Usage: <操作> <数量> [玩家] [-s] [-l]
+    Give:
+      Target: '&e已向&6%player_name%&e添加&6%amount%&e点经验值/等级。当前经验值: &6%total%&e，等级: &6%level%'
+      Notify: '&e你获得了&6%amount%&e点经验值/等级: 当前经验值: &6%total%&e，等级: &6%level%'
+    Take:
+      Target: '&e已从&6%player_name%&e移除&6%amount%&e点经验值/等级。当前经验值: &6%total%&e，等级: &6%level%'
+      Notify: '&e你失去了&6%amount%&e点经验值/等级: 当前经验值: &6%total%&e，等级: &6%level%'
+    Set:
+      Target: '&e已将&6%player_name%&e的经验值/等级设置为&6%amount%&e。当前经验值: &6%total%&e，等级: &6%level%'
+      Notify: '&e你的经验值/等级已设置为&6%amount%&e: 当前经验值: &6%total%&e，等级: &6%level%'
+  Enderchest:
+    Desc: 玩家末影箱工具
+    Usage: '[帮助]'
+    Clear:
+      Desc: 清空 [玩家] 的末影箱
+      Usage: '[玩家] [-s]'
+      Done:
+        Target: <! sound:"BLOCK_FIRE_EXTINGUISH" !>&e已清空 &6%player_name% &e的末影箱!
+        Notify: <! type:"action_bar" sound:"BLOCK_FIRE_EXTINGUISH" !>&e你的末影箱已被清空!
+    Copy:
+      Desc: 复制玩家的末影箱
+      Usage: <来源> [目标]
+      Done:
+        Executor: <! sound:"ITEM_ARMOR_EQUIP_LEATHER" !>&e已复制 &6%player_name% &e的末影箱
+        Others: <! sound:"ITEM_ARMOR_EQUIP_LEATHER" !>&e已将 &6%source% &e的末影箱复制到 &6%target%
+    Fill:
+      Desc: 使用指定物品填充玩家的末影箱
+      Usage: <玩家> <物品...>
+      Done:
+        Executor: <! sound:"ENTITY_ITEM_PICKUP" !>&e已使用 &6%item%&e将 &6%player_name% &e的末影箱填满
+    Open:
+      Desc: 打开 [玩家] 的末影箱
+      Usage: '[玩家]'
+      Done:
+        Executor: <! sound:"BLOCK_CHEST_OPEN" !>&e已打开 &6%player_name% &e的末影箱
+    Repair:
+      Desc: 修复 [玩家] 的末影箱内的所有物品
+      Usage: '[玩家] [-s]'
+      Notify: <! sound:"BLOCK_ANVIL_USE" !>&e你的末影箱内的所有物品已被修复!
+      Target: <! sound:"BLOCK_ANVIL_USE" !>&e已修复 &6%player_name%&e的末影箱内所有物品!
+  Extinguish:
+    Desc: 熄灭 [玩家] 的火焰
+    Usage: '[玩家] [-s]'
+    Notify: <! type:"action_bar" sound:"BLOCK_FIRE_EXTINGUISH" !>&e你已被熄灭火焰
+    Target: <! sound:"BLOCK_FIRE_EXTINGUISH" !>&e已熄灭玩家&6%player_name%&e的火焰
+  Equip:
+    Desc: 将手持物品装备到指定的盔甲槽位
+    Usage: <槽位>
+    Done: <! sound:"ITEM_ARMOR_EQUIP_LEATHER" !>&e已装备 &6%item%
+  Feed:
+    Desc: 填充[玩家]的饱食度
+    Usage: '[玩家][-s][-a][-t]'
+    Done:
+      Self: <! sound:"ENTITY_GENERIC_EAT" !>&e你的饱食度已恢复!
+      Others: <! sound:"ENTITY_GENERIC_EAT" !>&e已恢复 &6%player_name% &e的饱食度!
+  Fly:
+    Desc: 切换 [玩家] 的飞行模式
+    Usage: '[玩家] [-on] [-off] [-s]'
+    Target: '&e将 &6%player_name% &e的飞行模式设置为 &6%state%'
+    Notify: '&e飞行模式已设置为 &6%state%'
+  Fire:
+    Desc: 管理 [玩家] 的燃烧刻
+    Usage: <操作> <数量> [玩家]
+    Give:
+      Target: '&e已给&6%player_name%&e添加&6%amount%&e燃烧刻。新的燃烧刻为&6%total%&7(%time%s)'
+    Take:
+      Target: '&e已从&6%player_name%&e移除&6%amount%&e燃烧刻。新的燃烧刻为&6%total%&7(%time%s)'
+    Set:
+      Target: '&e已为&6%player_name%&e设置&6%amount%&e燃烧刻。新的燃烧刻为&6%total%&7(%time%s)'
+  Food:
+    Desc: 管理 [玩家] 的饱食度
+    Usage: <操作> <数量> [玩家] [-s]
+    Give:
+      Target: '&e给予 &6%player_name%&e &6%amount%&e 饱食度。新的饱食度等级为: &6%current%&e/&6%max%'
+      Notify: '<! type:"action_bar" !>&e你获得了 &6%amount%&e 饱食度: &6%current%&e/&6%max%'
+    Take:
+      Target: '&e从 &6%player_name%&e 移除了 &6%amount%&e 饱食度。新的饱食度等级为: &6%current%&e/&6%max%'
+      Notify: '<! type:"action_bar" !>&e你失去了 &6%amount%&e 饱食度: &6%current%&e/&6%max%'
+    Set:
+      Target: '&e设置 &6%player_name%&e 的饱食度为 &6%amount%&e。新的饱食度等级为: &6%current%&e/&6%max%'
+      Notify: <! type:"action_bar" !>&e你的饱食度被设置为 &6%amount%&e/&6%max%
+  FoodGod:
+    Desc: 切换 [玩家] 的饮食之神
+    Usage: '[玩家] [-on] [-off] [-s]'
+    Target: '&e将 &6%player_name%&e 的食神设为 &6%state%'
+    Notify: '&e食神 &6%state%'
+  GameMode:
+    Desc: 改变 [玩家] 的游戏模式
+    Usage: <游戏模式> [玩家] [-s]
+    Notify: '&e你的游戏模式已设为 &6%type%'
+    Target: '&e将&6%player_name% &e的游戏模式设为 &6%type%'
+  God:
+    Desc: 切换 [玩家] 的上帝模式
+    Usage: '[玩家] [-on] [-off] [-s]'
+    Notify:
+      DamageDisabled: <! type:"action_bar" !>&c你不能在上帝模式下造成伤害!
+      BadWorld: '&c警告: &e此世界禁用了上帝模式!'
+    Toggle:
+      Notify: '&e你的上帝模式已 &6%state%'
+      Target: '&e将&6%player_name%&e的上帝模式设为&6%state%'
+  Heal:
+    Desc: 恢复 [玩家] 的生命值
+    Usage: '[玩家] [-eff] [-s]'
+    Notfiy: '&e你已被治愈!'
+    Target: '&e玩家&6%player_name%&e已被治愈'
+  Ignore:
+    Desc: 管理你的黑名单列表
+    Usage: '[帮助]'
+    Add:
+      Desc: 将玩家添加到你的黑名单中
+      Usage: <玩家>
+      Done: '&e玩家&c%player_name%&e已加入黑名单。你可以使用&c/ignore list&en更改设置或解除封锁'
+      Error:
+        AlreadyIn: '&e玩家已在黑名单中'
+    Remove:
+      Desc: 将玩家从黑名单中移除
+      Usage: <玩家>
+      Done: '&e玩家&6%player_name%&e已从黑名单中移除'
+      Error:
+        NotIn: '&e玩家不在黑名单中'
+    List:
+      Desc: 查看你的黑名单列表
+      Usage: ''
+  Inventory:
+    Desc: 玩家背包管理工具
+    Usage: '[帮助]'
+    Clear:
+      Desc: 清空你自己或其他玩家的背包
+      Usage: '[玩家] [-s]'
+      Done:
+        Target: <! sound:"BLOCK_FIRE_EXTINGUISH" !>&e已清空 &6%player_name%&e 的背包!
+        Notify: <! sound:"BLOCK_FIRE_EXTINGUISH" !>&e你的背包已被清空!
+    Copy:
+      Desc: 复制玩家的背包
+      Usage: <来源> [目标]
+      Done:
+        Notify: <! sound:"ITEM_ARMOR_EQUIP_LEATHER" !>&e已复制 &6%player_name%&e 的背包
+        Target: <! sound:"ITEM_ARMOR_EQUIP_LEATHER" !>&e将 &6%source%&e 的背包复制到 &6%target%
+    Fill:
+      Desc: 用指定物品填充玩家的背包
+      Usage: <玩家> <物品...>
+      Done: <! sound:"ENTITY_ITEM_PICKUP" !>&e已用 &6%item%&e 填充 &6%player_name%&e 的背包
+    Open:
+      Desc: 打开可编辑的玩家背包
+      Usage: <玩家>
+      Done: <! sound:"BLOCK_CHEST_OPEN" !>&e已打开 &6%player_name%&e 的背包
+    Repair:
+      Desc: 修复 [玩家] 背包中的所有物品
+      Usage: '[玩家] [-s]'
+      Notify: <! sound:"BLOCK_ANVIL_USE" !>&e你背包中的所有物品都已被修复!
+      Target: <! sound:"BLOCK_ANVIL_USE" !>&e已修复 &6%player_name%&e 的背包中的所有物品!
+  Item:
+    Desc: 物品管理工具
+    Usage: '[帮助]'
+    Error:
+      Material: '&6%type%&c 不是有效的材料!'
+      EmptyHand: '&c你必须手持一个物品!'
+    Amount:
+      Desc: 更改物品数量
+      Usage: '[数量]'
+      Done: <! sound:"ENTITY_ITEM_PICKUP" !>&e将 &6%item%&e 的数量设置为 x&6%amount%
+    Damage:
+      Desc: 更改物品的耐久值
+      Usage: '[数量]'
+      Done: <! sound:"BLOCK_ANVIL_USE" !>&e将 &6%item%&e 的耐久值设置为 &6%amount%
+      Error:
+        NotDamageable: <! sound:"ENTITY_VILLAGER_NO" !>&6%item%&c 无法损坏
+    Enchant:
+      Desc: 附魔手中的物品
+      Usage: <附魔名称> <等级>
+      Done:
+        Enchanted: <! sound:"BLOCK_ENCHANTMENT_TABLE_USE" !>&6%item%&e已被 &6%name% %level%&e 附魔!
+        Disenchanted: <! sound:"BLOCK_ENCHANTMENT_TABLE_USE" !>&e从 &6%item%&e 上移除了附魔 &6%name%&e!
+    Flag:
+      Desc: 添加或移除物品标志
+      Usage: '[帮助]'
+      Add:
+        Desc: 向物品添加指定标志
+        Usage: <标志>
+        Done: <! sound:"BLOCK_ANVIL_USE" !>&e向物品添加了 &6%name%&e 标志!
+      Remove:
+        Desc: 从物品上移除指定标志
+        Usage: <标志>
+        Done: <! sound:"BLOCK_ANVIL_USE" !>&e从物品上移除了 &6%name%&e 标志
+      Clear:
+        Desc: 清除物品标志
+        Done: <! sound:"BLOCK_ANVIL_USE" !>&e已移除物品标志!
+    Get:
+      Desc: 获取指定的物品
+      Usage: <材料> [数量] [-name <名称>] [-lore <文本>] [-ench <附魔等级>]
+      Done: <! sound:"ENTITY_ITEM_PICKUP" !>&e你获得了 &6%type%x%amount% &e!
+    Give:
+      Desc: 将指定的物品给予玩家
+      Usage: <玩家> <材料> [数量] [-name <名称>] [-lore <文本>] [-ench <附魔等级>]
+      Done: <! sound:"ENTITY_ITEM_PICKUP" !>&e已将 &6x%amount%&e 的 &6%type%&e 给予了玩家 &6%player_name%&e!
+      Notify: <! sound:"ENTITY_ITEM_PICKUP" !>&e你获得了 &6x%amount%&e 的 &6%type%&e!
+    Take:
+      Desc: 从玩家中取出指定物品
+      Usage: <玩家> <材料> [数量] [-name <名字>] [-lore <文本>] [-ench <附魔等级>]
+      Done: <! sound:"ENTITY_GLOW_ITEM_FRAME_REMOVE_ITEM" !>&e你从 &6%player_name%&e 处取出了 &6%type%&e * %amount%!
+      Error:
+        NotEnough: <! sound:"ENTITY_VILLAGER_NO" !>&c无法取出物品。玩家&6%type%&c数量不足(%amount%/%total%)!
+      Notify: <! sound:"ENTITY_GLOW_ITEM_FRAME_REMOVE_ITEM" !>&e已从你的物品栏中取出 &6%type%&e * %amount%!
+    Lore:
+      Desc: 更改物品描述
+      Usage: '[帮助]'
+      Add:
+        Desc: 向物品添加新的一行描述
+        Usage: <文本> [-pos <位置>]
+        Done: <! sound:"BLOCK_ANVIL_USE" !>&e已向物品添加新的一行描述!
+      Remove:
+        Desc: 从物品描述中删除一行
+        Usage: <位置>
+        Done: <! sound:"BLOCK_ANVIL_USE" !>&e已从物品描述中删除该行
+      Clear:
+        Desc: 清除物品描述
+        Done: <! sound:"BLOCK_ANVIL_USE" !>&e已清除物品描述!
+    Model:
+      Desc: 更改物品模型数据
+      Usage: <模型数据>
+      Done: <! sound:"BLOCK_ANVIL_USE" !>&e已将 &6%amount%&e 设置为 &6%item%&e 的模型数据!
+    Name:
+      Desc: 更改物品的展示名称
+      Usage: '[name]'
+      Done:
+        Changed: <! sound:"BLOCK_ANVIL_USE" !>&e物品已重命名!
+        Reset: <! sound:"BLOCK_ANVIL_USE" !>&e物品名称已恢复默认
+    Potion:
+      Error:
+        NotAPotion: '&c你必须持有药水!'
+        InvalidEffect: '&c无效效果!'
+      Add:
+        Desc: 给药水添加效果
+        Usage: <效果> <放大器> <持续时间>
+        Done: '&e已添加药水效果!'
+    Spawn:
+      Desc: 生成指定的物品堆叠
+      Usage: <材料> <数量> [世界] [x] [y] [z] [-name <名字>] [-lore <文本>] [-ench <附魔等级>]
+      Done: <! sound:"ENTITY_ITEM_PICKUP" !>&e已在&6%location_world%&e的&6%location_x%, %location_y%, %location_z%&e处创建了&6%type%&e * %amount%!
+    Unbreakable:
+      Desc: 使物品无法破坏
+      Usage: ''
+      Done: '<! sound:"BLOCK_ANVIL_USE" !>#ffeea2设置 #fdba5e%item%#ffeea2 无法破坏: #fdba5e%state%'
+      Error:
+        NotDamageable: <! sound:"ENTITY_VILLAGER_NO" !>#fdba5e%item%#fd5e5e 无法破坏
+  PlayerList:
+    Desc: 显示在线玩家列表
+  Mob:
+    Desc: 生物管理工具
+    Usage: '[帮助]'
+    Kill:
+      Desc: 称杀指定生物
+      Usage: '[类型] [-all][-r <半径>] [-w <世界>] [-lim <限制>]'
+      Error:
+        Type: '&c实体 &6%type%&c 不能被杀死!'
+      Done:
+        - <! prefix:"false" sound:"ENTITY_ZOMBIE_DEATH" !>
+        - ''
+        - '&e击杀生物详情: '
+        - ''
+        - '&e▪ &6%type%: &e%amount%'
+        - ''
+        - '&e共击杀了 &6%total%&e 只生物，范围为 &6%radius%&e 方块, 在 &6%world%&e 中'
+        - ''
+    Spawn:
+      Desc: 生成指定的生物
+      Usage: <类型> [数量] [-name <名字>]
+      Error:
+        Type: '&c无效或无法生成此实体类型!'
+      Done: '&e生成 &6x%amount% %type%'
+    Clear:
+      Desc: 杀死所有生物
+      Usage: '[范围] [-w <世界>]'
+      Done: '<! sound:"ENTITY_ZOMBIE_DEATH" !>#ffeea2在 #fdba5e%world% #ffeea2世界 #fdba5e%radius% #ffeea2方块半径内杀死 #fdba5e%amount%#ffeea2 只生物'
+  Near:
+    Desc: 显示附近的玩家
+    Usage: ''
+    Error:
+      Nothing: '&e该半径范围内没有玩家。半径为 &6%radius% &e个方块'
+  Nick:
+    Desc: 自定义昵称管理
+    Usage: '[帮助]'
+    Clear:
+      Desc: 移除 [玩家] 的自定义昵称
+      Usage: '[玩家] [-s]'
+      Target: '&e已为玩家&6%player_name%&e移除自定义昵称'
+      Notify: '&e你的自定义昵称已被移除'
+    Set:
+      Desc: 为玩家设置自定义昵称
+      Usage: <玩家> <昵称> [-s]
+      Target: '&e已将 &6%name% &e设置为玩家 &6%player_name% &e的自定义昵称'
+      Notify: '&e你的自定义昵称已被设置为 &6%name%'
+    Change:
+      Desc: 更改你的自定义昵称
+      Usage: <昵称>
+      Done: '&e你的自定义昵称已被更改为 &6%name%'
+    Error:
+      BadWords: '&c昵称包含禁止使用的词汇'
+      Regex: '&c昵称包含不允许使用的字符'
+      TooLong: '&c昵称长度不能超过 &6%amount% &c个字符'
+      TooShort: '&c昵称长度不能少于 &6%amount% &c个字符'
+  NoPhantom:
+    Desc: 开启或关闭 [玩家] 周围的幻翼生成
+    Usage: '[玩家] [-on] [-off] [-s]'
+    Toggle:
+      Notify: '&e反幻翼模式已 &6%state%'
+      Target: '&e已为玩家 &6%player_name% &e开启或关闭反幻翼模式'
+  PlayerInfo:
+    Desc: 显示玩家信息
+    Usage: <玩家>
+  Skull:
+    Desc: 获得 [玩家] 的头颅
+    Usage: <name>
+    Done: '&e你获得了 &6%player_name% &e的头颅'
+  Speed:
+    Desc: 更改[玩家]的飞行/行走速度
+    Usage: <speed> [玩家] [-fly] [-s]
+    Done:
+      Walk:
+        Notify: '&e你的行走速度已调整为 &6%amount%'
+        Target: '&e已为玩家 &6%player_name%&e 设置行走速度为 &6%amount%'
+      Fly:
+        Notify: '&e你的飞行速度已调整为 &6%amount%'
+        Target: '&e已为玩家 &6%player_name%&e 设置飞行速度为 &6%amount%'
+      Notify: '#ead931你的行走速度被设置为 #ea9631%amount%'
+      Target: '#ead931为 #ea9631%player_display_name% 设置行走速度为 #ea9631%amount%'
+  Sudo:
+    Desc: 强制玩家执行命令或发送聊天消息
+    Usage: <玩家> <command> [-c]
+    Done:
+      Command: '&e已强制玩家 &6%player_name% &e执行命令: &6/%command%'
+      Chat: '&e已强制玩家 &6%player_name% &e发送消息: &6%command%'
+  Suicide:
+    Desc: 自杀
+    Done: <! prefix:"false" !>&6%player_display_name% &e自杀了
+  Teleport:
+    Desc: 传送工具
+    Usage: '[帮助]'
+    Error:
+      Requests:
+        Cooldown: <! sound:"ENTITY_VILLAGER_NO" !>&c你需要等待 &6%time% &c后才能再次发送传送请求
+        Disabled: <! sound:"ENTITY_VILLAGER_NO" !>&c你无法向 &6%player_name% &c发送传送请求
+    Accept:
+      Desc: 接受传送请求/邀请
+      Usage: '[玩家]'
+      Notify:
+        Sender: <! sound:"ENTITY_ENDERMAN_TELEPORT" !>&e你已接受来自 &6%player_name% &e的传送请求!
+        Target: <! sound:"ENTITY_ENDERMAN_TELEPORT" !>&6%player_name% &e已接受你的传送请求!
+      Error:
+        Nothing: <! sound:"ENTITY_VILLAGER_NO" !>&e没有可接受(或请求已失效)的传送请求
+    Decline:
+      Desc: 拒绝传送请求/邀请
+      Usage: '[玩家]'
+      Notify:
+        Sender: <! sound:"ENTITY_VILLAGER_NO" !>&e你已拒绝 &6%player_name% &e的传送请求
+        Target: <! sound:"ENTITY_VILLAGER_NO" !>&6%player_name% &e已拒绝你的传送请求
+      Error:
+        Nothing: <! sound:"ENTITY_VILLAGER_NO" !>&e没有可拒绝(或请求已失效)的传送请求
+    Invite:
+      Desc: 提示玩家传送到你的位置
+      Usage: <玩家>
+      Notify:
+        Sender: <! sound:"ENTITY_ENDER_PEARL_THROW" !>&e向&6%player_name% &e发送了传送请求
+        Target:
+          - <! prefix:"false" sound:"ENTITY_ENDER_PEARL_THROW" !>
+          - ''
+          - '&e传送邀请: '
+          - ''
+          - '&e玩家 &6%player_name% &e邀请你传送到他的位置'
+          - '&e输入 &a/teleport accept %player_name%&e 接受邀请并传送'
+          - '&e或输入 &c/teleport decline %player_name%&e 拒绝邀请'
+          - ''
+          - '&e             <? show_text:"&7你将被传送到 &a%player_name% &7的位置" run_command:"/teleport accept %player_name%"?>&a[接受]</> &e        <? show_text:"&7你不会被传送到 &c%player_name% &7的位置" run_command:"/teleport decline %player_name%"?>&c[拒绝]</>'
+          - ''
+          - ''
+    Location:
+      Desc: 传送到指定的坐标
+      Usage: <x> <y> <z> [玩家] [-w <世界>] [-s]
+      Done:
+        Target: <! sound:"ENTITY_ENDERMAN_TELEPORT" !>&e已将玩家 &6%player_name% &e传送到 &6%location_x%，%location_y%，%location_z%&e，所在世界为 &6%location_world%
+        Notify: <! sound:"ENTITY_ENDERMAN_TELEPORT" !>&e已将你传送到 &6%location_x%，%location_y%，%location_z%&e，所在世界为 &6%location_world%
+    Request:
+      Desc: 向玩家发送传送请求
+      Usage: <玩家>
+      Notify:
+        Sender: <! sound:"ENTITY_ENDER_PEARL_THROW" !>&7已向玩家 &6%player_name%&7 发送传送请求
+        Target:
+          - <! prefix:"false" sound:"ENTITY_ENDER_PEARL_THROW" !>
+          - '&7'
+          - '&7传送请求:'
+          - '&7'
+          - '&7玩家 &6%player_name%&7 想要被传送到你身边'
+          - '&7输入 &a/teleport accept %player_name%&7 接受并传送他'
+          - '&7or &c/teleport decline %player_name%&7 拒绝'
+          - '&7'
+          - '&7             <? show_text:"&a%player_name%&7 将被传送到你这里" run_command:"/teleport accept %player_name%"?>&a[接受]</> &7        <? show_text:"&c%player_name%&7 不会被传送到你这里" run_command:"/teleport decline %player_name%"?>&c[拒绝]</>'
+          - '&7'
+          - '&7'
+    Toggle:
+      Desc: 切换传送请求/邀请
+      Usage: '[玩家] [-on] [-off] [-s]'
+      Target: '&7传送请求为 &6%state%&7 的 &6%player_name%'
+      Notify: '&7传送请求处于 &6%state% &7状态'
+    Summon:
+      Desc: 将玩家召唤到你的位置
+      Usage: <玩家> [-s]
+      Target: <! sound:"ENTITY_ENDERMAN_TELEPORT" !>&7玩家 &6%player_name%&7 将召唤到你的位置
+      Notify: <! sound:"ENTITY_ENDERMAN_TELEPORT" !>&7玩家 &6%player_name%&7 将你召唤过去
+    To:
+      Desc: 传送到指定的玩家
+      Usage: <玩家>
+      Done: <! sound:"ENTITY_ENDERMAN_TELEPORT" !>&7传送到 &6%player_name%
+    Send:
+      Desc: 一名玩家传送到另一名玩家身边
+      Usage: <玩家> <目标> [-s]
+      Target: <! sound:"ENTITY_ENDERMAN_TELEPORT" !>&7玩家 &6%source%&7 传送到 &6%target%
+      Notify: <! sound:"ENTITY_ENDERMAN_TELEPORT" !>&7你已传送到 &6%player_name%
+    Top:
+      Desc: 将 [玩家] 传送到最上方的方块
+      Usage: '[玩家] [-s]'
+      Target: <! sound:"ENTITY_ENDERMAN_TELEPORT" !>&7将玩家 &6%player_name%&7 传送到最高的方块上
+      Notify: <! sound:"ENTITY_ENDERMAN_TELEPORT" !>&7你已被传送到最高的方块上
+  Set:
+    Desc: 设置世界的时间
+    Usage: <ticks> [-w <世界>]
+    Done: '&e在世界 &6%world%&e 中将时间设置为 &6%time%&7(%total% 个刻钟)'
+  Personal:
+    Desc: 设置 [玩家] 的个人时间
+    Usage: <ticks> [玩家] [-r] [-s]
+    Target: '&e将 &6%player_name%&e 的时间设置为 &6%time%&7(%total% 个刻钟)'
+    Notify: '&e你的个人时间已设置为 &6%time%&7(%total% 个刻钟)'
+  Smite:
+    Desc: 用闪电攻击 [玩家] 玩家
+    Usage: '[玩家] [-s]'
+    Target: '&e被闪电击中的玩家为 &6%player_name%&e!'
+    Notify: '&e你被闪电击中了!'
+  Vanish:
+    Desc: 切换 [玩家] 的隐身模式
+    Usage: '[玩家] [-on] [-off] [-s]'
+    Notify: '&e隐身模式已 &6%state%'
+    Target: '&e将隐身模式设为 &6%state%&e，对玩家 &6%player_name%&e 生效'
+  Weather:
+    Desc: 更改世界的天气
+    Usage: <类型> [-w <世界>]
+    Set: '&e天气已设置为 &6%type%&e，并应用在世界 &6%world%'
+  Workbench:
+    Desc: 打开便携式工作台
+    Usage: '[玩家] [-s]'
+    Target: '&e为玩家 &6%player_name%&e 打开了便携式工作台'
+    Notify: <! type:"action_bar" !>&e你已打开便携式工作台
+  Time:
+    Desc: 时间管理工具
+    Usage: '[帮助]'
+    Show:
+      Desc: 显示个人和当前世界时间
+      Usage: '[-w <世界>]'
+      Info:
+        - <! prefix:"false" !>
+        - '&7'
+        - '&7时间信息：'
+        - '&7'
+        - '&7▪ &6%world% 时间：&7%world_time%&7（%world_ticks% 刻）'
+        - '&7▪ &6个人时间：&7%player_time%&7（%player_ticks% 刻）'
+        - '&7▪ &6服务器时间：&7%server_time%'
+        - '&7'
+    Set:
+      Desc: 设置世界时间
+      Usage: <刻数> [-w <世界>]
+      Done: '&7已将时间设置为&6%time%&7（%total% 刻）&7，世界为&6%world%'
+    Personal:
+      Desc: 设置[玩家的]个人时间
+      Usage: <刻数> [玩家] [-r] [-s]
+      Target: '&7已将时间设置为&6%time%&7（%total% 刻）&7，玩家为&6%player_name%'
+      Notify: '&7你的个人时间已设置为&6%time%&7（%total% 刻）'
+  Broadcast:
+    Desc: 广播一条消息
+    Usage: <消息>
+    Format: <! prefix:"false" !>&6[&e广播&6] &c%msg%
+  CText:
+    Invalid: <! prefix:"false" !>&7TXT 文件 &c%file% &7未找到！
+  Spawner:
+    Desc: 改变生成类型
+    Usage: <type>
+    Done: <! prefix:"false" !>&7生成类型已更改为 &e%type%&7
+    Error:
+      Type: <! prefix:"false" !>&7无法生成该类型
+      Block: <! prefix:"false" !>&c你必须看着 &e刷怪笼
+  NoMobTarget:
+    Desc: 切换怪物目标 [为玩家]
+    Usage: '[玩家] [-on] [-off] [-s]'
+    Toggle:
+      Notify: '#ffeea2反怪物目标模式 #fdba5e%state%'
+      Target: '#ffeea2为 #fdba5e%player_name% #ffeea2设置反怪物目标模式为 #fdba5e%state%'
+  TogglePM:
+    Desc: 切换 [玩家] 的私人信息
+    Usage: '[玩家] [-on] [-off] [-s]'
+    Toggle:
+      Notify: '#ffeea2你的私信已显示为 #fdba5e%state%'
+      Target: '#ffeea2为 #fdba5e%player_name% #ffeea2设置私信为 #fdba5e%state%'
+  EnchantmentSeed:
+    Desc: 重新生成 [玩家] 附魔种子
+    Usage: '[玩家] [-s]'
+    Notify: '#ead931你的附魔种子已更新，新的附魔优惠现已可'
+    Target: '#ead931为 #ea9631%player_display_name% #ead931更新了附魔种子'
+  FlySpeed:
+    Desc: 改变 [玩家] 的飞线速度
+    Usage: <速度> [玩家] [-s]
+    Done:
+      Notify: '#ead931你的飞行速度已设置为 #ea9631%amount%'
+      Target: '#ead931为 #ea9631%player_display_name%#ead931 设置飞行速度为 #ea9631%amount%'
+  Grindstone:
+    Desc: 打开便携式砂轮
+    Usage: '[玩家] [-s]'
+    Notify: <! type:"action_bar" !>#ead931你打开了砂轮
+    Target: '#ead931为 #ea9631%player_display_name%#ead931 打开了砂轮'
+  Health:
+    Desc: 管理 [玩家] 生命值
+    Usage: <操作> <数量> [玩家] [-s]
+    Add:
+      Target: '#ead931为 #ea9631%player_display_name%#ead931 添加了 #ea9631%amount%#ead931 的生命值。新的生命值: #ea9631%current%#ead931/#ea9631%max%'
+      Notify: '<! type:"action_bar" !>#ead931你获得了 #ea9631%amount%#ead931 的生命值：#ea9631%current%#ead931/#ea9631%max%'
+    Remove:
+      Target: '#ead931从 #ea9631%player_display_name%#ead931 移除了 #ea9631%amount%#ead931 的生命值。新的生命值: #ea9631%current%#ead931/#ea9631%max%'
+      Notify: '<! type:"action_bar" !>#ead931你失去了 #ea9631%amount%#ead931 的生命值：#ea9631%current%#ead931/#ea9631%max%'
+    Set:
+      Target: '#ead931为 #ea9631%player_display_name%#ead931 设置了 #ea9631%amount%#ead931 的生命值。新的生命值: #ea9631%current%#ead931/#ea9631%max%'
+      Notify: '<! type:"action_bar" !>#ead931你的生命值已被设置为 #ea9631%amount%#ead931/#ea9631%max%'
+  Loom:
+    Desc: 打开便携式织布机
+    Usage: '[玩家] [-s]'
+    Notify: <! type:"action_bar" !>#ead931你打开了织布机
+    Target: '#ead931为 #ea9631%player_display_name%#ead931 打开了织布机'
+  Mentions:
+    Desc: 切换 [玩家] 的提及
+    Usage: '[player] [-on] [-off] [-s]'
+    Toggle:
+      Notify: '#ffeea2你的提及已为 #fdba5e%state%#ffeea2.'
+      Target: '#ffeea2设置 #fdba5e%player_name% #ffeea2的提及为 #fdba5e%state%'
+User:
+  Settings:
+    Teleport:
+      Editor:
+        Enter:
+          Player: '&7请输入玩家名称..'
+EquipmentSlot:
+  HAND: 手持物品
+  OFF_HAND: 副手
+  FEET: 脚部装备
+  LEGS: 腿部装备
+  CHEST: 胸部装备
+  HEAD: 头部装备
+WeatherType:
+  CLEAR: 晴天
+  STORM: 雨天
+  THUNDER: 暴雨
+Worlds:
+  Command:
+    WorldManager:
+      Desc: 世界管理工具
+    Worlds:
+      Create:
+        Usage: <名称>
+        Desc: 创建一个新的世界配置
+        Error: '&c已存在该名称的世界!'
+        Done: '&e已创建命名为 &6%world_id%&e 的世界配置!'
+      Delete:
+        Usage: <世界> [-f]
+        Desc: 删除指定的世界配置 [及其文件夹]
+        Error: '&c无法删除 &6%world_id%&c!世界已被加载或存在文件访问错误'
+        Done: '&e已删除名为 &6%world_id%&e 的世界!'
+      Editor:
+        Desc: 打开世界编辑器
+      Load:
+        Usage: <世界>
+        Desc: 将指定的世界加载到服务器中
+        Error: '&c该世界已被加载或其配置无效!'
+        Done: '&e已加载世界: &6%world_id%&e!'
+      Unload:
+        Usage: <世界>
+        Desc: 将指定的世界从服务器卸载
+        Error: '&c该世界已被卸载!'
+        Done: '&e已卸载世界: &6%world_id%&e!'
+  Error:
+    CommandBlocked: '&c你不能在这个世界使用该命令!'
+    FlyDisabled: '&c该世界不允许飞行!'
+  Editor:
+    Enter:
+      Value: '&7输入 &a[数值]'
+      Spawns: '&7输入 &a[类别] [数值]'
+      Seconds: '&7输入 &a[秒数]'
+      Generator: '&7输入 &a[生成器名称]'
+    World:
+      Object:
+        Name: '&e世界: &f%world_id%'
+        Lore:
+          - '&e当前:'
+          - '&e▪ &7创建时间: &e%world_is_created%'
+          - '&e▪ &7加载状态: &e%world_is_loaded%'
+          - '&e▪ &7自动加载: &e%world_auto_load%'
+          - ''
+          - '&a操作:'
+          - '&a▪ &f左键点击: &a设置'
+          - '&a▪ &fShift+右键点击: &a删除 &c(如果未创建)'
+      AutoLoad:
+        Name: '&e自动加载'
+        Lore:
+          - '&e▪ &7启用状态: &e%world_auto_load%'
+          - ''
+          - '&7设置是否在服务器启动时自动加载此世界'
+          - ''
+          - '&a操作:'
+          - '&a▪ &f左键点击: &a切换'
+      Load:
+        Name: '&e加载世界'
+        Lore: []
+      Unload:
+        Name: '&e卸载世界'
+        Lore: []
+      Delete:
+        Name: '&e删除世界'
+        Lore:
+          - '&7删除世界的配置和/或文件。&c（无法撤消）'
+          - ''
+          - '&a操作:'
+          - '&a▪ &fQ键: &a删除文件'
+          - '&a▪ &fShift+右键点击: &a删除配置和文件'
+      Generator:
+        Name: '&e[创建]区块生成器'
+        Lore:
+          - '&e▪ &7当前: &e%world_generator%'
+          - ''
+          - '&7设置此世界的区块生成器'
+          - '&7它会显示可用的所有生成器'
+          - '&7包括其他插件的生成器'
+          - ''
+          - '&a操作:'
+          - '&a▪ &f左键点击: &a修改'
+      Environment:
+        Name: '&e[创建]环境'
+        Lore:
+          - '&e▪ &7当前: &e%world_environment%'
+          - ''
+          - '&7设置世界的环境'
+          - ''
+          - '&a操作:'
+          - '&a▪ &f左键点击: &a切换'
+      Structures:
+        Name: '&e[创建] 结构生成'
+        Lore:
+          - '&e▪ &7启用状态: &e%world_structures%'
+          - ''
+          - '&7设置是否在此世界中生成结构物'
+          - ''
+          - '&a操作:'
+          - '&a▪ &f左键点击: &a切换'
+      GameRules:
+        Name: '&e游戏规则'
+        Lore:
+          - '&7在此管理世界的游戏规则!'
+          - ''
+          - '&a操作:'
+          - '&a▪ &f左键点击: &a进入'
+      AutoWipe:
+        Name: '&e自动重置'
+        Lore:
+          - '&7设置此世界是否应在'
+          - '&7一定的间隔时间内自动重置'
+          - ''
+          - '&e当前:'
+          - '&e▪ &7启用状态: &e%world_auto_wipe_enabled%'
+          - '&e▪ &7间隔时间: &e%world_auto_wipe_interval%'
+          - '&e▪ &7上次重置时间: &e%world_auto_wipe_last_wipe%'
+          - '&e▪ &7下次重置时间: &e%world_auto_wipe_next_wipe%'
+          - ''
+          - '&a操作:'
+          - '&a▪ &f左键点击: &a切换'
+          - '&a▪ &f右键点击: &a更改间隔时间'
+          - '&a▪ &fQ键: &a设置上次重置时间'
+      AutoSave:
+        Name: '&e自动保存'
+        Lore:
+          - '&e▪ &7启用状态: &e%world_auto_save%'
+          - ''
+          - '&7设置此世界是否应自动保存'
+          - ''
+          - '&a操作:'
+          - '&a▪ &f左键点击: &a切换'
+      PvPAllowed:
+        Name: '&ePvP允许'
+        Lore:
+          - '&e▪ &7启用状态: &e%world_pvp_allowed%'
+          - ''
+          - '&7设置此世界的PVP设置'
+          - ''
+          - '&a操作:'
+          - '&a▪ &f左键点击: &a切换'
+      Difficulty:
+        Name: '&e难度'
+        Lore:
+          - '&e▪ &7当前: &e%world_difficulty%'
+          - ''
+          - '&7设置世界的难度'
+          - ''
+          - '&a操作:'
+          - '&a▪ &f左键点击: &a切换'
+      SpawnLimits:
+        Name: '&e刷怪限制'
+        Lore:
+          - '&7设置此世界每个区块最多可以生成'
+          - '&7多少个刷怪类型实体'
+          - ''
+          - '&e当前:'
+          - '&7%world_spawn_limits%'
+          - ''
+          - '&c注: '
+          - '&c▪ &7使用 &c-1 &7表示无限制'
+          - ''
+          - '&a操作:'
+          - '&a▪ &f左键点击: &a修改'
+      SpawnTicks:
+        Name: '&e每次刷怪的ticks数'
+        Lore:
+          - '&7设置本世界每次刷怪操作的ticks值'
+          - ''
+          - '&e当前:'
+          - '&7%world_spawn_ticks%'
+          - ''
+          - '&a操作:'
+          - '&a▪ &f左键点击: &a修改'
+      Rule:
+        Object:
+          Name: '&e规则: &f%name%'
+          Lore:
+            - '&e▪ &7数值: &e%value%'
+            - ''
+            - '&a操作:'
+            - '&a▪ &f左键点击: &a切换 / 修改'
+Difficulty:
+  PEACEFUL: 平和
+  EASY: 简单
+  NORMAL: 普通
+  HARD: 困难
+Homes:
+  Command:
+    Homes:
+      Desc: 家管理
+      Usage: '[帮助]'
+      Delete:
+        Desc: 删除家
+        Usage: <家>
+      Teleport:
+        Desc: 传送到家
+        Usage: <家>
+      Visit:
+        Desc: 参观公共家或邀请你的家
+        Usage: <玩家> <家>
+      List:
+        Desc: 家列表
+        Usage: '[玩家]'
+      Set:
+        Desc: 创建一个新的家点
+        Usage: '[名称]'
+      Invite:
+        Desc: 邀请玩家到家里
+        Usage: <玩家> [家]
+      Invute:
+        Usage: '#ffeea2你邀请了 #fdba5e%player_name%#ffeea2 到你的 %home_name%#ffeea2 家!'
+    HomesAdmin:
+      Desc: 管理员家管理工具
+      Usage: '[帮助]'
+      Delete:
+        Desc: 删除玩家的家
+        Usage: <玩家> [家名]
+        Done:
+          Single: 你已删除 &a%player_name% &7的 &a%home_id% &7家
+          All: 你已删除 &a%player_name% &7的所有家
+      Create:
+        Desc: 为玩家创建家
+        Usage: <玩家> [名称]
+        Done:
+          Fresh: 你为 &a%player_name% &7创建了 &a%home_id% &7家
+          Edited: 你编辑了 &a%player_name% &7的 &a%home_id% &7家的位置
+  Home:
+    Teleport:
+      - <! type:"titles:20:50:20" sound:"ENTITY_ENDERMAN_TELEPORT" !>
+      - '&a家'
+      - '&7你传送到了你的&a%home_name%&7家'
+    Visit:
+      Success:
+        - <! type:"titles:20:50:20" sound:"ENTITY_ENDERMAN_TELEPORT" !>
+        - '&e访客家'
+        - '&7你参观了&e%home_owner%&7的&e%home_name%&7家'
+      Error:
+        NotPermitted: <! sound:"ENTITY_VILLAGER_NO" !>&c你没有访问此家的邀请!
+    Set:
+      Error:
+        Limit: '&c你已经设置了最大数量的家了，无法再设置更多'
+        World: '&c你无法在这个世界设置家!'
+        Region: '&c你无法在这个区域设置家!'
+        Protection: '&c你无法在受保护的区域设置家!'
+      Success:
+        - <! type:"titles:20:50:20" sound:"BLOCK_WOODEN_DOOR_OPEN" !>
+        - '&a设置家成功!'
+        - '&7传送: &a/homes teleport %home_id%&7 | 菜单: &a/homes list'
+      Edited:
+        - <! type:"titles:20:50:20" sound:"BLOCK_WOODEN_DOOR_CLOSE" !>
+        - '&a设置家成功!'
+        - '&7家的位置已经更新'
+    Delete:
+      Done:
+        - <! type:"titles:20:50:20" sound:"ENTITY_ZOMBIE_BREAK_WOODEN_DOOR" !>
+        - '&a删除家成功!'
+        - '&7你已经删除了&a%home_name%&7家'
+    Error:
+      Invalid: '&c不存在该id的家'
+  Editor:
+    Enter:
+      PlayerName: '&7输入 &a[玩家名字]'
+      HomeName: '&7输入 &a[家名字]'
+HomeType:
+  PUBLIC: 公共的
+  PRIVATE: 私有的
+# --------------------------------------------------
+# Kits Module Lang
+# --------------------------------------------------
+Kits:
+  Command:
+    Kits:
+      Desc: 礼包管理
+      Usage: '[帮助]'
+      Editor:
+        Desc: 打开礼包编辑器
+      Preview:
+        Desc: 预览指定礼包的内容
+        Usage: <礼包名> [玩家]
+        Others: '#ead931为 #ea9631%player_display_name%#ead931 打开了 #ea9631%kit_name%#ead931 礼包预览'
+      Give:
+        Desc: 给予玩家一个礼包
+        Usage: <礼包名> <玩家>
+        Done: 已给予&a%kit_name% &7礼包给玩家&a%player_display_name%&7!
+        Notify: <! prefix:"false" !>&8你从玩家 &7%player_display_name% &8那里获得了 &7%kit_name%
+      Get:
+        Desc: 获取指定礼包
+        Usage: <礼包名>
+      List:
+        Desc: 打开礼包GUI界面
+        Usage: '[玩家]'
+        Others: '#ead931为 #ea9631%player_display_name% #ead931打开礼包GUI'
+      ResetCooldown:
+        Desc: 重置 [玩家] 的礼包冷却时间
+        Usage: <礼包> [玩家] [-s]
+        Done: '#ead931为 #ea9631%player_name%#ead931 重置了 #ea9631%kit_name%#ead931 礼包的冷却时间'
+        Notify: '#ead931你的 #ea9631%kit_name%#ead931 礼包冷却时间已被重置！'
+      SetCooldown:
+        Desc: 设置 [玩家] 的礼包冷却时间
+        Usage: <礼包> <数量> [玩家] [-s]
+        Done: '#ead931为 #ea9631%player_name%#ead931 设置了 #ea9631%kit_name%#ead931 礼包的冷却时间为 #ea9631%amount%'
+        Notify: '#ead931你的 #ea9631%kit_name%#ead931 礼包冷却时间已被设置为 #ea9631%amount%#ead931！'
+  Kit:
+    Get:
+      - <! type:"titles:20:60:20" sound:"ITEM_ARMOR_EQUIP_LEATHER" !>&a礼包领取成功!
+      - '&7你获得了&a%kit_name%&7礼包!'
+    Error:
+      NoKits: '&c没有可用的礼包'
+      InvalidKit: '&c没有这样的礼包!'
+      NoPermission: '&c你没有使用该礼包的权限!'
+      NotEnoughFunds: '&c你无法购买该礼包!你需要 &c%kit_cost_money%'
+      Cooldown:
+        Expirable: '&c你需要等待 &e%cooldown% &c才能再次使用该礼包'
+        OneTimed: '&c你已经使用过该礼包了，不能再次使用'
+  Editor:
+    Enter:
+      Id: '&7输入&a唯一&a的礼包标识符..'
+      Command: '&7输入&a指令..'
+      Cooldown: '&7输入&a冷却时间&7... &a(单位: 秒)'
+      Cost: '&7输入&a金钱费用&7..'
+      Name: '&7输入显示名称..'
+      Description: '&7输入&a描述..'
+      Priority: '&7输入&a优先级..'
+    Error:
+      AlreadyExists: '&c礼包已经存在!'
+Editor:
+  KitsEditorType:
+    KIT_OBJECT:
+      Name: '%kit_name% &7(&f%kit_id%&7)'
+      Lore:
+        - '&6[?] 描述:'
+        - '&7优先级: &f%kit_priority%'
+        - '&7权限: &f%kit_permission_required%'
+        - ' '
+        - '&a[>] 操作:'
+        - '&f左键点击 &f编辑'
+        - '&fShift+右键点击 删除 &7(不可撤销)'
+    KIT_CREATE:
+      Name: 创建礼包
+      Lore:
+        - '&6[?] 描述:'
+        - '&7创建一个新的礼包'
+        - ' '
+        - '&a[>] 操作:'
+        - '&f左键点击 &f创建'
+    KIT_CHANGE_NAME:
+      Name: 礼包显示名称
+      Lore:
+        - '&b[?] 当前:'
+        - '&a%kit_name%'
+        - ' '
+        - '&6[?] 描述:'
+        - '&7设置礼包的显示名称'
+        - '&7在GUI界面、消息中使用'
+        - ' '
+        - '&a[>] 操作:'
+        - '&f左键点击 &f更改'
+    KIT_CHANGE_DESCRIPTION:
+      Name: 礼包描述
+      Lore:
+        - '&b[?] 当前:'
+        - '&a%kit_description%'
+        - ' '
+        - '&6[?] 描述:'
+        - '&7设置礼包的描述。为玩家提供'
+        - '&7简要说明礼包的作用'
+        - ' '
+        - '&a[>] 操作:'
+        - '&f左键点击 &f添加行'
+        - '&f右键点击 &f清空'
+    KIT_CHANGE_COOLDOWN:
+      Name: 使用冷却时间
+      Lore:
+        - '&b[?] 当前:'
+        - '&a%kit_cooldown%'
+        - ' '
+        - '&6[?] 描述:'
+        - '&7设置礼包使用的冷却时间（以秒为单位）'
+        - '&7玩家在再次使用之前必须等待一定时间'
+        - ' '
+        - '&e[!] 注意:'
+        - '&6将此设置为-1以进行一次性使用'
+        - '&6将此设置为0表示没有冷却时间'
+        - ' '
+        - '&a[>] 操作:'
+        - '&f左键点击 &f更改'
+        - '&f右键点击 &f设置为一次性使用'
+    KIT_CHANGE_PERMISSION:
+      Name: 权限要求
+      Lore:
+        - '&b[?] 当前:'
+        - '&a要求: &f%kit_permission_required%'
+        - '&a节点: &f%kit_permission_node%'
+        - ' '
+        - '&6[?] 描述:'
+        - '&7设置玩家是否必须具备权限才能'
+        - '&7使用该礼包'
+        - ' '
+        - '&a[>] 操作:'
+        - '&f左键点击 &f切换'
+    KIT_CHANGE_COST:
+      Name: 使用花费
+      Lore:
+        - '&b[?] 当前:'
+        - '&a$%kit_cost_money%'
+        - ' '
+        - '&6[?] 描述:'
+        - '&7设置玩家必须支付多少金钱才能使用'
+        - '&7该礼包'
+        - ' '
+        - '&c[!] 警告:'
+        - '&4必须安装Vault&Economy插件'
+        - ' '
+        - '&a[>] 操作:'
+        - '&f左键点击 &f更改'
+        - '&f右键点击 &f禁用'
+    KIT_CHANGE_PRIORITY:
+      Name: 礼包优先级
+      Lore:
+        - '&b[?] 当前:'
+        - '&a%kit_priority%'
+        - ' '
+        - '&6[?] 描述:'
+        - '&7设置礼包的优先级。此选项'
+        - '&7有助于在GUI中对礼包进行排序'
+        - ' '
+        - '&a[>] 操作:'
+        - '&f左键点击 &f更改'
+    KIT_CHANGE_ICON:
+      Name: 礼包图标
+      Lore:
+        - '&b[?] 当前:'
+        - '&a%kit_icon%'
+        - ' '
+        - '&6[?] 描述:'
+        - '&7设置在GUI中表示该礼包的图标'
+        - ' '
+        - '&a[>] 操作:'
+        - '&2拖放 &f替换'
+    KIT_CHANGE_COMMANDS:
+      Name: 礼包命令
+      Lore:
+        - '&b[?] 当前:'
+        - '&a%kit_commands%'
+        - ' '
+        - '&6[?] 描述:'
+        - '&7命令列表，在分配礼包给玩家时'
+        - '&7将被执行'
+        - ' '
+        - '&a[>] 操作:'
+        - '&f左键点击 &f添加命令'
+        - '&f右键点击 &f清空'
+    KIT_CHANGE_INVENTORY:
+      Name: 礼包物品
+      Lore:
+        - '&6[?] 描述:'
+        - '&7添加到玩家背包中的物品'
+        - ' '
+        - '&e[!] 注意:'
+        - '&6只需添加/取走物品，然后按ESC键保存'
+        - ' '
+        - '&a[>] 操作:'
+        - '&f左键点击 &f导航'
+    KIT_CHANGE_ARMOR:
+      Name: 礼包护甲
+      Lore:
+        - '&6[?] 描述:'
+        - '&7添加到玩家护甲栏中的盔甲'
+        - ' '
+        - '&e[!] 注意:'
+        - '&6只需添加/拿走物品，然后按ESC键保存'
+        - ' '
+        - '&c[!] 警告:'
+        - '&4请按以下顺序操作:'
+        - '&4靴子 →'
+        - '&4护腿 → 胸甲 → 头盔 →'
+        - '&4副手'
+        - ' '
+        - '&a[>] 操作:'
+        - '&f左键点击 &f导航'
+  SpawnsEditorType:
+    SPAWN_OBJECT:
+      Name: '&e%spawn_name%&7 (&f%spawn_id%&7)'
+      Lore:
+        - '&e▪ &7优先级: &e%spawn_priority%'
+        - '&e▪ &7权限要求: &e%spawn_permission_required%'
+        - ''
+        - '&a操作:'
+        - '&a▪ &f左键点击: &a编辑'
+        - '&a▪ &fShift+右键点击: &a删除 &c(无法撤销)'
+    SPAWN_CHANGE_NAME:
+      Name: '&e显示名称'
+      Lore:
+        - '&7设置出生点的显示名称'
+        - '&7用于消息和GUI'
+        - ''
+        - '&e当前:'
+        - '&e▪ &7显示名称: &e%spawn_name%'
+        - ''
+        - '&a操作:'
+        - '&a▪ &f左键点击: &a更改'
+    SPAWN_CHANGE_LOCATION:
+      Name: '&e位置'
+      Lore:
+        - '&7玩家将被传送到的位置'
+        - ''
+        - '&e当前:'
+        - '&e▪ &7位置: &e%spawn_location_x%, %spawn_location_y%, %spawn_location_z% 在 %spawn_location_world%'
+        - ''
+        - '&a操作:'
+        - '&a▪ &f左键点击: &a设置为你的位置'
+    SPAWN_CHANGE_PERMISSION:
+      Name: '&e权限要求'
+      Lore:
+        - '&7设置玩家在使用该出生点时'
+        - '&7是否需要权限'
+        - ''
+        - '&e当前:'
+        - '&e▪ &7启用: &e%spawn_permission_required%'
+        - '&e▪ &7权限节点: &e%spawn_permission_node%'
+        - ''
+        - '&a操作:'
+        - '&a▪ &f左键点击: &a切换'
+    SPAWN_CHANGE_DEFAULT:
+      Name: '&e是否默认出生点?'
+      Lore:
+        - '&7设置该出生点是否为默认出生点'
+        - '&7在没有其他出生点设置、指定或可用时使用的默认出生点'
+        - ''
+        - '&e当前:'
+        - '&e▪ &7是否默认: &e%spawn_is_default%'
+        - ''
+        - '&a操作:'
+        - '&a▪ &f左键点击: &a切换'
+    SPAWN_CHANGE_PRIORITY:
+      Name: '&e优先级'
+      Lore:
+        - '&7当玩家有多个可用出生点时，优先级最高的出生点将被使用'
+        - ''
+        - '&6注意:'
+        - '&7仅对登录/死亡出生点有效'
+        - ''
+        - '&e当前:'
+        - '&e▪ &7优先级: &e%spawn_priority%'
+        - ''
+        - '&a操作:'
+        - '&a▪ &f左键点击: &a更改'
+    SPAWN_CHANGE_LOGIN_TELEPORT:
+      Name: '&e登录传送'
+      Lore:
+        - '&7当 &e"全局"&7 启用时，指定组中的所有玩家将在登录时传送到该出生点'
+        - ''
+        - '&7当 &e"对新玩家"&7 启用时，只有首次加入的玩家将在登录时传送'
+        - ''
+        - '&e当前:'
+        - '&e▪ &7全局: &e%spawn_login_teleport_enabled%'
+        - '&e▪ &7对新玩家: &e%spawn_login_teleport_newbies%'
+        - '&e▪ &7受影响组: &e%spawn_login_teleport_groups%'
+        - ''
+        - '&a操作:'
+        - '&a▪ &f左键点击: &a切换全局'
+        - '&a▪ &f右键点击: &a切换对新玩家'
+        - '&a▪ &fShift+左键点击: &a添加组'
+        - '&a▪ &fShift+右键点击: &a清除组'
+    SPAWN_CHANGE_RESPAWN_TELEPORT:
+      Name: '&e重生传送'
+      Lore:
+        - '&7启用后，指定组中的所有玩家将在死亡后重生时传送到该出生点'
+        - ''
+        - '&6注意:'
+        - '&7对于选择了出生点的玩家，此功能将不起作用'
+        - ''
+        - '&e当前:'
+        - '&e▪ &7启用: &e%spawn_respawn_teleport_enabled%'
+        - '&e▪ &7受影响组: &e%spawn_respawn_teleport_groups%'
+        - ''
+        - '&a操作:'
+        - '&a▪ &f左键点击: &a切换'
+        - '&a▪ &fShift+左键点击: &a添加组'
+        - '&a▪ &fShift+右键点击: &a清除组'
+Warps:
+  Command:
+    Warps:
+      Desc: 传送点管理
+      Usage: '[帮助]'
+      Delete:
+        Desc: 删除指定的传送点
+        Usage: <传送点>
+      Create:
+        Desc: 设置新的传送点
+        Usage: <传送点>
+      List:
+        Desc: 打开传送点GUI界面
+        Usage: '[玩家]'
+        Others: 打开 &a%player_display_name%&7 的传送点GUI界面
+      Teleport:
+        Desc: 传送到指定的传送点
+        Usage: <传送点> [玩家]
+        Others: 玩家 &a%player% &7被传送至传送点 &a%warp_name%&7...
+      ResetCooldown:
+        Desc: 重置 [玩家] 的传送冷却时间
+        Usage: <传送点> [玩家] [-s]
+        Done: '#ead931为 #ea9631%player_name%#ead931 重置了 #ea9631%warp_name%#ead931 传送点的冷却时间'
+        Notify: '#ead931你的 #ea9631%warp_name%#ead931 传送冷却时间已被重置！'
+      SetCooldown:
+        Desc: 设置 [玩家] 的传送冷却时间
+        Usage: <传送点> <数量> [玩家] [-s]
+        Done: '#ead931为 #ea9631%player_name%#ead931 设置了 #ea9631%warp_name%#ead931 传送点的冷却时间为 #ea9631%amount%'
+        Notify: '#ead931你的 #ea9631%warp_name%#ead931 传送冷却时间已被设置为 #ea9631%amount%'
+  Warp:
+    Error:
+      Invalid: '&c无效传送点!'
+    Creation:
+      New:
+        - <! type:"titles:20:50:30" sound:"BLOCK_ANVIL_PLACE" !>
+        - '&a传送点创建成功!'
+        - '&7传送: &a/warp %warp_id%&7 | 编辑: &a /warplist'
+      Relocate:
+        - <! type:"titles:20:50:30" sound:"BLOCK_ANVIL_PLACE" !>
+        - '&a传送点已重定位!'
+        - '&7传送点&a%warp_name%&7已经被移到这里'
+      Error:
+        Limit:
+          - <! type:"titles:20:50:30" sound:"ENTITY_VILLAGER_NO" !>
+          - '&c已达到上限!'
+          - '&7你的传送点数量已达到上限'
+        World:
+          - <! type:"titles:20:50:30" sound:"ENTITY_VILLAGER_NO" !>
+          - '&c无法在此世界内设置传送点!'
+          - '&c你不能在该世界内设置传送点'
+        Exists:
+          - <! type:"titles:20:50:30" sound:"ENTITY_VILLAGER_NO" !>
+          - '&c传送点已存在!'
+          - '&7已存在同名的传送点!'
+        Unsafe:
+          - <! type:"titles:20:50:30" sound:"ENTITY_VILLAGER_NO" !>
+          - '&c不安全的位置!'
+          - '&7你不能在此处设置传送点!'
+    Teleport:
+      Done:
+        - <! type:"titles:20:50:30" sound:"ENTITY_ENDERMAN_TELEPORT" !>
+        - '&e%warp_name%'
+        - '&7%warp_description%'
+      Error:
+        NotEnoughFunds:
+          - <! type:"titles:20:50:30" sound:"ENTITY_VILLAGER_NO" !>
+          - '&c余额不足!'
+          - '&7你需要 &c$%warp_visit_cost%&7 才能传送到该传送点!'
+        NoPermission:
+          - <! type:"titles:20:50:30" sound:"ENTITY_VILLAGER_NO" !>
+          - '&c无权限!'
+          - '&7你没有访问 %warp_name% 传送点的权限!'
+        Cooldown:
+          - <! type:"titles:20:50:30" sound:"ENTITY_VILLAGER_NO" !>
+          - '&c等待冷却!'
+          - '&7你需要等待 &c%cooldown%&7 后才能再次访问 &c%warp_name%&7'
+        Time:
+          - <! type:"titles:20:50:30" sound:"ENTITY_VILLAGER_NO" !>
+          - '&c时段错误!'
+          - '&6%warp_name%&7 在当前时段无法访问'
+  Delete:
+    Done:
+      - <! type:"titles:20:50:30" sound:"BLOCK_GLASS_BREAK" !>
+      - '&c传送点已删除'
+      - '&7传送点 &c%warp_name%&7 已被删除'
+  Editor:
+    Enter:
+      CostMoney: '&7输入 &a[花费]'
+      Command: '&7输入 &a[命令名称]'
+      Times: '&7输入&a[时间段] &(10:00 14:00) '
+      Cooldown: '&7输入 &a[冷却时间]'
+      Name: '&7输入 &a[显示名称]'
+      Description: '&7输入 &a[说明]'
+WarpSortType:
+  WARP_NAME: 传送点名称
+  WARP_ID: 传送点编号
+  WARP_TYPE: 传送点类型
+  VISIT_COST: 访问花费
+WarpType:
+  SERVER: 服务器
+  PLAYER: 玩家
+Chat:
+  Command:
+    ShortChannel:
+      Desc: 切换聊天频道或向频道发送消息
+      Usage: '[消息]'
+    Channel:
+      Desc: 管理聊天频道
+      Join:
+        Usage: <频道>
+        Desc: Join a channel.
+      Leave:
+        Desc: 离开频道
+        Usage: <频道>
+      Set:
+        Desc: 设置默认频道
+        Usage: <频道>
+    Join:
+      Desc: 加入频道
+    Me:
+      Desc: 显示操作
+      Usage: <操作>
+    Reply:
+      Desc: 快速回复最近的私信
+      Usage: <消息>
+      Error:
+        Empty: <! prefix:"false" !>&c你还没有收到任何私人消息
+    Tell:
+      Desc: 给玩家发送私信
+      Usage: <玩家> <消息>
+    Spy:
+      Desc: 聊天间谍功能
+      Usage: '[帮助]'
+      Mode:
+        Desc: 切换指定的间谍模式
+        Usage: <类型> [玩家] [状态]
+        Done:
+          Others: 将&c%type% &7间谍模式设置为&f%state%&7，针对玩家&c%player_name%
+          Notify: '&c%type% &7间谍模式:&f%state%'
+      Logger:
+        Desc: 为玩家添加或删除指定的间谍记录器
+        Usage: <add | remove> <类型> <玩家>
+        Done:
+          Add: 将&c%type% &7间谍记录器设置为&f%state%&7，针对玩家&c%player_name%
+    ClearChat:
+      Desc: 清空聊天栏
+      Done: <! prefix:"false" !>&7聊天已经被玩家 &a%player_display_name% &7清空
+  Channel:
+    Join:
+      Success: <! prefix:"false" !>&7你加入了 &a%channel_name% &7聊天频道！
+      Error:
+        NoPermission: <! prefix:"false" !>&c你没有权限加入该频道！
+        AlreadyIn: <! prefix:"false" !>&c你已经加入了该频道!
+    Leave:
+      Success: <! prefix:"false" !>&7你已离开 &c%channel_name% &7聊天频道！
+      Error:
+        NotIn: <! prefix:"false" !>&c你不在该频道中！
+    Set:
+      Success: '<! prefix:"false" !>&7设定默认频道: &e%channel_name%&7.'
+    Error:
+      Invalid: <! prefix:"false" !>&c无效的频道!
+  Chat:
+    AntiSpam:
+      Similar:
+        Msg: <! prefix:"false" !>&c请不要频繁发送消息！
+        Cmd: <! prefix:"false" !>&c请不要频繁使用命令！
+      Delay:
+        Msg: <! prefix:"false" !>&c在发送另一条消息之前，你需要等待 &c%time%
+        Cmd: <! prefix:"false" !>&c在使用另一个命令之前，你需要等待 &c%time%
+    Mention:
+      Error:
+        Cooldown: <! prefix:"false" !>&c你需要等待 &e%time%&c 才能再次提及 &e%name%
+ChatSpyType:
+  SOCIAL: 社交
+  COMMAND: 命令
+  CHAT: 聊天
+Afk:
+  Command:
+    Afk:
+      Desc: 切换 [玩家] 的AFK模式
+      Usage: '[玩家] [-on] [-off] [-s]'
+  Mode:
+    Enter: <! prefix:"false" !>&6[AFK]&e 玩家 &6%player_display_name%&e 现在处于AFK模式
+    Exit: <! prefix:"false" !>&6[AFK]&e 玩家 &6%player_display_name%&e 过了 &6%time%&e 后回来了
+  Notify:
+    PrivateMessage: <! prefix:"false" !>&c[AFK]&e 玩家 &6%player_display_name%&e 目前处于AFK状态，可能无法回复你的私信
+    TeleportRequest: <! prefix:"false" !>&c[AFK]&e 玩家 &6%player_display_name%&e 目前处于AFK状态，可能无法接受你的传送请求
+Extras:
+  Command:
+    Chairs:
+      Desc: 切换 [玩家] 的自动坐椅功能
+      Usage: '[玩家] [-on] [-off] [-s]'
+      Notify: '&e已开启自动坐椅功能: &6%state%'
+      Target: '&e已为玩家 &6%player_name%&e 设置自动坐椅: &6%state%'
+    Sit:
+      Desc: 强制 [玩家] 坐下
+      Usage: '[玩家] [-s]'
+      Notify: '&e你已坐下'
+      Target: '&e已让玩家 &6%player_name%&e 坐下'
+    ChestSort:
+      Desc: 切换 [玩家] 的箱子整理功能
+      Usage: '[玩家] [-on] [-off] [-s]'
+      Notify: '&e已开启箱子整理功能: &6%state%'
+      Target: '&e已为玩家 &6%player_name%&e 设置箱子整理: &6%state%'
+Scoreboard:
+  Command:
+    Scoreboard:
+      Desc: 切换 [玩家] 的计分板
+      Usage: '[玩家] [-on] [-off] [-s]'
+      Notify: '&e已切换计分板: &6%state%'
+      Target: '&e已为玩家 &6%player_name%&e 切换计分板: &6%state%'
+Bans:
+  Command:
+    History:
+      Mute:
+        Desc: 查看玩家被禁言的历史记录
+        Usage: <玩家>
+      Ban:
+        Desc: 查看玩家被封禁的历史记录
+        Usage: <玩家>
+      Warn:
+        Desc: 查看玩家被警告的历史记录
+        Usage: <玩家>
+    BanList:
+      Desc: 封禁的玩家和IP列表
+    MuteList:
+      Desc: 禁言的玩家和IP列表
+    WarnList:
+      Desc: 警告的玩家列表
+    Ban:
+      Desc: 封禁玩家
+      Usage: <玩家> <时间> [原因]
+    Banip:
+      Desc: 封禁IP地址
+      Usage: <玩家/ip> <时间> [原因]
+    Mute:
+      Desc: 禁言玩家（指定名称或IP）
+      Usage: <玩家/ip> <时间> [原因]
+    Kick:
+      Desc: 踢出玩家（指定名称或IP）
+      Usage: <玩家/ip> [原因]
+    Unmute:
+      Desc: 解除玩家禁言（指定名称或IP）
+      Usage: <玩家/ip>
+    Unban:
+      Desc: 解封玩家（指定名称或IP）
+      Usage: <玩家/ip>
+    Warn:
+      Desc: 警告玩家
+      Usage: <玩家> <时间> [原因]
+    Unwarn:
+      Desc: 移除玩家的最近一次警告
+      Usage: <玩家>
+  Punishment:
+    Error:
+      RankDuration: '&7你不能对一个人施加超过&c%time%&7的惩罚!'
+      Immune: <! prefix:"false" !>&c%user%&7 无法被惩罚
+      NotBanned: <! prefix:"false" !>&c%user%&7 没有被封禁
+      NotMuted: <! prefix:"false" !>&c%user%&7 没有被禁言
+      NotWarned: <! prefix:"false" !>&c%user%&7 没有警告
+      NotIP: <! prefix:"false" !>&c%user% 不是一个IP地址!
+  Ban:
+    User:
+      Perma:
+        Done: '<! prefix:"false" !>&c%punishment_user%&7 已被永久封禁: &c%punishment_reason%'
+        Broadcast: '<! prefix:"false" !>&c%punishment_punisher%&7 永久封禁了 &c%punishment_user% <? show_text:"&7原因: &f%punishment_reason%<newline>&7日期: &f%punishment_date_created%" ?>&6[详情]</>'
+      Temp:
+        Done: '<! prefix:"false" !>&c%punishment_user%&7 被封禁 &c%punishment_expires_in%&7。原因:  &c%punishment_reason%'
+        Broadcast: '<! prefix:"false" !>&c%punishment_punisher%&7 封禁了 &c%punishment_user% <? show_text:"&7时长: &f%punishment_expires_in%<newline>&7原因: &f%punishment_reason%<newline>&7日期: &f%punishment_date_created%<newline>&7过期时间: &f%punishment_date_expired%" ?>&6[详情]</>'
+    IP:
+      Perma:
+        Done: '<! prefix:"false" !>&7IP &c%punishment_user%&7 已被永久封禁: &c%punishment_reason%'
+        Broadcast: '<! prefix:"false" !>&c%punishment_punisher%&7 永久封禁了IP &c%punishment_user% <? show_text:"&7原因: &f%punishment_reason%<newline>&7日期: &f%punishment_date_created%" ?>&6[详情]</>'
+      Temp:
+        Done: '<! prefix:"false" !>&7IP &c%punishment_user%&7 被封禁 &c%punishment_expires_in%&7。原因: &c%punishment_reason%'
+        Broadcast: '<! prefix:"false" !>&c%punishment_punisher%&7 封禁了IP &c%punishment_user% <? show_text:"&7时长: &f%punishment_expires_in%<newline>&7原因: &f%punishment_reason%<newline>&7日期: &f%punishment_date_created%<newline>&7过期时间: &f%punishment_date_expired%" ?>&6[详情]</>'
+  Unban:
+    User:
+      Done: '<! prefix:"false" !>用户解封: &a%punishment_user%'
+      Broadcast: '<! prefix:"false" !>&a%admin%&7 解封了用户: &a%punishment_user%'
+    IP:
+      Done: '<! prefix:"false" !>IP解封: &a%punishment_user%'
+      Broadcast: '<! prefix:"false" !>&a%admin%&7 解封了IP: &a%punishment_user%'
+  Kick:
+    Done: <! prefix:"false" !>&c%punishment_user%&7 被踢出，原因为 &c%punishment_reason%
+    Broadcast: '<! prefix:"false" !>&c%punishment_punisher%&7 踢出了 &c%punishment_user% <? show_text:"&7原因: &f%punishment_reason%" ?>&6[详情]</>'
+  Mute:
+    User:
+      Perma:
+        Done: '<! prefix:"false" !>&c%punishment_user%&7被永久禁言: &c%punishment_reason%'
+        Notify: '<! prefix:"false" !>&c你已经被永久禁言!<? show_text:"&7人员: &f%punishment_punisher%<newline>&7到期时间: &f%punishment_expires_in%<newline>&7原因: &f%punishment_reason%<newline>&7日期: &f%punishment_date_created%" ?>&6[详情]</>'
+        Broadcast: '<! prefix:"false" !>&c%punishment_punisher%&7永久禁言了&c%punishment_user% <? show_text:"&7原因: &f%punishment_reason%<newline>&7日期: &f%punishment_date_created%" ?>&6[详情]</>'
+      Temp:
+        Done: '<! prefix:"false" !>&c%punishment_user%&7被禁言 &c%punishment_expires_in%&7. 原因: &c%punishment_reason%'
+        Notify: '<! prefix:"false" !>&c你已被禁言!<? show_text:"&7人员: &f%punishment_punisher%<newline>&7时长: &f%punishment_expires_in%<newline>&7原因: &f%punishment_reason%<newline>&7日期: &f%punishment_date_created%<newline>&7到期时间: &f%punishment_date_expired%" ?>&6[详情]</>'
+        Broadcast: '<! prefix:"false" !>&c%punishment_punisher%&7禁言了&c%punishment_user% <? show_text:"&7时长: &f%punishment_expires_in%<newline>&7原因: &f%punishment_reason%<newline>&7日期: &f%punishment_date_created%<newline>&7到期时间: &f%punishment_date_expired%" ?>&6[详情]</>'
+    IP:
+      Perma:
+        Done: '<! prefix:"false" !>IP &c%punishment_user%&7被永久禁言: &c%punishment_reason%'
+        Notify: '<! prefix:"false" !>&c你已经被永久禁言!<? show_text:"&7人员: &f%punishment_punisher%<newline>&7到期时间: &f%punishment_expires_in%<newline>&7原因: &f%punishment_reason%<newline>&7日期: &f%punishment_date_created%" ?>&6[详情]</>'
+        Broadcast: '<! prefix:"false" !>&c%punishment_punisher%&7 永久禁言了IP &c%punishment_user% <? show_text:"&7原因: &f%punishment_reason%<newline>&7日期: &f%punishment_date_created%" ?>&6[详情]</>'
+      Temp:
+        Done: '<! prefix:"false" !>IP &c%punishment_user%&7被禁言 &c%punishment_expires_in%&7. 原因: &c%punishment_reason%'
+        Notify: '<! prefix:"false" !>&c你已被禁言!<? show_text:"&7人员: &f%punishment_punisher%<newline>&7时长: &f%punishment_expires_in%<newline>&7原因: &f%punishment_reason%<newline>&7日期: &f%punishment_date_created%<newline>&7到期时间: &f%punishment_date_expired%" ?>&6[详情]</>'
+        Broadcast: '<! prefix:"false" !>&c%punishment_punisher%&7禁言了IP &c%punishment_user% <? show_text:"&7时长: &f%punishment_expires_in%<newline>&7原因: &f%punishment_reason%<newline>&7日期: &f%punishment_date_created%<newline>&7到期时间: &f%punishment_date_expired%" ?>&6[详情]</>'
+  Unmute:
+    User:
+      Done: '<! prefix:"false" !>用户已被解除禁言: &a%punishment_user%'
+      Broadcast: '<! prefix:"false" !>&a%admin%&7 解除了用户的禁言: &a%punishment_user%'
+    IP:
+      Done: '<! prefix:"false" !>IP已被解除禁言: &a%punishment_user%'
+      Broadcast: '<! prefix:"false" !>&a%admin%&7 解除了IP地址的禁言: &a%punishment_user%'
+  Warn:
+    User:
+      Temp:
+        Done: <! prefix:"false" !>&c%punishment_user%&7 被警告，期限为 &c%punishment_expires_in%&7。原因：&c%punishment_reason%
+        Notify: '<! prefix:"false" !>&c你被警告了!<? show_text:"&7警告者: &f%punishment_punisher%<newline>&7期限: &f%punishment_expires_in%<newline>&7原因: &f%punishment_reason%<newline>&7创建日期: &f%punishment_date_created%<newline>&7到期日期: &f%punishment_date_expired%" ?>&6[详细信息]</>'
+        Broadcast: '<! prefix:"false" !>&c%punishment_punisher%&7 警告了 &c%punishment_user%。 <? show_text:"&7期限: &f%punishment_expires_in%<newline>&7原因: &f%punishment_reason%<newline>&7创建日期: &f%punishment_date_created%<newline>&7到期日期: &f%punishment_date_expired%" ?>&6[详细信息]</>'
+      Perma:
+        Done: <! prefix:"false" !>&c永久警告了 %punishment_user%。原因：&c%punishment_reason%'
+        Notify: '<! prefix:"false" !>&c你被永久警告了!<? show_text:"&7警告者: &f%punishment_punisher%<newline>&7原因: &f%punishment_reason%<newline>&7创建日期: &f%punishment_date_created%" ?>&6[详细信息]</>'
+        Broadcast: '<! prefix:"false" !>&c%punishment_punisher% 永久警告了 &c%punishment_user%。<? show_text:"&7原因: &f%punishment_reason%<newline>&7创建日期: &f%punishment_date_created%" ?>&6[详细信息]</>'
+  Unwarn:
+    User:
+      Done: <! prefix:"false" !>&7已从&a%punishment_user%&7身上移除警告记录'
+      Broadcast: <! prefix:"false" !>&a%punishment_punisher%&7 移除了&a%punishment_user%&7的警告记录'
+PunishmentType:
+  BAN: 封禁
+  MUTE: 禁言
+  WARN: 警告
+Spawns:
+  Command:
+    Spawns:
+      Desc: 处理出生点
+      Usage: '[帮助]'
+      Delete:
+        Desc: 删除指定的出生点
+        Usage: <name>
+        Done:
+          - <! type:"titles:20:50:20" !>
+          - '&c出生点已删除'
+          - '&7你已经删除了&c%spawn_name%&7出生点!'
+      Create:
+        Desc: 创建出生点
+        Usage: '[name]'
+        Done:
+          - <! type:"titles:20:50:20" !>
+          - '&a已设置出生点!'
+          - '&7出生点id: &a%spawn_id%&7 | 编辑器: &a/spawns编辑器'
+      Teleport:
+        Desc: 传送到指定的出生点
+        Usage: '[spawn] [玩家]'
+        Notify: '&7正在将&e%player_display_name%&7传送到&e%spawn_id%&7出生点'
+        Done:
+          - <! type:"titles:20:60:20" !>
+          - '&e出生点'
+          - '&7你已经传送到&e%spawn_name%&7出生点'
+      Editor:
+        Desc: 打开出生点编辑器
+  Spawn:
+    Error:
+      Invalid: '&c出生点不存在'
+  Editor:
+    Enter:
+      Name: '&7请输入&a[出生点名称]'
+      Priority: '&7请输入&a[优先级]'
+      Group: '&7请输入&a[组名称]'
+RTP:
+  Command:
+    RTP:
+      Desc: 传送到一个随机地点
+  Teleport:
+    Error:
+      AlreadyIn: '&c你已经在随机传送点了!'
+    Notify:
+      Done:
+        - <!type:"titles:20:80:20" sound:"ENTITY_ENDERMAN_TELEPORT" !>
+        - '&a传送成功!'
+        - '&7位置: &a%location_x%&7, &a%location_y%&7, &a%location_z%'
+      Search:
+        - <! type:"titles:20:100:20" sound:"BLOCK_LAVA_POP" !>
+        - '&e正在寻找位置..'
+        - '&7处理进度: &6%current%&7/&6%max%'
+      Failure:
+        - <!type:"titles:20:80:20" sound:"ENTITY_VILLAGER_NO" !>
+        - '&c传送失败'
+        - '&7无法找到可靠的位置'
+GameMode:
+  CREATIVE: 创造
+  SURVIVAL: 生存
+  ADVENTURE: 冒险
+  SPECTATOR: 旁观者
+# Here you can create your own custom placeholders to use it in language config.
+# Key = Placeholder, Value = Replacer.
+Placeholders:
+  '%gray%': '&7'
+  '%green%': '&a'
+  '%red%': '&c'
+Generic:
+  Command:
+    Cooldown:
+      Default: <! prefix:"false" !>&c在可以再次使用&e%cmd%&c之前，你需要等待&c%time%
+      Onetime: <! prefix:"false" !>&c该命令是一次性的，你已经使用过了
+      OneTime: <! prefix:"false" !>#fd5e5e这个命令只能使用一次，而你已经使用过了
+Other:
+  Menu:
+    List_Delimiter: '&a▸ '
+  Free: '&a免费'
+  'On': '&a开启'
+  'Off': '&c关闭'
+  Enabled: '&a已启用'
+  Disabled: '&c已禁用'
+Error:
+  InvalidName: '<! prefix:"false" !>&c无效名称: &e%name%&c，包含禁止使用的字符'
+  Material:
+    Invalid: '&c未提供有效的材料！'
+  Enchantment:
+    Invalid: '&c无效的附魔！'
+  Player:
+    NoItem: '&c玩家没有物品！'
+  Self: <! prefix:"false" !>&c无法对自己应用！
+PrivateMessage:
+  Error:
+    Disabled: '#fdba5e%player_display_name%#fd5e5e 禁用了私人消息'
