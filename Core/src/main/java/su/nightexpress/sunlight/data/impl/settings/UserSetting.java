@@ -47,6 +47,11 @@ public class UserSetting<E> {
     }
 
     @NotNull
+    public static UserSetting<String> asString(@NotNull String name, @NotNull String defaultValue, boolean isPersistent) {
+        return register(name, defaultValue, PARSER_STRING, isPersistent);
+    }
+
+    @NotNull
     public static <E> UserSetting<E> register(@NotNull String name, @NotNull E defaultValue, @NotNull Function<String, E> parser, boolean isPersistent) {
         UserSetting<E> setting = new UserSetting<>(name, defaultValue, parser, isPersistent);
         REGISTRY.put(setting.getName(), setting);

@@ -85,7 +85,8 @@ public class WorldMainEditor extends EditorMenu<SunLight, WorldConfig> {
                 return;
             }
             if (event.getClick() == ClickType.DROP) {
-                worldConfig.setLastWipe(System.currentTimeMillis());
+                worldConfig.setLatestWipeDate();
+                //worldConfig.setLastWipe(System.currentTimeMillis());
                 this.save(viewer);
                 return;
             }

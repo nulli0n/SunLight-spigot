@@ -12,10 +12,25 @@ public class HomesConfig {
     public static final JOption<Integer> DATA_CLEANUP_INTERVAL = JOption.create("Data.Cleanup_Interval", 900,
         "Sets how often (in seconds) homes loaded for offline users will be removed from the memory.");
 
+    public static final JOption<Boolean> BED_MODE_ENABLED = JOption.create("Creation.BedMode.Enabled",
+        true,
+        "Sets whether or not players can use beds to set home locations.");
+
+    public static final JOption<Boolean> BED_MODE_OVERRIDE_RESPAWN = JOption.create("Creation.BedMode.OverrideRespawn",
+        false,
+        "When enabled, overrides vanilla bed respawn point mechanic.",
+        "Respawn point is set to the latest created/update bed home.");
+
+    public static final JOption<Boolean> BED_MODE_COLORS = JOption.create("Creation.BedMode.Colors",
+        false,
+        "When enabled, each bed color will set different home point.");
+
     public static final JOption<Boolean> CHECK_BUILD_ACCESS = JOption.create("Creation.Check_Build_Access", true,
         "When 'true', calls a BlockCanBuildEvent to check if player is out of other claims/protection zones.");
+
     public static final JOption<Set<String>> WORLD_BLACKLIST = JOption.create("Creation.World_Blacklist", Set.of("world_name", "another_world"),
         "A list of worlds, where homes can not be created.");
+
     public static final JOption<Set<String>> REGION_BLACKLIST = JOption.create("Creation.Region_Blacklist", Set.of("pvp_arena"),
         "A list of WorldGuard regions, where homes can not be created.");
 

@@ -1,4 +1,4 @@
-package su.nightexpress.sunlight.module.bans.command;
+package su.nightexpress.sunlight.module.bans.command.base;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -12,7 +12,7 @@ import su.nightexpress.sunlight.module.bans.BansModule;
 import su.nightexpress.sunlight.module.bans.config.BansConfig;
 import su.nightexpress.sunlight.module.bans.config.BansLang;
 import su.nightexpress.sunlight.module.bans.punishment.PunishmentReason;
-import su.nightexpress.sunlight.module.bans.util.BansPerms;
+import su.nightexpress.sunlight.module.bans.config.BansPerms;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,8 +1,8 @@
-package su.nightexpress.sunlight.module.bans.util;
+package su.nightexpress.sunlight.module.bans.config;
 
 import su.nexmedia.engine.api.server.JPermission;
 import su.nightexpress.sunlight.Perms;
-import su.nightexpress.sunlight.module.bans.command.KickCommand;
+import su.nightexpress.sunlight.module.bans.command.base.KickCommand;
 import su.nightexpress.sunlight.module.bans.command.ban.BanCommand;
 import su.nightexpress.sunlight.module.bans.command.ban.BanipCommand;
 import su.nightexpress.sunlight.module.bans.command.ban.UnbanCommand;
@@ -16,6 +16,7 @@ import su.nightexpress.sunlight.module.bans.command.mute.MuteCommand;
 import su.nightexpress.sunlight.module.bans.command.mute.UnmuteCommand;
 import su.nightexpress.sunlight.module.bans.command.warn.UnwarnCommand;
 import su.nightexpress.sunlight.module.bans.command.warn.WarnCommand;
+import su.nightexpress.sunlight.module.bans.util.Placeholders;
 
 public class BansPerms {
 

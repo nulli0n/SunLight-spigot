@@ -1,41 +1,100 @@
 package su.nightexpress.sunlight.module.homes.listener;
 
+import org.bukkit.DyeColor;
+import org.bukkit.Location;
+import org.bukkit.block.Block;
+import org.bukkit.block.data.type.Bed;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.material.Colorable;
 import org.jetbrains.annotations.NotNull;
 import su.nexmedia.engine.api.manager.AbstractListener;
 import su.nightexpress.sunlight.SunLight;
 import su.nightexpress.sunlight.module.homes.HomesModule;
+import su.nightexpress.sunlight.module.homes.config.HomesConfig;
+import su.nightexpress.sunlight.module.homes.impl.Home;
+import su.nightexpress.sunlight.module.homes.util.Placeholders;
 
 public class HomeListener extends AbstractListener<SunLight> {
 
-    private final HomesModule homesModule;
+    private final HomesModule module;
 
-    public HomeListener(@NotNull HomesModule homesModule) {
-        super(homesModule.plugin());
-        this.homesModule = homesModule;
+    public HomeListener(@NotNull HomesModule module) {
+        super(module.plugin());
+        this.module = module;
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
-    public void onUserJoin(AsyncPlayerPreLoginEvent e) {
-        if (e.getLoginResult() != AsyncPlayerPreLoginEvent.Result.ALLOWED) return;
-        this.homesModule.loadHomes(e.getUniqueId());
+    public void onUserJoin(AsyncPlayerPreLoginEvent event) {
+        if (event.getLoginResult() != AsyncPlayerPreLoginEvent.Result.ALLOWED) return;
+        this.module.loadHomes(event.getUniqueId());
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
-    public void onUserQuit(PlayerQuitEvent e) {
-        this.homesModule.unloadHomes(e.getPlayer().getUniqueId());
+    public void onUserQuit(PlayerQuitEvent event) {
+        this.module.unloadHomes(event.getPlayer().getUniqueId());
     }
 
     @EventHandler(priority = EventPriority.HIGH)
-    public void onHomeRespawn(PlayerRespawnEvent e) {
-        Player player = e.getPlayer();
-        this.homesModule.getHomeToRespawn(player).ifPresent(home -> {
-            e.setRespawnLocation(home.getLocation());
+    public void onHomeRespawn(PlayerRespawnEvent event) {
+        Player player = event.getPlayer();
+        this.module.getHomeToRespawn(player).ifPresent(home -> {
+            event.setRespawnLocation(home.getLocation());
         });
+    }
+
+    @EventHandler(priority = EventPriority.NORMAL)
+    public void onBedModeInteract(PlayerInteractEvent event) {
+        if (!HomesConfig.BED_MODE_ENABLED.get()) return;
+        if (event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
+        if (event.useInteractedBlock() == Event.Result.DENY) return;
+
+        Block block = event.getClickedBlock();
+        if (block == null || !(block.getBlockData() instanceof Bed)) return;
+
+        Player player = event.getPlayer();
+        Location location = block.getLocation();
+        String homeId = Placeholders.DEFAULT;
+        DyeColor color = ((Colorable)block.getState()).getColor();
+        if (color == null) color = DyeColor.RED;
+        boolean overrideRespawn = HomesConfig.BED_MODE_OVERRIDE_RESPAWN.get();
+
+        if (HomesConfig.BED_MODE_COLORS.get() && color != DyeColor.RED) {
+            homeId = color.name().toLowerCase();
+        }
+
+        Home home = this.module.getHome(player, homeId).orElse(null);
+        if (home == null || player.isSneaking()) {
+            event.setUseInteractedBlock(Event.Result.DENY);
+
+            if (this.module.setHome(player, homeId, location, false)) {
+
+                if (overrideRespawn) {
+                    home = this.module.getHome(player, homeId).orElse(null);
+                    if (home != null) {
+                        this.module.getHomeToRespawn(player).ifPresent(respawnHome -> respawnHome.setRespawnPoint(false));
+                        home.setRespawnPoint(true);
+                        player.setBedSpawnLocation(location);
+                    }
+                }
+            }
+            return;
+        }
+
+        if (overrideRespawn) {
+            event.setUseInteractedBlock(Event.Result.DENY);
+            player.setBedSpawnLocation(location);
+            player.sleep(location, false);
+            this.module.getHomeToRespawn(player).ifPresent(respawnHome -> {
+                player.setBedSpawnLocation(respawnHome.getLocation());
+            });
+        }
     }
 }

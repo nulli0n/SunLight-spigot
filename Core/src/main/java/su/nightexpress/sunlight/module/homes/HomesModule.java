@@ -196,11 +196,15 @@ public class HomesModule extends Module {
     }
 
     public boolean setHome(@NotNull Player player, @NotNull String id, boolean force) {
+        return this.setHome(player, id, player.getLocation(), force);
+    }
+
+    public boolean setHome(@NotNull Player player, @NotNull String id, @NotNull Location location, boolean force) {
         id = StringUtil.lowerCaseUnderscore(id);
 
-        SunUser user = plugin.getUserManager().getUserData(player);
+        //SunUser user = plugin.getUserManager().getUserData(player);
         Home home = this.getHome(player.getUniqueId(), id).orElse(null);
-        Location location = player.getLocation();
+        //Location location = player.getLocation();
         // TODO Check for safe location
 
         if (!force) {

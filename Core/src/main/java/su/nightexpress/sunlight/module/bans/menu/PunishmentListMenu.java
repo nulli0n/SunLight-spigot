@@ -24,7 +24,7 @@ import su.nightexpress.sunlight.data.impl.SunUser;
 import su.nightexpress.sunlight.module.bans.BansModule;
 import su.nightexpress.sunlight.module.bans.punishment.Punishment;
 import su.nightexpress.sunlight.module.bans.punishment.PunishmentType;
-import su.nightexpress.sunlight.module.bans.util.BansPerms;
+import su.nightexpress.sunlight.module.bans.config.BansPerms;
 import su.nightexpress.sunlight.module.bans.util.Placeholders;
 
 import java.util.*;

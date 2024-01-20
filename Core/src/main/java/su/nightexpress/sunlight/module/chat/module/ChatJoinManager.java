@@ -44,12 +44,12 @@ public class ChatJoinManager extends AbstractManager<SunLight> {
         this.joinOutGroups = new HashMap<>();
 
         for (String group : cfg.getSection("Join_Groups")) {
-            List<String> msg = Colorizer.apply(cfg.getStringList("Join_Groups." + group));
+            List<String> msg = cfg.getStringList("Join_Groups." + group);
             this.joinInGroups.put(group.toLowerCase(), msg);
         }
 
         for (String group : cfg.getSection("Quit_Groups")) {
-            List<String> msg = Colorizer.apply(cfg.getStringList("Quit_Groups." + group));
+            List<String> msg = cfg.getStringList("Quit_Groups." + group);
             this.joinOutGroups.put(group.toLowerCase(), msg);
         }
 
@@ -79,6 +79,7 @@ public class ChatJoinManager extends AbstractManager<SunLight> {
         if (EngineUtils.hasPlaceholderAPI()) {
             message = PlaceholderAPI.setPlaceholders(player, message);
         }
+        message = Colorizer.apply(message);
         return message;
     }
 

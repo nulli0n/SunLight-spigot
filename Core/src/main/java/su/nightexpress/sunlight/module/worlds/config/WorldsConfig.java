@@ -4,6 +4,7 @@ import org.bukkit.event.inventory.InventoryType;
 import org.jetbrains.annotations.NotNull;
 import su.nexmedia.engine.api.config.JOption;
 import su.nexmedia.engine.utils.StringUtil;
+import su.nightexpress.sunlight.module.worlds.util.Placeholders;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -63,6 +64,33 @@ public class WorldsConfig {
         "List of worlds, where players can not fly.",
         "This can be bypassed with '" + WorldsPerms.BYPASS_FLY.getName() + "' permission."
     );
+
+    public static final JOption<Boolean> AUTO_WIPE_NOTIFICATION_ENABLED = JOption.create("AutoWipe.Notification.Enabled",
+        true,
+        "Sets whether or not players will get a notification about upcoming world auto-reset.");
+
+    public static final JOption<Long> AUTO_WIPE_NOTIFICATION_THRESHOLD = JOption.create("AutoWipe.Notification.Threshold",
+        86400L,
+        "Sets minimal threshold (in seconds) for notifications to work.",
+        "When next world's auto-reset time left (in seconds) is smaller or equals to this amount, notification will start to appear.",
+        "[Default is 86400 (1 day)]");
+
+    public static final JOption<Long> AUTO_WIPE_NOTIFICATION_INTERVAL = JOption.create("AutoWipe.Notification.Interval",
+        3600L,
+        "Sets world's auto-reset notifications interval (in seconds).",
+        "[Default is 3600 (1 hour)]");
+
+    public static final JOption<Boolean> AUTO_WIPE_MOVE_PLAYERS_OUT_TO_SPAWN = JOption.create("AutoWipe.MovePlayersOut.ToSpawn.Enabled",
+        false,
+        "Sets whether or not players will be teleported to specified Spawn point when world is about to auto-reset.",
+        "If disabled, players will be teleported to the first available world.",
+        "[Requires Spawns module to be enabled]");
+
+    public static final JOption<String> AUTO_WIPE_MOVE_PLAYERS_OUT_SPAWN_NAME = JOption.create("AutoWipe.MovePlayersOut.ToSpawn.Name",
+        Placeholders.DEFAULT,
+        "Defines which Spawn point will be used to teleport players from a world before auto-reset.",
+        "If invalid Spawn point provided, players will be teleported to the first available world.",
+        "[Requires Spawns module to be enabled]");
 
     public static boolean isInventoryAffected(@NotNull InventoryType inventoryType) {
         return INVENTORY_SPLIT_INVENTORIES.get().contains(inventoryType);

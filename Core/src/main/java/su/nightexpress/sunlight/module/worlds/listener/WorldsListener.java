@@ -38,7 +38,7 @@ public class WorldsListener extends AbstractListener<SunLight> {
         e.setCancelled(true);
         player.setAllowFlight(false);
         player.setFlying(false);
-        plugin.getMessage(WorldsLang.WORLDS_ERROR_FLY_DISABLED).send(player);
+        plugin.getMessage(WorldsLang.ERROR_FLY_DISABLED).send(player);
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
@@ -66,7 +66,7 @@ public class WorldsListener extends AbstractListener<SunLight> {
         boolean doBlock = CommandRegister.getAliases(command, true).stream().anyMatch(deniedCommands::contains);
 
         if (doBlock) {
-            plugin.getMessage(WorldsLang.WORLDS_ERROR_COMMAND_BLOCKED).send(player);
+            plugin.getMessage(WorldsLang.ERROR_COMMAND_BLOCKED).send(player);
             e.setCancelled(true);
         }
     }

@@ -3,7 +3,8 @@ package su.nightexpress.sunlight.module.worlds.config;
 import su.nexmedia.engine.api.lang.LangKey;
 import su.nightexpress.sunlight.module.worlds.util.Placeholders;
 
-import static su.nexmedia.engine.utils.Colors.*;
+import static su.nexmedia.engine.utils.Colors2.*;
+import static su.nightexpress.sunlight.module.worlds.util.Placeholders.*;
 
 public class WorldsLang {
 
@@ -31,8 +32,18 @@ public class WorldsLang {
     public static final LangKey COMMAND_WORLDS_UNLOAD_ERROR = LangKey.of("Worlds.Command.Worlds.Unload.Error", RED + "World is already unloaded!");
     public static final LangKey COMMAND_WORLDS_UNLOAD_DONE  = LangKey.of("Worlds.Command.Worlds.Unload.Done", LIGHT_YELLOW + "Unloaded world: " + ORANGE + Placeholders.WORLD_ID + LIGHT_YELLOW + "!");
 
-    public static final LangKey WORLDS_ERROR_COMMAND_BLOCKED = LangKey.of("Worlds.Error.CommandBlocked", RED + "You can't use that command in this world!");
-    public static final LangKey WORLDS_ERROR_FLY_DISABLED = LangKey.of("Worlds.Error.FlyDisabled", RED + "Flying is not allowed in this world!");
+    public static final LangKey AUTOWIPE_MOVE_OUT     = LangKey.of("Worlds.AutoWipe.MoveOut",
+        GRAY + "You have been teleported due to world auto-reset.");
+
+    public static final LangKey AUTOWIPE_NOTIFY = LangKey.of("Worlds.AutoWipe.Notify",
+        "<! prefix:\"false\" !>" +
+            "\n" + GRAY +
+            "\n" + LIGHT_RED + "Warning: " + LIGHT_GRAY + "The world will auto-reset in " + LIGHT_RED + GENERIC_TIME +
+            "\n" + GRAY
+    );
+
+    public static final LangKey ERROR_COMMAND_BLOCKED = LangKey.of("Worlds.Error.CommandBlocked", RED + "You can't use that command in this world!");
+    public static final LangKey ERROR_FLY_DISABLED    = LangKey.of("Worlds.Error.FlyDisabled", RED + "Flying is not allowed in this world!");
 
     public static final LangKey EDITOR_ENTER_VALUE     = LangKey.of("Worlds.Editor.Enter.Value", GRAY + "Enter " + GREEN + "[Value]");
     public static final LangKey EDITOR_ENTER_SPAWNS    = LangKey.of("Worlds.Editor.Enter.Spawns", GRAY + "Enter " + GREEN + "[Category] [Value]");

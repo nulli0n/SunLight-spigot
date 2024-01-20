@@ -4,10 +4,10 @@ import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import su.nightexpress.sunlight.data.impl.SunUser;
 import su.nightexpress.sunlight.module.bans.BansModule;
-import su.nightexpress.sunlight.module.bans.command.api.AbstractPunishCommand;
+import su.nightexpress.sunlight.module.bans.command.AbstractPunishCommand;
 import su.nightexpress.sunlight.module.bans.config.BansLang;
 import su.nightexpress.sunlight.module.bans.punishment.PunishmentType;
-import su.nightexpress.sunlight.module.bans.util.BansPerms;
+import su.nightexpress.sunlight.module.bans.config.BansPerms;
 import su.nightexpress.sunlight.module.bans.util.Placeholders;
 import su.nightexpress.sunlight.utils.SunUtils;
 

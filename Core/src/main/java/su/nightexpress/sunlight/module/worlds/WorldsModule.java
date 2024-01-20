@@ -9,6 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import su.nexmedia.engine.api.config.JYML;
 import su.nexmedia.engine.utils.StringUtil;
+import su.nexmedia.engine.utils.values.UniTask;
 import su.nightexpress.sunlight.SunLight;
 import su.nightexpress.sunlight.module.Module;
 import su.nightexpress.sunlight.module.worlds.commands.main.WorldsCommand;
@@ -40,6 +41,7 @@ public class WorldsModule extends Module {
 
     private WorldListEditor editor;
     private WorldWipeTask wipeTask;
+    private UniTask wipeNotifyTask;
 
     public WorldsModule(@NotNull SunLight plugin, @NotNull String id) {
         super(plugin, id);
@@ -81,6 +83,14 @@ public class WorldsModule extends Module {
 
         this.wipeTask = new WorldWipeTask(this);
         this.wipeTask.start();
+
+        if (WorldsConfig.AUTO_WIPE_NOTIFICATION_ENABLED.get()) {
+            this.wipeNotifyTask = UniTask.builder(this.plugin)
+                .async()
+                .withSeconds(1)
+                .withRunnable(() -> this.getWorldConfigs().forEach(WorldConfig::autoWipeNotify))
+                .buildAndRun();
+        }
     }
 
     @Override
@@ -89,6 +99,7 @@ public class WorldsModule extends Module {
             this.wipeTask.stop();
             this.wipeTask = null;
         }
+        if (this.wipeNotifyTask != null) this.wipeNotifyTask.stop();
         this.getWorldConfigs().forEach(worldConfig -> {
             worldConfig.clear();
             worldConfig.unloadWorld();
@@ -171,14 +182,8 @@ public class WorldsModule extends Module {
         return this.getConfigsMap().get(id.toLowerCase());
     }
 
-    public boolean isSunWorld(@NotNull World world) {
+    public boolean isCustomWorld(@NotNull World world) {
         return this.getWorldById(world.getName()) != null;
-    }
-
-    @NotNull
-    @Deprecated
-    public List<String> getWorldNames() {
-        return new ArrayList<>(this.configMap.keySet());
     }
 
     @NotNull

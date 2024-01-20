@@ -53,7 +53,12 @@ public class HomesTeleportCommand extends ModuleCommand<HomesModule> {
         if (result.length() < 2) {
             home = this.module.getHomeDefault(player).orElse(null);
             if (home == null) {
-                this.printUsage(sender);
+                if (this.module.getHomes(player).isEmpty()) {
+                    this.plugin.getMessage(HomesLang.HOME_ERROR_NOT_CREATED).send(sender);
+                }
+                else {
+                    this.printUsage(sender);
+                }
                 return;
             }
         }

@@ -6,7 +6,6 @@ import su.nexmedia.engine.utils.StringUtil;
 import su.nightexpress.sunlight.module.bans.punishment.PunishmentReason;
 import su.nightexpress.sunlight.module.bans.punishment.PunishmentType;
 import su.nightexpress.sunlight.module.bans.punishment.RankDuration;
-import su.nightexpress.sunlight.module.bans.util.BansPerms;
 import su.nightexpress.sunlight.module.bans.util.BanTime;
 import su.nightexpress.sunlight.module.bans.util.Placeholders;
 
@@ -97,6 +96,22 @@ public class BansConfig {
     public static final JOption<Set<String>> PUNISHMENTS_MUTE_BLOCKED_COMMANDS = JOption.create("Punishments.Mute.Blocked_Commands",
         Set.of("tell", "me", "broadcast"),
         "A list of commands that will be blocked for muted players.");
+
+    public static final JOption<Map<String, Integer>> PUNISHMENTS_RANK_PRIORITY = JOption.forMap("Punishments.Rank.Priority",
+        (cfg, path, id) -> cfg.getInt(path + "." + id, -1),
+        () -> Map.of(
+            Placeholders.DEFAULT, 0,
+            "helper", 1,
+            "moderator", 2,
+            "admin", 1000
+        ),
+        "--- [BETA FEATURE] ---",
+        "This feature is not perfect and requires improvements.",
+        " ",
+        "Here you can set priority for each rank.",
+        "Players with greatest ranks can not be punished by ones with lowest ranks.",
+        "Use '" + Placeholders.DEFAULT + "' keyword for all ranks not listed here."
+    );
 
     public static final JOption<Map<String, Map<PunishmentType, RankDuration>>> PUNISHMENTS_RANK_MAX_TIMES = new JOption<Map<String, Map<PunishmentType, RankDuration>>>(
         "Punishments.Rank.Duration_Limit",

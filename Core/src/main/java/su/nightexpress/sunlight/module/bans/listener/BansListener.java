@@ -3,14 +3,15 @@ package su.nightexpress.sunlight.module.bans.listener;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
-import org.bukkit.event.player.PlayerCommandPreprocessEvent;
+import org.bukkit.event.player.*;
 import org.jetbrains.annotations.NotNull;
 import su.nexmedia.engine.api.manager.AbstractListener;
 import su.nexmedia.engine.command.CommandRegister;
+import su.nexmedia.engine.utils.PlayerUtil;
 import su.nexmedia.engine.utils.StringUtil;
 import su.nightexpress.sunlight.SunLight;
+import su.nightexpress.sunlight.data.impl.SunUser;
+import su.nightexpress.sunlight.data.impl.settings.DefaultSettings;
 import su.nightexpress.sunlight.module.bans.BansModule;
 import su.nightexpress.sunlight.module.bans.config.BansConfig;
 import su.nightexpress.sunlight.module.bans.config.BansLang;
@@ -78,5 +79,12 @@ public class BansListener extends AbstractListener<SunLight> {
             e.setCancelled(true);
             this.plugin.getMessage(BansLang.getPunishNotify(punishment)).replace(punishment.replacePlaceholders()).send(player);
         }
+    }
+
+    @EventHandler(priority = EventPriority.NORMAL)
+    public void onPlayerQuit(PlayerQuitEvent event) {
+        Player player = event.getPlayer();
+        SunUser user = this.plugin.getUserManager().getUserData(event.getPlayer());
+        user.getSettings().set(DefaultSettings.LAST_RANK, PlayerUtil.getPermissionGroup(player));
     }
 }

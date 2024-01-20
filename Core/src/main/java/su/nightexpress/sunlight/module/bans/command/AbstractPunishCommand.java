@@ -1,4 +1,4 @@
-package su.nightexpress.sunlight.module.bans.command.api;
+package su.nightexpress.sunlight.module.bans.command;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;

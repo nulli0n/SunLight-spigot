@@ -1,5 +1,7 @@
 package su.nightexpress.sunlight.data.impl.settings;
 
+import su.nightexpress.sunlight.Placeholders;
+
 public class DefaultSettings {
 
     public static final UserSetting<Boolean> FOOD_GOD          = UserSetting.asBoolean("food_god", false, true);
@@ -8,7 +10,7 @@ public class DefaultSettings {
     public static final UserSetting<Boolean> ACCEPT_PM         = UserSetting.asBoolean("accept_pm", true, true);
     public static final UserSetting<Boolean> TELEPORT_REQUESTS = UserSetting.asBoolean("teleport_requests", true, true);
     public static final UserSetting<Boolean> VANISH            = UserSetting.asBoolean("vanish", false, false);
-    public static final UserSetting<Boolean> NO_MOB_TARGET = UserSetting.asBoolean("no_mob_target", false, false);
-    public static final UserSetting<Boolean> MENTIONS = UserSetting.asBoolean("mentions", true, true);
-
+    public static final UserSetting<Boolean> NO_MOB_TARGET     = UserSetting.asBoolean("no_mob_target", false, false);
+    public static final UserSetting<Boolean> MENTIONS          = UserSetting.asBoolean("mentions", true, true);
+    public static final UserSetting<String>  LAST_RANK         = UserSetting.asString("last_rank", Placeholders.DEFAULT, true);
 }

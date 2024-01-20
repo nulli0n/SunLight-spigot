@@ -2,10 +2,10 @@ package su.nightexpress.sunlight.module.bans.command.list;
 
 import org.jetbrains.annotations.NotNull;
 import su.nightexpress.sunlight.module.bans.BansModule;
-import su.nightexpress.sunlight.module.bans.command.api.AbstractListCommand;
+import su.nightexpress.sunlight.module.bans.command.AbstractListCommand;
 import su.nightexpress.sunlight.module.bans.config.BansLang;
 import su.nightexpress.sunlight.module.bans.punishment.PunishmentType;
-import su.nightexpress.sunlight.module.bans.util.BansPerms;
+import su.nightexpress.sunlight.module.bans.config.BansPerms;
 
 public class MuteListCommand extends AbstractListCommand {
 

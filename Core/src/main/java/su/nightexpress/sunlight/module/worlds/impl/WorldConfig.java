@@ -1,8 +1,10 @@
 package su.nightexpress.sunlight.module.worlds.impl;
 
 import org.bukkit.Difficulty;
+import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
+import org.bukkit.entity.Player;
 import org.bukkit.entity.SpawnCategory;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -15,14 +17,21 @@ import su.nexmedia.engine.utils.*;
 import su.nightexpress.sunlight.SunLight;
 import su.nightexpress.sunlight.config.Config;
 import su.nightexpress.sunlight.config.Lang;
+import su.nightexpress.sunlight.module.spawns.SpawnsModule;
+import su.nightexpress.sunlight.module.spawns.impl.Spawn;
 import su.nightexpress.sunlight.module.worlds.WorldsModule;
+import su.nightexpress.sunlight.module.worlds.config.WorldsConfig;
+import su.nightexpress.sunlight.module.worlds.config.WorldsLang;
 import su.nightexpress.sunlight.module.worlds.editor.WorldMainEditor;
 import su.nightexpress.sunlight.module.worlds.editor.WorldRulesEditor;
 import su.nightexpress.sunlight.module.worlds.util.Placeholders;
 
 import java.io.File;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 public class WorldConfig extends AbstractConfigHolder<SunLight> implements Placeholder {
@@ -233,13 +242,72 @@ public class WorldConfig extends AbstractConfigHolder<SunLight> implements Place
         if (!this.isWipeTime()) return false;
 
         this.module.info("Start Auto-Wipe for world '" + this.getId() + "'...");
+        if (!this.movePlayersOut()) {
+            this.module.warn("Auto-Wipe for world '" + this.getId() + "' failed: Unable to move players out of the world.");
+            return false;
+        }
         this.unloadWorld();
         this.deleteWorldFiles();
         this.loadWorld();
-        this.setLastWipe(System.currentTimeMillis());
+        this.setLatestWipeDate();
+        //this.setLastWipe(System.currentTimeMillis());
         this.module.info("Auto-Wipe for world '" + this.getId() + "' completed.");
         this.save();
         return true;
+    }
+
+    public boolean autoWipeNotify() {
+        if (!this.isAutoWipe()) return false;
+
+        long wipeDate = this.getNextWipe();
+        if (wipeDate <= 0L) return false;
+
+        long current = TimeUtil.toEpochMillis(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS));
+        long threshold = WorldsConfig.AUTO_WIPE_NOTIFICATION_THRESHOLD.get() * 1000L;
+        long diff = wipeDate - current;
+        if (diff > threshold) return false;
+
+        if (TimeUnit.MILLISECONDS.toSeconds(diff) % WorldsConfig.AUTO_WIPE_NOTIFICATION_INTERVAL.get() == 0L) {
+            World world = this.getWorld();
+            if (world == null) return false;
+
+            world.getPlayers().forEach(player -> {
+                plugin.getMessage(WorldsLang.AUTOWIPE_NOTIFY)
+                    .replace(Placeholders.GENERIC_TIME, TimeUtil.formatTimeLeft(this.getNextWipe() + 1000L)) // add 1 second for good formatiing
+                    .send(player);
+            });
+            return true;
+        }
+
+        return false;
+    }
+
+    public boolean movePlayersOut() {
+        World world = this.getWorld();
+        if (world == null) return false;
+
+        Location location = null;
+        if (WorldsConfig.AUTO_WIPE_MOVE_PLAYERS_OUT_TO_SPAWN.get()) {
+            SpawnsModule spawnsModule = this.plugin.getModuleManager().getModule(SpawnsModule.class).orElse(null);
+            Spawn spawn = spawnsModule == null ? null : spawnsModule.getSpawnById(WorldsConfig.AUTO_WIPE_MOVE_PLAYERS_OUT_SPAWN_NAME.get()).orElse(null);
+            if (spawn != null) {
+                location = spawn.getLocation();
+            }
+        }
+        if (location == null) {
+            World target = this.plugin.getServer().getWorlds().stream().filter(w -> w != world).findFirst().orElse(null);
+            if (target == null) return false;
+
+            location = target.getSpawnLocation();
+        }
+
+        for (Player player : world.getPlayers()) {
+            if (player.teleport(location)) {
+                this.plugin.getMessage(WorldsLang.AUTOWIPE_MOVE_OUT).send(player);
+            }
+        }
+
+        return world.getPlayers().isEmpty();
     }
 
     @Nullable
@@ -356,6 +424,11 @@ public class WorldConfig extends AbstractConfigHolder<SunLight> implements Place
 
     public long getLastWipe() {
         return lastWipe;
+    }
+
+    public void setLatestWipeDate() {
+        LocalDateTime now = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
+        this.setLastWipe(TimeUtil.toEpochMillis(now));
     }
 
     public void setLastWipe(long lastWipe) {

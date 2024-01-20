@@ -8,12 +8,11 @@ import su.nexmedia.engine.api.data.config.DataConfig;
 import su.nexmedia.engine.api.lang.LangMessage;
 import su.nexmedia.engine.utils.PlayerUtil;
 import su.nexmedia.engine.utils.TimeUtil;
-import su.nexmedia.engine.utils.regex.RegexUtil;
 import su.nightexpress.sunlight.SunLight;
 import su.nightexpress.sunlight.config.Lang;
 import su.nightexpress.sunlight.data.impl.SunUser;
 import su.nightexpress.sunlight.module.Module;
-import su.nightexpress.sunlight.module.bans.command.KickCommand;
+import su.nightexpress.sunlight.module.bans.command.base.KickCommand;
 import su.nightexpress.sunlight.module.bans.command.ban.BanCommand;
 import su.nightexpress.sunlight.module.bans.command.ban.BanipCommand;
 import su.nightexpress.sunlight.module.bans.command.ban.UnbanCommand;
@@ -36,13 +35,14 @@ import su.nightexpress.sunlight.module.bans.punishment.Punishment;
 import su.nightexpress.sunlight.module.bans.punishment.PunishmentReason;
 import su.nightexpress.sunlight.module.bans.punishment.PunishmentType;
 import su.nightexpress.sunlight.module.bans.punishment.RankDuration;
-import su.nightexpress.sunlight.module.bans.util.BansPerms;
+import su.nightexpress.sunlight.module.bans.config.BansPerms;
 import su.nightexpress.sunlight.module.bans.util.Placeholders;
 import su.nightexpress.sunlight.utils.SunUtils;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public class BansModule extends Module {
 
@@ -184,10 +184,16 @@ public class BansModule extends Module {
     }
 
     @NotNull
-    private List<? extends Player> getPlayersToPunish(@NotNull String user) {
+    private Set<Player> getPlayersToPunish(@NotNull String user) {
         return this.plugin.getServer().getOnlinePlayers().stream().filter(player -> {
             return player.getName().equalsIgnoreCase(user) || SunUtils.getIP(player).equalsIgnoreCase(user);
-        }).toList();
+        }).collect(Collectors.toSet());
+    }
+
+    public static int getRankPriority(@NotNull Player player) {
+        var map = BansConfig.PUNISHMENTS_RANK_PRIORITY.get();
+        String rank = PlayerUtil.getPermissionGroup(player);
+        return map.getOrDefault(rank, map.getOrDefault(Placeholders.DEFAULT, 0));
     }
 
     public void punish(
@@ -197,30 +203,47 @@ public class BansModule extends Module {
 
         if (!this.canBePunished(punisher, user)) return;
 
-        if (!punisher.hasPermission(BansPerms.BYPASS_DURATION_LIMIT) && punisher instanceof Player admin) {
-            Map<String, Map<PunishmentType, RankDuration>> durationMap = BansConfig.PUNISHMENTS_RANK_MAX_TIMES.get();
-            Set<RankDuration> durations = new HashSet<>();
-            for (String rank : PlayerUtil.getPermissionGroups(admin)) {
-                RankDuration duration = durationMap.getOrDefault(rank, Collections.emptyMap()).get(type);
-                if (duration != null) {
-                    durations.add(duration);
-                }
-            }
-
-            RankDuration duration = durations.stream().max(Comparator.comparingLong(RankDuration::getMillis)).orElse(null);
-            if (duration != null && banTime > duration.getMillis()) {
-                this.plugin.getMessage(BansLang.PUNISHMENT_ERROR_RANK_DURATION)
-                    .replace(Placeholders.GENERIC_TIME, TimeUtil.formatTime(duration.getMillis()))
-                    .send(punisher);
-                return;
-            }
-        }
-
         // Fine user name if present.
         Player pTarget = plugin.getServer().getPlayer(user);
         if (pTarget != null) user = pTarget.getName();
 
+        // Finalize
         String userName = user;
+
+        Set<Player> targets = this.getPlayersToPunish(userName);
+
+        if (punisher instanceof Player admin) {
+            // TODO Need to get full user of possible SunUsers in async thread to ensure we can punish them
+            int punisherPriority = getRankPriority(admin);
+            if (targets.stream().anyMatch(target -> getRankPriority(target) > punisherPriority)) {
+                this.plugin.getMessage(BansLang.PUNISHMENT_ERROR_RANK_PRIORITY)
+                    .replace(Placeholders.GENERIC_USER, userName)
+                    .send(punisher);
+                return;
+            }
+
+            if (!punisher.hasPermission(BansPerms.BYPASS_DURATION_LIMIT)) {
+                Map<String, Map<PunishmentType, RankDuration>> durationMap = BansConfig.PUNISHMENTS_RANK_MAX_TIMES.get();
+                Set<RankDuration> durations = new HashSet<>();
+                for (String rank : PlayerUtil.getPermissionGroups(admin)) {
+                    RankDuration duration = durationMap.getOrDefault(rank, Collections.emptyMap()).get(type);
+                    if (duration != null) {
+                        durations.add(duration);
+                    }
+                }
+
+                // TODO Need to use PlayerRankMap
+                RankDuration highest = durations.stream().max(Comparator.comparingLong(RankDuration::getMillis)).orElse(null);
+                RankDuration lowest = durations.stream().min(Comparator.comparingLong(RankDuration::getMillis)).orElse(null);
+
+                if ((highest != null && banTime > highest.getMillis()) || (banTime <= 0L && lowest != null && lowest.getMillis() > 0L)) {
+                    this.plugin.getMessage(BansLang.PUNISHMENT_ERROR_RANK_DURATION)
+                        .replace(Placeholders.GENERIC_TIME, TimeUtil.formatTime(highest.getMillis()))
+                        .send(punisher);
+                    return;
+                }
+            }
+        }
 
         // Mutes and Bans can only have one active punishment instance, so we need to overwrite (expire) all others.
         // For warns we do the same, if max. warns amount is reached, and punish at the end of method.
@@ -253,7 +276,7 @@ public class BansModule extends Module {
         msgBroadcast.broadcast();
 
         // Notify players about their punishment.
-        this.getPlayersToPunish(userName).forEach(player -> {
+        targets.forEach(player -> {
             if (type == PunishmentType.BAN) {
                 player.kickPlayer(this.getDisconnectMessage(punishment));
             }

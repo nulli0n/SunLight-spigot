@@ -52,10 +52,16 @@ public class SpeedCommand extends TargetCommand {
         target.setWalkSpeed(realSpeed);
 
         if (!result.hasFlag(CommandFlags.SILENT)) {
-            plugin.getMessage(Lang.COMMAND_SPEED_DONE_NOTIFY).replace(Placeholders.forSender(sender)).replace(Placeholders.GENERIC_AMOUNT, speed).send(target);
+            plugin.getMessage(Lang.COMMAND_SPEED_DONE_NOTIFY)
+                .replace(Placeholders.forSender(sender))
+                .replace(Placeholders.GENERIC_AMOUNT, speed + 1)
+                .send(target);
         }
         if (sender != target) {
-            plugin.getMessage(Lang.COMMAND_SPEED_DONE_TARGET).replace(Placeholders.forPlayer(target)).replace(Placeholders.GENERIC_AMOUNT, speed).send(sender);
+            plugin.getMessage(Lang.COMMAND_SPEED_DONE_TARGET)
+                .replace(Placeholders.forPlayer(target))
+                .replace(Placeholders.GENERIC_AMOUNT, speed + 1)
+                .send(sender);
         }
     }
 }
