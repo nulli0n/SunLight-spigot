@@ -91,8 +91,8 @@ public abstract class PrivateMessageCommand extends GeneralCommand<SunLight> {
             return;
         }
 
-        String nameFrom = sender.getName();
-        String nameTo = receiver.getName();
+        //String nameFrom = sender.getName();
+        //String nameTo = receiver.getName();
 
         // Check if receiver has blocked messages from sender.
         Player pReceiver = receiver instanceof Player ? (Player) receiver : null;
@@ -105,10 +105,12 @@ public abstract class PrivateMessageCommand extends GeneralCommand<SunLight> {
                 return;
             }
 
-            IgnoredUser ignoredUser = userGeter.getIgnoredUser(nameFrom);
-            if (ignoredUser != null && ignoredUser.isDenyConversations() && !sender.hasPermission(Perms.BYPASS_IGNORE_PM)) {
-                this.errorPermission(sender);
-                return;
+            if (sender instanceof Player player) {
+                IgnoredUser ignoredUser = userGeter.getIgnoredUser(player);
+                if (ignoredUser != null && ignoredUser.isDenyConversations() && !sender.hasPermission(Perms.BYPASS_IGNORE_PM)) {
+                    this.errorPermission(sender);
+                    return;
+                }
             }
         }
 
@@ -121,7 +123,7 @@ public abstract class PrivateMessageCommand extends GeneralCommand<SunLight> {
         }
         message = StringUtil.oneSpace(message);
 
-        if (!Colorizer.strip(message).strip().isEmpty()) {
+        if (!Colorizer.strip(message).isBlank()) {
             // Call custom plugin event.
             PlayerPrivateMessageEvent messageEvent = new PlayerPrivateMessageEvent(sender, receiver, message);
             plugin.getPluginManager().callEvent(messageEvent);

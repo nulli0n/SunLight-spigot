@@ -9,6 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import su.nexmedia.engine.api.manager.AbstractListener;
 import su.nightexpress.sunlight.SunLight;
 import su.nightexpress.sunlight.module.spawns.SpawnsModule;
+import su.nightexpress.sunlight.module.spawns.config.SpawnsConfig;
 
 public class SpawnListener extends AbstractListener<SunLight> {
 
@@ -28,6 +29,8 @@ public class SpawnListener extends AbstractListener<SunLight> {
     @EventHandler(priority = EventPriority.LOWEST)
     public void onSpawnRespawn(PlayerRespawnEvent event) {
         Player player = event.getPlayer();
+        if (player.getBedSpawnLocation() != null && SpawnsConfig.RESPECT_PLAYER_BED_HOME.get()) return;
+
         this.spawnsModule.getSpawnByDeath(player).ifPresent(spawn -> event.setRespawnLocation(spawn.getLocation()));
     }
 }

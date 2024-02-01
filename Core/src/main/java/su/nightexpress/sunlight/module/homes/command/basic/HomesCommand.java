@@ -22,6 +22,7 @@ public class HomesCommand extends GeneralCommand<SunLight> {
         this.addChildren(new HomesTeleportCommand(homesModule));
         this.addChildren(new HomesListCommand(homesModule));
         this.addChildren(new HomesVisitCommand(homesModule));
+        this.addChildren(new InviteCommand(homesModule));
     }
 
     @Override

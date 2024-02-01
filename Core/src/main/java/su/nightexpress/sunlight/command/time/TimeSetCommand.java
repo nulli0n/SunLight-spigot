@@ -25,7 +25,7 @@ public class TimeSetCommand extends AbstractCommand<SunLight> {
     public static final String NAME = "set";
 
     public TimeSetCommand(@NotNull SunLight plugin) {
-        super(plugin, new String[]{NAME}, Perms.COMMAND_TIME);
+        super(plugin, new String[]{NAME}, Perms.COMMAND_TIME_SET);
         this.setDescription(plugin.getMessage(Lang.COMMAND_TIME_SET_DESC));
         this.setUsage(plugin.getMessage(Lang.COMMAND_TIME_SET_USAGE));
         this.addFlag(CommandFlags.WORLD);

@@ -198,7 +198,29 @@ public class WorldConfig extends AbstractConfigHolder<SunLight> implements Place
         if (this.isLoaded()) return false;
 
         File dir = new File(plugin.getServer().getWorldContainer() + "/" + this.getId());
+
         return FileUtil.deleteRecursive(dir); // Delete bukkit world folder.
+    }
+
+    public boolean deleteRegionFiles() {
+        if (this.isLoaded()) return false;
+
+        File dir = new File(plugin.getServer().getWorldContainer() + "/" + this.getId());
+
+        for (File folder : FileUtil.getFolders(dir.getAbsolutePath())) {
+            if (folder.getName().equalsIgnoreCase("datapacks")) continue;
+
+            FileUtil.deleteRecursive(folder);
+        }
+
+        for (File file : FileUtil.getFiles(dir.getAbsolutePath(), false)) {
+            if (file.getName().equalsIgnoreCase("level.dat")) continue;
+            if (file.getName().equalsIgnoreCase("paper-world.yml")) continue;
+
+            file.delete();
+        }
+
+        return true;
     }
 
     public boolean deleteWorld(boolean withFolder) {
@@ -247,7 +269,7 @@ public class WorldConfig extends AbstractConfigHolder<SunLight> implements Place
             return false;
         }
         this.unloadWorld();
-        this.deleteWorldFiles();
+        this.deleteRegionFiles();
         this.loadWorld();
         this.setLatestWipeDate();
         //this.setLastWipe(System.currentTimeMillis());
@@ -258,6 +280,7 @@ public class WorldConfig extends AbstractConfigHolder<SunLight> implements Place
 
     public boolean autoWipeNotify() {
         if (!this.isAutoWipe()) return false;
+        if (this.isWipeTime()) return false;
 
         long wipeDate = this.getNextWipe();
         if (wipeDate <= 0L) return false;
@@ -337,7 +360,8 @@ public class WorldConfig extends AbstractConfigHolder<SunLight> implements Place
         long next = this.getNextWipe();
         if (next <= 0L) return false;
 
-        return System.currentTimeMillis() >= next;
+        long now = TimeUtil.toEpochMillis(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS));
+        return now >= next;
     }
 
     @NotNull
