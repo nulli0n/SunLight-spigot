@@ -15,19 +15,21 @@ import su.nexmedia.engine.api.config.JYML;
 import su.nexmedia.engine.api.manager.AbstractListener;
 import su.nexmedia.engine.utils.EntityUtil;
 import su.nexmedia.engine.utils.Pair;
-import su.nexmedia.engine.utils.Placeholders;
 import su.nightexpress.sunlight.Perms;
 import su.nightexpress.sunlight.SunLight;
 import su.nightexpress.sunlight.command.CommandFlags;
 import su.nightexpress.sunlight.command.api.TargetCommand;
 import su.nightexpress.sunlight.config.Lang;
 import su.nightexpress.sunlight.utils.Cleanable;
+import su.nightexpress.sunlight.utils.FairTeleport;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
+import static su.nightexpress.sunlight.utils.FairTeleport.fairTeleport;
 
 public class BackCommand extends TargetCommand implements Cleanable {
 
@@ -102,13 +104,14 @@ public class BackCommand extends TargetCommand implements Cleanable {
             return;
         }
 
-        target.teleport(back);
-        if (!isSilent) {
-            plugin.getMessage(Lang.COMMAND_BACK_NOTIFY).send(target);
-        }
-        if (target != sender) {
-            plugin.getMessage(Lang.COMMAND_BACK_TARGET).replace(Placeholders.forPlayer(target)).send(sender);
-        }
+//        target.teleport(back);
+        fairTeleport(target, back, plugin.getMessage(Lang.COMMAND_BACK_NOTIFY));
+//        if (!isSilent) {
+//            plugin.getMessage(Lang.COMMAND_BACK_NOTIFY).send(target);
+//        }
+//        if (target != sender) {
+//            plugin.getMessage(Lang.COMMAND_BACK_TARGET).replace(Placeholders.forPlayer(target)).send(sender);
+//        }
     }
 
     private class Listener extends AbstractListener<SunLight> {

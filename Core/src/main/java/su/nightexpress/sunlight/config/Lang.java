@@ -439,8 +439,9 @@ public class Lang extends EngineLang {
 
     public static final LangKey COMMAND_TELEPORT_ACCEPT_DESC          = LangKey.of("Command.Teleport.Accept.Desc", "Accept incoming teleport request/invite.");
     public static final LangKey COMMAND_TELEPORT_ACCEPT_USAGE         = LangKey.of("Command.Teleport.Accept.Usage", "[player]");
-    public static final LangKey COMMAND_TELEPORT_ACCEPT_NOTIFY_SENDER = LangKey.of("Command.Teleport.Accept.Notify.Sender", "<! sound:\"" + Sound.ENTITY_ENDERMAN_TELEPORT.name() + "\" !>" + LIGHT_YELLOW + "You accepted teleport request from " + ORANGE + Placeholders.PLAYER_DISPLAY_NAME + LIGHT_YELLOW + "!");
-    public static final LangKey COMMAND_TELEPORT_ACCEPT_NOTIFY_TARGET = LangKey.of("Command.Teleport.Accept.Notify.Target", "<! sound:\"" + Sound.ENTITY_ENDERMAN_TELEPORT.name() + "\" !>" + ORANGE + Placeholders.PLAYER_DISPLAY_NAME + LIGHT_YELLOW + " accepted your teleport request!");
+    public static final LangKey COMMAND_TELEPORT_ACCEPT_NOTIFY_SENDER = LangKey.of("Command.Teleport.Accept.Notify.Sender", "<! sound:\"" + Sound.ENTITY_EXPERIENCE_ORB_PICKUP.name() + "\" !>" + LIGHT_YELLOW + "You accepted teleport request from " + ORANGE + Placeholders.PLAYER_DISPLAY_NAME + LIGHT_YELLOW + "!");
+    public static final LangKey COMMAND_TELEPORT_ACCEPT_NOTIFY_TARGET = LangKey.of("Command.Teleport.Accept.Notify.Target", "<! sound:\"" + Sound.ENTITY_EXPERIENCE_ORB_PICKUP.name() + "\" !>" + ORANGE + Placeholders.PLAYER_DISPLAY_NAME + LIGHT_YELLOW + " accepted your teleport request!");
+    public static final LangKey COMMAND_TELEPORT_ACCEPT_SUCCESS = LangKey.of("Command.Teleport.Succeed", "<! sound:\"" + Sound.ENTITY_ENDERMAN_TELEPORT.name() + "\" !>" + GREEN + "Teleport succeed!");
     public static final LangKey COMMAND_TELEPORT_ACCEPT_ERROR_NOTHING = LangKey.of("Command.Teleport.Accept.Error.Nothing", "<! sound:\"" + Sound.ENTITY_VILLAGER_NO.name() + "\" !>" + LIGHT_YELLOW + "Nothing to accept (or request is not valid anymore).");
 
     public static final LangKey COMMAND_TELEPORT_DECLINE_DESC          = LangKey.of("Command.Teleport.Decline.Desc", "Decline incoming teleport request/invite.");
@@ -565,6 +566,12 @@ public class Lang extends EngineLang {
     public static final LangKey             ERROR_ENCHANTMENT_INVALID = LangKey.of("Error.Enchantment.Invalid", RED + "Invalid enchantment!");
     public static final LangKey ERROR_PLAYER_NO_ITEM = LangKey.of("Error.Player.NoItem", RED + "Player don't have an item!");
     public static final LangKey ERROR_MATERIAL_INVALID = LangKey.of("Error.Material.Invalid", "&cNo valid material(s) provided!");
+    public static final LangKey ERROR_TELEPORT_MOVED = LangKey.of("Error.Teleport.Moved",
+            "<! sound:\"" + Sound.ENTITY_VILLAGER_NO.name() + "\" !>" +
+                    RED + "You moved, teleportation cancelled!");
+    public static final LangKey ERROR_TELEPORT_WARN = LangKey.of("Error.Teleport.Warn",
+            "<! sound:\"" + Sound.ENTITY_EXPERIENCE_ORB_PICKUP.name() + "\" !>" +
+                    YELLOW + "Teleporting, please don't move for 3 seconds!");
 
     @NotNull
     public static LangKey getEnabled(boolean value) {

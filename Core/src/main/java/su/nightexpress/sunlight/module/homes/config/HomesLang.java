@@ -50,6 +50,10 @@ public class HomesLang {
         "<! type:\"titles:20:50:20\" sound:\"" + Sound.ENTITY_ENDERMAN_TELEPORT.name() + "\" !>" +
             "\n" + GREEN + BOLD + "Home" +
             "\n" + GRAY + "You teleported to your " + GREEN + HOME_NAME + GRAY + " home.");
+    
+    public static final LangKey HOME_TELEPORT_MOVED = LangKey.of("Homes.Home.TELEPORT.MOVED",
+            "<! sound:\"" + Sound.ENTITY_VILLAGER_NO.name() + "\" !>" +
+                    RED + "You moved, teleportation cancelled!");
 
     public static final LangKey HOME_VISIT_SUCCESS = LangKey.of("Homes.Home.Visit.Success",
         "<! type:\"titles:20:50:20\" sound:\"" + Sound.ENTITY_ENDERMAN_TELEPORT.name() + "\" !>" +
@@ -59,6 +63,7 @@ public class HomesLang {
     public static final LangKey HOME_VISIT_ERROR_NOT_PERMITTED = LangKey.of("Homes.Home.Visit.Error.NotPermitted",
         "<! sound:\"" + Sound.ENTITY_VILLAGER_NO.name() + "\" !>" +
             RED + "You don't have invite to this home!");
+    
 
     public static final LangKey HOME_SET_ERROR_LIMIT      = LangKey.of("Homes.Home.Set.Error.Limit", RED + "You have reached your homes limit. You can not set more.");
     public static final LangKey HOME_SET_ERROR_WORLD      = LangKey.of("Homes.Home.Set.Error.World", RED + "You can not set home in this world!");

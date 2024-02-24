@@ -26,12 +26,15 @@ import su.nightexpress.sunlight.module.warps.menu.WarpSettingsMenu;
 import su.nightexpress.sunlight.module.warps.type.WarpType;
 import su.nightexpress.sunlight.module.warps.util.Placeholders;
 import su.nightexpress.sunlight.module.warps.config.WarpsPerms;
+import su.nightexpress.sunlight.utils.FairTeleport;
 import su.nightexpress.sunlight.utils.UserInfo;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.*;
+
+import static su.nightexpress.sunlight.utils.FairTeleport.fairTeleport;
 
 public class Warp extends AbstractConfigHolder<SunLight> implements Placeholder {
 
@@ -212,16 +215,17 @@ public class Warp extends AbstractConfigHolder<SunLight> implements Placeholder 
                 VaultHook.takeMoney(player, visitCost);
             }
         }
+        fairTeleport(player, this.getLocation(), this.plugin.getMessage(WarpsLang.WARP_TELEPORT_DONE).replace(this.replacePlaceholders()));
+        
+//        if (player.teleport(this.getLocation())) {
+//            this.plugin.getMessage(WarpsLang.WARP_TELEPORT_DONE).replace(this.replacePlaceholders()).send(player);
 
-        if (player.teleport(this.getLocation())) {
-            this.plugin.getMessage(WarpsLang.WARP_TELEPORT_DONE).replace(this.replacePlaceholders()).send(player);
-
-            if (!isForced && this.hasVisitCooldown()) {
-                CooldownInfo info = CooldownInfo.of(this);
-                user.addCooldown(info);
-                this.plugin.getUserManager().saveUser(user);
-            }
+        if (!isForced && this.hasVisitCooldown()) {
+            CooldownInfo info = CooldownInfo.of(this);
+            user.addCooldown(info);
+            this.plugin.getUserManager().saveUser(user);
         }
+//        }
     }
 
     public boolean isOwner(@NotNull Player player) {
