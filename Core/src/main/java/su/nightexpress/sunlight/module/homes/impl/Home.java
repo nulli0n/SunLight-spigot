@@ -20,11 +20,14 @@ import su.nightexpress.sunlight.module.homes.config.HomesLang;
 import su.nightexpress.sunlight.module.homes.event.PlayerHomeTeleportEvent;
 import su.nightexpress.sunlight.module.homes.menu.HomeMenu;
 import su.nightexpress.sunlight.module.homes.util.Placeholders;
+import su.nightexpress.sunlight.utils.FairTeleport;
 import su.nightexpress.sunlight.utils.UserInfo;
 
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
+
+import static su.nightexpress.sunlight.utils.FairTeleport.fairTeleport;
 
 public class Home implements Placeholder {
 
@@ -139,14 +142,16 @@ public class Home implements Placeholder {
         PlayerHomeTeleportEvent event = new PlayerHomeTeleportEvent(player, this);
         plugin.getPluginManager().callEvent(event);
         if (event.isCancelled()) return false;
+        Location location = this.getLocation();
+        
+        fairTeleport(player,
+                location,
+                this.plugin.getMessage(this.isOwner(player) ? HomesLang.HOME_TELEPORT_SUCCESS : HomesLang.HOME_VISIT_SUCCESS)
+                        .replace(this.replacePlaceholders()));
 
-        if (!player.teleport(this.getLocation())) {
-            return false;
-        }
-
-        this.plugin.getMessage(this.isOwner(player) ? HomesLang.HOME_TELEPORT_SUCCESS : HomesLang.HOME_VISIT_SUCCESS)
-            .replace(this.replacePlaceholders())
-            .send(player);
+//        this.plugin.getMessage(this.isOwner(player) ? HomesLang.HOME_TELEPORT_SUCCESS : HomesLang.HOME_VISIT_SUCCESS)
+//            .replace(this.replacePlaceholders())
+//            .send(player);
         return true;
     }
 

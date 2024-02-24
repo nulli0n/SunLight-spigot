@@ -8,8 +8,11 @@ import org.jetbrains.annotations.Nullable;
 import su.nexmedia.engine.utils.Placeholders;
 import su.nightexpress.sunlight.SunLightAPI;
 import su.nightexpress.sunlight.config.Lang;
+import su.nightexpress.sunlight.utils.FairTeleport;
 
 import java.util.*;
+
+import static su.nightexpress.sunlight.utils.FairTeleport.fairTeleport;
 
 public class TeleportRequest {
 
@@ -73,7 +76,8 @@ public class TeleportRequest {
         }
         Player teleporter = this.isSummon() ? pAccept : pAsker;
         Location destination = this.isSummon() ? pAsker.getLocation() : pAccept.getLocation();
-        teleporter.teleport(destination);
+//        teleporter.teleport(destination);
+        fairTeleport(teleporter, destination, SunLightAPI.PLUGIN.getMessage(Lang.COMMAND_TELEPORT_ACCEPT_SUCCESS));
         this.expire();
         if (doNotify) {
             SunLightAPI.PLUGIN.getMessage(Lang.COMMAND_TELEPORT_ACCEPT_NOTIFY_SENDER).replace(Placeholders.forPlayer(pAsker)).send(pAccept);

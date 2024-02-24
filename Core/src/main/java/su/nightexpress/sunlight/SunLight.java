@@ -28,6 +28,7 @@ import su.nightexpress.sunlight.nms.v1_18_R2.V1_18_R2;
 import su.nightexpress.sunlight.nms.v1_19_R3.V1_19_R3;
 import su.nightexpress.sunlight.nms.v1_20_R1.V1_20_R1;
 import su.nightexpress.sunlight.nms.v1_20_R3.V1_20_R3;
+import su.nightexpress.sunlight.utils.FairTeleport;
 
 import java.util.Collection;
 
@@ -50,6 +51,7 @@ public class SunLight extends NexPlugin<SunLight> implements UserDataHolder<SunL
 
     @Override
     public void enable() {
+        
         this.setupInternalNMS();
         if (this.sunNMS == null) {
             this.error("Unsupported server version. Bye.");
