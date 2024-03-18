@@ -156,6 +156,9 @@ public class Perms {
     public static final JPermission COMMAND_ITEM_SPAWN       = forCommand(ItemCommand.NAME, ItemSpawnCommand.NAME);
     public static final JPermission COMMAND_ITEM_POTION      = forCommand(ItemCommand.NAME, ItemPotionCommand.NAME);
 
+    public static final JPermission COMMAND_KILL       = forCommand(KillCommand.NAME);
+    public static final JPermission COMMAND_KILL_OTHERS       = forCommandOthers(KillCommand.NAME);
+
     public static final JPermission COMMAND_LOOM = forCommand(LoomCommand.NAME);
     public static final JPermission COMMAND_LOOM_OTHERS = forCommandOthers(LoomCommand.NAME);
 
@@ -282,6 +285,8 @@ public class Perms {
             COMMAND_ITEM_GET, COMMAND_ITEM_GIVE, COMMAND_ITEM_LORE, COMMAND_ITEM_MODEL,
             COMMAND_ITEM_NAME, COMMAND_ITEM_SPAWN, COMMAND_ITEM_TAKE, COMMAND_ITEM_POTION,
             COMMAND_ITEM_DAMAGE, COMMAND_ITEM_UNBREAKABLE,
+
+            COMMAND_KILL, COMMAND_KILL_OTHERS,
 
             COMMAND_LOOM, COMMAND_LOOM_OTHERS,
 
