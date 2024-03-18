@@ -343,6 +343,11 @@ public class Lang extends EngineLang {
     public static final LangKey COMMAND_ITEM_UNBREAKABLE_DONE           = LangKey.of("Command.Item.Unbreakable.Done", "<! sound:\"" + Sound.BLOCK_ANVIL_USE.name() + "\" !>" + LIGHT_YELLOW + "Set " + ORANGE + Placeholders.GENERIC_ITEM + LIGHT_YELLOW + " Unbreakable: " + ORANGE + Placeholders.GENERIC_STATE + LIGHT_YELLOW + ".");
     public static final LangKey COMMAND_ITEM_UNBREAKABLE_ERROR_BAD_ITEM = LangKey.of("Command.Item.Unbreakable.Error.NotDamageable", "<! sound:\"" + Sound.ENTITY_VILLAGER_NO.name() + "\" !>" + ORANGE + Placeholders.GENERIC_ITEM + RED + " can not be (un)breakable.");
 
+    public static final LangKey COMMAND_KILL_DESC   = LangKey.of("Command.Kill.Desc", "Kill [player].");
+    public static final LangKey COMMAND_KILL_USAGE  = LangKey.of("Command.Kill.Usage", "[player] [-s]");
+    public static final LangKey COMMAND_KILL_NOTIFY = LangKey.of("Command.Kill.Done.Self", LIGHT_YELLOW + "You got killed by " + ORANGE + Placeholders.PLAYER_DISPLAY_NAME + LIGHT_YELLOW + "!");
+    public static final LangKey COMMAND_KILL_TARGET = LangKey.of("Command.Kill.Done.Others", LIGHT_YELLOW + "Killed " + ORANGE + Placeholders.PLAYER_DISPLAY_NAME + LIGHT_YELLOW + "!");
+
     public static final LangKey COMMAND_LOOM_DESC   = LangKey.of("Command.Loom.Desc", "Open portable loom.");
     public static final LangKey COMMAND_LOOM_USAGE  = LangKey.of("Command.Loom.Usage", "[player] [-s]");
     public static final LangKey COMMAND_LOOM_NOTIFY = LangKey.of("Command.Loom.Notify", ACTION_BAR + LIGHT_YELLOW + "You opened loom.");
