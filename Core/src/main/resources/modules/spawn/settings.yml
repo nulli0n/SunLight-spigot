@@ -1,0 +1,4 @@
+Global:
+  # Sets whether or not player's beds should be respected on player deaths, so
+  # they won't be teleported to spawn(s) set as respawn points.
+  Respect_Player_Beds: true
