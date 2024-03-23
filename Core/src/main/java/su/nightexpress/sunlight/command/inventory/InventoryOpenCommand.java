@@ -37,7 +37,7 @@ public class InventoryOpenCommand extends TargetCommand {
         player.openInventory(inventory);
 
         plugin.getMessage(Lang.COMMAND_INVENTORY_OPEN_DONE)
-            .replace(Placeholders.PLAYER_NAME, target.getName())
+            .replace(Placeholders.forPlayer(target))
             .send(sender);
     }
 }

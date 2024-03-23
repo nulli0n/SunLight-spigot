@@ -220,10 +220,14 @@ public class ChatMessageHandler {
         String format = this.getFormat().prepareFormat(this.player, this.getChannel().getFormat());
 
         try {
-            this.chatEvent.setMessage(NexParser.toPlainText(message));
-            this.chatEvent.setFormat(NexParser.toPlainText(format.replace(Placeholders.GENERIC_MESSAGE, "%2$s")));
-        }
-        catch (UnknownFormatConversionException exception) {
+            if (ChatConfig.CHAT_JSON.get()) {
+                this.chatEvent.setMessage(NexParser.toPlainText(message));
+                this.chatEvent.setFormat(NexParser.toPlainText(format.replace(Placeholders.GENERIC_MESSAGE, "%2$s")));
+            } else {
+                this.chatEvent.setMessage(Colorizer.apply(NexParser.toPlainText(message)));
+                this.chatEvent.setFormat(Colorizer.apply(NexParser.toPlainText(format.replace(Placeholders.GENERIC_MESSAGE, "%2$s"))));
+            }
+        } catch (UnknownFormatConversionException exception) {
             this.plugin.error("Could not set chat format due to bad formation string. Here are what we get:");
             this.plugin.error("--- Message: " + NexParser.toPlainText(message));
             this.plugin.error("--- Format: " + NexParser.toPlainText(format));
