@@ -70,6 +70,7 @@ public class CommandRegulator extends AbstractManager<SunLight> {
         this.register(InventoryCommand.NAME, (cfg, aliases) -> new InventoryCommand(plugin, aliases), "inv");
         this.register(ItemCommand.NAME, (cfg, aliases) -> new ItemCommand(plugin, cfg, aliases), "i");
         this.register(LoomCommand.NAME, (cfg, aliases) -> new LoomCommand(plugin, aliases));
+        this.register(KillCommand.NAME, (cfg, aliases) -> new KillCommand(plugin, aliases));
         this.register(MobCommand.NAME, (cfg, aliases) -> new MobCommand(plugin, aliases));
         this.register(NearCommand.NAME, (cfg, aliases) -> new NearCommand(plugin, cfg, aliases));
         this.register(NickCommand.NAME, (cfg, aliases) -> new NickCommand(plugin, cfg, aliases));

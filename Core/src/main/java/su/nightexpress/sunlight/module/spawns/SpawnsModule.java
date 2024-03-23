@@ -9,6 +9,7 @@ import su.nexmedia.engine.utils.StringUtil;
 import su.nightexpress.sunlight.SunLight;
 import su.nightexpress.sunlight.module.Module;
 import su.nightexpress.sunlight.module.spawns.command.SpawnsCommand;
+import su.nightexpress.sunlight.module.spawns.config.SpawnsConfig;
 import su.nightexpress.sunlight.module.spawns.config.SpawnsLang;
 import su.nightexpress.sunlight.module.spawns.editor.EditorLocales;
 import su.nightexpress.sunlight.module.spawns.editor.SpawnsEditor;
@@ -34,6 +35,7 @@ public class SpawnsModule extends Module {
 
     @Override
     protected void onLoad() {
+        this.getConfig().initializeOptions(SpawnsConfig.class);
         this.plugin.registerPermissions(SpawnsPerms.class);
         this.plugin.getLangManager().loadMissing(SpawnsLang.class);
         this.plugin.getLangManager().loadEditor(EditorLocales.class);
