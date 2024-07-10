@@ -1,141 +1,177 @@
 package su.nightexpress.sunlight.module.homes.menu;
 
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
-import su.nexmedia.engine.api.config.JYML;
-import su.nexmedia.engine.api.menu.AutoPaged;
-import su.nexmedia.engine.api.menu.MenuItemType;
-import su.nexmedia.engine.api.menu.click.ClickHandler;
-import su.nexmedia.engine.api.menu.click.ItemClick;
-import su.nexmedia.engine.api.menu.impl.ConfigMenu;
-import su.nexmedia.engine.api.menu.impl.MenuOptions;
-import su.nexmedia.engine.api.menu.impl.MenuViewer;
-import su.nexmedia.engine.utils.Colorizer;
-import su.nexmedia.engine.utils.ItemUtil;
-import su.nexmedia.engine.utils.StringUtil;
-import su.nightexpress.sunlight.SunLight;
+import su.nightexpress.nightcore.config.ConfigValue;
+import su.nightexpress.nightcore.config.FileConfig;
+import su.nightexpress.nightcore.menu.MenuOptions;
+import su.nightexpress.nightcore.menu.MenuSize;
+import su.nightexpress.nightcore.menu.MenuViewer;
+import su.nightexpress.nightcore.menu.api.AutoFill;
+import su.nightexpress.nightcore.menu.api.AutoFilled;
+import su.nightexpress.nightcore.menu.impl.ConfigMenu;
+import su.nightexpress.nightcore.menu.item.ItemHandler;
+import su.nightexpress.nightcore.menu.item.MenuItem;
+import su.nightexpress.nightcore.menu.link.Linked;
+import su.nightexpress.nightcore.menu.link.ViewLink;
+import su.nightexpress.nightcore.util.*;
+import su.nightexpress.sunlight.SunLightPlugin;
+import su.nightexpress.sunlight.config.Lang;
 import su.nightexpress.sunlight.module.homes.HomesModule;
 import su.nightexpress.sunlight.module.homes.impl.Home;
-import su.nightexpress.sunlight.module.homes.util.Placeholders;
 
-import javax.annotation.Nullable;
 import java.util.*;
+import java.util.stream.IntStream;
 
-public class HomesMenu extends ConfigMenu<SunLight> implements AutoPaged<Home> {
+import static su.nightexpress.sunlight.module.homes.util.Placeholders.*;
+import static su.nightexpress.nightcore.util.text.tag.Tags.*;
 
-    private static final String PLACEHOLDER_RESPAWN    = "%respawn%";
-    private static final String PLACEHOLDER_IS_DEFAULT = "%is_default%";
+public class HomesMenu extends ConfigMenu<SunLightPlugin> implements AutoFilled<Home>, Linked<UUID> {
 
-    private final HomesModule       module;
-    private final String            homeName;
-    private final List<String>      homeLoreDefault;
-    private final List<String>      homeLoreRespawn;
-    private final List<String>      homeLoreIsDefault;
-    private final int[]             homeSlots;
-    private final Map<Player, UUID> others;
+    private static final String FILE_NAME = "home_list.yml";
 
-    public HomesMenu(@NotNull HomesModule module) {
-        super(module.plugin(), JYML.loadOrExtract(module.plugin(), module.getLocalPath() + "/menu/home_list.yml"));
+    private static final String IS_RESPAWN = "%respawn%";
+    private static final String IS_DEFAULT = "%is_default%";
+
+    private final HomesModule    module;
+    private final ViewLink<UUID> link;
+    
+    private String       homeName;
+    private List<String> homeLore;
+    private int[]        homeSlots;
+
+    private List<String> loreIsRespawn;
+    private List<String> loreIsDefault;
+
+    public HomesMenu(@NotNull SunLightPlugin plugin, @NotNull HomesModule module) {
+        super(plugin, FileConfig.loadOrExtract(plugin, module.getLocalUIPath(), FILE_NAME));
         this.module = module;
-        this.others = new WeakHashMap<>();
-
-        this.homeName = Colorizer.apply(cfg.getString("Home.Name", Placeholders.HOME_NAME));
-        this.homeLoreDefault = Colorizer.apply(cfg.getStringList("Home.Lore.Default"));
-        this.homeLoreRespawn = Colorizer.apply(cfg.getStringList("Home.Lore.Respawn"));
-        this.homeLoreIsDefault = Colorizer.apply(cfg.getStringList("Home.Lore.Is_Default"));
-        this.homeSlots = cfg.getIntArray("Home.Slots");
-
-        this.registerHandler(MenuItemType.class)
-            .addClick(MenuItemType.CLOSE, (viewer, event) -> plugin.runTask(task -> viewer.getPlayer().closeInventory()))
-            .addClick(MenuItemType.PAGE_PREVIOUS, ClickHandler.forPreviousPage(this))
-            .addClick(MenuItemType.PAGE_NEXT, ClickHandler.forNextPage(this));
+        this.link = new ViewLink<>();
 
         this.load();
     }
 
-    public void open(@NotNull Player player, @NotNull UUID userId) {
-        this.others.put(player, userId);
-        this.open(player, 1);
+    @NotNull
+    @Override
+    public ViewLink<UUID> getLink() {
+        return link;
     }
 
     @Override
     public void onPrepare(@NotNull MenuViewer viewer, @NotNull MenuOptions options) {
-        super.onPrepare(viewer, options);
-        this.getItemsForPage(viewer).forEach(this::addItem);
+        this.autoFill(viewer);
     }
 
-    @Nullable
-    public UUID getOtherHolder(@NotNull Player player) {
-        return this.others.get(player);
+    @Override
+    protected void onReady(@NotNull MenuViewer viewer, @NotNull Inventory inventory) {
+
     }
 
-    public void clearHolder(@NotNull UUID userId) {
-        this.others.forEach((player , id) -> {
-            if (id.equals(userId)) {
-                this.plugin.runTask(task -> player.closeInventory());
-            }
+    @Override
+    public void onAutoFill(@NotNull MenuViewer viewer, @NotNull AutoFill<Home> autoFill) {
+        Player player = viewer.getPlayer();
+        UUID targetId = this.getLink(player);
+
+        autoFill.setSlots(this.homeSlots);
+        autoFill.setItems(this.module.getHomes(targetId).values().stream().sorted(Comparator.comparing(Home::getId)).toList());
+        autoFill.setItemCreator(home -> {
+            ItemStack item = home.getIcon();
+
+            List<String> isDefaultLore = home.isDefault() ? new ArrayList<>(this.loreIsDefault) : Collections.emptyList();
+            List<String> isRespawnLore = home.isRespawnPoint() ? new ArrayList<>(this.loreIsRespawn) : Collections.emptyList();
+
+            ItemReplacer.create(item).hideFlags().trimmed()
+                .setDisplayName(this.homeName)
+                .setLore(this.homeLore)
+                .replace(IS_DEFAULT, isDefaultLore)
+                .replace(IS_RESPAWN, isRespawnLore)
+                .replace(home.replacePlaceholders())
+                .writeMeta();
+
+            return item;
         });
-    }
-
-    @Override
-    public void onClose(@NotNull MenuViewer viewer, @NotNull InventoryCloseEvent event) {
-        super.onClose(viewer, event);
-        this.others.remove(viewer.getPlayer());
-    }
-
-    @Override
-    public int[] getObjectSlots() {
-        return homeSlots;
-    }
-
-    @Override
-    @NotNull
-    public List<Home> getObjects(@NotNull Player player) {
-        UUID userId = this.others.getOrDefault(player, player.getUniqueId());
-        return this.module.getHomes(userId).values().stream().sorted(Comparator.comparing(Home::getId)).toList();
-    }
-
-    @Override
-    @NotNull
-    public ItemStack getObjectStack(@NotNull Player player, @NotNull Home home) {
-        ItemStack item = new ItemStack(home.getIcon());
-        ItemUtil.mapMeta(item, meta -> {
-            List<String> lore = this.homeLoreDefault;
-            lore = StringUtil.replaceInList(lore, PLACEHOLDER_RESPAWN, home.isRespawnPoint() ? this.homeLoreRespawn : Collections.emptyList());
-            lore = StringUtil.replaceInList(lore, PLACEHOLDER_IS_DEFAULT, home.isDefault() ? this.homeLoreIsDefault : Collections.emptyList());
-
-            meta.setDisplayName(this.homeName);
-            meta.setLore(lore);
-            ItemUtil.replace(meta, home.replacePlaceholders());
-        });
-        return item;
-    }
-
-    @Override
-    @NotNull
-    public ItemClick getObjectClick(@NotNull Home home) {
-        return (viewer, event) -> {
-            Player player = viewer.getPlayer();
-
-            UUID userId = this.others.getOrDefault(player, player.getUniqueId());
-            if (!this.module.isLoaded(userId)) {
-                this.plugin.runTask(task -> player.closeInventory());
+        autoFill.setClickAction(home -> (viewer1, event) -> {
+            if (!this.module.isLoaded(targetId)) {
+                this.runNextTick(player::closeInventory);
                 return;
             }
 
             if (event.isRightClick()) {
                 if (event.isShiftClick()) {
                     this.module.removeHome(home);
-                    this.open(player, viewer.getPage());
+                    this.runNextTick(() -> this.open(player, viewer.getPage()));
                     return;
                 }
-                home.getEditor().open(player, 1);
+                this.runNextTick(() -> this.module.openHomeSettings(player, home));
             }
             else {
                 home.teleport(player);
             }
-        };
+        });
+    }
+
+    @Override
+    @NotNull
+    protected MenuOptions createDefaultOptions() {
+        return new MenuOptions(BLACK.enclose("Homes"), MenuSize.CHEST_36);
+    }
+
+    @Override
+    @NotNull
+    protected List<MenuItem> createDefaultItems() {
+        List<MenuItem> list = new ArrayList<>();
+
+        ItemStack close = ItemUtil.getSkinHead(SKIN_WRONG_MARK);
+        ItemUtil.editMeta(close, meta -> {
+            meta.setDisplayName(Lang.EDITOR_ITEM_CLOSE.getDefaultName());
+        });
+        list.add(new MenuItem(close).setPriority(10).setSlots(31).setHandler(ItemHandler.forClose(this)));
+
+        ItemStack nextPage = ItemUtil.getSkinHead(SKIN_ARROW_RIGHT);
+        ItemUtil.editMeta(nextPage, meta -> {
+            meta.setDisplayName(Lang.EDITOR_ITEM_NEXT_PAGE.getDefaultName());
+        });
+        list.add(new MenuItem(nextPage).setPriority(10).setSlots(35).setHandler(ItemHandler.forNextPage(this)));
+
+        ItemStack backPage = ItemUtil.getSkinHead(SKIN_ARROW_LEFT);
+        ItemUtil.editMeta(backPage, meta -> {
+            meta.setDisplayName(Lang.EDITOR_ITEM_PREVIOUS_PAGE.getDefaultName());
+        });
+        list.add(new MenuItem(backPage).setPriority(10).setSlots(27).setHandler(ItemHandler.forPreviousPage(this)));
+
+        return list;
+    }
+
+    @Override
+    protected void loadAdditional() {
+        this.homeName = ConfigValue.create("Home.Name", 
+            LIGHT_YELLOW.enclose(BOLD.enclose("Home: ")) + WHITE.enclose(HOME_NAME) + GRAY.enclose(" (ID: " + WHITE.enclose(HOME_ID) + ")")
+        ).read(cfg);
+
+        this.homeLore = ConfigValue.create("Home.Lore.Default", Lists.newList(
+            LIGHT_YELLOW.enclose("▪ " + LIGHT_GRAY.enclose("World: ") + HOME_LOCATION_WORLD),
+            LIGHT_YELLOW.enclose("▪ " + LIGHT_GRAY.enclose("X: ") + HOME_LOCATION_X),
+            LIGHT_YELLOW.enclose("▪ " + LIGHT_GRAY.enclose("Y: ") + HOME_LOCATION_Y),
+            LIGHT_YELLOW.enclose("▪ " + LIGHT_GRAY.enclose("Z: ") + HOME_LOCATION_Z),
+            "",
+            IS_RESPAWN,
+            IS_DEFAULT,
+            "",
+            LIGHT_GRAY.enclose(LIGHT_YELLOW.enclose("[▶]") + " Left-Click to " + LIGHT_YELLOW.enclose("teleport") + "."),
+            LIGHT_GRAY.enclose(LIGHT_YELLOW.enclose("[▶]") + " Right-Click for " + LIGHT_YELLOW.enclose("settings") + "."),
+            LIGHT_GRAY.enclose(LIGHT_RED.enclose("[▶]") + " Shift-Right to " + LIGHT_RED.enclose("delete") + ".")
+        )).read(cfg);
+        
+        this.loreIsRespawn = ConfigValue.create("Home.Lore.Respawn", Lists.newList(
+            LIGHT_GRAY.enclose(LIGHT_GREEN.enclose("✔") + " This home is set as " + LIGHT_GREEN.enclose("respawn") + " point.")
+        )).read(cfg);
+        
+        this.loreIsDefault = ConfigValue.create("Home.Lore.Is_Default", Lists.newList(
+            LIGHT_GRAY.enclose(LIGHT_GREEN.enclose("✔") + " This home is set as " + LIGHT_GREEN.enclose("default") + " home.")
+        )).read(cfg);
+        
+        this.homeSlots = ConfigValue.create("Home.Slots", IntStream.range(10, 17).toArray()).read(cfg);
     }
 }

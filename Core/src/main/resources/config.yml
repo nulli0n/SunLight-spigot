@@ -1,5 +1,0 @@
-Plugin:
-  Command_Aliases: 'sunlight,sl'
-
-Database:
-  Table_Prefix: 'sunlight'

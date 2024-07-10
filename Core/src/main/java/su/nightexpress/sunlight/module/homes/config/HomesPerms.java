@@ -1,54 +1,57 @@
 package su.nightexpress.sunlight.module.homes.config;
 
-import su.nexmedia.engine.api.server.JPermission;
-import su.nightexpress.sunlight.Perms;
+import su.nightexpress.nightcore.util.wrapper.UniPermission;
+import su.nightexpress.sunlight.config.Perms;
 import su.nightexpress.sunlight.module.ModuleId;
-import su.nightexpress.sunlight.module.homes.command.admin.HomesAdminCommand;
-import su.nightexpress.sunlight.module.homes.command.basic.*;
 import su.nightexpress.sunlight.module.homes.util.Placeholders;
 
 public class HomesPerms {
 
-    private static final String PREFIX         = Perms.PREFIX + ModuleId.HOMES + ".";
-    private static final String PREFIX_COMMAND = PREFIX + "command.";
-    private static final String PREFIX_BYPASS  = PREFIX + "bypass.";
-    public static final String PREFIX_AMOUNT = PREFIX + "amount.";
+    public static final String PREFIX         = Perms.PREFIX + ModuleId.HOMES + ".";
+    public static final String PREFIX_COMMAND = PREFIX + "command.";
+    public static final String PREFIX_BYPASS  = PREFIX + "bypass.";
+    public static final String PREFIX_AMOUNT  = PREFIX + "amount.";
 
-    public static final JPermission MODULE  = new JPermission(PREFIX + Placeholders.WILDCARD, "Access to all Homes Module features.");
-    public static final JPermission COMMAND = new JPermission(PREFIX_COMMAND + Placeholders.WILDCARD, "Access to all Homes Module commands.");
-    public static final JPermission BYPASS  = new JPermission(PREFIX_BYPASS + Placeholders.WILDCARD, "Bypasses all Homes Module restrictions.");
+    public static final UniPermission MODULE  = new UniPermission(PREFIX + Placeholders.WILDCARD);
+    public static final UniPermission COMMAND = new UniPermission(PREFIX_COMMAND + Placeholders.WILDCARD);
+    public static final UniPermission BYPASS  = new UniPermission(PREFIX_BYPASS + Placeholders.WILDCARD);
 
-    public static final JPermission COMMAND_HOMES             = new JPermission(PREFIX_COMMAND + HomesCommand.NAME, "Access to the '/homes' command (without sub-commands).");
-    public static final JPermission COMMAND_HOMES_DELETE      = new JPermission(PREFIX_COMMAND + HomesCommand.NAME + "." + HomesDeleteCommand.NAME, "Access to the '/homes delete' command.");
-    public static final JPermission COMMAND_HOMES_SET         = new JPermission(PREFIX_COMMAND + HomesCommand.NAME + "." + HomesSetCommand.NAME, "Access to the '/homes set' command.");
-    public static final JPermission COMMAND_HOMES_TELEPORT    = new JPermission(PREFIX_COMMAND + HomesCommand.NAME + "." + HomesTeleportCommand.NAME, "Access to the '/homes teleport' command.");
-    public static final JPermission COMMAND_HOMES_LIST        = new JPermission(PREFIX_COMMAND + HomesCommand.NAME + "." + HomesListCommand.NAME, "Access to the '/homes list' command.");
-    public static final JPermission COMMAND_HOMES_LIST_OTHERS = new JPermission(PREFIX_COMMAND + HomesCommand.NAME + "." + HomesListCommand.NAME + ".others", "Access to the '/homes list' command of other players.");
-    public static final JPermission COMMAND_HOMES_INVITE = new JPermission(PREFIX_COMMAND + HomesCommand.NAME + "." + InviteCommand.NAME, "Access to the '/homes invite' command.");
-    public static final JPermission COMMAND_HOMES_VISIT       = new JPermission(PREFIX_COMMAND + HomesCommand.NAME + "." + HomesVisitCommand.NAME, "Access to the '/homes visit' command.");
-    public static final JPermission COMMAND_HOMES_VISIT_ALL   = new JPermission(PREFIX_COMMAND + HomesCommand.NAME + "." + HomesVisitCommand.NAME + ".all", "Access to the '/homes visit' command for all homes.");
-    public static final JPermission COMMAND_HOMES_ADMIN       = new JPermission(PREFIX_COMMAND + HomesAdminCommand.NAME, "Access to the '/homesadmin' command (and all sub-commands).");
+    public static final UniPermission COMMAND_HOMES_DELETE        = new UniPermission(PREFIX_COMMAND + "homes.delete");
+    public static final UniPermission COMMAND_HOMES_DELETE_OTHERS = new UniPermission(PREFIX_COMMAND + "homes.delete.others");
+    public static final UniPermission COMMAND_HOMES_SET           = new UniPermission(PREFIX_COMMAND + "homes.set");
+    public static final UniPermission COMMAND_HOMES_SET_OTHERS    = new UniPermission(PREFIX_COMMAND + "homes.set.others");
+    public static final UniPermission COMMAND_HOMES_TELEPORT      = new UniPermission(PREFIX_COMMAND + "homes.teleport");
+    public static final UniPermission COMMAND_HOMES_LIST          = new UniPermission(PREFIX_COMMAND + "homes.list");
+    public static final UniPermission COMMAND_HOMES_LIST_OTHERS   = new UniPermission(PREFIX_COMMAND + "homes.list.others");
+    public static final UniPermission COMMAND_HOMES_INVITE        = new UniPermission(PREFIX_COMMAND + "homes.invite");
+    public static final UniPermission COMMAND_HOMES_VISIT         = new UniPermission(PREFIX_COMMAND + "homes.visit");
+    public static final UniPermission COMMAND_HOMES_VISIT_ALL     = new UniPermission(PREFIX_COMMAND + "homes.visit.all");
 
-    public static final JPermission BYPASS_CREATION_WORLDS     = new JPermission(PREFIX_BYPASS + "creation.worlds", "Allows to create homes in restricted worlds.");
-    public static final JPermission BYPASS_CREATION_REGIONS    = new JPermission(PREFIX_BYPASS + "creation.regions", "Allows to create homes in restricted regions.");
-    public static final JPermission BYPASS_CREATION_PROTECTION = new JPermission(PREFIX_BYPASS + "creation.protection", "Allows to create homes in protected areas.");
+    public static final UniPermission BYPASS_UNSAFE              = new UniPermission(PREFIX_BYPASS + "unsafe");
+    public static final UniPermission BYPASS_CREATION_WORLDS     = new UniPermission(PREFIX_BYPASS + "creation.worlds");
+    public static final UniPermission BYPASS_CREATION_PROTECTION = new UniPermission(PREFIX_BYPASS + "creation.protection");
 
     static {
         Perms.PLUGIN.addChildren(MODULE);
 
-        MODULE.addChildren(COMMAND, BYPASS);
+        MODULE.addChildren(
+            COMMAND,
+            BYPASS
+        );
 
         COMMAND.addChildren(
-            COMMAND_HOMES,
-            COMMAND_HOMES_DELETE,
-            COMMAND_HOMES_SET,
+            COMMAND_HOMES_DELETE, COMMAND_HOMES_DELETE_OTHERS,
+            COMMAND_HOMES_SET, COMMAND_HOMES_SET_OTHERS,
             COMMAND_HOMES_TELEPORT,
             COMMAND_HOMES_INVITE,
             COMMAND_HOMES_LIST, COMMAND_HOMES_LIST_OTHERS,
-            COMMAND_HOMES_VISIT, COMMAND_HOMES_VISIT_ALL,
-            COMMAND_HOMES_ADMIN
+            COMMAND_HOMES_VISIT, COMMAND_HOMES_VISIT_ALL
         );
 
-        BYPASS.addChildren(BYPASS_CREATION_PROTECTION, BYPASS_CREATION_REGIONS, BYPASS_CREATION_WORLDS);
+        BYPASS.addChildren(
+            BYPASS_CREATION_PROTECTION,
+            BYPASS_UNSAFE,
+            BYPASS_CREATION_WORLDS
+        );
     }
 }

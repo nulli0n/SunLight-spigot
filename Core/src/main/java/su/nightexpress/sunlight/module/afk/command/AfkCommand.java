@@ -1,39 +1,64 @@
 package su.nightexpress.sunlight.module.afk.command;
 
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import su.nexmedia.engine.api.command.CommandResult;
-import su.nightexpress.sunlight.command.api.ToggleCommand;
+import su.nightexpress.nightcore.command.experimental.CommandContext;
+import su.nightexpress.nightcore.command.experimental.argument.ArgumentTypes;
+import su.nightexpress.nightcore.command.experimental.argument.ParsedArguments;
+import su.nightexpress.nightcore.command.experimental.builder.DirectNodeBuilder;
+import su.nightexpress.nightcore.command.experimental.node.DirectNode;
+import su.nightexpress.nightcore.config.FileConfig;
+import su.nightexpress.sunlight.Placeholders;
+import su.nightexpress.sunlight.SunLightPlugin;
+import su.nightexpress.sunlight.command.CommandArguments;
+import su.nightexpress.sunlight.command.CommandRegistry;
+import su.nightexpress.sunlight.command.CommandTools;
+import su.nightexpress.sunlight.command.mode.ToggleMode;
+import su.nightexpress.sunlight.command.template.CommandTemplate;
 import su.nightexpress.sunlight.module.afk.AfkModule;
-import su.nightexpress.sunlight.module.afk.config.AfkPerms;
 import su.nightexpress.sunlight.module.afk.config.AfkLang;
+import su.nightexpress.sunlight.module.afk.config.AfkPerms;
 
-public class AfkCommand extends ToggleCommand {
+public class AfkCommand {
 
     public static final String NAME = "afk";
 
-    private final AfkModule module;
-
-    public AfkCommand(@NotNull AfkModule module, @NotNull String[] aliases) {
-        super(module.plugin(), aliases, AfkPerms.COMMAND_AFK, AfkPerms.COMMAND_AFK_OTHERS, 0);
-        this.module = module;
-        this.setDescription(this.plugin.getMessage(AfkLang.COMMAND_AFK_DESC));
-        this.setUsage(this.plugin.getMessage(AfkLang.COMMAND_AFK_USAGE));
+    public static void load(@NotNull SunLightPlugin plugin, @NotNull AfkModule module) {
+        CommandRegistry.registerDirectExecutor(NAME, (template, config) -> builder(plugin, module, template, config));
+        CommandRegistry.addSimpleTemplate(NAME);
     }
 
-    @Override
-    protected void onExecute(@NotNull CommandSender sender, @NotNull CommandResult result) {
-        Player target = this.getCommandTarget(sender, result);
-        if (target == null) return;
+    public static DirectNodeBuilder builder(@NotNull SunLightPlugin plugin, @NotNull AfkModule module, @NotNull CommandTemplate template, @NotNull FileConfig config) {
+        return DirectNode.builder(plugin, template.getAliases())
+            .description(AfkLang.COMMAND_AFK_DESC)
+            .permission(AfkPerms.COMMAND_AFK)
+            .withArgument(CommandArguments.toggleMode(CommandArguments.MODE))
+            .withArgument(ArgumentTypes.playerName(CommandArguments.PLAYER).permission(AfkPerms.COMMAND_AFK_OTHERS))
+            //.withFlag(CommandFlags.silent().permission(AfkPerms.COMMAND_AFK_OTHERS))
+            .executes((context, arguments) -> execute(plugin, module, context, arguments))
+            ;
+    }
 
-        Mode mode = this.getMode(sender, result);
-        boolean state = mode.apply(this.module.isAfk(target));
+    public static boolean execute(@NotNull SunLightPlugin plugin, @NotNull AfkModule module, @NotNull CommandContext context, @NotNull ParsedArguments arguments) {
+        Player target = CommandTools.getTarget(plugin, context, arguments, CommandArguments.PLAYER, true);
+        if (target == null) return false;
+
+        ToggleMode mode = arguments.getArgument(CommandArguments.MODE, ToggleMode.class, ToggleMode.TOGGLE);
+        boolean state = mode.apply(module.isAfk(target));
+
         if (state) {
-            this.module.enterAfk(target);
+            module.enterAfk(target);
         }
         else {
-            this.module.exitAfk(target);
+            module.exitAfk(target);
         }
+
+        if (context.getSender() != target) {
+            AfkLang.COMMAND_AFK_DONE_OTHERS.getMessage()
+                .replace(Placeholders.forPlayer(target))
+                .send(context.getSender());
+        }
+
+        return true;
     }
 }

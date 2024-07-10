@@ -7,18 +7,18 @@ import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.jetbrains.annotations.NotNull;
-import su.nexmedia.engine.api.manager.AbstractListener;
-import su.nightexpress.sunlight.SunLight;
+import su.nightexpress.nightcore.manager.AbstractListener;
+import su.nightexpress.sunlight.SunLightPlugin;
 import su.nightexpress.sunlight.module.scoreboard.impl.BoardConfig;
 import su.nightexpress.sunlight.module.scoreboard.impl.Board;
 import su.nightexpress.sunlight.module.scoreboard.ScoreboardModule;
 
-public class ScoreboardListener extends AbstractListener<SunLight> {
+public class ScoreboardListener extends AbstractListener<SunLightPlugin> {
 
     private final ScoreboardModule module;
 
-    public ScoreboardListener(@NotNull ScoreboardModule module) {
-        super(module.plugin());
+    public ScoreboardListener(@NotNull SunLightPlugin plugin, @NotNull ScoreboardModule module) {
+        super(plugin);
         this.module = module;
     }
 
@@ -28,17 +28,14 @@ public class ScoreboardListener extends AbstractListener<SunLight> {
         if (!this.module.isScoreboardEnabled(player)) return;
 
         Board board = this.module.getBoard(player);
-        BoardConfig boardHas = board != null ? board.getBoardConfig() : null;
-        BoardConfig boardNew = this.module.getBoardConfig(player);
+        BoardConfig currentBoard = board != null ? board.getBoardConfig() : null;
+        BoardConfig worldBoard = this.module.getBoardConfig(player);
 
-        if (boardHas == null && boardNew == null) return;
-        if (boardHas != null && boardHas.equals(boardNew)) return;
-
-        if (boardHas != null) {
+        if (currentBoard != null) {
             this.module.removeBoard(player);
         }
-        if (boardNew != null) {
-            this.module.addBoard(player, boardNew);
+        if (worldBoard != null) {
+            this.module.addBoard(player, worldBoard);
         }
     }
 

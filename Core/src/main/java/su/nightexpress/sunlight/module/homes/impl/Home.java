@@ -1,66 +1,56 @@
 package su.nightexpress.sunlight.module.homes.impl;
 
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
-import su.nexmedia.engine.api.placeholder.Placeholder;
-import su.nexmedia.engine.api.placeholder.PlaceholderMap;
-import su.nexmedia.engine.lang.LangManager;
-import su.nexmedia.engine.utils.Colorizer;
-import su.nexmedia.engine.utils.ItemUtil;
-import su.nexmedia.engine.utils.NumberUtil;
-import su.nexmedia.engine.utils.StringUtil;
-import su.nightexpress.sunlight.SunLight;
-import su.nightexpress.sunlight.SunLightAPI;
-import su.nightexpress.sunlight.module.homes.HomesModule;
+import su.nightexpress.nightcore.util.ItemUtil;
+import su.nightexpress.nightcore.util.StringUtil;
+import su.nightexpress.nightcore.util.placeholder.Placeholder;
+import su.nightexpress.nightcore.util.placeholder.PlaceholderMap;
+import su.nightexpress.sunlight.SunLightPlugin;
+import su.nightexpress.sunlight.module.homes.config.HomesConfig;
 import su.nightexpress.sunlight.module.homes.config.HomesLang;
+import su.nightexpress.sunlight.module.homes.config.HomesPerms;
 import su.nightexpress.sunlight.module.homes.event.PlayerHomeTeleportEvent;
-import su.nightexpress.sunlight.module.homes.menu.HomeMenu;
 import su.nightexpress.sunlight.module.homes.util.Placeholders;
+import su.nightexpress.sunlight.utils.SunUtils;
+import su.nightexpress.sunlight.utils.Teleporter;
 import su.nightexpress.sunlight.utils.UserInfo;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
 
 public class Home implements Placeholder {
 
-    private static final ItemStack DEFAULT_ICON = ItemUtil.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvN2I1NmU0OTA4NWY1NWQ1ZGUyMTVhZmQyNmZjNGYxYWZlOWMzNDMxM2VmZjk4ZTNlNTgyNDVkZWYwNmU1ODU4YyJ9fX0=");
-
-    private final SunLight plugin;
-    private final String id;
-    private final UserInfo owner;
+    private final SunLightPlugin plugin;
+    private final String         id;
+    private final UserInfo       owner;
     private final PlaceholderMap placeholderMap;
 
-    private String    name;
-    private ItemStack icon;
-    private Location  location;
-    private HomeType  type;
+    private String        name;
+    private ItemStack     icon;
+    private Location      location;
+    private HomeType      type;
     private Set<UserInfo> invitedPlayers;
-    private boolean isDefault;
-    private boolean   isRespawnPoint;
+    private boolean       isDefault;
+    private boolean       isRespawnPoint;
 
-    private HomeMenu editor;
-
-    public Home(@NotNull LegacyHome legacyHome, @NotNull UUID owner, @NotNull String ownerName) {
-        this(SunLightAPI.PLUGIN, legacyHome.getId(), new UserInfo(owner, ownerName),
-            legacyHome.getName(), new ItemStack(legacyHome.getIconMaterial()), legacyHome.getLocation(),
-            legacyHome.isPublic() ? HomeType.PUBLIC : HomeType.PRIVATE,  new HashSet<>(), false, legacyHome.isRespawnPoint()
-        );
-    }
-
-    public Home(@NotNull SunLight plugin, @NotNull String id, @NotNull UserInfo owner, @NotNull Location location) {
+    public Home(@NotNull SunLightPlugin plugin, @NotNull String id, @NotNull UserInfo owner, @NotNull Location location) {
         this(plugin, id, owner,
-            StringUtil.capitalizeUnderscored(id), DEFAULT_ICON, location,
-            HomeType.PRIVATE, new HashSet<>(), false, false
+            StringUtil.capitalizeUnderscored(id),
+            HomesConfig.getDefaultIcon(),
+            location,
+            HomeType.PRIVATE,
+            new HashSet<>(),
+            false,
+            false
         );
     }
 
     public Home(
-        @NotNull SunLight plugin,
+        @NotNull SunLightPlugin plugin,
         @NotNull String id,
         @NotNull UserInfo owner,
         @NotNull String name,
@@ -69,7 +59,8 @@ public class Home implements Placeholder {
         @NotNull HomeType type,
         @NotNull Set<UserInfo> invitedPlayers,
         boolean isDefault,
-        boolean isRespawnPoint) {
+        boolean isRespawnPoint
+    ) {
         this.plugin = plugin;
         this.id = id.toLowerCase();
         this.owner = owner;
@@ -81,21 +72,7 @@ public class Home implements Placeholder {
         this.setDefault(isDefault);
         this.setRespawnPoint(isRespawnPoint);
 
-        this.placeholderMap = new PlaceholderMap()
-            .add(Placeholders.HOME_ID, this::getId)
-            .add(Placeholders.HOME_NAME, this::getName)
-            .add(Placeholders.HOME_OWNER, () -> this.getOwner().getName())
-            .add(Placeholders.HOME_TYPE, () -> plugin.getLangManager().getEnum(this.getType()))
-            .add(Placeholders.HOME_INVITED_PLAYERS, () -> String.join(",", this.getInvitedPlayers().stream().map(UserInfo::getName).toList()))
-            .add(Placeholders.HOME_IS_DEFAULT, () -> LangManager.getBoolean(this.isDefault()))
-            .add(Placeholders.HOME_IS_RESPAWN_POINT, () -> LangManager.getBoolean(this.isRespawnPoint()))
-            .add(Placeholders.HOME_ICON_MATERIAL, () -> ItemUtil.getItemName(this.getIcon()))
-            .add(Placeholders.HOME_LOCATION_X, () -> NumberUtil.format(this.getLocation().getX()))
-            .add(Placeholders.HOME_LOCATION_Y, () -> NumberUtil.format(this.getLocation().getY()))
-            .add(Placeholders.HOME_LOCATION_Z, () -> NumberUtil.format(this.getLocation().getZ()))
-            .add(Placeholders.HOME_LOCATION_WORLD, () -> {
-                return getLocation().getWorld() == null ? "null" : LangManager.getWorld(getLocation().getWorld());
-            });
+        this.placeholderMap = Placeholders.forHome(this);
     }
 
     @Override
@@ -104,50 +81,61 @@ public class Home implements Placeholder {
         return this.placeholderMap;
     }
 
-    @NotNull
-    public HomeMenu getEditor() {
-        if (this.editor == null) {
-            HomesModule homeManager = plugin.getModuleManager().getModule(HomesModule.class).orElse(null);
-            if (homeManager == null) throw new IllegalStateException("The module is disabled!");
-
-            this.editor = new HomeMenu(homeManager, this);
+    public boolean teleport(@NotNull Player player) {
+        if (!player.hasPermission(HomesPerms.BYPASS_UNSAFE)) {
+            if (!this.isOwner(player) && !SunUtils.isSafeLocation(this.getLocation())) {
+                HomesLang.HOME_VISIT_ERROR_UNSAFE.getMessage().send(player);
+                return false;
+            }
         }
-        return editor;
-    }
 
-    public void clear() {
-        if (this.editor != null) {
-            this.editor.clear();
-            this.editor = null;
+        PlayerHomeTeleportEvent event = new PlayerHomeTeleportEvent(player, this);
+        plugin.getPluginManager().callEvent(event);
+        if (event.isCancelled()) return false;
+
+        Teleporter teleporter = new Teleporter(player, this.getLocation()).centered();
+        if (!teleporter.teleport()) {
+            return false;
         }
-        this.placeholderMap.clear();
-    }
 
-    public void save() {
-        this.plugin.runTaskAsync(task -> this.plugin.getData().saveHome(this));
+        (this.isOwner(player) ? HomesLang.HOME_TELEPORT_SUCCESS : HomesLang.HOME_VISIT_SUCCESS).getMessage()
+            .replace(this.replacePlaceholders())
+            .send(player);
+        return true;
     }
 
     public boolean isOwner(@NotNull Player player) {
         return this.getOwner().getId().equals(player.getUniqueId());
     }
 
+    public boolean isPublic() {
+        return this.getType() == HomeType.PUBLIC;
+    }
+
+    public boolean isPrivate() {
+        return this.getType() == HomeType.PRIVATE;
+    }
+
     public boolean canAccess(@NotNull Player player) {
         return this.isOwner(player) || this.isPublic() || this.isInvitedPlayer(player);
     }
 
-    public boolean teleport(@NotNull Player player) {
-        PlayerHomeTeleportEvent event = new PlayerHomeTeleportEvent(player, this);
-        plugin.getPluginManager().callEvent(event);
-        if (event.isCancelled()) return false;
+    public void addInvitedPlayer(@NotNull UserInfo userInfo) {
+        if (userInfo.equals(this.getOwner())) return;
 
-        if (!player.teleport(this.getLocation())) {
-            return false;
-        }
+        this.invitedPlayers.add(userInfo);
+    }
 
-        this.plugin.getMessage(this.isOwner(player) ? HomesLang.HOME_TELEPORT_SUCCESS : HomesLang.HOME_VISIT_SUCCESS)
-            .replace(this.replacePlaceholders())
-            .send(player);
-        return true;
+    public boolean canVisit(@NotNull Player player) {
+        return player.hasPermission(HomesPerms.COMMAND_HOMES_VISIT_ALL) || this.isPublic() || this.isInvitedPlayer(player) || this.isOwner(player);
+    }
+
+    public boolean isInvitedPlayer(@NotNull Player player) {
+        return this.getInvitedPlayers().stream().anyMatch(userInfo -> userInfo.isUser(player));
+    }
+
+    public boolean isInvitedPlayer(@NotNull String name) {
+        return this.getInvitedPlayers().stream().anyMatch(userInfo -> userInfo.isUser(name));
     }
 
     @NotNull
@@ -166,7 +154,7 @@ public class Home implements Placeholder {
     }
 
     public void setName(@NotNull String name) {
-        this.name = Colorizer.legacyHex(name);
+        this.name = name;
     }
 
     @NotNull
@@ -176,12 +164,12 @@ public class Home implements Placeholder {
 
     public void setIcon(@NotNull ItemStack icon) {
         if (icon.getType().isAir()) {
-            icon = new ItemStack(Material.GRASS_BLOCK);
+            icon = HomesConfig.getDefaultIcon();
         }
         this.icon = new ItemStack(icon);
         this.icon.setAmount(1);
 
-        ItemUtil.mapMeta(this.icon, meta -> {
+        ItemUtil.editMeta(this.icon, meta -> {
             meta.setDisplayName(null);
             meta.setLore(null);
             meta.addItemFlags(ItemFlag.values());
@@ -206,14 +194,6 @@ public class Home implements Placeholder {
         this.type = type;
     }
 
-    public boolean isPublic() {
-        return this.getType() == HomeType.PUBLIC;
-    }
-
-    public boolean isPrivate() {
-        return this.getType() == HomeType.PRIVATE;
-    }
-
     @NotNull
     public Set<UserInfo> getInvitedPlayers() {
         return this.invitedPlayers;
@@ -221,20 +201,6 @@ public class Home implements Placeholder {
 
     public void setInvitedPlayers(@NotNull Set<UserInfo> invitedPlayers) {
         this.invitedPlayers = invitedPlayers;
-    }
-
-    public void addInvitedPlayer(@NotNull UserInfo userInfo) {
-        if (userInfo.equals(this.getOwner())) return;
-
-        this.getInvitedPlayers().add(userInfo);
-    }
-
-    public boolean isInvitedPlayer(@NotNull Player player) {
-        return this.getInvitedPlayers().stream().anyMatch(userInfo -> userInfo.isUser(player));
-    }
-
-    public boolean isInvitedPlayer(@NotNull String name) {
-        return this.getInvitedPlayers().stream().anyMatch(userInfo -> userInfo.isUser(name));
     }
 
     public boolean isDefault() {

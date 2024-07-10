@@ -1,6 +1,7 @@
 package su.nightexpress.sunlight.module.homes.util;
 
 import org.jetbrains.annotations.NotNull;
+import su.nightexpress.sunlight.SunLightPlugin;
 import su.nightexpress.sunlight.module.homes.HomesModule;
 import su.nightexpress.sunlight.module.homes.impl.Home;
 import su.nightexpress.sunlight.module.homes.impl.HomeType;
@@ -11,62 +12,99 @@ import java.util.stream.Collectors;
 
 public class HomesCache {
 
-    private final HomesModule              module;
-    private final Map<String, Set<String>> userHomes;
-    private final Map<String, Set<String>>              publicHomes;
-    private final Map<String, Map<String, Set<String>>> invitesHomes;
+    private final SunLightPlugin plugin;
+    private final HomesModule module;
 
-    public HomesCache(@NotNull HomesModule module) {
+    private final Map<String, Set<String>>              privateByName;
+    private final Map<String, Set<String>>              publicByName;
+    private final Map<String, Map<String, Set<String>>> invitedByName;
+
+    public HomesCache(@NotNull SunLightPlugin plugin, @NotNull HomesModule module) {
+        this.plugin = plugin;
         this.module = module;
-        this.userHomes = new HashMap<>();
-        this.publicHomes = new HashMap<>();
-        this.invitesHomes = new HashMap<>();
+        this.privateByName = new HashMap<>();
+        this.publicByName = new HashMap<>();
+        this.invitedByName = new HashMap<>();
     }
 
     public void initialize() {
-        List<Home> homes = this.module.plugin().getData().getHomes();
+        List<Home> homes = this.plugin.getData().getHomes();
         homes.forEach(home -> {
-            if (!this.module.plugin().getData().isUserExists(home.getOwner().getId())) {
-                this.module.plugin().getData().deleteHomes(home.getOwner().getId());
+            if (!this.plugin.getData().isUserExists(home.getOwner().getId())) {
+                this.plugin.getData().deleteHomes(home.getOwner().getId());
                 this.module.info("Deleted homes data of invalid user '" + home.getOwner().getName() + "'.");
                 return;
             }
-            this.cache(home);
+            this.add(home);
         });
     }
 
     public void clear() {
-        this.publicHomes.clear();
-        this.invitesHomes.clear();
+        this.publicByName.clear();
+        this.invitedByName.clear();
     }
 
-    public void cache(@NotNull Home home) {
-        this.uncache(home);
+    public void add(@NotNull Home home) {
+        this.remove(home);
 
         this.getUserHomes().computeIfAbsent(home.getOwner().getName(), k -> new HashSet<>()).add(home.getId());
 
         if (home.getType() == HomeType.PUBLIC) {
-            this.cachePublicHome(home);
+            this.addPublic(home);
         }
 
         if (!home.getInvitedPlayers().isEmpty()) {
-            this.cacheInviteHome(home);
+            this.addInvited(home);
         }
     }
 
-    public void uncache(@NotNull Home home) {
-        this.uncache(home.getOwner().getName(), home.getId());
+
+
+
+    public void addPublic(@NotNull Home home) {
+        this.getPublicHomes().computeIfAbsent(home.getOwner().getName(), k -> new HashSet<>()).add(home.getId());
     }
 
-    public void uncache(@NotNull String userName, @NotNull String homeId) {
-        this.getUserHomes().getOrDefault(userName, Collections.emptySet()).remove(homeId);
-        this.uncachePublicHome(userName, homeId);
-        this.uncacheInvitesHome(userName, homeId);
+    public void addInvited(@NotNull Home home) {
+        this.getInvitesHomes().computeIfAbsent(home.getOwner().getName(), k -> new HashMap<>())
+            .put(home.getId(), home.getInvitedPlayers().stream().map(UserInfo::getName).collect(Collectors.toSet()));
     }
+
+
+
+
+    public void remove(@NotNull Home home) {
+        this.remove(home.getOwner().getName(), home.getId());
+    }
+
+    public void remove(@NotNull String userName, @NotNull String homeId) {
+        this.privateByName.getOrDefault(userName, Collections.emptySet()).remove(homeId);
+        this.removePublic(userName, homeId);
+        this.removeInvited(userName, homeId);
+    }
+
+    public void removePublic(@NotNull Home home) {
+        this.removePublic(home.getOwner().getName(), home.getId());
+    }
+
+    public void removePublic(@NotNull String ownerName, @NotNull String homeId) {
+        this.getPublicHomes(ownerName).remove(homeId);
+    }
+
+    public void removeInvited(@NotNull Home home) {
+        this.removeInvited(home.getOwner().getName(), home.getId());
+    }
+
+    public void removeInvited(@NotNull String ownerName, @NotNull String homeId) {
+        this.getInvitesHomes().getOrDefault(ownerName, Collections.emptyMap()).remove(homeId);
+    }
+
+
+
 
     @NotNull
     public Map<String, Set<String>> getUserHomes() {
-        return userHomes;
+        return privateByName;
     }
 
     @NotNull
@@ -76,7 +114,7 @@ public class HomesCache {
 
     @NotNull
     public Map<String, Set<String>> getPublicHomes() {
-        return publicHomes;
+        return publicByName;
     }
 
     @NotNull
@@ -100,36 +138,11 @@ public class HomesCache {
 
     @NotNull
     public Map<String, Map<String, Set<String>>> getInvitesHomes() {
-        return invitesHomes;
+        return invitedByName;
     }
 
     @NotNull
     public Map<String, Set<String>> getInvitesHomes(@NotNull String ownerName) {
         return this.getInvitesHomes().getOrDefault(ownerName, Collections.emptyMap());
-    }
-
-    public void cachePublicHome(@NotNull Home home) {
-        this.getPublicHomes().computeIfAbsent(home.getOwner().getName(), k -> new HashSet<>()).add(home.getId());
-    }
-
-    public void cacheInviteHome(@NotNull Home home) {
-        this.getInvitesHomes().computeIfAbsent(home.getOwner().getName(), k -> new HashMap<>())
-            .put(home.getId(), home.getInvitedPlayers().stream().map(UserInfo::getName).collect(Collectors.toSet()));
-    }
-
-    public void uncachePublicHome(@NotNull Home home) {
-        this.uncachePublicHome(home.getOwner().getName(), home.getId());
-    }
-
-    public void uncachePublicHome(@NotNull String ownerName, @NotNull String homeId) {
-        this.getPublicHomes(ownerName).remove(homeId);
-    }
-
-    public void uncacheInvitesHome(@NotNull Home home) {
-        this.uncacheInvitesHome(home.getOwner().getName(), home.getId());
-    }
-
-    public void uncacheInvitesHome(@NotNull String ownerName, @NotNull String homeId) {
-        this.getInvitesHomes().getOrDefault(ownerName, Collections.emptyMap()).remove(homeId);
     }
 }

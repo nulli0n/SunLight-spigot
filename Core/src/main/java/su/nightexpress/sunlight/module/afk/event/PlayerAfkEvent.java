@@ -5,35 +5,29 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
-import su.nightexpress.sunlight.data.impl.SunUser;
+import su.nightexpress.sunlight.module.afk.AfkState;
 
 public class PlayerAfkEvent extends Event {
 
-    private static final HandlerList handlerList = new HandlerList();
+    private static final HandlerList HANDLER_LIST = new HandlerList();
 
-    private final Player  player;
-    private final SunUser user;
-    private final boolean isAfk;
+    private final Player   player;
+    private final AfkState state;
 
-    public PlayerAfkEvent(
-        @NotNull Player player,
-        @NotNull SunUser user,
-        boolean isAfk
-    ) {
+    public PlayerAfkEvent(@NotNull Player player, @NotNull AfkState state) {
         super(!Bukkit.isPrimaryThread());
         this.player = player;
-        this.user = user;
-        this.isAfk = isAfk;
+        this.state = state;
     }
 
     public static HandlerList getHandlerList() {
-        return handlerList;
+        return HANDLER_LIST;
     }
 
     @NotNull
     @Override
     public HandlerList getHandlers() {
-        return handlerList;
+        return HANDLER_LIST;
     }
 
     @NotNull
@@ -42,11 +36,7 @@ public class PlayerAfkEvent extends Event {
     }
 
     @NotNull
-    public SunUser getUser() {
-        return this.user;
-    }
-
-    public boolean isAfk() {
-        return this.isAfk;
+    public AfkState getState() {
+        return state;
     }
 }

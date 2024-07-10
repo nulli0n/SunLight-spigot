@@ -1,173 +1,120 @@
 package su.nightexpress.sunlight.module.afk;
 
-import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import su.nexmedia.engine.utils.EngineUtils;
-import su.nexmedia.engine.utils.EntityUtil;
-import su.nexmedia.engine.utils.TimeUtil;
+import org.jetbrains.annotations.Nullable;
+import su.nightexpress.nightcore.util.TimeUtil;
+import su.nightexpress.nightcore.util.text.NightMessage;
 import su.nightexpress.sunlight.Placeholders;
-import su.nightexpress.sunlight.SunLight;
-import su.nightexpress.sunlight.data.impl.SunUser;
-import su.nightexpress.sunlight.data.impl.settings.UserSetting;
+import su.nightexpress.sunlight.SunLightPlugin;
 import su.nightexpress.sunlight.module.Module;
+import su.nightexpress.sunlight.module.ModuleInfo;
 import su.nightexpress.sunlight.module.afk.command.AfkCommand;
 import su.nightexpress.sunlight.module.afk.config.AfkConfig;
 import su.nightexpress.sunlight.module.afk.config.AfkLang;
 import su.nightexpress.sunlight.module.afk.config.AfkPerms;
-import su.nightexpress.sunlight.module.afk.event.PlayerAfkEvent;
 import su.nightexpress.sunlight.module.afk.listener.AfkListener;
-import su.nightexpress.sunlight.module.afk.task.AfkTickTask;
 
+import java.util.HashSet;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class AfkModule extends Module {
 
-    public static final UserSetting<Boolean> SETTING_AFK_STATE = UserSetting.asBoolean("afk.state", false, false);
-    public static final UserSetting<Integer> SETTING_IDLE_TIME = UserSetting.asInt("afk.idle_time", 0, false);
-    public static final UserSetting<Long>    SETTING_AFK_SINCE = UserSetting.asLong("afk.since", 0L, false);
+    private final Map<UUID, AfkState> stateMap;
 
-    private final Map<Player, AfkTracker> trackerMap;
-
-    private AfkTickTask afkTickTask;
-
-    public AfkModule(@NotNull SunLight plugin, @NotNull String id) {
+    public AfkModule(@NotNull SunLightPlugin plugin, @NotNull String id) {
         super(plugin, id);
-        this.trackerMap = new ConcurrentHashMap<>();
+        this.stateMap = new ConcurrentHashMap<>();
     }
 
     @Override
-    public void onLoad() {
-        this.plugin.registerPermissions(AfkPerms.class);
-        this.plugin.getLangManager().loadMissing(AfkLang.class);
-        this.plugin.getLang().saveChanges();
-        this.getConfig().initializeOptions(AfkConfig.class);
-
-        this.plugin.getCommandRegulator().register(AfkCommand.NAME, (cfg1, aliases) -> new AfkCommand(this, aliases));
-        this.addListener(new AfkListener(this));
-
-        this.afkTickTask = new AfkTickTask(this);
-        this.afkTickTask.start();
+    protected void gatherInfo(@NotNull ModuleInfo moduleInfo) {
+        moduleInfo.setConfigClass(AfkConfig.class);
+        moduleInfo.setLangClass(AfkLang.class);
+        moduleInfo.setPermissionsClass(AfkPerms.class);
     }
 
     @Override
-    public void onShutdown() {
-        if (this.afkTickTask != null) {
-            this.afkTickTask.stop();
-            this.afkTickTask = null;
-        }
+    protected void onModuleLoad() {
+        this.registerCommands();
 
-        for (Player player : plugin.getServer().getOnlinePlayers()) {
-            this.exitAfk(player);
-        }
-        this.trackerMap.clear();
+        this.addListener(new AfkListener(this.plugin, this));
+
+        this.addTask(this.plugin.createAsyncTask(this::tickAfkStates).setSecondsInterval(1));
+    }
+
+    @Override
+    protected void onModuleUnload() {
+        this.stateMap.values().forEach(AfkState::exitAfk);
+        this.stateMap.clear();
+    }
+
+    private void registerCommands() {
+        AfkCommand.load(this.plugin, this);
+    }
+
+    private void tickAfkStates() {
+        new HashSet<>(this.stateMap.values()).forEach(AfkState::tick);
+    }
+
+    public void kick(@NotNull Player player) {
+        int timeToKick = AfkModule.getTimeToKick(player);
+        String reason = String.join("\n", AfkConfig.AFK_KICK_MESSAGE.get()).replace(Placeholders.GENERIC_TIME, TimeUtil.formatTime(timeToKick * 1000L));
+
+        player.kickPlayer(NightMessage.asLegacy(reason));
     }
 
     public boolean isAfk(@NotNull Player player) {
-        return isAfk(this.plugin.getUserManager().getUserData(player));
+        AfkState state = this.getState(player);
+        return state != null && state.isAfk();
     }
 
-    public static boolean isAfk(@NotNull SunUser user) {
-        return user.getSettings().get(SETTING_AFK_STATE);
+    public void track(@NotNull Player player) {
+        AfkState state = new AfkState(this.plugin, this, player);
+        this.stateMap.put(player.getUniqueId(), state);
     }
-
-    public static void setAfkState(@NotNull SunUser user, boolean isAfk) {
-        user.getSettings().set(SETTING_AFK_STATE, isAfk);
-    }
-
-    public static int getIdleTime(@NotNull SunUser user) {
-        return user.getSettings().get(SETTING_IDLE_TIME);
-    }
-
-    public static void setIdleTime(@NotNull SunUser user, int afkTime) {
-        user.getSettings().set(SETTING_IDLE_TIME, afkTime);
-    }
-
-    public static long getAfkSince(@NotNull SunUser user) {
-        return user.getSettings().get(SETTING_AFK_SINCE);
-    }
-
-    public static void setAfkSince(@NotNull SunUser user, long since) {
-        user.getSettings().set(SETTING_AFK_SINCE, since);
-    }
-
-    @NotNull
-    public AfkTracker getTrack(@NotNull Player player) {
-        return this.trackerMap.computeIfAbsent(player, k -> new AfkTracker(this, player));
-    }
-
-    /*@Deprecated
-    public void untrack(@NotNull Player player) {
-        this.exitAfk(player);
-        this.trackerMap.remove(player);
-    }*/
 
     public void untrack(@NotNull Player player) {
-        AfkTracker tracker = this.trackerMap.remove(player);
+        AfkState tracker = this.stateMap.remove(player.getUniqueId());
         if (tracker == null) return;
 
-        SunUser user = this.plugin.getUserManager().getUserData(player);
-        setAfkState(user, false);
-        setIdleTime(user, 0);
-        setAfkSince(user, 0L);
-        tracker.clear();
-        tracker.setSleepCooldown();
+        tracker.exitAfk();
+        tracker.reset();
     }
 
     public void exitAfk(@NotNull Player player) {
-        if (EntityUtil.isNPC(player)) return;
-
-        SunUser user = this.plugin.getUserManager().getUserData(player);
-        if (!isAfk(user)) return;
-
-        PlayerAfkEvent event = new PlayerAfkEvent(player, user, false);
-        this.plugin.getPluginManager().callEvent(event);
-
-        String time = TimeUtil.formatTime(System.currentTimeMillis() - getAfkSince(user));
-
-        this.plugin.getMessage(AfkLang.AFK_EXIT)
-            .replace(Placeholders.forPlayer(player))
-            .replace(Placeholders.GENERIC_TIME, time)
-            .broadcast();
-
-        this.untrack(player);
-
-        AfkConfig.WAKE_UP_COMMANDS.get().forEach(command -> {
-            command = command.replace(Placeholders.GENERIC_TIME, time);
-            if (EngineUtils.hasPlaceholderAPI()) command = PlaceholderAPI.setPlaceholders(player, command);
-            plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), Placeholders.forPlayer(player).apply(command));
-        });
+        AfkState state = this.getState(player);
+        if (state != null) {
+            state.exitAfk();
+        }
     }
 
     public void enterAfk(@NotNull Player player) {
-        if (EntityUtil.isNPC(player)) return;
+        AfkState state = this.getState(player);
+        if (state != null) {
+            state.enterAfk();
+        }
+    }
 
-        SunUser user = plugin.getUserManager().getUserData(player);
-        if (isAfk(user)) return;
+    public void trackActivity(@NotNull Player player, int amount) {
+        AfkState state = this.getState(player);
+        if (state == null) return;
 
-        AfkTracker tracker = getTrack(player);
-        setAfkState(user, true);
-        setAfkSince(user, System.currentTimeMillis());
-        tracker.setLastPosition();
-        tracker.resetSleepCooldown();
+        state.onActivity(amount);
+    }
 
-        PlayerAfkEvent event = new PlayerAfkEvent(player, user, true);
-        this.plugin.getPluginManager().callEvent(event);
-
-        AfkConfig.AFK_COMMANDS.get().forEach(command -> {
-            if (EngineUtils.hasPlaceholderAPI()) command = PlaceholderAPI.setPlaceholders(player, command);
-            plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), Placeholders.forPlayer(player).apply(command));
-        });
-
-        this.plugin.getMessage(AfkLang.AFK_ENTER).replace(Placeholders.forPlayer(player)).broadcast();
+    @Nullable
+    public AfkState getState(@NotNull Player player) {
+        return this.stateMap.get(player.getUniqueId());
     }
 
     public static int getTimeToAfk(@NotNull Player player) {
-        return AfkConfig.AFK_IDLE_TIMES.get().getBestValue(player, -1);
+        return AfkConfig.AFK_IDLE_TIMES.get().getGreatest(player);
     }
 
     public static int getTimeToKick(@NotNull Player player) {
-        return AfkConfig.AFK_KICK_TIMES.get().getBestValue(player, -1);
+        return AfkConfig.AFK_KICK_TIMES.get().getGreatest(player);
     }
 }

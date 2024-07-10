@@ -4,90 +4,97 @@ import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import su.nexmedia.engine.api.config.JYML;
-import su.nexmedia.engine.utils.*;
-import su.nightexpress.sunlight.SunLight;
+import su.nightexpress.nightcore.config.FileConfig;
+import su.nightexpress.nightcore.util.Players;
+import su.nightexpress.nightcore.util.Plugins;
+import su.nightexpress.nightcore.util.text.NightMessage;
+import su.nightexpress.sunlight.Placeholders;
+import su.nightexpress.sunlight.SunLightPlugin;
 import su.nightexpress.sunlight.hook.HookId;
 import su.nightexpress.sunlight.module.Module;
+import su.nightexpress.sunlight.module.ModuleInfo;
 import su.nightexpress.sunlight.module.tab.config.TabConfig;
-import su.nightexpress.sunlight.module.tab.impl.NametagFormat;
+import su.nightexpress.sunlight.module.tab.impl.NameTagFormat;
 import su.nightexpress.sunlight.module.tab.impl.TabListFormat;
 import su.nightexpress.sunlight.module.tab.impl.TabNameFormat;
 import su.nightexpress.sunlight.module.tab.listener.TabListener;
-import su.nightexpress.sunlight.module.tab.task.NametagUpdateTask;
-import su.nightexpress.sunlight.module.tab.task.TablistUpdateTask;
 import su.nightexpress.sunlight.module.tab.util.PacketUtils;
-import su.nightexpress.sunlight.utils.SimpleTextAnimator;
+import su.nightexpress.sunlight.utils.DynamicText;
 
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
 
 public class TabModule extends Module {
 
-    public final Map<String, SimpleTextAnimator> animationMap;
+    private final Map<String, DynamicText> animationMap;
 
-    private TablistUpdateTask tablistUpdateTask;
-    private NametagUpdateTask nametagUpdateTask;
+    private boolean packetsEnabled;
 
-    public TabModule(@NotNull SunLight plugin, @NotNull String id) {
+    public TabModule(@NotNull SunLightPlugin plugin, @NotNull String id) {
         super(plugin, id);
         this.animationMap = new HashMap<>();
     }
 
     @Override
-    public void onLoad() {
-        this.getConfig().initializeOptions(TabConfig.class);
+    protected void gatherInfo(@NotNull ModuleInfo moduleInfo) {
+        moduleInfo.setConfigClass(TabConfig.class);
+    }
 
-        // Setup Animations
-        JYML animConfig = JYML.loadOrExtract(this.plugin, this.getLocalPath(), "animations.yml");
-        for (String animId : animConfig.getSection("")) {
-            SimpleTextAnimator animator = SimpleTextAnimator.read(animConfig, animId, animId);
-            this.animationMap.put(animator.getId(), animator);
-        }
+    @Override
+    protected void onModuleLoad() {
+        this.loadAnimations();
 
-        this.addListener(new TabListener(this));
+        this.addListener(new TabListener(this.plugin, this));
 
-        this.tablistUpdateTask = new TablistUpdateTask(this, TabConfig.TABLIST_UPDATE_INTERVAL.get());
-        this.tablistUpdateTask.start();
+        this.addTask(this.plugin.createAsyncTask(this::updateTablistFormat).setTicksInterval(TabConfig.TABLIST_UPDATE_INTERVAL.get()));
 
-        if (EngineUtils.hasPlugin(HookId.PROTOCOL_LIB)) {
-            this.nametagUpdateTask = new NametagUpdateTask(this, TabConfig.NAMETAG_UPDATE_INTERVAL.get());
-            this.nametagUpdateTask.start();
+        if (Plugins.isLoaded(HookId.PROTOCOL_LIB)) {
+            this.packetsEnabled = true;
+            this.addTask(this.plugin.createAsyncTask(this::updateNameTagsAndSortTab).setTicksInterval(TabConfig.NAMETAG_UPDATE_INTERVAL.get()));
         }
         else {
-            this.error(HookId.PROTOCOL_LIB + " is not installed. Nametags and tab sorting will be disabled.");
+            this.warn(HookId.PROTOCOL_LIB + " is not installed. Nametags and tab sorting will be disabled.");
         }
     }
 
     @Override
-    public void onShutdown() {
-        if (this.tablistUpdateTask != null) {
-            this.tablistUpdateTask.stop();
-            this.tablistUpdateTask = null;
-        }
-        if (this.nametagUpdateTask != null) {
-            this.nametagUpdateTask.stop();
-            this.nametagUpdateTask = null;
-        }
+    protected void onModuleUnload() {
         this.animationMap.clear();
+    }
+
+    private void loadAnimations() {
+        FileConfig config = FileConfig.loadOrExtract(this.plugin, this.getLocalPath(), TabConfig.FILE_ANIMATIONS);
+        if (config.getSection("").isEmpty()) {
+            TabConfig.getDefaultAnimations().forEach(animator -> animator.write(config, animator.getId()));
+        }
+
+        for (String sId : config.getSection("")) {
+            DynamicText animator = DynamicText.read(config, sId, sId);
+            this.animationMap.put(animator.getId(), animator);
+        }
+
+        config.saveChanges();
+    }
+
+    @NotNull
+    public Collection<DynamicText> getAnimations() {
+        return this.animationMap.values();
     }
 
     @Nullable
     public TabListFormat getPlayerListFormat(@NotNull Player player) {
-        Set<String> groups = PlayerUtil.getPermissionGroups(player);
+        Set<String> ranks = Players.getPermissionGroups(player);
+
         return TabConfig.TABLIST_FORMAT_MAP.get().values().stream()
-            .filter(format -> format.getWorlds().contains(player.getWorld().getName()) || format.getWorlds().contains(Placeholders.WILDCARD))
-            .filter(format -> groups.stream().anyMatch(pRank -> format.getGroups().contains(pRank)) || format.getGroups().contains(Placeholders.WILDCARD))
+            .filter(format -> format.isGoodWorld(player.getWorld()) && format.isGoodRank(ranks))
             .max(Comparator.comparingInt(TabListFormat::getPriority))
             .orElse(null);
     }
 
     @Nullable
     public TabNameFormat getPlayerListName(@NotNull Player player) {
-        Set<String> groups = PlayerUtil.getPermissionGroups(player);
+        Set<String> groups = Players.getPermissionGroups(player);
+
         return TabConfig.TABLIST_NAME_FORMAT.get().entrySet().stream()
             .filter(entry -> groups.contains(entry.getKey()) || entry.getKey().equalsIgnoreCase(Placeholders.DEFAULT))
             .map(Entry::getValue).max(Comparator.comparingInt(TabNameFormat::getPriority))
@@ -95,11 +102,12 @@ public class TabModule extends Module {
     }
 
     @Nullable
-    public NametagFormat getPlayerNametag(@NotNull Player player) {
-        Set<String> groups = PlayerUtil.getPermissionGroups(player);
+    public NameTagFormat getPlayerNametag(@NotNull Player player) {
+        Set<String> groups = Players.getPermissionGroups(player);
+
         return TabConfig.NAMETAG_FORMAT.get().entrySet().stream()
             .filter(entry -> groups.contains(entry.getKey()) || entry.getKey().equalsIgnoreCase(Placeholders.DEFAULT))
-            .map(Entry::getValue).max(Comparator.comparingInt(NametagFormat::getPriority))
+            .map(Entry::getValue).max(Comparator.comparingInt(NameTagFormat::getPriority))
             .orElse(null);
     }
 
@@ -110,38 +118,45 @@ public class TabModule extends Module {
     }
 
     public void updateTabListFormat(@NotNull Player player) {
-        if (EntityUtil.isNPC(player)) return;
-
         TabListFormat format = this.getPlayerListFormat(player);
         if (format == null) return;
 
         String header = format.getHeader();
         String footer = format.getFooter();
 
-        for (SimpleTextAnimator animator : this.animationMap.values()) {
-            header = animator.replace(header);
-            footer = animator.replace(footer);
+        for (DynamicText animator : this.getAnimations()) {
+            header = animator.replacePlaceholders().apply(header);
+            footer = animator.replacePlaceholders().apply(footer);
         }
-        if (EngineUtils.hasPlaceholderAPI()) {
-            header = Colorizer.apply(PlaceholderAPI.setPlaceholders(player, header));
-            footer = Colorizer.apply(PlaceholderAPI.setPlaceholders(player, footer));
+        if (Plugins.hasPlaceholderAPI()) {
+            header = PlaceholderAPI.setPlaceholders(player, header);
+            footer = PlaceholderAPI.setPlaceholders(player, footer);
         }
 
-        player.setPlayerListHeaderFooter(header, footer);
+        player.setPlayerListHeaderFooter(NightMessage.asLegacy(header), NightMessage.asLegacy(footer));
     }
 
     public void updateTabListName(@NotNull Player player) {
-        if (EntityUtil.isNPC(player)) return;
+        TabNameFormat nameFormat = this.getPlayerListName(player);
+        if (nameFormat == null) return;
 
-        TabNameFormat listName = this.getPlayerListName(player);
-        if (listName == null) return;
+        String format = Placeholders.forPlayer(player).apply(nameFormat.getFormat());
 
-        String format = Placeholders.forPlayer(player).apply(listName.getFormat());
-        if (EngineUtils.hasPlaceholderAPI()) {
-            format = Colorizer.apply(PlaceholderAPI.setPlaceholders(player, format));
+        for (DynamicText animator : this.getAnimations()) {
+            format = animator.replacePlaceholders().apply(format);
+        }
+        if (Plugins.hasPlaceholderAPI()) {
+            format = PlaceholderAPI.setPlaceholders(player, format);
         }
 
-        player.setPlayerListName(format);
+        player.setPlayerListName(NightMessage.asLegacy(format));
+    }
+
+    public void updateTablistFormat() {
+        for (Player player : plugin.getServer().getOnlinePlayers()) {
+            this.updateTabListFormat(player);
+            this.updateTabListName(player);
+        }
     }
 
     public void updateNameTagsAndSortTab() {
@@ -151,10 +166,9 @@ public class TabModule extends Module {
     }
 
     public void updateNameTagsAndSortTab(@NotNull Player player) {
-        if (!EngineUtils.hasPlugin(HookId.PROTOCOL_LIB)) return;
-        if (EntityUtil.isNPC(player)) return;
+        if (!this.packetsEnabled) return;
 
-        NametagFormat tag = this.getPlayerNametag(player);
+        NameTagFormat tag = this.getPlayerNametag(player);
         if (tag == null) return;
 
         PacketUtils.sendTeamPacket(player, tag);

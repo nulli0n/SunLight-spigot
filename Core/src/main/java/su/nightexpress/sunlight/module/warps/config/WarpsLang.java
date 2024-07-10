@@ -1,107 +1,152 @@
 package su.nightexpress.sunlight.module.warps.config;
 
 import org.bukkit.Sound;
-import su.nexmedia.engine.api.lang.LangKey;
-import su.nightexpress.sunlight.module.warps.util.Placeholders;
+import su.nightexpress.nightcore.language.entry.LangEnum;
+import su.nightexpress.nightcore.language.entry.LangString;
+import su.nightexpress.nightcore.language.entry.LangText;
+import su.nightexpress.sunlight.config.Lang;
+import su.nightexpress.sunlight.module.warps.type.SortType;
+import su.nightexpress.sunlight.module.warps.type.WarpType;
 
-import static su.nexmedia.engine.utils.Colors.*;
+import static su.nightexpress.nightcore.util.text.tag.Tags.*;
+import static su.nightexpress.sunlight.module.warps.util.Placeholders.*;
+import static su.nightexpress.nightcore.language.tag.MessageTags.*;
 
-public class WarpsLang {
+public class WarpsLang extends Lang {
 
-    public static final LangKey COMMAND_WARPS_DESC  = LangKey.of("Warps.Command.Warps.Desc", "Warp management.");
-    public static final LangKey COMMAND_WARPS_USAGE = LangKey.of("Warps.Command.Warps.Usage", "[help]");
+    public static final LangEnum<WarpType> WARP_TYPE = LangEnum.of("Warps.WarpType", WarpType.class);
+    public static final LangEnum<SortType> SORT_TYPE = LangEnum.of("Warps.SortType", SortType.class);
 
-    public static final LangKey COMMAND_WARPS_DELETE_DESC  = LangKey.of("Warps.Command.Warps.Delete.Desc", "Delete specified warp.");
-    public static final LangKey COMMAND_WARPS_DELETE_USAGE = LangKey.of("Warps.Command.Warps.Delete.Usage", "<warp>");
+    public static final LangString COMMAND_DELETE_WARP_DESC         = LangString.of("Warps.Command.Warps.Delete.Desc", "Delete a warp.");
+    public static final LangString COMMAND_CREATE_WARP_DESC         = LangString.of("Warps.Command.Warps.Create.Desc", "Create a new warp.");
+    public static final LangString COMMAND_WARP_DESC                = LangString.of("Warps.Command.Warps.Teleport.Desc", "Teleport to a warp.");
+    public static final LangString COMMAND_DIRECT_WARP_DESC         = LangString.of("Warps.Command.Warps.Teleport.Desc", "Teleport to the " + WARP_NAME + ".");
+    public static final LangString COMMAND_RESET_WARP_COOLDOWN_DESC = LangString.of("Warps.Command.Warps.ResetCooldown.Desc", "Reset warp cooldown.");
+    public static final LangString COMMAND_SET_WARP_COOLDOWN_DESC   = LangString.of("Warps.Command.Warps.SetCooldown.Desc", "Set warp cooldown.");
+    public static final LangString COMMAND_WARP_LIST_DESC           = LangString.of("Warps.Command.Warps.List.Desc", "Open Warps GUI.");
 
-    public static final LangKey COMMAND_WARPS_CREATE_DESC  = LangKey.of("Warps.Command.Warps.Create.Desc", "Set a new warp.");
-    public static final LangKey COMMAND_WARPS_CREATE_USAGE = LangKey.of("Warps.Command.Warps.Create.Usage", "<warp>");
+    public static final LangText COMMAND_TELEPORT_OTHERS = LangText.of("Warps.Command.Warps.Teleport.Others",
+        LIGHT_GRAY.enclose("Teleported " + LIGHT_YELLOW.enclose(PLAYER_DISPLAY_NAME) + " to " + LIGHT_YELLOW.enclose(WARP_NAME) + " warp.")
+    );
 
-    public static final LangKey COMMAND_WARPS_TELEPORT_DESC   = LangKey.of("Warps.Command.Warps.Teleport.Desc", "Teleport to a specified warp.");
-    public static final LangKey COMMAND_WARPS_TELEPORT_USAGE  = LangKey.of("Warps.Command.Warps.Teleport.Usage", "<warp> [player]");
-    public static final LangKey COMMAND_WARPS_TELEPORT_OTHERS = LangKey.of("Warps.Command.Warps.Teleport.Others", "Player &a%player% &7teleported on warp &a%warp_name%&7...");
+    public static final LangText COMMAND_LIST_OTHERS = LangText.of("Warps.Command.Warps.List.Others",
+        LIGHT_GRAY.enclose("Opened Warp GUI for " + LIGHT_YELLOW.enclose(PLAYER_DISPLAY_NAME) + ".")
+    );
 
-    public static final LangKey COMMAND_WARPS_LIST_DESC = LangKey.of("Warps.Command.Warps.List.Desc", "Open Warps GUI.");
-    public static final LangKey COMMAND_WARPS_LIST_USAGE  = LangKey.of("Warps.Command.Warps.List.Usage", "[player]");
-    public static final LangKey COMMAND_WARPS_LIST_OTHERS = LangKey.of("Warps.Command.Warps.List.Others", "Opened Warps GUI for " + GREEN + Placeholders.PLAYER_DISPLAY_NAME + GRAY + ".");
+    public static final LangText COMMAND_RESET_COOLDOWN_DONE = LangText.of("Warps.Command.Warps.ResetCooldown.Done",
+        LIGHT_GRAY.enclose("Reset " + LIGHT_YELLOW.enclose(WARP_NAME) + " warp cooldown for " + LIGHT_YELLOW.enclose(PLAYER_NAME) + ".")
+    );
 
-    public static final LangKey COMMAND_WARPS_RESET_COOLDOWN_DESC   = LangKey.of("Warps.Command.Warps.ResetCooldown.Desc", "Reset [player's] warp cooldown.");
-    public static final LangKey COMMAND_WARPS_RESET_COOLDOWN_USAGE  = LangKey.of("Warps.Command.Warps.ResetCooldown.Usage", "<warp> [player] [-s]");
-    public static final LangKey COMMAND_WARPS_RESET_COOLDOWN_DONE   = LangKey.of("Warps.Command.Warps.ResetCooldown.Done", LIGHT_YELLOW + "Reset " + ORANGE + Placeholders.WARP_NAME + LIGHT_YELLOW + " warp cooldown for " + ORANGE + Placeholders.PLAYER_NAME + LIGHT_YELLOW + ".");
-    public static final LangKey COMMAND_WARPS_RESET_COOLDOWN_NOTIFY = LangKey.of("Warps.Command.Warps.ResetCooldown.Notify", LIGHT_YELLOW + "Your " + ORANGE + Placeholders.WARP_NAME + LIGHT_YELLOW + " warp cooldown have been reset!");
+    public static final LangText COMMAND_WARPS_RESET_COOLDOWN_NOTIFY = LangText.of("Warps.Command.Warps.ResetCooldown.Notify",
+        LIGHT_GRAY.enclose("Your " + LIGHT_YELLOW.enclose(WARP_NAME) + " warp cooldown have been reset!")
+    );
 
-    public static final LangKey COMMAND_WARPS_SET_COOLDOWN_DESC   = LangKey.of("Warps.Command.Warps.SetCooldown.Desc", "Set [player's] warp cooldown.");
-    public static final LangKey COMMAND_WARPS_SET_COOLDOWN_USAGE  = LangKey.of("Warps.Command.Warps.SetCooldown.Usage", "<warp> <amount> [player] [-s]");
-    public static final LangKey COMMAND_WARPS_SET_COOLDOWN_DONE   = LangKey.of("Warps.Command.Warps.SetCooldown.Done", LIGHT_YELLOW + "Set " + ORANGE + Placeholders.WARP_NAME + LIGHT_YELLOW + " warp cooldown with " + ORANGE + Placeholders.GENERIC_AMOUNT + LIGHT_YELLOW + " for " + ORANGE + Placeholders.PLAYER_NAME + LIGHT_YELLOW + ".");
-    public static final LangKey COMMAND_WARPS_SET_COOLDOWN_NOTIFY = LangKey.of("Warps.Command.Warps.SetCooldown.Notify", LIGHT_YELLOW + "Your " + ORANGE + Placeholders.WARP_NAME + LIGHT_YELLOW + " warp cooldown have been set to " + ORANGE + Placeholders.GENERIC_AMOUNT + LIGHT_YELLOW + "!");
+    public static final LangText COMMAND_WARPS_SET_COOLDOWN_DONE = LangText.of("Warps.Command.Warps.SetCooldown.Done",
+        LIGHT_GRAY.enclose("Set " + LIGHT_YELLOW.enclose(WARP_NAME) + " warp cooldown on " + LIGHT_YELLOW.enclose(GENERIC_AMOUNT) + " for " + LIGHT_YELLOW.enclose(PLAYER_NAME) + ".")
+    );
 
-    public static final LangKey WARP_ERROR_INVALID = LangKey.of("Warps.Warp.Error.Invalid", RED + "Invalid warp!");
+    public static final LangText COMMAND_WARPS_SET_COOLDOWN_NOTIFY = LangText.of("Warps.Command.Warps.SetCooldown.Notify",
+        LIGHT_GRAY.enclose("Your " + LIGHT_YELLOW.enclose(WARP_NAME) + " warp cooldown have been set to " + LIGHT_YELLOW.enclose(GENERIC_AMOUNT) + "!")
+    );
 
-    public static final LangKey WARP_DELETE_DONE   = LangKey.of("Warps.Delete.Done",
-        "<! type:\"titles:20:50:30\" sound:\"" + Sound.BLOCK_GLASS_BREAK.name() + "\" !>" +
-        "\n" + RED + "&lWarp Deleted" +
-        "\n" + GRAY + "Warp " + RED + Placeholders.WARP_NAME + GRAY + " has been deleted.");
+    public static final LangText WARP_DELETE_DONE   = LangText.of("Warps.Delete.Done",
+        OUTPUT.enclose(20, 60) + SOUND.enclose(Sound.BLOCK_GLASS_BREAK),
+        LIGHT_YELLOW.enclose(BOLD.enclose("Warp Removed!")),
+        LIGHT_GRAY.enclose("You removed " + LIGHT_YELLOW.enclose(WARP_NAME) + " warp.")
+    );
 
-    public static final LangKey WARP_CREATE_DONE_FRESH    = LangKey.of("Warps.Warp.Creation.New",
-        "<! type:\"titles:20:50:30\" sound:\"" + Sound.BLOCK_ANVIL_PLACE.name() + "\" !>" +
-            "\n" + GREEN + "&lWarp Created!" +
-            "\n" + GRAY + "Teleport: " + GREEN + "/warp " + Placeholders.WARP_ID + GRAY + " | Edit in: " + GREEN + " /warplist");
+    public static final LangText WARP_CREATE_DONE_FRESH = LangText.of("Warps.Warp.Creation.New",
+        OUTPUT.enclose(20, 60) + SOUND.enclose(Sound.BLOCK_ANVIL_PLACE),
+        LIGHT_GREEN.enclose(BOLD.enclose("Warp Created!")),
+        LIGHT_GRAY.enclose("Teleport: " + LIGHT_GREEN.enclose("/warp " + WARP_ID) + " | Edit in: " + LIGHT_GREEN.enclose("/warplist"))
+    );
 
-    public static final LangKey WARP_CREATE_DONE_RELOCATE = LangKey.of("Warps.Warp.Creation.Relocate",
-        "<! type:\"titles:20:50:30\" sound:\"" + Sound.BLOCK_ANVIL_PLACE.name() + "\" !>" +
-            "\n" + GREEN + "&lWarp Relocated!" +
-            "\n" + GRAY + "Warp " + GREEN + Placeholders.WARP_NAME + GRAY + " has been moved to here.");
+    public static final LangText WARP_CREATE_DONE_RELOCATE = LangText.of("Warps.Warp.Creation.Relocate",
+        OUTPUT.enclose(20, 60) + SOUND.enclose(Sound.BLOCK_ANVIL_PLACE),
+        LIGHT_GREEN.enclose(BOLD.enclose("Warp Relocated!")),
+        LIGHT_GRAY.enclose("You moved out " + LIGHT_GREEN.enclose(WARP_NAME) + " warp.")
+    );
 
-    public static final LangKey WARP_CREATE_ERROR_LIMIT   = LangKey.of("Warps.Warp.Creation.Error.Limit",
-        "<! type:\"titles:20:50:30\" sound:\"" + Sound.ENTITY_VILLAGER_NO.name() + "\" !>" +
-            "\n" + RED + "&lLimit Reached!" +
-            "\n" + GRAY + "You have reached your warps limit.");
+    public static final LangText WARP_CREATE_ERROR_LIMIT = LangText.of("Warps.Warp.Creation.Error.Limit",
+        OUTPUT.enclose(20, 60) + SOUND.enclose(Sound.ENTITY_VILLAGER_NO),
+        LIGHT_RED.enclose(BOLD.enclose("Limit Reached!")),
+        LIGHT_GRAY.enclose("You can't create more warps!")
+    );
 
-    public static final LangKey WARP_CREATE_ERROR_WORLD   = LangKey.of("Warps.Warp.Creation.Error.World",
-        "<! type:\"titles:20:50:30\" sound:\"" + Sound.ENTITY_VILLAGER_NO.name() + "\" !>" +
-            "\n" + RED + "&lForbidden World!" +
-            "\n" + RED + "You can't create warps in this world.");
+    public static final LangText WARP_CREATE_ERROR_WORLD   = LangText.of("Warps.Warp.Creation.Error.World",
+        OUTPUT.enclose(20, 60) + SOUND.enclose(Sound.ENTITY_VILLAGER_NO),
+        LIGHT_RED.enclose(BOLD.enclose("Forbidden World!")),
+        LIGHT_GRAY.enclose("You can't create warps in this world!")
+    );
 
-    public static final LangKey WARP_CREATE_ERROR_EXISTS  = LangKey.of("Warps.Warp.Creation.Error.Exists",
-        "<! type:\"titles:20:50:30\" sound:\"" + Sound.ENTITY_VILLAGER_NO.name() + "\" !>" +
-            "\n" + RED+ "&lAlready Exists!" +
-            "\n" + GRAY + "Warp with such name already exists!");
+    public static final LangText WARP_CREATE_ERROR_EXISTS  = LangText.of("Warps.Warp.Creation.Error.Exists",
+        OUTPUT.enclose(20, 60) + SOUND.enclose(Sound.ENTITY_VILLAGER_NO),
+        LIGHT_RED.enclose(BOLD.enclose("Already Exists!")),
+        LIGHT_GRAY.enclose("Warp with such name already exists.")
+    );
 
-    public static final LangKey WARP_CREATE_ERROR_UNSAFE  = LangKey.of("Warps.Warp.Creation.Error.Unsafe",
-        "<! type:\"titles:20:50:30\" sound:\"" + Sound.ENTITY_VILLAGER_NO.name() + "\" !>" +
-            "\n" + RED + "&lUnsafe Location!" +
-            "\n" + GRAY + "You can't create warps here!");
+    public static final LangText WARP_CREATE_ERROR_UNSAFE  = LangText.of("Warps.Warp.Creation.Error.Unsafe",
+        OUTPUT.enclose(20, 60) + SOUND.enclose(Sound.ENTITY_VILLAGER_NO),
+        LIGHT_RED.enclose(BOLD.enclose("Unsafe Location!")),
+        LIGHT_GRAY.enclose("Please, choose another place.")
+    );
 
-    public static final LangKey WARP_TELEPORT_DONE = LangKey.of("Warps.Warp.Teleport.Done",
-        "<! type:\"titles:20:50:30\" sound:\"" + Sound.ENTITY_ENDERMAN_TELEPORT.name() + "\" !>" +
-            "\n" + YELLOW + "&l" + Placeholders.WARP_NAME +
-            "\n" + GRAY + Placeholders.WARP_DESCRIPTION);
+    public static final LangText WARP_TELEPORT_DONE = LangText.of("Warps.Warp.Teleport.Done",
+        OUTPUT.enclose(20, 60) + SOUND.enclose(Sound.ENTITY_ENDERMAN_TELEPORT),
+        LIGHT_YELLOW.enclose(BOLD.enclose(WARP_NAME)),
+        LIGHT_GRAY.enclose(WARP_DESCRIPTION)
+    );
 
-    public static final LangKey WARP_TELEPORT_ERROR_NOT_ENOUGH_FUNDS = LangKey.of("Warps.Warp.Teleport.Error.NotEnoughFunds",
-        "<! type:\"titles:20:50:30\" sound:\"" + Sound.ENTITY_VILLAGER_NO.name() + "\" !>" +
-            "\n" + RED +"&lNot Enough Money!" +
-            "\n" + GRAY + "You need " + RED + "$" + Placeholders.WARP_VISIT_COST + GRAY + " to visit this warp!");
+    public static final LangText WARP_TELEPORT_ERROR_NOT_ENOUGH_FUNDS = LangText.of("Warps.Warp.Teleport.Error.NotEnoughFunds",
+        OUTPUT.enclose(20, 60) + SOUND.enclose(Sound.ENTITY_VILLAGER_NO),
+        LIGHT_RED.enclose(BOLD.enclose("Not Enough Funds!")),
+        LIGHT_GRAY.enclose("You need " + LIGHT_RED.enclose("$" + WARP_VISIT_COST) + " to visit this warp!")
+    );
 
-    public static final LangKey WARP_TELEPORT_ERROR_NO_PERMISSION = LangKey.of("Warps.Warp.Teleport.Error.NoPermission",
-        "<! type:\"titles:20:50:30\" sound:\"" + Sound.ENTITY_VILLAGER_NO.name() + "\" !>" +
-            "\n" + RED + "&lNo Permission!" +
-            "\n" + GRAY + "You don't have permission for " + Placeholders.WARP_NAME + " warp!");
+    public static final LangText WARP_TELEPORT_ERROR_NO_PERMISSION = LangText.of("Warps.Warp.Teleport.Error.NoPermission",
+        OUTPUT.enclose(20, 60) + SOUND.enclose(Sound.ENTITY_VILLAGER_NO),
+        LIGHT_RED.enclose(BOLD.enclose("No Permission!")),
+        LIGHT_GRAY.enclose("You don't have permission for " + LIGHT_RED.enclose(WARP_NAME) + " warp!")
+    );
 
-    public static final LangKey WARP_TELEPORT_ERROR_COOLDOWN = LangKey.of("Warps.Warp.Teleport.Error.Cooldown",
-        "<! type:\"titles:20:50:30\" sound:\"" + Sound.ENTITY_VILLAGER_NO.name() + "\" !>" +
-            "\n" + RED + "&lCooldown!" +
-            "\n" + GRAY + "You can visit " + RED + Placeholders.WARP_NAME + GRAY + " again in " + RED + Placeholders.GENERIC_COOLDOWN);
+    public static final LangText WARP_TELEPORT_ERROR_COOLDOWN = LangText.of("Warps.Warp.Teleport.Error.Cooldown",
+        OUTPUT.enclose(20, 60) + SOUND.enclose(Sound.ENTITY_VILLAGER_NO),
+        LIGHT_RED.enclose(BOLD.enclose("Cooldown!")),
+        LIGHT_GRAY.enclose("You can visit " + LIGHT_RED.enclose(WARP_NAME) + " again in " + LIGHT_RED.enclose(GENERIC_COOLDOWN))
+    );
 
-    public static final LangKey WARP_TELEPORT_ERROR_TIME = LangKey.of("Warps.Warp.Teleport.Error.Time",
-        "<! type:\"titles:20:50:30\" sound:\"" + Sound.ENTITY_VILLAGER_NO.name() + "\" !>" +
-            "\n" + RED + "&lWrong Time!" +
-            "\n" + ORANGE + Placeholders.WARP_NAME + GRAY + " is not available for visits now.");
+    public static final LangText WARP_TELEPORT_ERROR_DISABLED = LangText.of("Warps.Warp.Teleport.Error.Unreachable",
+        OUTPUT.enclose(20, 60) + SOUND.enclose(Sound.ENTITY_VILLAGER_NO),
+        LIGHT_RED.enclose(BOLD.enclose("Unreachable Warp!")),
+        LIGHT_GRAY.enclose(LIGHT_RED.enclose(WARP_NAME) + " located in an unavailable world.")
+    );
 
-    public static final LangKey EDITOR_ENTER_COST        = LangKey.of("Warps.Editor.Enter.CostMoney", GRAY + "Enter " + GREEN + "[Cost]");
-    public static final LangKey EDITOR_ENTER_COMMAND     = LangKey.of("Warps.Editor.Enter.Command", GRAY + "Enter " + GREEN + "[Command Name]");
-    public static final LangKey EDITOR_ENTER_TIMES       = LangKey.of("Warps.Editor.Enter.Times", GRAY+ "Enter " + GREEN + "[Times] " + ORANGE + " (10:00 14:00)");
-    public static final LangKey EDITOR_ENTER_COOLDOWN    = LangKey.of("Warps.Editor.Enter.Cooldown", GRAY + "Enter " + GREEN + "[Cooldown]");
-    public static final LangKey EDITOR_ENTER_NAME        = LangKey.of("Warps.Editor.Enter.Name", GRAY + "Enter " + GREEN + "[Display Name]");
-    public static final LangKey EDITOR_ENTER_DESCRIPTION = LangKey.of("Warps.Editor.Enter.Description", GRAY+ "Enter " + GREEN + "[Description]");
+    public static final LangText WARP_TELEPORT_ERROR_TIME = LangText.of("Warps.Warp.Teleport.Error.Time",
+        OUTPUT.enclose(20, 60) + SOUND.enclose(Sound.ENTITY_VILLAGER_NO),
+        LIGHT_RED.enclose(BOLD.enclose("Wrong Time!")),
+        LIGHT_GRAY.enclose(LIGHT_RED.enclose(WARP_NAME) + " is not available for visits now.")
+    );
+
+    public static final LangText ERROR_COMMAND_INVALID_WARP_ARGUMENT = LangText.of("Warps.Error.Command.Argument.InvalidWarp",
+        LIGHT_GRAY.enclose(LIGHT_RED.enclose(GENERIC_VALUE) + " is not a valid warp!"));
+
+
+    public static final LangString EDITOR_ENTER_COST = LangString.of("Warps.Editor.Enter.CostMoney",
+        LIGHT_GRAY.enclose("Enter " + LIGHT_GREEN.enclose("[Cost]")));
+
+    public static final LangString EDITOR_ENTER_COMMAND = LangString.of("Warps.Editor.Enter.Command",
+        LIGHT_GRAY.enclose("Enter " + LIGHT_GREEN.enclose("[Command Name]")));
+
+    public static final LangString EDITOR_ENTER_TIMES = LangString.of("Warps.Editor.Enter.Times",
+        LIGHT_GRAY.enclose("Enter " + LIGHT_GREEN.enclose("[Times] " + LIGHT_GRAY.enclose(">") + " 10:00 14:00")));
+
+    public static final LangString EDITOR_ENTER_COOLDOWN = LangString.of("Warps.Editor.Enter.Cooldown",
+        LIGHT_GRAY.enclose("Enter " + LIGHT_GREEN.enclose("[Cooldown]")));
+
+    public static final LangString EDITOR_ENTER_NAME = LangString.of("Warps.Editor.Enter.Name",
+        LIGHT_GRAY.enclose("Enter " + LIGHT_GREEN.enclose("[Display Name]")));
+
+    public static final LangString EDITOR_ENTER_DESCRIPTION = LangString.of("Warps.Editor.Enter.Description",
+        LIGHT_GRAY.enclose("Enter " + LIGHT_GREEN.enclose("[Description]")));
 
 }

@@ -1,33 +1,34 @@
 package su.nightexpress.sunlight.module.worlds.editor;
 
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemFlag;
+import org.bukkit.Material;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
-import su.nexmedia.engine.api.menu.AutoPaged;
-import su.nexmedia.engine.api.menu.click.ItemClick;
-import su.nexmedia.engine.api.menu.impl.EditorMenu;
-import su.nexmedia.engine.api.menu.impl.MenuOptions;
-import su.nexmedia.engine.api.menu.impl.MenuViewer;
-import su.nexmedia.engine.utils.ItemUtil;
-import su.nightexpress.sunlight.SunLight;
+import su.nightexpress.nightcore.menu.MenuOptions;
+import su.nightexpress.nightcore.menu.MenuSize;
+import su.nightexpress.nightcore.menu.MenuViewer;
+import su.nightexpress.nightcore.menu.api.AutoFill;
+import su.nightexpress.nightcore.menu.api.AutoFilled;
+import su.nightexpress.nightcore.menu.impl.EditorMenu;
+import su.nightexpress.nightcore.util.ItemReplacer;
+import su.nightexpress.nightcore.util.ItemUtil;
+import su.nightexpress.sunlight.SunLightPlugin;
 import su.nightexpress.sunlight.module.worlds.WorldsModule;
-import su.nightexpress.sunlight.module.worlds.impl.WorldConfig;
+import su.nightexpress.sunlight.module.worlds.config.WorldsLang;
+import su.nightexpress.sunlight.module.worlds.impl.WrappedWorld;
 
-import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.List;
 import java.util.stream.IntStream;
 
-public class WorldListEditor extends EditorMenu<SunLight, WorldsModule> implements AutoPaged<WorldConfig> {
+public class WorldListEditor extends EditorMenu<SunLightPlugin, WorldsModule> implements AutoFilled<WrappedWorld> {
 
-    private static final String TEXTURE_CUSTOM_WORLD = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjliMjg4OTAyMDU4MzU2NWY4OGQ1MDUzNzg3MGM1OWFhZDgwMjU5NGZhYmQ4MzdlMWQxNGY1YTA2YWUzNDUwOSJ9fX0=";
+    private static final String TEXTURE_CUSTOM_WORLD = "597e4e27a04afa5f06108265a9bfb797630391c7f3d880d244f610bb1ff393d8";
 
-    private final WorldsModule worldsModule;
+    private final WorldsModule module;
 
-    public WorldListEditor(@NotNull WorldsModule worldsModule) {
-        super(worldsModule.plugin(), worldsModule, EditorLocales.TITLE_WORLDS_EDITOR, 45);
-        this.worldsModule = worldsModule;
+    public WorldListEditor(@NotNull SunLightPlugin plugin, @NotNull WorldsModule module) {
+        super(plugin, WorldsLang.EDITOR_TITLE_LIST.getString(), MenuSize.CHEST_45);
+        this.module = module;
 
         this.addNextPage(44);
         this.addPreviousPage(36);
@@ -36,39 +37,46 @@ public class WorldListEditor extends EditorMenu<SunLight, WorldsModule> implemen
 
     @Override
     public void onPrepare(@NotNull MenuViewer viewer, @NotNull MenuOptions options) {
-        super.onPrepare(viewer, options);
-        this.getItemsForPage(viewer).forEach(this::addItem);
+        this.autoFill(viewer);
     }
 
     @Override
-    public int[] getObjectSlots() {
-        return IntStream.range(0, 36).toArray();
+    protected void onReady(@NotNull MenuViewer viewer, @NotNull Inventory inventory) {
+
     }
 
     @Override
-    @NotNull
-    public List<WorldConfig> getObjects(@NotNull Player player) {
-        return new ArrayList<>(this.worldsModule.getWorldConfigs().stream().sorted(Comparator.comparing(WorldConfig::getId)).toList());
-    }
+    public void onAutoFill(@NotNull MenuViewer viewer, @NotNull AutoFill<WrappedWorld> autoFill) {
+        autoFill.setSlots(IntStream.range(0, 36).toArray());
+        autoFill.setItems(this.module.getWorlds().stream().sorted(Comparator.comparing(WrappedWorld::isCustom)
+            .thenComparing(world -> world.isCustom() ? world.getData().getId() : world.getWorld().getName()))
+            .toList()
+        );
+        autoFill.setItemCreator(wrappedWorld -> {
+            ItemStack item;
+            if (wrappedWorld.isCustom()) {
+                item = ItemUtil.getSkinHead(TEXTURE_CUSTOM_WORLD);
+            }
+            else {
+                Material material = switch (wrappedWorld.getWorld().getEnvironment()) {
+                    case NETHER -> Material.NETHERRACK;
+                    case THE_END -> Material.END_STONE;
+                    default -> Material.GRASS_BLOCK;
+                };
+                item = new ItemStack(material);
+            }
 
-    @Override
-    @NotNull
-    public ItemStack getObjectStack(@NotNull Player player, @NotNull WorldConfig world) {
-        ItemStack item = ItemUtil.createCustomHead(TEXTURE_CUSTOM_WORLD);
-        ItemUtil.mapMeta(item, meta -> {
-            meta.setDisplayName(EditorLocales.WORLD_OBJECT.getLocalizedName());
-            meta.setLore(EditorLocales.WORLD_OBJECT.getLocalizedLore());
-            meta.addItemFlags(ItemFlag.values());
-            ItemUtil.replace(meta, world.replacePlaceholders());
+            ItemReplacer.create(item).hideFlags().trimmed()
+                .readLocale(WorldsLang.EDITOR_WORLD_OBJECT)
+                .replace(wrappedWorld.getPlaceholders())
+                .writeMeta();
+            return item;
         });
-        return item;
-    }
-
-    @Override
-    @NotNull
-    public ItemClick getObjectClick(@NotNull WorldConfig world) {
-        return (viewer, event) -> {
-            this.plugin.runTask(task -> world.getEditor().open(viewer.getPlayer(), 1));
-        };
+        autoFill.setClickAction(wrappedWorld -> (viewer1, event) -> {
+            if (wrappedWorld.isCustom() && !wrappedWorld.isPresent()) {
+                this.runNextTick(() -> this.module.openGenerationSettings(viewer.getPlayer(), wrappedWorld.getData()));
+            }
+            else this.runNextTick(() -> this.module.openWorldSettings(viewer.getPlayer(), wrappedWorld));
+        });
     }
 }

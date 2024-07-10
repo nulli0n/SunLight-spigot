@@ -1,79 +1,80 @@
 package su.nightexpress.sunlight.command.list;
 
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import su.nexmedia.engine.api.command.CommandFlag;
-import su.nexmedia.engine.api.command.CommandResult;
-import su.nexmedia.engine.api.command.GeneralCommand;
-import su.nexmedia.engine.api.lang.LangMessage;
-import su.nexmedia.engine.utils.CollectionsUtil;
-import su.nightexpress.sunlight.Perms;
+import su.nightexpress.nightcore.command.experimental.CommandContext;
+import su.nightexpress.nightcore.command.experimental.argument.ArgumentTypes;
+import su.nightexpress.nightcore.command.experimental.argument.ParsedArguments;
+import su.nightexpress.nightcore.command.experimental.builder.DirectNodeBuilder;
+import su.nightexpress.nightcore.command.experimental.node.DirectNode;
+import su.nightexpress.nightcore.config.FileConfig;
+import su.nightexpress.nightcore.language.message.LangMessage;
 import su.nightexpress.sunlight.Placeholders;
-import su.nightexpress.sunlight.SunLight;
+import su.nightexpress.sunlight.SunLightPlugin;
+import su.nightexpress.sunlight.command.CommandArguments;
+import su.nightexpress.sunlight.command.CommandPerms;
+import su.nightexpress.sunlight.command.CommandRegistry;
+import su.nightexpress.sunlight.command.template.CommandTemplate;
 import su.nightexpress.sunlight.config.Lang;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+public class SudoCommand {
 
-public class SudoCommand extends GeneralCommand<SunLight> {
+    public static final String NODE_CHAT    = "sudo_chat";
+    public static final String NODE_COMMAND = "sudo_command";
 
-    public static final String NAME = "sudo";
+    public static void load(@NotNull SunLightPlugin plugin) {
+        CommandRegistry.registerDirectExecutor(NODE_CHAT, (template, config) -> builder(plugin, template, config, Type.CHAT)
+            .description(Lang.COMMAND_SUDO_CHAT_DESC)
+            .permission(CommandPerms.SUDO_CHAT)
+        );
 
-    private static final CommandFlag<Boolean> FLAG_CHAT = CommandFlag.booleanFlag("c");
+        CommandRegistry.registerDirectExecutor(NODE_COMMAND, (template, config) -> builder(plugin, template, config, Type.COMMAND)
+            .description(Lang.COMMAND_SUDO_COMMAND_DESC)
+            .permission(CommandPerms.SUDO_COMMAND)
+        );
 
-    public SudoCommand(@NotNull SunLight plugin, @NotNull String[] aliases) {
-        super(plugin, aliases, Perms.COMMAND_SUDO);
-        this.setUsage(plugin.getMessage(Lang.COMMAND_SUDO_USAGE));
-        this.setDescription(plugin.getMessage(Lang.COMMAND_SUDO_DESC));
-        this.addFlag(FLAG_CHAT);
+        CommandRegistry.addTemplate("sudo", CommandTemplate.group(new String[]{"sudo"},
+            "Sudo commands.",
+            CommandPerms.PREFIX + "sudo",
+            CommandTemplate.direct(new String[]{"chat"}, NODE_CHAT),
+            CommandTemplate.direct(new String[]{"command"}, NODE_COMMAND)
+        ));
     }
 
-    @Override
+    public enum Type {COMMAND, CHAT}
+
     @NotNull
-    public List<String> getTab(@NotNull Player player, int arg, @NotNull String[] args) {
-        if (arg == 1) {
-            return CollectionsUtil.playerNames(player);
-        }
-        if (arg == 2) {
-            return Collections.singletonList("<command>");
-        }
-        return super.getTab(player, arg, args);
+    public static DirectNodeBuilder builder(@NotNull SunLightPlugin plugin, @NotNull CommandTemplate template, @NotNull FileConfig config, @NotNull Type type) {
+        return DirectNode.builder(plugin, template.getAliases())
+            .withArgument(ArgumentTypes.player(CommandArguments.PLAYER).required())
+            .withArgument(ArgumentTypes.string(CommandArguments.TEXT).required().complex().localized(Lang.COMMAND_ARGUMENT_NAME_TEXT))
+            .executes((context, arguments) -> execute(plugin, context, arguments, type))
+            ;
     }
 
-    @Override
-    protected void onExecute(@NotNull CommandSender sender, @NotNull CommandResult result) {
-        if (result.length() < 2) {
-            this.printUsage(sender);
-            return;
+    public static boolean execute(@NotNull SunLightPlugin plugin, @NotNull CommandContext context, @NotNull ParsedArguments arguments, @NotNull Type type) {
+        Player target = arguments.getPlayerArgument(CommandArguments.PLAYER);
+        if (context.getSender() == target) {
+            context.send(Lang.ERROR_COMMAND_NOT_YOURSELF.getMessage());
+            return false;
         }
 
-        Player target = plugin.getServer().getPlayer(result.getArg(0));
-        if (target == null) {
-            this.errorPlayer(sender);
-            return;
-        }
-        if (sender == target) {
-            this.plugin.getMessage(Lang.ERROR_COMMAND_SELF).send(sender);
-            return;
-        }
-        if (target.hasPermission(Perms.COMMAND_SUDO_BYPASS)) {
-            this.errorPermission(sender);
-            return;
+        if (target.hasPermission(CommandPerms.SUDO_BYPASS)) {
+            context.errorPermission();
+            return false;
         }
 
-        String command = Stream.of(result.getArgs()).skip(1).collect(Collectors.joining(" "));
+        String command = arguments.getStringArgument(CommandArguments.TEXT);
         LangMessage message;
-        if (result.hasFlag(FLAG_CHAT)) {
+        if (type == Type.CHAT) {
             target.chat(command);
-            message = plugin.getMessage(Lang.COMMAND_SUDO_DONE_CHAT);
+            message = Lang.COMMAND_SUDO_DONE_CHAT.getMessage();
         }
         else {
             target.performCommand(command);
-            message = plugin.getMessage(Lang.COMMAND_SUDO_DONE_COMMAND);
+            message = Lang.COMMAND_SUDO_DONE_COMMAND.getMessage();
         }
-        message.replace(Placeholders.GENERIC_COMMAND, command).replace(Placeholders.forPlayer(target)).send(sender);
+        message.replace(Placeholders.GENERIC_COMMAND, command).replace(Placeholders.forPlayer(target)).send(context.getSender());
+        return true;
     }
 }

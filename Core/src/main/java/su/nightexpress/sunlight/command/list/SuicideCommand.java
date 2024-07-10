@@ -1,29 +1,43 @@
 package su.nightexpress.sunlight.command.list;
 
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import su.nexmedia.engine.api.command.CommandResult;
-import su.nexmedia.engine.api.command.GeneralCommand;
-import su.nightexpress.sunlight.Perms;
+import su.nightexpress.nightcore.command.experimental.CommandContext;
+import su.nightexpress.nightcore.command.experimental.argument.ParsedArguments;
+import su.nightexpress.nightcore.command.experimental.builder.DirectNodeBuilder;
+import su.nightexpress.nightcore.command.experimental.node.DirectNode;
+import su.nightexpress.nightcore.config.FileConfig;
+import su.nightexpress.sunlight.command.CommandPerms;
+import su.nightexpress.sunlight.command.CommandRegistry;
+import su.nightexpress.sunlight.command.template.CommandTemplate;
 import su.nightexpress.sunlight.Placeholders;
-import su.nightexpress.sunlight.SunLight;
+import su.nightexpress.sunlight.SunLightPlugin;
 import su.nightexpress.sunlight.config.Lang;
 
-public class SuicideCommand extends GeneralCommand<SunLight> {
+public class SuicideCommand {
 
-    public static final String NAME = "suicide";
+    public static final String NODE = "suicide";
 
-    public SuicideCommand(@NotNull SunLight plugin, @NotNull String[] aliases) {
-        super(plugin, aliases, Perms.COMMAND_SUICIDE);
-        this.setDescription(plugin.getMessage(Lang.COMMAND_SUICIDE_DESC));
-        this.setPlayerOnly(true);
+    public static void load(@NotNull SunLightPlugin plugin) {
+        CommandRegistry.registerDirectExecutor(NODE, (template, config) -> builder(plugin, template, config));
+
+        CommandRegistry.addSimpleTemplate(NODE);
     }
 
-    @Override
-    protected void onExecute(@NotNull CommandSender sender, @NotNull CommandResult result) {
-        Player target = (Player) sender;
+    @NotNull
+    public static DirectNodeBuilder builder(@NotNull SunLightPlugin plugin, @NotNull CommandTemplate template, @NotNull FileConfig config) {
+        return DirectNode.builder(plugin, template.getAliases())
+            .playerOnly()
+            .description(Lang.COMMAND_SUICIDE_DESC)
+            .permission(CommandPerms.SUICIDE)
+            .executes((context, arguments) -> execute(plugin, context, arguments))
+            ;
+    }
+
+    public static boolean execute(@NotNull SunLightPlugin plugin, @NotNull CommandContext context, @NotNull ParsedArguments arguments) {
+        Player target = context.getPlayerOrThrow();
         target.setHealth(0);
-        plugin.getMessage(Lang.COMMAND_SUICIDE_DONE).replace(Placeholders.forPlayer(target)).broadcast();
+        Lang.COMMAND_SUICIDE_DONE.getMessage().replace(Placeholders.forPlayer(target)).broadcast();
+        return true;
     }
 }

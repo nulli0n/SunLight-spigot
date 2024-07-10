@@ -1,20 +1,26 @@
 package su.nightexpress.sunlight.command.list;
 
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import su.nexmedia.engine.api.command.CommandResult;
-import su.nightexpress.sunlight.Perms;
+import su.nightexpress.nightcore.command.experimental.CommandContext;
+import su.nightexpress.nightcore.command.experimental.argument.ArgumentTypes;
+import su.nightexpress.nightcore.command.experimental.argument.ParsedArguments;
+import su.nightexpress.nightcore.command.experimental.builder.DirectNodeBuilder;
+import su.nightexpress.nightcore.command.experimental.node.DirectNode;
+import su.nightexpress.nightcore.config.FileConfig;
 import su.nightexpress.sunlight.Placeholders;
-import su.nightexpress.sunlight.SunLight;
+import su.nightexpress.sunlight.SunLightPlugin;
 import su.nightexpress.sunlight.command.CommandFlags;
-import su.nightexpress.sunlight.command.api.TargetCommand;
+import su.nightexpress.sunlight.command.CommandPerms;
+import su.nightexpress.sunlight.command.CommandArguments;
+import su.nightexpress.sunlight.command.CommandRegistry;
+import su.nightexpress.sunlight.command.template.CommandTemplate;
+import su.nightexpress.sunlight.command.CommandTools;
 import su.nightexpress.sunlight.config.Lang;
 
-import java.util.List;
 import java.util.stream.IntStream;
 
-public class FlySpeedCommand extends TargetCommand {
+public class FlySpeedCommand {
 
     public static final String NAME = "flyspeed";
 
@@ -22,46 +28,48 @@ public class FlySpeedCommand extends TargetCommand {
     private static final float MAX_SPEED = 1.0F;
     private static final int SPEEDS_AMOUNT = 10;
 
-    public FlySpeedCommand(@NotNull SunLight plugin, @NotNull String[] aliases) {
-        super(plugin, aliases, Perms.COMMAND_FLY_SPEED, Perms.COMMAND_FLY_SPEED_OTHERS, 1);
-        this.setDescription(plugin.getMessage(Lang.COMMAND_FLY_SPEED_DESC));
-        this.setUsage(plugin.getMessage(Lang.COMMAND_FLY_SPEED_USAGE));
-        this.addFlag(CommandFlags.SILENT);
+    public static void load(@NotNull SunLightPlugin plugin) {
+        CommandRegistry.registerDirectExecutor(NAME, (template, config) -> builder(plugin, template, config));
+        CommandRegistry.addSimpleTemplate(NAME);
     }
 
-    @Override
-    @NotNull
-    public List<String> getTab(@NotNull Player player, int arg, @NotNull String[] args) {
-        if (arg == 1) {
-            return IntStream.range(0, SPEEDS_AMOUNT + 1).boxed().map(String::valueOf).toList();
-        }
-        return super.getTab(player, arg, args);
+    // TODO Per speed permission
+
+    public static DirectNodeBuilder builder(@NotNull SunLightPlugin plugin, @NotNull CommandTemplate template, @NotNull FileConfig config) {
+        return DirectNode.builder(plugin, template.getAliases())
+            .description(Lang.COMMAND_FLY_SPEED_DESC)
+            .permission(CommandPerms.FLY_SPEED)
+            .withArgument(ArgumentTypes.integerAbs(CommandArguments.VALUE).required().withSamples(tabContext -> IntStream.range(1, SPEEDS_AMOUNT + 1).boxed().map(String::valueOf).toList()))
+            .withArgument(ArgumentTypes.playerName(CommandArguments.PLAYER).permission(CommandPerms.FLY_SPEED_OTHERS))
+            .withFlag(CommandFlags.silent().permission(CommandPerms.FLY_SPEED_OTHERS))
+            .executes((context, arguments) -> execute(plugin, context, arguments))
+            ;
     }
 
-    @Override
-    protected void onExecute(@NotNull CommandSender sender, @NotNull CommandResult result) {
-        Player target = this.getCommandTarget(sender, result);
-        if (target == null) return;
+    public static boolean execute(@NotNull SunLightPlugin plugin, @NotNull CommandContext context, @NotNull ParsedArguments arguments) {
+        Player target = CommandTools.getTarget(plugin, context, arguments, CommandArguments.PLAYER, true);
+        if (target == null) return false;
 
-        int speed = Math.max(0, result.getInt(0, 1));
-        if (speed > SPEEDS_AMOUNT) speed = SPEEDS_AMOUNT;
-        speed -= 1;
+        int speed = Math.clamp(arguments.getIntArgument(CommandArguments.VALUE), 1, SPEEDS_AMOUNT);
 
-        float realSpeed = speed < 0 ? DEF_SPEED : DEF_SPEED + (MAX_SPEED - DEF_SPEED) * speed / (SPEEDS_AMOUNT - 1);
+        float realSpeed = DEF_SPEED + (MAX_SPEED - DEF_SPEED) * (speed - 1) / (SPEEDS_AMOUNT - 1);
 
         target.setFlySpeed(realSpeed);
+        if (!target.isOnline()) target.saveData();
 
-        if (!result.hasFlag(CommandFlags.SILENT)) {
-            plugin.getMessage(Lang.COMMAND_FLY_SPEED_DONE_NOTIFY)
-                .replace(Placeholders.forSender(sender))
-                .replace(Placeholders.GENERIC_AMOUNT, speed + 1)
+        if (context.getSender() != target) {
+            Lang.COMMAND_FLY_SPEED_DONE_TARGET.getMessage()
+                .replace(Placeholders.forPlayer(target))
+                .replace(Placeholders.GENERIC_AMOUNT, speed)
+                .send(context.getSender());
+        }
+
+        if (!arguments.hasFlag(CommandFlags.SILENT)) {
+            Lang.COMMAND_FLY_SPEED_DONE_NOTIFY.getMessage()
+                .replace(Placeholders.GENERIC_AMOUNT, speed)
                 .send(target);
         }
-        if (sender != target) {
-            plugin.getMessage(Lang.COMMAND_FLY_SPEED_DONE_TARGET)
-                .replace(Placeholders.forPlayer(target))
-                .replace(Placeholders.GENERIC_AMOUNT, speed + 1)
-                .send(sender);
-        }
+
+        return true;
     }
 }

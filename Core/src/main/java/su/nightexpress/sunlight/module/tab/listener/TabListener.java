@@ -6,28 +6,28 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.jetbrains.annotations.NotNull;
-import su.nexmedia.engine.api.manager.AbstractListener;
-import su.nightexpress.sunlight.SunLight;
+import su.nightexpress.nightcore.manager.AbstractListener;
+import su.nightexpress.sunlight.SunLightPlugin;
 import su.nightexpress.sunlight.module.tab.TabModule;
 
-public class TabListener extends AbstractListener<SunLight> {
+public class TabListener extends AbstractListener<SunLightPlugin> {
 
-    private final TabModule tabModule;
+    private final TabModule module;
 
-    public TabListener(@NotNull TabModule tabModule) {
-        super(tabModule.plugin());
-        this.tabModule = tabModule;
+    public TabListener(@NotNull SunLightPlugin plugin, @NotNull TabModule module) {
+        super(plugin);
+        this.module = module;
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
-    public void onUpdateJoin(PlayerJoinEvent e) {
-        Player player = e.getPlayer();
-        this.tabModule.updateAll(player);
+    public void onUpdateJoin(PlayerJoinEvent event) {
+        Player player = event.getPlayer();
+        this.module.updateAll(player);
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
-    public void onUpdateRespawn(PlayerRespawnEvent e) {
-        Player player = e.getPlayer();
-        this.tabModule.updateAll(player);
+    public void onUpdateRespawn(PlayerRespawnEvent event) {
+        Player player = event.getPlayer();
+        this.module.updateAll(player);
     }
 }

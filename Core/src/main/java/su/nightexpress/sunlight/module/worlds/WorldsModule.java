@@ -1,148 +1,153 @@
 package su.nightexpress.sunlight.module.worlds;
 
-import org.bukkit.Difficulty;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.entity.Player;
 import org.bukkit.generator.ChunkGenerator;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import su.nexmedia.engine.api.config.JYML;
-import su.nexmedia.engine.utils.StringUtil;
-import su.nexmedia.engine.utils.values.UniTask;
-import su.nightexpress.sunlight.SunLight;
+import su.nightexpress.nightcore.util.FileUtil;
+import su.nightexpress.nightcore.util.StringUtil;
+import su.nightexpress.sunlight.SunLightPlugin;
 import su.nightexpress.sunlight.module.Module;
-import su.nightexpress.sunlight.module.worlds.commands.main.WorldsCommand;
+import su.nightexpress.sunlight.module.ModuleInfo;
+import su.nightexpress.sunlight.module.worlds.command.WorldCommands;
 import su.nightexpress.sunlight.module.worlds.config.WorldsConfig;
 import su.nightexpress.sunlight.module.worlds.config.WorldsLang;
 import su.nightexpress.sunlight.module.worlds.config.WorldsPerms;
-import su.nightexpress.sunlight.module.worlds.editor.EditorLocales;
-import su.nightexpress.sunlight.module.worlds.editor.WorldListEditor;
-import su.nightexpress.sunlight.module.worlds.impl.WorldConfig;
-import su.nightexpress.sunlight.module.worlds.impl.WorldInventory;
+import su.nightexpress.sunlight.module.worlds.editor.*;
+import su.nightexpress.sunlight.module.worlds.impl.WorldData;
+import su.nightexpress.sunlight.module.worlds.impl.WorldInventories;
+import su.nightexpress.sunlight.module.worlds.impl.WrappedWorld;
 import su.nightexpress.sunlight.module.worlds.impl.generation.FlatChunkGenerator;
 import su.nightexpress.sunlight.module.worlds.impl.generation.PlainsChunkGenerator;
 import su.nightexpress.sunlight.module.worlds.impl.generation.VoidChunkGenerator;
 import su.nightexpress.sunlight.module.worlds.listener.InventoryListener;
 import su.nightexpress.sunlight.module.worlds.listener.WorldsListener;
-import su.nightexpress.sunlight.module.worlds.task.WorldWipeTask;
 import su.nightexpress.sunlight.module.worlds.util.Placeholders;
 
+import java.io.File;
 import java.util.*;
 
 public class WorldsModule extends Module {
 
-    public static final String DIR_WORLDS = "/worlds/";
+    public static final String DIR_WORLDS      = "/worlds/";
     public static final String DIR_INVENTORIES = "/inventories/";
 
-    private final Map<String, ChunkGenerator> generatorMap;
-    private final Map<String, WorldInventory> inventoryMap;
-    private final Map<String, WorldConfig>    configMap;
+    private final Map<String, ChunkGenerator>   generatorMap;
+    private final Map<String, WorldInventories> inventoryMap;
+    private final Map<String, WorldData>        dataMap;
 
-    private WorldListEditor editor;
-    private WorldWipeTask wipeTask;
-    private UniTask wipeNotifyTask;
+    private WorldListEditor       listEditor;
+    private WorldMainEditor       mainEditor;
+    private WorldRulesEditor      rulesEditor;
+    private WorldGenerationEditor generationEditor;
 
-    public WorldsModule(@NotNull SunLight plugin, @NotNull String id) {
+    public WorldsModule(@NotNull SunLightPlugin plugin, @NotNull String id) {
         super(plugin, id);
         this.generatorMap = new HashMap<>();
         this.inventoryMap = new HashMap<>();
-        this.configMap = new HashMap<>();
+        this.dataMap = new HashMap<>();
     }
 
     @Override
-    public void onLoad() {
-        this.plugin.registerPermissions(WorldsPerms.class);
-        this.plugin.getLangManager().loadMissing(WorldsLang.class);
-        this.plugin.getLangManager().loadEditor(EditorLocales.class);
-        this.plugin.getLangManager().loadEnum(Difficulty.class);
-        this.plugin.getLang().saveChanges();
-        this.getConfig().initializeOptions(WorldsConfig.class);
+    protected void gatherInfo(@NotNull ModuleInfo moduleInfo) {
+        moduleInfo.setConfigClass(WorldsConfig.class);
+        moduleInfo.setLangClass(WorldsLang.class);
+        moduleInfo.setPermissionsClass(WorldsPerms.class);
+    }
 
-        this.getGeneratorMap().put(VoidChunkGenerator.NAME, new VoidChunkGenerator());
-        this.getGeneratorMap().put(FlatChunkGenerator.NAME, new FlatChunkGenerator());
-        this.getGeneratorMap().put(PlainsChunkGenerator.NAME, new PlainsChunkGenerator());
+    @Override
+    protected void onModuleLoad() {
+        this.registerCommands();
+        this.loadGenerators();
+        this.loadWorlds();
+        this.loadEditor();
 
-        for (JYML cfg : JYML.loadAll(this.getAbsolutePath() + DIR_WORLDS, false)) {
-            WorldConfig worldConfig = new WorldConfig(this, cfg);
-            if (worldConfig.load()) {
-                this.getConfigsMap().put(worldConfig.getId(), worldConfig);
-                if (worldConfig.isAutoLoad()) {
-                    worldConfig.loadWorld();
-                }
-            }
-            else this.error("World Config not loaded: '" + cfg.getFile().getName() + "' !");
-        }
-
-        this.plugin.getCommandRegulator().register(WorldsCommand.NAME, (cfg1, aliases) -> new WorldsCommand(this, aliases), "worldmanager");
-
-        this.addListener(new WorldsListener(this));
+        this.addListener(new WorldsListener(this.plugin, this));
         if (WorldsConfig.INVENTORY_SPLIT_ENABLED.get()) {
-            this.addListener(new InventoryListener(this));
+            this.addListener(new InventoryListener(this.plugin, this));
         }
 
-        this.wipeTask = new WorldWipeTask(this);
-        this.wipeTask.start();
+        this.addTask(this.plugin.createTask(this::tickAutoReset).setSecondsInterval(60));
 
-        if (WorldsConfig.AUTO_WIPE_NOTIFICATION_ENABLED.get()) {
-            this.wipeNotifyTask = UniTask.builder(this.plugin)
-                .async()
-                .withSeconds(1)
-                .withRunnable(() -> this.getWorldConfigs().forEach(WorldConfig::autoWipeNotify))
-                .buildAndRun();
+        if (WorldsConfig.AUTO_RESET_NOTIFICATION_ENABLED.get()) {
+            this.addTask(this.plugin.createAsyncTask(this::notifyAutoReset).setSecondsInterval(1));
         }
     }
 
     @Override
-    public void onShutdown() {
-        if (this.wipeTask != null) {
-            this.wipeTask.stop();
-            this.wipeTask = null;
-        }
-        if (this.wipeNotifyTask != null) this.wipeNotifyTask.stop();
-        this.getWorldConfigs().forEach(worldConfig -> {
-            worldConfig.clear();
-            worldConfig.unloadWorld();
-        });
+    protected void onModuleUnload() {
+        if (this.listEditor != null) this.listEditor.clear();
+        if (this.mainEditor != null) this.mainEditor.clear();
+        if (this.rulesEditor != null) this.rulesEditor.clear();
+        if (this.generationEditor != null) this.generationEditor.clear();
 
-        this.inventoryMap.values().forEach(WorldInventory::save);
+        this.getDatas().forEach(WorldData::unloadWorld);
+
+        this.inventoryMap.values().forEach(WorldInventories::save);
         this.inventoryMap.clear();
 
-        this.getWorldConfigs().clear();
-        this.getGeneratorMap().clear();
+        this.dataMap.clear();
+        this.generatorMap.clear();
+    }
+
+    private void registerCommands() {
+        WorldCommands.load(this.plugin, this);
+    }
+
+    private void loadGenerators() {
+        this.generatorMap.put(VoidChunkGenerator.NAME, new VoidChunkGenerator());
+        this.generatorMap.put(FlatChunkGenerator.NAME, new FlatChunkGenerator());
+        this.generatorMap.put(PlainsChunkGenerator.NAME, new PlainsChunkGenerator());
+    }
+
+    private void loadWorlds() {
+        for (File file : FileUtil.getFiles(this.getAbsolutePath() + DIR_WORLDS, false)) {
+            WorldData worldData = new WorldData(this.plugin, this, file);
+            if (worldData.load()) {
+                this.dataMap.put(worldData.getId(), worldData);
+                if (worldData.isAutoLoad()) {
+                    worldData.loadWorld();
+                }
+            }
+            else this.error("World data not loaded: '" + worldData.getFile().getName() + "'!");
+        }
+    }
+
+    private void loadEditor() {
+        this.listEditor = new WorldListEditor(this.plugin, this);
+        this.mainEditor = new WorldMainEditor(this.plugin, this);
+        this.rulesEditor = new WorldRulesEditor(this.plugin, this);
+        this.generationEditor = new WorldGenerationEditor(this.plugin, this);
+    }
+
+    public void tickAutoReset() {
+        this.getDatas().forEach(WorldData::autoReset);
+    }
+
+    public void notifyAutoReset() {
+        this.getDatas().forEach(WorldData::autoResetNotify);
     }
 
     @NotNull
-    public WorldListEditor getEditor() {
-        if (this.editor == null) {
-            this.editor = new WorldListEditor(this);
-        }
-        return editor;
+    public Map<String, WorldData> getDataMap() {
+        return this.dataMap;
     }
 
-    public boolean createWorldConfig(@NotNull String name) {
-        name = StringUtil.lowerCaseUnderscore(name);
-        if (this.getWorldById(name) != null) return false;
-
-        JYML cfg = new JYML(this.getAbsolutePath() + DIR_WORLDS, name + ".yml");
-        WorldConfig worldConfig = new WorldConfig(this, cfg);
-        worldConfig.setAutoSave(true);
-        worldConfig.setPVPAllowed(true);
-        worldConfig.setDifficulty(Difficulty.NORMAL);
-        worldConfig.save();
-        worldConfig.load();
-        this.getConfigsMap().put(worldConfig.getId(), worldConfig);
-        return true;
+    @NotNull
+    public Collection<WorldData> getDatas() {
+        return this.dataMap.values();
     }
 
-    public boolean deleteWorldConfig(@NotNull WorldConfig worldConfig) {
-        if (worldConfig.isLoaded()) return false;
-        if (worldConfig.hasData()) return false;
+    @Nullable
+    public WorldData getWorldData(@NotNull String id) {
+        return this.dataMap.get(id.toLowerCase());
+    }
 
-        if (worldConfig.getFile().delete()) {
-            this.getConfigsMap().remove(worldConfig.getId());
-        }
-        return true;
+    @NotNull
+    public Map<String, WorldInventories> getInventoryMap() {
+        return inventoryMap;
     }
 
     @NotNull
@@ -151,10 +156,70 @@ public class WorldsModule extends Module {
     }
 
     @Nullable
+    public WorldData createWorldData(@NotNull String name) {
+        name = StringUtil.lowerCaseUnderscore(name);
+        if (this.getWorldData(name) != null) return null;
+        if (this.plugin.getServer().getWorld(name) != null) return null;
+
+        File file = new File(this.getAbsolutePath() + DIR_WORLDS, name + ".yml");
+        WorldData worldData = new WorldData(this.plugin, this, file);
+        worldData.save();
+        worldData.load();
+        this.dataMap.put(worldData.getId(), worldData);
+        return worldData;
+    }
+
+    @NotNull
+    public Set<WrappedWorld> getWorlds() {
+        Set<WrappedWorld> set = new HashSet<>();
+
+        Set<World> worlds = new HashSet<>(this.plugin.getServer().getWorlds());
+
+        this.getDatas().forEach(worldConfig -> {
+            World world = worldConfig.getWorld();
+            if (world != null) {
+                worlds.remove(world);
+                set.add(wrap(world));
+            }
+            else set.add(new WrappedWorld(null, worldConfig));
+        });
+
+        worlds.forEach(world -> set.add(wrap(world)));
+
+        return set;
+    }
+
+    public boolean isCustomWorld(@NotNull World world) {
+        return this.getWorldData(world.getName()) != null;
+    }
+
+    @NotNull
+    public WrappedWorld wrap(@NotNull World world) {
+        WorldData worldData = this.getWorldData(world.getName());
+        return new WrappedWorld(world, worldData);
+    }
+
+    public void openEditor(@NotNull Player player) {
+        this.listEditor.open(player, this);
+    }
+
+    public void openWorldSettings(@NotNull Player player, @NotNull WrappedWorld wrappedWorld) {
+        this.mainEditor.open(player, wrappedWorld);
+    }
+
+    public void openGameRules(@NotNull Player player, @NotNull WrappedWorld wrappedWorld) {
+        this.rulesEditor.open(player, wrappedWorld);
+    }
+
+    public void openGenerationSettings(@NotNull Player player, @NotNull WorldData worldData) {
+        this.generationEditor.open(player, worldData);
+    }
+
+    @Nullable
     public ChunkGenerator getChunkGenerator(@Nullable String id) {
         if (id == null) return null;
 
-        return this.getGeneratorMap().get(id.toLowerCase());
+        return this.generatorMap.get(id.toLowerCase());
     }
 
     @Nullable
@@ -167,51 +232,27 @@ public class WorldsModule extends Module {
         return WorldCreator.getGeneratorForName(world, name, null);
     }
 
-    @NotNull
-    public Map<String, WorldConfig> getConfigsMap() {
-        return this.configMap;
-    }
-
-    @NotNull
-    public Collection<WorldConfig> getWorldConfigs() {
-        return this.getConfigsMap().values();
-    }
-
-    @Nullable
-    public WorldConfig getWorldById(@NotNull String id) {
-        return this.getConfigsMap().get(id.toLowerCase());
-    }
-
-    public boolean isCustomWorld(@NotNull World world) {
-        return this.getWorldById(world.getName()) != null;
-    }
-
-    @NotNull
-    public Map<String, WorldInventory> getInventoryMap() {
-        return inventoryMap;
-    }
-
-    @NotNull
-    public WorldInventory getWorldInventory(@NotNull Player player) {
-        String id = player.getUniqueId().toString();
-        if (this.inventoryMap.containsKey(id)) {
-            return this.inventoryMap.get(id);
-        }
-
-        JYML file = new JYML(this.getAbsolutePath() + DIR_INVENTORIES, id + ".yml");
-        WorldInventory worldInventory = new WorldInventory(this, file);
-        worldInventory.load();
-
-        this.inventoryMap.put(worldInventory.getId(), worldInventory);
-        return worldInventory;
-    }
-
     public boolean isInventoryAffected(@NotNull Player player) {
         return this.isInventoryAffected(player.getWorld());
     }
 
     public boolean isInventoryAffected(@NotNull World world) {
         return this.getWorldGroup(world) != null;
+    }
+
+    @NotNull
+    public WorldInventories getWorldInventory(@NotNull Player player) {
+        String id = player.getUniqueId().toString();
+        if (this.inventoryMap.containsKey(id)) {
+            return this.inventoryMap.get(id);
+        }
+
+        File file = new File(this.getAbsolutePath() + DIR_INVENTORIES, id + ".yml");
+        WorldInventories worldInventories = new WorldInventories(this.plugin, this, file);
+        worldInventories.load();
+
+        this.inventoryMap.put(worldInventories.getId(), worldInventories);
+        return worldInventories;
     }
 
     @Nullable
@@ -221,5 +262,15 @@ public class WorldsModule extends Module {
         return WorldsConfig.INVENTORY_SPLIT_WORLD_GROUPS.get().entrySet().stream()
             .filter(entry -> entry.getValue().contains(worldName))
             .map(Map.Entry::getKey).findFirst().orElse(null);
+    }
+
+    public boolean canFlyThere(@NotNull Player player) {
+        if (player.hasPermission(WorldsPerms.BYPASS) || player.hasPermission(WorldsPerms.BYPASS_FLY)) return true;
+
+        return !this.isFlyDisabled(player.getWorld());
+    }
+
+    public boolean isFlyDisabled(@NotNull World world) {
+        return WorldsConfig.NO_FLY_WORLDS.get().contains(world.getName());
     }
 }

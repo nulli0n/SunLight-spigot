@@ -5,33 +5,37 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import su.nexmedia.engine.lang.LangManager;
-import su.nexmedia.engine.utils.NumberUtil;
-import su.nexmedia.engine.utils.TimeUtil;
+import su.nightexpress.nightcore.language.LangAssets;
+import su.nightexpress.nightcore.util.NumberUtil;
+import su.nightexpress.nightcore.util.TimeUtil;
 import su.nightexpress.sunlight.Placeholders;
-import su.nightexpress.sunlight.SunLight;
+import su.nightexpress.sunlight.SunLightPlugin;
 import su.nightexpress.sunlight.config.Config;
 import su.nightexpress.sunlight.config.Lang;
-import su.nightexpress.sunlight.data.impl.SunUser;
-import su.nightexpress.sunlight.data.impl.cooldown.CooldownInfo;
-import su.nightexpress.sunlight.data.impl.cooldown.CooldownType;
-import su.nightexpress.sunlight.data.impl.settings.DefaultSettings;
+import su.nightexpress.sunlight.core.cooldown.CooldownInfo;
+import su.nightexpress.sunlight.core.cooldown.CooldownType;
+import su.nightexpress.sunlight.data.user.SunUser;
 import su.nightexpress.sunlight.module.afk.AfkModule;
+import su.nightexpress.sunlight.module.afk.AfkState;
 import su.nightexpress.sunlight.module.afk.config.AfkConfig;
 import su.nightexpress.sunlight.module.bans.BansModule;
 import su.nightexpress.sunlight.module.chat.ChatModule;
-import su.nightexpress.sunlight.module.extras.impl.chairs.ChairsManager;
-import su.nightexpress.sunlight.module.extras.impl.chestsort.SortManager;
+import su.nightexpress.sunlight.module.extras.chairs.ChairsManager;
+import su.nightexpress.sunlight.module.extras.chestsort.SortManager;
+import su.nightexpress.sunlight.module.godmode.GodModule;
 import su.nightexpress.sunlight.module.homes.HomesModule;
 import su.nightexpress.sunlight.module.homes.impl.Home;
 import su.nightexpress.sunlight.module.kits.Kit;
 import su.nightexpress.sunlight.module.kits.KitsModule;
+import su.nightexpress.sunlight.module.nerfphantoms.PhantomsModule;
+import su.nightexpress.sunlight.module.ptp.PTPModule;
 import su.nightexpress.sunlight.module.scoreboard.ScoreboardModule;
 import su.nightexpress.sunlight.module.spawns.SpawnsModule;
+import su.nightexpress.sunlight.module.vanish.VanishModule;
 import su.nightexpress.sunlight.module.warps.WarpsModule;
 import su.nightexpress.sunlight.module.warps.impl.Warp;
 import su.nightexpress.sunlight.module.worlds.WorldsModule;
-import su.nightexpress.sunlight.module.worlds.impl.WorldConfig;
+import su.nightexpress.sunlight.module.worlds.impl.WorldData;
 
 import java.util.Arrays;
 import java.util.stream.Collectors;
@@ -40,7 +44,7 @@ public class PlaceholderHook {
 
     private static Expansion expansion;
 
-    public static void setup(@NotNull SunLight plugin) {
+    public static void setup(@NotNull SunLightPlugin plugin) {
         if (expansion == null) {
             expansion = new Expansion(plugin);
             expansion.register();
@@ -56,9 +60,9 @@ public class PlaceholderHook {
 
     private static class Expansion extends PlaceholderExpansion {
 
-        private final SunLight plugin;
+        private final SunLightPlugin plugin;
 
-        public Expansion(@NotNull SunLight plugin) {
+        public Expansion(@NotNull SunLightPlugin plugin) {
             this.plugin = plugin;
         }
 
@@ -71,13 +75,18 @@ public class PlaceholderHook {
         @Override
         @NotNull
         public String getAuthor() {
-            return plugin.getDescription().getAuthors().get(0);
+            return plugin.getDescription().getAuthors().getFirst();
         }
 
         @Override
         @NotNull
         public String getVersion() {
             return plugin.getDescription().getVersion();
+        }
+
+        @Override
+        public boolean persist() {
+            return true;
         }
 
         @Override
@@ -94,26 +103,25 @@ public class PlaceholderHook {
                 AfkModule module = this.plugin.getModuleManager().getModule(AfkModule.class).orElse(null);
                 if (module == null) return null;
 
+                AfkState state = module.getState(player);
+                if (state == null) return "?";
+
                 if (subParams.equalsIgnoreCase("state")) {
-                    return LangManager.getBoolean(module.isAfk(player));
+                    return Lang.getYesOrNo(state.isAfk());
                 }
                 if (subParams.equalsIgnoreCase("mode")) {
-                    String placeholder = AfkModule.isAfk(user) ? AfkConfig.AFK_PLACEHOLDER_IN.get() : AfkConfig.AFK_PLACEHOLDER_OUT.get();
-                    return placeholder.replace(Placeholders.GENERIC_TIME, TimeUtil.formatTime(AfkModule.getIdleTime(user) * 1000L));
+                    String placeholder = state.isAfk() ? AfkConfig.AFK_PLACEHOLDER_IN.get() : AfkConfig.AFK_PLACEHOLDER_OUT.get();
+                    return placeholder.replace(Placeholders.GENERIC_TIME, TimeUtil.formatTime(state.getIdleTime() * 1000L));
                 }
                 if (subParams.equalsIgnoreCase("idle_time")) {
-                    return NumberUtil.format(AfkModule.getIdleTime(user));
+                    return NumberUtil.format(state.getIdleTime());
                 }
                 if (subParams.equalsIgnoreCase("idle_time_formatted")) {
-                    return TimeUtil.formatTime(AfkModule.getIdleTime(user) * 1000L);
+                    return TimeUtil.formatTime(state.getIdleTime() * 1000L);
                 }
                 if (subParams.equalsIgnoreCase("since")) {
-                    String placeholder = AfkModule.isAfk(user) ? AfkConfig.AFK_PLACEHOLDER_IN.get() : AfkConfig.AFK_PLACEHOLDER_OUT.get();
-                    return placeholder.replace(Placeholders.GENERIC_TIME, TimeUtil.formatTime(System.currentTimeMillis() - AfkModule.getAfkSince(user)));
-                    /*if (module.isAfk(player)) {
-                        return TimeUtil.formatTime(System.currentTimeMillis() - AfkModule.getAfkSince(user));
-                    }
-                    else return "-";*/
+                    String placeholder = state.isAfk() ? AfkConfig.AFK_PLACEHOLDER_IN.get() : AfkConfig.AFK_PLACEHOLDER_OUT.get();
+                    return placeholder.replace(Placeholders.GENERIC_TIME, TimeUtil.formatTime(System.currentTimeMillis() - state.getAfkSince()));
                 }
             }
             else if (prefix.equalsIgnoreCase("bans")) {
@@ -132,19 +140,21 @@ public class PlaceholderHook {
 
                 if (subParams.equalsIgnoreCase("limit")) {
                     int limit = module.getHomesMaxAmount(player);
-                    return limit >= 0 ? NumberUtil.format(limit) : LangManager.getPlain(Lang.OTHER_INFINITY);
+                    return limit >= 0 ? NumberUtil.format(limit) : Lang.OTHER_INFINITY.getString();
                 }
                 if (subParams.equalsIgnoreCase("amount")) {
                     return NumberUtil.format(module.getHomesAmount(player));
                 }
                 if (subParams.equalsIgnoreCase("respawn_home")) {
-                    return module.getHomeToRespawn(player).map(Home::getName).orElse("-");
+                    Home home = module.getRespawnHome(player);
+                    return home != null ? home.getName() : "-";
                 }
                 if (subParams.equalsIgnoreCase("default_home")) {
-                    return module.getHomeDefault(player).map(Home::getName).orElse("-");
+                    Home home = module.getDefaultHome(player);
+                    return home != null ? home.getName() : "-";
                 }
                 if (subParams.equalsIgnoreCase("can_set")) {
-                    return LangManager.getBoolean(module.canSetHome(player, player.getLocation(), false));
+                    return Lang.getYesOrNo(module.checkLocation(player, player.getLocation(), false));
                 }
             }
             else if (prefix.equalsIgnoreCase("kits")) {
@@ -152,29 +162,29 @@ public class PlaceholderHook {
                 if (module == null) return null;
 
                 Kit kit = this.getKit(module, subParams, "is_on_cooldown_");
-                if (kit != null) return LangManager.getBoolean(kit.isOnCooldown(player));
+                if (kit != null) return Lang.getYesOrNo(kit.isOnCooldown(player));
 
                 kit = this.getKit(module, subParams, "cooldown_raw_");
                 if (kit != null) return String.valueOf(user.getCooldown(kit).map(CooldownInfo::getExpireDate).orElse(0L));
 
                 kit = this.getKit(module, subParams, "cooldown_");
-                if (kit != null) return user.getCooldown(kit).map(c -> TimeUtil.formatTimeLeft(c.getExpireDate())).orElse("-");
+                if (kit != null) return user.getCooldown(kit).map(c -> TimeUtil.formatDuration(c.getExpireDate())).orElse("-");
 
                 kit = this.getKit(module, subParams, "is_available_");
-                if (kit != null) return LangManager.getBoolean(kit.isAvailable(player));
+                if (kit != null) return Lang.getYesOrNo(kit.isAvailable(player));
 
                 kit = this.getKit(module, subParams, "can_afford_");
-                if (kit != null) return LangManager.getBoolean(kit.canAfford(player));
+                if (kit != null) return Lang.getYesOrNo(kit.canAfford(player));
 
                 kit = this.getKit(module, subParams, "has_permission_");
-                if (kit != null) return LangManager.getBoolean(kit.hasPermission(player));
+                if (kit != null) return Lang.getYesOrNo(kit.hasPermission(player));
             }
             else if (prefix.equalsIgnoreCase("scoreboard")) {
                 ScoreboardModule module = this.plugin.getModuleManager().getModule(ScoreboardModule.class).orElse(null);
                 if (module == null) return null;
 
                 if (subParams.equalsIgnoreCase("state")) {
-                    return LangManager.getBoolean(module.isScoreboardEnabled(player));
+                    return Lang.getYesOrNo(module.isScoreboardEnabled(player));
                 }
             }
             else if (prefix.equalsIgnoreCase("spawns")) {
@@ -187,88 +197,88 @@ public class PlaceholderHook {
                 if (module == null) return null;
 
                 if (subParams.equalsIgnoreCase("limit")) {
-                    int limit = module.getWarpsMaxAmount(player);
-                    return limit >= 0 ? NumberUtil.format(limit) : LangManager.getPlain(Lang.OTHER_INFINITY);
+                    int limit = module.getAllowedWarpsAmount(player);
+                    return limit >= 0 ? NumberUtil.format(limit) : Lang.OTHER_INFINITY.getString();
                 }
                 if (subParams.equalsIgnoreCase("amount")) {
-                    return NumberUtil.format(module.getWarpsCreatedAmount(player));
+                    return NumberUtil.format(module.getOwnedWarpsAmount(player));
                 }
 
                 Warp warp = this.getWarp(module, subParams, "is_on_cooldown_");
-                if (warp != null) return LangManager.getBoolean(warp.isOnCooldown(player));
+                if (warp != null) return Lang.getYesOrNo(warp.isOnCooldown(player));
 
                 warp = this.getWarp(module, subParams, "cooldown_raw_");
                 if (warp != null) return String.valueOf(user.getCooldown(warp).map(CooldownInfo::getExpireDate).orElse(0L));
 
                 warp = this.getWarp(module, subParams, "cooldown_");
-                if (warp != null) return user.getCooldown(warp).map(c -> TimeUtil.formatTimeLeft(c.getExpireDate())).orElse("-");
+                if (warp != null) return user.getCooldown(warp).map(c -> TimeUtil.formatDuration(c.getExpireDate())).orElse("-");
 
                 warp = this.getWarp(module, subParams, "is_available_");
-                if (warp != null) return LangManager.getBoolean(warp.isAvailable(player));
+                if (warp != null) return Lang.getYesOrNo(warp.isAvailable(player));
 
                 warp = this.getWarp(module, subParams, "can_afford_");
-                if (warp != null) return LangManager.getBoolean(warp.canAffordVisit(player));
+                if (warp != null) return Lang.getYesOrNo(warp.canAffordVisit(player));
 
                 warp = this.getWarp(module, subParams, "has_permission_");
-                if (warp != null) return LangManager.getBoolean(warp.hasPermission(player));
+                if (warp != null) return Lang.getYesOrNo(warp.hasPermission(player));
             }
             else if (prefix.equalsIgnoreCase("worlds")) {
                 WorldsModule module = this.plugin.getModuleManager().getModule(WorldsModule.class).orElse(null);
                 if (module == null) return null;
 
-                WorldConfig world = this.getWorld(module, subParams, "autowipe_next_date_");
+                WorldData world = this.getWorld(module, subParams, "autowipe_next_date_");
                 if (world != null) return Config.GENERAL_DATE_FORMAT.get().format(world.getNextWipe());
 
                 world = this.getWorld(module, subParams, "autowipe_timelft_");
-                if (world != null) return TimeUtil.formatTimeLeft(world.getNextWipe());
+                if (world != null) return TimeUtil.formatDuration(world.getNextWipe());
 
                 world = this.getWorld(module, subParams, "autowipe_latest_date_");
-                if (world != null) return Config.GENERAL_DATE_FORMAT.get().format(world.getLastWipe());
+                if (world != null) return Config.GENERAL_DATE_FORMAT.get().format(world.getLastResetDate());
 
                 world = this.getWorld(module, subParams, "autowipe_latest_since_");
-                if (world != null) return TimeUtil.formatTimeLeft(System.currentTimeMillis(), world.getLastWipe());
+                if (world != null) return TimeUtil.formatDuration(world.getLastResetDate(), System.currentTimeMillis());
             }
             else {
                 if (params.equalsIgnoreCase("god_state")) {
-                    return LangManager.getBoolean(user.getSettings().get(DefaultSettings.GOD_MODE));
+                    return Lang.getYesOrNo(user.getSettings().get(GodModule.GOD_MODE));
                 }
                 if (params.equalsIgnoreCase("foodgod_state")) {
-                    return LangManager.getBoolean(user.getSettings().get(DefaultSettings.FOOD_GOD));
+                    return Lang.getYesOrNo(user.getSettings().get(GodModule.FOOD_GOD));
                 }
                 if (params.equalsIgnoreCase("teleport_requests_state")) {
-                    return LangManager.getBoolean(user.getSettings().get(DefaultSettings.TELEPORT_REQUESTS));
+                    return Lang.getYesOrNo(user.getSettings().get(PTPModule.TELEPORT_REQUESTS));
                 }
                 if (params.equalsIgnoreCase("nophantom_state")) {
-                    return LangManager.getBoolean(user.getSettings().get(DefaultSettings.ANTI_PHANTOM));
+                    return Lang.getYesOrNo(user.getSettings().get(PhantomsModule.ANTI_PHANTOM));
                 }
                 if (params.equalsIgnoreCase("vanish_state")) {
-                    return LangManager.getBoolean(user.getSettings().get(DefaultSettings.VANISH));
+                    return Lang.getYesOrNo(user.getSettings().get(VanishModule.VANISH));
                 }
                 if (params.equalsIgnoreCase("chairs_state")) {
-                    return LangManager.getBoolean(user.getSettings().get(ChairsManager.SETTING_CHAIRS));
+                    return Lang.getYesOrNo(user.getSettings().get(ChairsManager.SETTING_CHAIRS));
                 }
                 if (params.equalsIgnoreCase("chestsort_state")) {
-                    return LangManager.getBoolean(user.getSettings().get(SortManager.SETTING_CHEST_SORT));
+                    return Lang.getYesOrNo(user.getSettings().get(SortManager.SETTING_CHEST_SORT));
                 }
                 if (params.equalsIgnoreCase("nick")) {
-                    return user.getCustomName().orElse(user.getName());
+                    return user.hasCustomName() ? user.getCustomName() : user.getName();
                 }
 
                 if (params.startsWith("world_name_localized_")) {
                     String worldRaw = params.substring("name_localized_".length());
                     World world = this.plugin.getServer().getWorld(worldRaw);
-                    return world == null ? null : LangManager.getWorld(world);
+                    return world == null ? null : LangAssets.get(world);
                 }
                 if (params.startsWith("world_name_localized")) {
-                    return LangManager.getWorld(player.getWorld());
+                    return LangAssets.get(player.getWorld());
                 }
                 if (params.startsWith("command_is_on_cooldown_")) {
                     String name = params.substring("command_is_on_cooldown_".length());
-                    return LangManager.getBoolean(user.getCooldown(CooldownType.COMMAND, name).isPresent());
+                    return Lang.getYesOrNo(user.getCooldown(CooldownType.COMMAND, name).isPresent());
                 }
                 if (params.startsWith("command_cooldown_")) {
                     String name = params.substring("command_cooldown_".length());
-                    return user.getCooldown(CooldownType.COMMAND, name).map(c -> TimeUtil.formatTimeLeft(c.getExpireDate())).orElse("-");
+                    return user.getCooldown(CooldownType.COMMAND, name).map(c -> TimeUtil.formatDuration(c.getExpireDate())).orElse("-");
                 }
             }
 
@@ -288,16 +298,16 @@ public class PlaceholderHook {
         private Warp getWarp(@NotNull WarpsModule module, @NotNull String rest, @NotNull String placeholder) {
             if (rest.startsWith(placeholder)) {
                 String warpid = rest.substring(placeholder.length());
-                return module.getWarpById(warpid);
+                return module.getWarp(warpid);
             }
             return null;
         }
 
         @Nullable
-        private WorldConfig getWorld(@NotNull WorldsModule module, @NotNull String subParams, @NotNull String placeholder) {
+        private WorldData getWorld(@NotNull WorldsModule module, @NotNull String subParams, @NotNull String placeholder) {
             if (subParams.startsWith(placeholder)) {
                 String name = subParams.substring(placeholder.length());
-                return module.getWorldById(name);
+                return module.getWorldData(name);
             }
             return null;
         }

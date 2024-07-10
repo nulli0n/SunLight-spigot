@@ -1,59 +1,47 @@
 package su.nightexpress.sunlight.module.worlds.config;
 
-import org.jetbrains.annotations.NotNull;
-import su.nexmedia.engine.api.server.JPermission;
-import su.nightexpress.sunlight.Perms;
+import su.nightexpress.nightcore.util.wrapper.UniPermission;
 import su.nightexpress.sunlight.Placeholders;
-import su.nightexpress.sunlight.module.worlds.commands.main.*;
+import su.nightexpress.sunlight.config.Perms;
 
 public class WorldsPerms {
 
-    private static final String PREFIX = Perms.PREFIX + "worlds.";
-    private static final String PREFIX_COMMAND = PREFIX + "command.";
-    private static final String PREFIX_BYPASS = PREFIX + "bypass.";
+    public static final String PREFIX         = Perms.PREFIX + "worlds.";
+    public static final String PREFIX_COMMAND = PREFIX + "command.";
+    public static final String PREFIX_BYPASS  = PREFIX + "bypass.";
 
-    @NotNull
-    public static JPermission forCommand(@NotNull String name) {
-        return new JPermission(PREFIX_COMMAND + name, "Access to the '/" + name + "' command.");
-    }
+    public static final UniPermission MODULE  = new UniPermission(PREFIX + Placeholders.WILDCARD);
+    public static final UniPermission COMMAND = new UniPermission(PREFIX_COMMAND + Placeholders.WILDCARD);
+    public static final UniPermission BYPASS  = new UniPermission(PREFIX_BYPASS + Placeholders.WILDCARD);
 
-    @NotNull
-    public static JPermission forCommand(@NotNull String parent, @NotNull String child) {
-        return new JPermission(PREFIX_COMMAND + parent + "." + child, "Access to the '/" + parent + " " + child + "' command.");
-    }
+    public static final UniPermission COMMAND_WORLDS_CREATE = new UniPermission(PREFIX_COMMAND + "createworld");
+    public static final UniPermission COMMAND_WORLDS_DELETE = new UniPermission(PREFIX_COMMAND + "deleteworld");
+    public static final UniPermission COMMAND_WORLDS_LOAD   = new UniPermission(PREFIX_COMMAND + "loadworld");
+    public static final UniPermission COMMAND_WORLDS_UNLOAD = new UniPermission(PREFIX_COMMAND + "unloadworld");
+    public static final UniPermission COMMAND_WORLDS_EDITOR = new UniPermission(PREFIX_COMMAND + "editor");
 
-    @NotNull
-    public static JPermission forCommandOthers(@NotNull String name) {
-        return new JPermission(PREFIX_COMMAND + name + ".others", "Access to the '/" + name + "' command on other players.");
-    }
-
-    @NotNull
-    public static JPermission forCommandOthers(@NotNull String parent, @NotNull String child) {
-        return new JPermission(PREFIX_COMMAND + parent + "." + child + ".others", "Access to the '/" + parent + " " + child + "' command on other players.");
-    }
-
-    public static final JPermission MODULE  = new JPermission(PREFIX + Placeholders.WILDCARD, "Access to all Worlds module functions.");
-    public static final JPermission COMMAND = new JPermission(PREFIX_COMMAND + Placeholders.WILDCARD, "Access to all Worlds module commands.");
-    public static final JPermission BYPASS  = new JPermission(PREFIX_BYPASS + Placeholders.WILDCARD, "Bypasses all Worlds module restrictions.");
-
-    public static final JPermission COMMAND_WORLDS        = forCommand(WorldsCommand.NAME);
-    public static final JPermission COMMAND_WORLDS_CREATE = forCommand(WorldsCommand.NAME, CreateSubCommand.NAME);
-    public static final JPermission COMMAND_WORLDS_DELETE = forCommand(WorldsCommand.NAME, DeleteSubCommand.NAME);
-    public static final JPermission COMMAND_WORLDS_LOAD   = forCommand(WorldsCommand.NAME, LoadSubCommand.NAME);
-    public static final JPermission COMMAND_WORLDS_UNLOAD = forCommand(WorldsCommand.NAME, UnloadSubCommand.NAME);
-    public static final JPermission COMMAND_WORLDS_EDITOR = forCommand(WorldsCommand.NAME, EditorSubCommand.NAME);
-
-    public static final JPermission BYPASS_COMMANDS = new JPermission(PREFIX_BYPASS + "commands", "Bypasses blocked commands in worlds.");
-    public static final JPermission BYPASS_FLY      = new JPermission(PREFIX_BYPASS + "fly", "Bypasses world fly restrictions.");
+    public static final UniPermission BYPASS_COMMANDS = new UniPermission(PREFIX_BYPASS + "commands");
+    public static final UniPermission BYPASS_FLY      = new UniPermission(PREFIX_BYPASS + "fly");
 
     static {
         Perms.PLUGIN.addChildren(MODULE);
 
-        MODULE.addChildren(COMMAND, BYPASS);
+        MODULE.addChildren(
+            COMMAND,
+            BYPASS
+        );
 
-        COMMAND.addChildren(COMMAND_WORLDS, COMMAND_WORLDS_CREATE, COMMAND_WORLDS_DELETE,
-            COMMAND_WORLDS_EDITOR, COMMAND_WORLDS_LOAD, COMMAND_WORLDS_UNLOAD);
+        COMMAND.addChildren(
+            COMMAND_WORLDS_CREATE,
+            COMMAND_WORLDS_DELETE,
+            COMMAND_WORLDS_EDITOR,
+            COMMAND_WORLDS_LOAD,
+            COMMAND_WORLDS_UNLOAD
+        );
 
-        BYPASS.addChildren(BYPASS_COMMANDS, BYPASS_FLY);
+        BYPASS.addChildren(
+            BYPASS_COMMANDS,
+            BYPASS_FLY
+        );
     }
 }

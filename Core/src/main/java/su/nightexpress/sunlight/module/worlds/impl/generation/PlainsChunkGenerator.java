@@ -4,7 +4,8 @@ import org.bukkit.Material;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.generator.WorldInfo;
 import org.jetbrains.annotations.NotNull;
-import su.nexmedia.engine.utils.random.Rnd;
+import su.nightexpress.nightcore.util.Lists;
+import su.nightexpress.nightcore.util.random.Rnd;
 
 import java.util.*;
 
@@ -17,10 +18,10 @@ public class PlainsChunkGenerator extends ChunkGenerator {
     private final FastNoiseLite terrainNoise = new FastNoiseLite();
     private final FastNoiseLite detailNoise = new FastNoiseLite();
 
-    private static final List<Material> LAYER_SURFACE = Arrays.asList(Material.GRASS_BLOCK);
-    private static final List<Material> LAYER_SUB_SUFFACE = Arrays.asList(Material.DIRT);
-    private static final List<Material> LAYER_ORES = Arrays.asList(Material.COAL_ORE, Material.IRON_ORE);
-    private static final List<Material> LAYER_BOTTOM = Arrays.asList(Material.BEDROCK);
+    private static final List<Material> LAYER_SURFACE     = Lists.newList(Material.GRASS_BLOCK);
+    private static final List<Material> LAYER_SUB_SUFFACE = Lists.newList(Material.DIRT);
+    private static final List<Material> LAYER_ORES        = Lists.newList(Material.COAL_ORE, Material.IRON_ORE);
+    private static final List<Material> LAYER_BOTTOM      = Lists.newList(Material.BEDROCK);
 
     public PlainsChunkGenerator() {
         // Set frequencies, lower frequency = slower change.

@@ -1,28 +1,29 @@
 package su.nightexpress.sunlight.module.warps;
 
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import su.nexmedia.engine.api.config.JYML;
-import su.nexmedia.engine.command.CommandRegister;
-import su.nexmedia.engine.utils.StringUtil;
-import su.nightexpress.sunlight.Perms;
-import su.nightexpress.sunlight.SunLight;
+import su.nightexpress.nightcore.util.FileUtil;
+import su.nightexpress.nightcore.util.StringUtil;
+import su.nightexpress.sunlight.SunLightPlugin;
 import su.nightexpress.sunlight.module.Module;
-import su.nightexpress.sunlight.module.warps.command.warps.WarpsCommand;
+import su.nightexpress.sunlight.module.ModuleInfo;
+import su.nightexpress.sunlight.module.warps.command.WarpCommands;
+import su.nightexpress.sunlight.module.warps.command.WarpShortcutCommand;
 import su.nightexpress.sunlight.module.warps.config.WarpsConfig;
 import su.nightexpress.sunlight.module.warps.config.WarpsLang;
-import su.nightexpress.sunlight.module.warps.impl.Warp;
-import su.nightexpress.sunlight.module.warps.menu.WarpsMenu;
-import su.nightexpress.sunlight.module.warps.type.WarpSortType;
-import su.nightexpress.sunlight.module.warps.type.WarpType;
 import su.nightexpress.sunlight.module.warps.config.WarpsPerms;
+import su.nightexpress.sunlight.module.warps.impl.Warp;
+import su.nightexpress.sunlight.module.warps.menu.DisplayInfo;
+import su.nightexpress.sunlight.module.warps.menu.WarpListMenu;
+import su.nightexpress.sunlight.module.warps.menu.WarpSettingsMenu;
+import su.nightexpress.sunlight.module.warps.type.WarpType;
+import su.nightexpress.sunlight.module.warps.util.WarpUtils;
 import su.nightexpress.sunlight.utils.SunUtils;
 import su.nightexpress.sunlight.utils.UserInfo;
 
+import java.io.File;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -33,57 +34,70 @@ public class WarpsModule extends Module {
 
     public static final String DIR_WARPS = "/warps/";
 
-    private final Map<String, Warp> warps;
+    private final Map<String, Warp> warpMap;
 
-    private WarpsMenu warpsMenu;
+    private WarpListMenu     warpListMenu;
+    private WarpSettingsMenu settingsMenu;
 
-    public WarpsModule(@NotNull SunLight plugin, @NotNull String id) {
+    public WarpsModule(@NotNull SunLightPlugin plugin, @NotNull String id) {
         super(plugin, id);
-        this.warps = new HashMap<>();
+        this.warpMap = new HashMap<>();
     }
 
     @Override
-    public void onLoad() {
-        this.plugin.registerPermissions(WarpsPerms.class);
-        this.plugin.getLangManager().loadMissing(WarpsLang.class);
-        this.plugin.getLangManager().loadEnum(WarpSortType.class);
-        this.plugin.getLangManager().loadEnum(WarpType.class);
-        this.plugin.getLang().saveChanges();
-        this.getConfig().initializeOptions(WarpsConfig.class);
+    protected void gatherInfo(@NotNull ModuleInfo moduleInfo) {
+        moduleInfo.setConfigClass(WarpsConfig.class);
+        moduleInfo.setLangClass(WarpsLang.class);
+        moduleInfo.setPermissionsClass(WarpsPerms.class);
+    }
 
-        this.plugin.runTask(task -> this.loadWarps());
-        this.warpsMenu = new WarpsMenu(this);
-        this.plugin.getCommandRegulator().register(WarpsCommand.NAME, (cfg1, aliases) -> new WarpsCommand(this, aliases));
+    @Override
+    protected void onModuleLoad() {
+        this.loadCommands();
+        this.loadUI();
+        this.loadWarps();
+    }
+
+    @Override
+    protected void onModuleUnload() {
+        if (this.warpListMenu != null) this.warpListMenu.clear();
+        if (this.settingsMenu != null) this.settingsMenu.clear();
+
+        this.warpMap.clear();
+    }
+
+    private void loadCommands() {
+        WarpCommands.load(this.plugin, this);
+    }
+
+    private void loadUI() {
+        this.warpListMenu = new WarpListMenu(this.plugin, this);
+        this.settingsMenu = new WarpSettingsMenu(this.plugin, this);
     }
 
     private void loadWarps() {
-        for (JYML cfg : JYML.loadAll(this.getAbsolutePath() + DIR_WARPS, true)) {
-            Warp warp = new Warp(this, cfg);
-            if (warp.load()) {
-                this.getWarpsMap().put(warp.getId(), warp);
-            }
-            else this.error("Warp not loaded: '" + cfg.getFile().getName() + "' !");
+        for (File file : FileUtil.getConfigFiles(this.getAbsolutePath() + DIR_WARPS, true)) {
+            Warp warp = new Warp(this.plugin, this, file);
+            this.loadWarp(warp);
         }
 
-        this.info("Loaded " + this.getWarpsMap().size() + " warps.");
-        CommandRegister.syncCommands();
+        this.info("Loaded " + this.warpMap.size() + " warps.");
     }
 
-    @Override
-    public void onShutdown() {
-        this.getWarps().forEach(Warp::clear);
-        this.getWarpsMap().clear();
-
-        if (this.warpsMenu != null) {
-            this.warpsMenu.clear();
-            this.warpsMenu = null;
+    private boolean loadWarp(@NotNull Warp warp) {
+        if (warp.load()) {
+            this.warpMap.put(warp.getId(), warp);
+            return true;
         }
+
+        this.error("Warp not loaded: '" + warp.getFile().getName() + "' !");
+        return false;
     }
 
     public void delete(@NotNull Warp warp) {
         if (warp.getFile().delete()) {
-            warp.clear();
-            this.getWarpsMap().remove(warp.getId());
+            WarpShortcutCommand.unregister(this.plugin, warp);
+            this.warpMap.remove(warp.getId());
         }
     }
 
@@ -91,83 +105,92 @@ public class WarpsModule extends Module {
         Location location = player.getLocation();
 
         if (!isForced) {
-            int maxAllowed = this.getWarpsMaxAmount(player);
-            if (maxAllowed >= 0 && this.getWarpsCreatedAmount(player) >= maxAllowed) {
-                this.plugin.getMessage(WarpsLang.WARP_CREATE_ERROR_LIMIT).send(player);
+            int maxAllowed = this.getAllowedWarpsAmount(player);
+            if (maxAllowed >= 0 && this.getOwnedWarpsAmount(player) >= maxAllowed) {
+                WarpsLang.WARP_CREATE_ERROR_LIMIT.getMessage().send(player);
                 return false;
             }
 
             if (!player.hasPermission(WarpsPerms.BYPASS_CREATION_WORLD)) {
                 if (WarpsConfig.WARP_SET_WORLD_BLACKLIST.get().contains(player.getWorld().getName())) {
-                    this.plugin.getMessage(WarpsLang.WARP_CREATE_ERROR_WORLD).send(player);
+                    WarpsLang.WARP_CREATE_ERROR_WORLD.getMessage().send(player);
                     return false;
                 }
             }
 
             if (!player.hasPermission(WarpsPerms.BYPASS_CREATION_SAFE) && !SunUtils.isSafeLocation(location)) {
-                this.plugin.getMessage(WarpsLang.WARP_CREATE_ERROR_UNSAFE).send(player);
+                WarpsLang.WARP_CREATE_ERROR_UNSAFE.getMessage().send(player);
                 return false;
             }
         }
 
-        Warp warp = this.getWarpById(id);
+        Warp warp = this.getWarp(id);
         if (warp != null) {
-            if (!warp.isOwner(player)) {
-                this.plugin.getMessage(WarpsLang.WARP_CREATE_ERROR_EXISTS).replace(warp.replacePlaceholders()).send(player);
+            if (!warp.canEdit(player)) {
+                WarpsLang.WARP_CREATE_ERROR_EXISTS.getMessage().replace(warp.replacePlaceholders()).send(player);
                 return false;
             }
             else {
                 warp.setLocation(location);
                 warp.save();
-                this.plugin.getMessage(WarpsLang.WARP_CREATE_DONE_RELOCATE).replace(warp.replacePlaceholders()).send(player);
+                WarpsLang.WARP_CREATE_DONE_RELOCATE.getMessage().replace(warp.replacePlaceholders()).send(player);
             }
         }
         else {
-            JYML cfg = new JYML(this.getAbsolutePath() + DIR_WARPS, id + ".yml");
-            warp = new Warp(this, cfg);
+            File file = new File(this.getAbsolutePath() + DIR_WARPS, id + ".yml");
+            WarpType type = player.hasPermission(WarpsPerms.MODULE) ? WarpType.SERVER : WarpType.PLAYER;
+
+            warp = new Warp(this.plugin, this, file);
             warp.setOwner(new UserInfo(player));
             warp.setName(StringUtil.capitalizeUnderscored(id));
-            warp.setIcon(new ItemStack(Material.COMPASS));
+            warp.setIcon(WarpUtils.getDefaultIcon(player, type));
             warp.setLocation(location);
-            warp.setType(player.hasPermission(Perms.PLUGIN) ? WarpType.SERVER : WarpType.PLAYER);
+            warp.setType(type);
             warp.save();
-            warp.load();
-            this.getWarpsMap().put(warp.getId(), warp);
-            this.plugin.getMessage(WarpsLang.WARP_CREATE_DONE_FRESH).replace(warp.replacePlaceholders()).send(player);
+            this.loadWarp(warp);
+
+            WarpsLang.WARP_CREATE_DONE_FRESH.getMessage().replace(warp.replacePlaceholders()).send(player);
         }
         return true;
     }
 
     @NotNull
-    public WarpsMenu getWarpsMenu() {
-        return warpsMenu;
-    }
-
-    public int getWarpsMaxAmount(@NotNull Player player) {
-        return WarpsConfig.WARP_SET_AMOUNT_PER_GROUP.get().getBestValue(player, 0);
-    }
-
-    public int getWarpsCreatedAmount(@NotNull Player player) {
-        return this.getWarpsCreated(player).size();
-    }
-
-    @NotNull
     public Map<String, Warp> getWarpsMap() {
-        return this.warps;
+        return this.warpMap;
     }
 
     @NotNull
     public Collection<Warp> getWarps() {
-        return this.getWarpsMap().values();
+        return this.warpMap.values();
+    }
+
+    public void openServerWarps(@NotNull Player player) {
+        this.warpListMenu.open(player, new DisplayInfo(WarpType.SERVER));
+    }
+
+    public void openPlayerWarps(@NotNull Player player) {
+        this.warpListMenu.open(player, new DisplayInfo(WarpType.PLAYER));
+    }
+
+    public void openWarpSettings(@NotNull Player player, @NotNull Warp warp) {
+        this.settingsMenu.open(player, warp);
+    }
+
+    public int getAllowedWarpsAmount(@NotNull Player player) {
+        return WarpsConfig.WARP_SET_AMOUNT_PER_GROUP.get().getGreatestOrNegative(player);
+    }
+
+    public int getOwnedWarpsAmount(@NotNull Player player) {
+        return this.getOwnedWarps(player).size();
     }
 
     @NotNull
-    public Collection<Warp> getWarpsAvailable(@NotNull Player player) {
+    public Collection<Warp> getAvailableWarps(@NotNull Player player) {
         return this.getWarps().stream().filter(warp -> warp.isAvailable(player)).collect(Collectors.toSet());
     }
 
     @NotNull
-    public Collection<Warp> getWarpsCreated(@NotNull Player player) {
+    public Collection<Warp> getOwnedWarps(@NotNull Player player) {
         return this.getWarps().stream().filter(warp -> warp.isOwner(player)).collect(Collectors.toSet());
     }
 
@@ -177,7 +200,13 @@ public class WarpsModule extends Module {
     }
 
     @Nullable
-    public Warp getWarpById(@NotNull String id) {
-        return this.getWarpsMap().get(id.toLowerCase());
+    public Warp getWarp(@NotNull String id) {
+        return this.warpMap.get(id.toLowerCase());
+    }
+
+    @Nullable
+    public Warp getActiveWarp(@NotNull String id) {
+        Warp warp = this.getWarp(id);
+        return warp == null || !warp.isValid() ? null : warp;
     }
 }

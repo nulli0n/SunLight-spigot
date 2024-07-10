@@ -1,53 +1,198 @@
 package su.nightexpress.sunlight.module.worlds.config;
 
-import su.nexmedia.engine.api.lang.LangKey;
+import org.bukkit.Difficulty;
+import su.nightexpress.nightcore.language.entry.LangEnum;
+import su.nightexpress.nightcore.language.entry.LangItem;
+import su.nightexpress.nightcore.language.entry.LangString;
+import su.nightexpress.nightcore.language.entry.LangText;
+import su.nightexpress.sunlight.config.Lang;
 import su.nightexpress.sunlight.module.worlds.util.Placeholders;
 
-import static su.nexmedia.engine.utils.Colors2.*;
+import static su.nightexpress.nightcore.language.entry.LangItem.builder;
+import static su.nightexpress.nightcore.util.text.tag.Tags.*;
 import static su.nightexpress.sunlight.module.worlds.util.Placeholders.*;
 
-public class WorldsLang {
+public class WorldsLang extends Lang {
 
-    public static final LangKey COMMAND_WORLDS_DESC = LangKey.of("Worlds.Command.WorldManager.Desc", "World management tools.");
+    public static final LangEnum<Difficulty> DIFFICULTY = LangEnum.of("Worlds.Difficulty", Difficulty.class);
 
-    public static final LangKey COMMAND_WORLDS_CREATE_USAGE = LangKey.of("Worlds.Command.Worlds.Create.Usage", "<name>");
-    public static final LangKey COMMAND_WORLDS_CREATE_DESC  = LangKey.of("Worlds.Command.Worlds.Create.Desc", "Create a new world config.");
-    public static final LangKey COMMAND_WORLDS_CREATE_ERROR = LangKey.of("Worlds.Command.Worlds.Create.Error", RED + "World with this name already exists!");
-    public static final LangKey COMMAND_WORLDS_CREATE_DONE  = LangKey.of("Worlds.Command.Worlds.Create.Done", LIGHT_YELLOW + "Created world config: " + ORANGE + Placeholders.WORLD_ID + LIGHT_YELLOW + "!");
 
-    public static final LangKey COMMAND_WORLDS_DELETE_USAGE = LangKey.of("Worlds.Command.Worlds.Delete.Usage", "<world> [-f]");
-    public static final LangKey COMMAND_WORLDS_DELETE_DESC  = LangKey.of("Worlds.Command.Worlds.Delete.Desc", "Delete specified world cofig [and world folder].");
-    public static final LangKey COMMAND_WORLDS_DELETE_ERROR = LangKey.of("Worlds.Command.Worlds.Delete.Error", RED + "Could not delete world " + ORANGE + Placeholders.WORLD_ID + RED + "! World is loaded or file access error.");
-    public static final LangKey COMMAND_WORLDS_DELETE_DONE  = LangKey.of("Worlds.Command.Worlds.Delete.Done", LIGHT_YELLOW + "Deleted " + ORANGE + Placeholders.WORLD_ID + LIGHT_YELLOW + " world!");
+    public static final LangString COMMAND_CREATE_WORLD_DESC = LangString.of("Worlds.Command.Worlds.Create.Desc",
+        "Create a new world.");
 
-    public static final LangKey COMMAND_WORLDS_EDITOR_DESC = LangKey.of("Worlds.Command.Worlds.Editor.Desc", "Open world editor.");
-
-    public static final LangKey COMMAND_WORLDS_LOAD_USAGE = LangKey.of("Worlds.Command.Worlds.Load.Usage", "<world>");
-    public static final LangKey COMMAND_WORLDS_LOAD_DESC  = LangKey.of("Worlds.Command.Worlds.Load.Desc", "Load specified world into the server.");
-    public static final LangKey COMMAND_WORLDS_LOAD_ERROR = LangKey.of("Worlds.Command.Worlds.Load.Error", RED + "World is already loaded or world settings are invalid!");
-    public static final LangKey COMMAND_WORLDS_LOAD_DONE  = LangKey.of("Worlds.Command.Worlds.Load.Done", LIGHT_YELLOW + "Loaded world: " + ORANGE + Placeholders.WORLD_ID + LIGHT_YELLOW + "!");
-
-    public static final LangKey COMMAND_WORLDS_UNLOAD_USAGE = LangKey.of("Worlds.Command.Worlds.Unload.Usage", "<world>");
-    public static final LangKey COMMAND_WORLDS_UNLOAD_DESC  = LangKey.of("Worlds.Command.Worlds.Unload.Desc", "Unload specified world from the server.");
-    public static final LangKey COMMAND_WORLDS_UNLOAD_ERROR = LangKey.of("Worlds.Command.Worlds.Unload.Error", RED + "World is already unloaded!");
-    public static final LangKey COMMAND_WORLDS_UNLOAD_DONE  = LangKey.of("Worlds.Command.Worlds.Unload.Done", LIGHT_YELLOW + "Unloaded world: " + ORANGE + Placeholders.WORLD_ID + LIGHT_YELLOW + "!");
-
-    public static final LangKey AUTOWIPE_MOVE_OUT     = LangKey.of("Worlds.AutoWipe.MoveOut",
-        GRAY + "You have been teleported due to world auto-reset.");
-
-    public static final LangKey AUTOWIPE_NOTIFY = LangKey.of("Worlds.AutoWipe.Notify",
-        "<! prefix:\"false\" !>" +
-            "\n" + GRAY +
-            "\n" + LIGHT_RED + "Warning: " + LIGHT_GRAY + "The world will auto-reset in " + LIGHT_RED + GENERIC_TIME +
-            "\n" + GRAY
+    public static final LangText COMMAND_CREATE_WORLD_ERROR = LangText.of("Worlds.Command.Worlds.Create.Error",
+        LIGHT_RED.enclose("World with such name already exists!")
     );
 
-    public static final LangKey ERROR_COMMAND_BLOCKED = LangKey.of("Worlds.Error.CommandBlocked", RED + "You can't use that command in this world!");
-    public static final LangKey ERROR_FLY_DISABLED    = LangKey.of("Worlds.Error.FlyDisabled", RED + "Flying is not allowed in this world!");
+    public static final LangText COMMAND_CREATE_WORLD_DONE = LangText.of("Worlds.Command.Worlds.Create.Done",
+        LIGHT_GRAY.enclose("Created world data: " + LIGHT_YELLOW.enclose(WORLD_ID) + "!")
+    );
 
-    public static final LangKey EDITOR_ENTER_VALUE     = LangKey.of("Worlds.Editor.Enter.Value", GRAY + "Enter " + GREEN + "[Value]");
-    public static final LangKey EDITOR_ENTER_SPAWNS    = LangKey.of("Worlds.Editor.Enter.Spawns", GRAY + "Enter " + GREEN + "[Category] [Value]");
-    public static final LangKey EDITOR_ENTER_SECONDS   = LangKey.of("Worlds.Editor.Enter.Seconds", GRAY + "Enter " + GREEN + "[Seconds Amount]");
-    public static final LangKey EDITOR_ENTER_GENERATOR = LangKey.of("Worlds.Editor.Enter.Generator", GRAY + "Enter " + GREEN + "[Generator Name]");
 
+    public static final LangString COMMAND_DELETE_WORLD_DESC = LangString.of("Worlds.Command.Worlds.Delete.Desc",
+        "Delete a custom world.");
+
+    public static final LangText COMMAND_DELETE_WORLD_ERROR = LangText.of("Worlds.Command.Worlds.Delete.Error",
+        LIGHT_GRAY.enclose("Could not delete world: " + LIGHT_RED.enclose(WORLD_ID) + "!")
+    );
+
+    public static final LangText COMMAND_DELETE_WORLD_DONE = LangText.of("Worlds.Command.Worlds.Delete.Done",
+        LIGHT_GRAY.enclose("World deleted: " + LIGHT_YELLOW.enclose(WORLD_ID) + "!")
+    );
+
+
+    public static final LangString COMMAND_EDITOR_DESC = LangString.of("Worlds.Command.Worlds.Editor.Desc", "Open world editor.");
+
+
+    public static final LangString COMMAND_LOAD_WORLD_DESC = LangString.of("Worlds.Command.Worlds.Load.Desc",
+        "Load a custom world.");
+
+    public static final LangText COMMAND_LOAD_WORLD_ERROR = LangText.of("Worlds.Command.Worlds.Load.Error",
+        LIGHT_GRAY.enclose("Could not load world: " + LIGHT_RED.enclose(WORLD_ID) + "!")
+    );
+
+    public static final LangText COMMAND_LOAD_WORLD_DONE = LangText.of("Worlds.Command.Worlds.Load.Done",
+        LIGHT_GRAY.enclose("World loaded: " + LIGHT_YELLOW.enclose(WORLD_ID) + "!")
+    );
+
+
+    public static final LangString COMMAND_UNLOAD_WORLD_DESC = LangString.of("Worlds.Command.Worlds.Unload.Desc",
+        "Unload a custom world.");
+
+    public static final LangText COMMAND_UNLOAD_WORLD_ERROR = LangText.of("Worlds.Command.Worlds.Unload.Error",
+        LIGHT_GRAY.enclose("Could not unload world: " + LIGHT_RED.enclose(WORLD_ID) + "!")
+    );
+
+    public static final LangText COMMAND_UNLOAD_WORLD_DONE = LangText.of("Worlds.Command.Worlds.Unload.Done",
+        LIGHT_GRAY.enclose("World unloaded: " + LIGHT_YELLOW.enclose(WORLD_ID) + "!")
+    );
+
+
+    public static final LangText UNLOAD_MOVE_OUT_INFO = LangText.of("Worlds.AutoWipe.MoveOut",
+        LIGHT_GRAY.enclose("You have been teleported due to world unload.")
+    );
+
+
+    public static final LangText AUTO_RESET_NOTIFY = LangText.of("Worlds.AutoWipe.Notify",
+        TAG_NO_PREFIX,
+        "",
+        LIGHT_RED.enclose(BOLD.enclose("Auto-Reset Warning:")),
+        LIGHT_GRAY.enclose("The world will auto-reset in " + LIGHT_RED.enclose(GENERIC_TIME)),
+        ""
+    );
+
+    public static final LangText ERROR_COMMAND_BLOCKED = LangText.of("Worlds.Error.CommandBlocked",
+        LIGHT_RED.enclose("You can't use that command in this world!")
+    );
+
+    public static final LangText ERROR_FLY_DISABLED = LangText.of("Worlds.Error.FlyDisabled",
+        LIGHT_RED.enclose("Flying is not allowed in this world!")
+    );
+
+    public static final LangText ERROR_COMMAND_INVALID_WORLD_DATA_ARGUMENT = LangText.of("Worlds.Error.Command.Argument.InvalidWorldData",
+        LIGHT_GRAY.enclose(LIGHT_RED.enclose(GENERIC_VALUE) + " is not a valid world!")
+    );
+
+    public static final LangString EDITOR_TITLE_LIST = LangString.of("Worlds.Editor.Title.List", BLACK.enclose("World List"));
+
+    public static final LangString EDITOR_TITLE_SETTINGS = LangString.of("Worlds.Editor.Title.Settings", BLACK.enclose("World Settings"));
+
+    public static final LangString EDITOR_TITLE_GENERATION = LangString.of("Worlds.Editor.Title.Generation", BLACK.enclose("World Loading/Generation"));
+
+    public static final LangString EDITOR_TITLE_GAME_RULES = LangString.of("Worlds.Editor.Title.GameRules", BLACK.enclose("World Game Rules"));
+
+
+    private static final String PREFIX = "Worlds.Editor.";
+
+    public static final LangItem EDITOR_WORLD_RULE_OBJECT = builder(PREFIX + "World.Rule.Object")
+        .name("Rule: " + RESET.getBracketsName() + WHITE.enclose(GENERIC_NAME))
+        .current("Value", GENERIC_VALUE)
+        .emptyLine()
+        .click("change")
+        .build();
+
+    public static final LangItem EDITOR_WORLD_DIFFICULTY = builder(PREFIX + "World.Difficulty")
+        .name("Difficulty")
+        .current("Current", Placeholders.WORLD_DIFFICULTY)
+        .emptyLine()
+        .text("Sets world's difficulty.")
+        .emptyLine()
+        .click("toggle")
+        .build();
+
+    public static final LangItem EDITOR_WORLD_AUTO_WIPE = builder(PREFIX + "World.AutoWipe")
+        .name("Auto Reset")
+        .text("Sets whether or not this world", "should auto reset with", "certain interval.")
+        .emptyLine()
+        .current("Enabled", WORLD_AUTO_RESET_ENABLED)
+        .current("Interval", WORLD_AUTO_RESET_INTERVAL)
+        .current("Last Reset", WORLD_LAST_RESET_DATE)
+        .current("Next Reset", WORLD_NEXT_RESET_DATE)
+        .emptyLine()
+        .leftClick("toggle")
+        .rightClick("change interval")
+        .dropKey("set last time")
+        .build();
+
+    public static final LangItem EDITOR_WORLD_GAME_RULES = builder(PREFIX + "World.GameRules")
+        .name("Game Rules")
+        .emptyLine()
+        .click("navigate")
+        .build();
+
+    public static final LangItem EDITOR_WORLD_SET_STRUCTURES = builder(PREFIX + "World.Structures")
+        .name("Structure Generation")
+        .current("Enabled", WORLD_STRUCTURES)
+        .emptyLine()
+        .click("toggle")
+        .build();
+
+    public static final LangItem EDITOR_WORLD_SET_ENVIRONMENT = builder(PREFIX + "World.Environment")
+        .name("Environment")
+        .current("Current", WORLD_ENVIRONMENT)
+        .emptyLine()
+        .click("toggle")
+        .build();
+
+    public static final LangItem EDITOR_WORLD_SET_GENERATOR = builder(PREFIX + "World.Generator")
+        .name("Chunk Generator")
+        .current("Current", WORLD_GENERATOR)
+        .emptyLine()
+        .click("change")
+        .build();
+
+    public static final LangItem EDITOR_WORLD_DELETE = builder(PREFIX + "World.Delete")
+        .name("Delete Data")
+        .text(LIGHT_RED.enclose("(No Undo)"))
+        .emptyLine()
+        .dropKey("delete world files")
+        .rightClick("delete config")
+        .shiftRight("delete both")
+        .build();
+
+    public static final LangItem EDITOR_WORLD_UNLOAD = builder(PREFIX + "World.Unload")
+        .name("Unload World")
+        .build();
+
+    public static final LangItem EDITOR_WORLD_LOAD = builder(PREFIX + "World.Load")
+        .name("Load World")
+        .build();
+
+    public static final LangItem EDITOR_WORLD_AUTO_LOAD = builder(PREFIX + "World.AutoLoad")
+        .name("Auto-Load")
+        .current("Enabled", WORLD_IS_AUTO_LOAD)
+        .emptyLine()
+        .text("Loads the world on server startup.")
+        .emptyLine()
+        .click("toggle")
+        .build();
+
+    public static final LangItem EDITOR_WORLD_OBJECT = builder(PREFIX + "World.Object")
+        .name("World: " + RESET.getBracketsName() + WHITE.enclose(WORLD_ID))
+        .current("Created", WORLD_IS_CREATED)
+        .current("Loaded", WORLD_IS_LOADED)
+        .current("Auto-Load", WORLD_IS_AUTO_LOAD)
+        .emptyLine()
+        .click("edit")
+        .build();
 }

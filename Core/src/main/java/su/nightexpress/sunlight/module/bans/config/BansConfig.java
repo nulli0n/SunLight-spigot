@@ -1,119 +1,110 @@
 package su.nightexpress.sunlight.module.bans.config;
 
-import su.nexmedia.engine.api.config.JOption;
-import su.nexmedia.engine.utils.Colorizer;
-import su.nexmedia.engine.utils.StringUtil;
+import su.nightexpress.nightcore.config.ConfigValue;
+import su.nightexpress.nightcore.util.*;
 import su.nightexpress.sunlight.module.bans.punishment.PunishmentReason;
 import su.nightexpress.sunlight.module.bans.punishment.PunishmentType;
-import su.nightexpress.sunlight.module.bans.punishment.RankDuration;
-import su.nightexpress.sunlight.module.bans.util.BanTime;
-import su.nightexpress.sunlight.module.bans.util.Placeholders;
+import su.nightexpress.sunlight.module.bans.util.RankDuration;
+import su.nightexpress.sunlight.module.bans.util.TimeUnit;
 
 import java.util.*;
 
+import static su.nightexpress.sunlight.module.bans.util.Placeholders.*;
+import static su.nightexpress.nightcore.util.text.tag.Tags.*;
+
 public class BansConfig {
 
-    public static final JOption<Set<String>> GENERAL_IMMUNIES = JOption.create("General.Immunies",
-        Set.of("admin_name", "127.0.0.2"),
-        "A list of player names/IP addresses that will be immune to all punishments.");
-
-    public static final JOption<Map<BanTime, Set<String>>> GENERAL_TIME_ALIASES = new JOption<Map<BanTime, Set<String>>>("General.Time_Aliases",
-        (cfg, path, def) -> {
-            Map<BanTime, Set<String>> aliasesMap = new HashMap<>();
-            for (BanTime banTime : BanTime.values()) {
-                String[] aliases = cfg.getString(path + "." + banTime.name(), "").split(",");
-                aliasesMap.put(banTime, new HashSet<>(Arrays.asList(aliases)));
-            }
-            return aliasesMap;
-        },
-        () -> Map.of(
-            BanTime.SECONDS, Set.of("s"),
-            BanTime.MINUTES, Set.of("min"),
-            BanTime.HOURS, Set.of("h"),
-            BanTime.DAYS, Set.of("d"),
-            BanTime.WEEKS, Set.of("w"),
-            BanTime.MONTHS, Set.of("mon"),
-            BanTime.YEARS, Set.of("y")
-        ),
-        "Custom shortcuts/aliases for the time units.",
-        "Example: When punishing, you specify duration as '60min', in this case '60' is amount, 'min' is time alias (minutes)."
-    ).setWriter((cfg, path, map) -> map.forEach((time, aliases) -> cfg.set(path + "." + time.name(), String.join(",", aliases))));
-
-    public static final JOption<Map<String, PunishmentReason>> GENERAL_REASONS = new JOption<Map<String, PunishmentReason>>("General.Reasons",
-        (cfg, path, def) -> {
-            Map<String, PunishmentReason> reasonMap = new HashMap<>();
-            for (String sId : cfg.getSection(path)) {
-                PunishmentReason reason = PunishmentReason.read(cfg, path + "." + sId, sId);
-                reasonMap.put(reason.getId(), reason);
-            }
-            return reasonMap;
-        },
-        () -> Map.of(
-            Placeholders.DEFAULT, new PunishmentReason(Placeholders.DEFAULT, "Violation of the rules"),
-            "advertisement", new PunishmentReason("advertisement", "Advertising other servers/websites"),
-            "grief", new PunishmentReason("grief", "Griefing"),
-            "toxic", new PunishmentReason("toxic", "Toxic behavior")
-        ),
-        "A list of all possible reasons for punishments.",
-        "Use '" + Placeholders.DEFAULT + "' keyword for a default reason (when none specified)."
-    ).setWriter((cfg, path, map) -> map.forEach((id, reason) -> reason.write(cfg, path + "." + id)));
-
-    public static final JOption<List<String>> GENERAL_DISCONNECT_INFO_KICK = JOption.create("General.DisconnectInfo.Kick",
-        Arrays.asList(
-            "&c&nYou have been kicked from the server!",
-            "&7",
-            "&cReason: &e%punishment_reason%",
-            "&cAdmin: &e%punishment_punisher%"
-        ),
-        "Text to display for player in disconnect window when kicked.").mapReader(Colorizer::apply);
-
-    public static final JOption<List<String>> GENERAL_DISCONNECT_INFO_BAN_PERMANENT = JOption.create("General.DisconnectInfo.Ban.Permanent",
-        Arrays.asList(
-            "&cYou are banned from this server!",
-            "&7",
-            "&7Banned on: &f%punishment_date_created%",
-            "&7Banned by: &f%punishment_punisher%",
-            "&7Reason: &f%punishment_reason%",
-            "&7",
-            "&eYou are permanently banned!",
-            "&7Appeal at: &f&nwww.myserver.com"
-        ),
-        "Text to display for player in disconnect window when kicked.").mapReader(Colorizer::apply);
-
-    public static final JOption<List<String>> GENERAL_DISCONNECT_INFO_BAN_TEMP = JOption.create("General.DisconnectInfo.Ban.Temp",
-        Arrays.asList(
-            "&cYou are banned from this server!",
-            "&7",
-            "&7Banned on: &f%punishment_date_created%",
-            "&7Banned by: &f%punishment_punisher%",
-            "&7Reason: &f%punishment_reason%",
-            "&7Unban in: &f%punishment_expires_in%",
-            "&7",
-            "&7Appeal at: &f&nwww.myserver.com"
-        ),
-        "Text to display for player in disconnect window when kicked.").mapReader(Colorizer::apply);
-
-    public static final JOption<Set<String>> PUNISHMENTS_MUTE_BLOCKED_COMMANDS = JOption.create("Punishments.Mute.Blocked_Commands",
-        Set.of("tell", "me", "broadcast"),
-        "A list of commands that will be blocked for muted players.");
-
-    public static final JOption<Map<String, Integer>> PUNISHMENTS_RANK_PRIORITY = JOption.forMap("Punishments.Rank.Priority",
-        (cfg, path, id) -> cfg.getInt(path + "." + id, -1),
-        () -> Map.of(
-            Placeholders.DEFAULT, 0,
-            "helper", 1,
-            "moderator", 2,
-            "admin", 1000
-        ),
-        "--- [BETA FEATURE] ---",
-        "This feature is not perfect and requires improvements.",
-        " ",
-        "Here you can set priority for each rank.",
-        "Players with greatest ranks can not be punished by ones with lowest ranks.",
-        "Use '" + Placeholders.DEFAULT + "' keyword for all ranks not listed here."
+    public static final ConfigValue<Set<String>> IMMUNE_LIST = ConfigValue.create("General.Immunies",
+        Lists.newSet("put_here_your_staff_names", "127.0.0.1"),
+        "A list of player names/IP addresses that are immune to all punishments. Case insensetive."
     );
 
-    public static final JOption<Map<String, Map<PunishmentType, RankDuration>>> PUNISHMENTS_RANK_MAX_TIMES = new JOption<Map<String, Map<PunishmentType, RankDuration>>>(
+    public static final ConfigValue<String> DEFAULT_REASON = ConfigValue.create("General.Default_Reason",
+        DEFAULT,
+        "Sets default reason to use when no other reason specified in punishment commands.",
+        "Must be a valid reason name from the 'Reasons' section.",
+        "If invalid reason provided, a reason with the 'NoReason' text field from the lang config will be used."
+    );
+
+    public static final ConfigValue<Map<String, PunishmentReason>> REASONS = ConfigValue.forMap("General.Reasons",
+        (cfg, path, name) -> PunishmentReason.read(cfg, path + "." + name),
+        (cfg, path, map) -> map.forEach((id, reason) -> reason.write(cfg, path + "." + id)),
+        () -> {
+            Map<String, PunishmentReason> map = new HashMap<>();
+            map.put(DEFAULT, new PunishmentReason("Violation of the rules"));
+            map.put("advertisement", new PunishmentReason("Advertising other servers/websites"));
+            map.put("grief", new PunishmentReason("Griefing"));
+            map.put("toxic", new PunishmentReason("Toxic behavior"));
+            map.put("cheating", new PunishmentReason("Cheating"));
+            return map;
+        },
+        "Add here punishment reasons you would like to use in all punishment commands."
+    );
+
+    public static final ConfigValue<List<String>> GENERAL_DISCONNECT_INFO_KICK = ConfigValue.create("General.DisconnectInfo.Kick",
+        Lists.newList(
+            LIGHT_RED.enclose(BOLD.enclose("Server")) + " " + DARK_GRAY.enclose("»") + " " + GRAY.enclose("You have been kicked!"),
+            " ",
+            LIGHT_RED.enclose("Reason") + " " + DARK_GRAY.enclose("»") + " " + GRAY.enclose(PUNISHMENT_REASON),
+            LIGHT_RED.enclose("By") + " " + DARK_GRAY.enclose("»") + " " + GRAY.enclose(PUNISHMENT_PUNISHER)
+        ),
+        "Text to display for player in disconnect window when kicked."
+    );
+
+    public static final ConfigValue<List<String>> GENERAL_DISCONNECT_INFO_BAN_PERMANENT = ConfigValue.create("General.DisconnectInfo.Ban.Permanent",
+        Lists.newList(
+            LIGHT_RED.enclose(BOLD.enclose("Server")) + " " + DARK_GRAY.enclose("»") + " " + GRAY.enclose("You're permanently banned!"),
+            " ",
+            LIGHT_RED.enclose("Reason") + " " + DARK_GRAY.enclose("»") + " " + GRAY.enclose(PUNISHMENT_REASON),
+            LIGHT_RED.enclose("Date") + " " + DARK_GRAY.enclose("»") + " " + GRAY.enclose(PUNISHMENT_CREATION_DATE),
+            LIGHT_RED.enclose("By") + " " + DARK_GRAY.enclose("»") + " " + GRAY.enclose(PUNISHMENT_PUNISHER),
+            " ",
+            LIGHT_GREEN.enclose("Appeal at") + " " + DARK_GRAY.enclose("»") + " " + YELLOW.enclose(UNDERLINED.enclose("http://put_your_site.com"))
+        ),
+        "Text to display for player in disconnect window when kicked.");
+
+    public static final ConfigValue<List<String>> GENERAL_DISCONNECT_INFO_BAN_TEMP = ConfigValue.create("General.DisconnectInfo.Ban.Temp",
+        Lists.newList(
+            LIGHT_RED.enclose(BOLD.enclose("Server")) + " " + DARK_GRAY.enclose("»") + " " + GRAY.enclose("You're banned!"),
+            " ",
+            LIGHT_RED.enclose("Reason") + " " + DARK_GRAY.enclose("»") + " " + GRAY.enclose(PUNISHMENT_REASON),
+            LIGHT_RED.enclose("Date") + " " + DARK_GRAY.enclose("»") + " " + GRAY.enclose(PUNISHMENT_CREATION_DATE),
+            LIGHT_RED.enclose("By") + " " + DARK_GRAY.enclose("»") + " " + GRAY.enclose(PUNISHMENT_PUNISHER),
+            LIGHT_RED.enclose("Unban in") + " " + DARK_GRAY.enclose("»") + " " + GRAY.enclose(PUNISHMENT_EXPIRES_IN),
+            " ",
+            LIGHT_GREEN.enclose("Appeal at") + " " + DARK_GRAY.enclose("»") + " " + YELLOW.enclose(UNDERLINED.enclose("http://put_your_site.com"))
+        ),
+        "Text to display for player in disconnect window when kicked.");
+
+    public static final ConfigValue<Set<String>> PUNISHMENTS_MUTE_BLOCKED_COMMANDS = ConfigValue.create("Punishments.Mute.Blocked_Commands",
+        Set.of("tell", "me", "broadcast"),
+        "List of disabled commands for muted players.",
+        "All aliases for listed commands will be auto-detected and disabled too."
+    );
+
+    public static final ConfigValue<RankMap<Integer>> PUNISHMENTS_RANK_PRIORITY = ConfigValue.create("Punishments.Rank.Priority",
+        (cfg, path, def) -> RankMap.readInt(cfg, path, 0),
+        (cfg, path, map) -> map.write(cfg, path),
+        () -> new RankMap<>(RankMap.Mode.RANK, "sunlight.bans.priority.", 0,
+            Map.of(
+                "helper", 1,
+                "moderator", 2,
+                "admin", 1000
+            )
+        ),
+        "=".repeat(20) + " BETA FEATURE " + "=".repeat(20),
+        "Set here priority for each rank that has access to punishment commands.",
+        "Players with greatest ranks can not be punished by lowest ones.",
+        "[WARNING] This setting will not prevent IP bans!"
+    );
+
+    public static final ConfigValue<Boolean> PUNISHMENTS_DURATION_LIMIT_TO_UNPUNISH = ConfigValue.create("Punishments.Rank.Duration_Limit_to_Unpunish",
+        true,
+        "When enabled, the 'Duration_Limit' settings will apply to all unpunish commands as well (unban, unmute, unwarn).",
+        "Players can not remove punishments with a duration greater than set in player's limit."
+    );
+
+    public static final ConfigValue<Map<String, Map<PunishmentType, RankDuration>>> PUNISHMENTS_RANK_MAX_TIMES = ConfigValue.create(
         "Punishments.Rank.Duration_Limit",
         (cfg, path, def) -> {
             Map<String, Map<PunishmentType, RankDuration>> times = new HashMap<>();
@@ -127,52 +118,51 @@ public class BansConfig {
             }
             return times;
         },
+        (cfg, path, map) -> map.forEach((rank, times) -> times.forEach((type, time) -> time.write(cfg, path + "." + rank + "." + type.name()))),
         () -> {
             Map<String, Map<PunishmentType, RankDuration>> times = new HashMap<>();
 
             Map<PunishmentType, RankDuration> durationMap1 = times.computeIfAbsent("moderator", k -> new HashMap<>());
-            durationMap1.put(PunishmentType.MUTE, new RankDuration(1, BanTime.WEEKS));
-            durationMap1.put(PunishmentType.BAN, new RankDuration(2, BanTime.MONTHS));
-            durationMap1.put(PunishmentType.WARN, new RankDuration(3, BanTime.MONTHS));
+            durationMap1.put(PunishmentType.MUTE, new RankDuration(1, TimeUnit.WEEKS));
+            durationMap1.put(PunishmentType.BAN, new RankDuration(2, TimeUnit.MONTHS));
+            durationMap1.put(PunishmentType.WARN, new RankDuration(3, TimeUnit.MONTHS));
 
             Map<PunishmentType, RankDuration> durationMap2 = times.computeIfAbsent("helper", k -> new HashMap<>());
-            durationMap2.put(PunishmentType.MUTE, new RankDuration(1, BanTime.DAYS));
-            durationMap2.put(PunishmentType.BAN, new RankDuration(2, BanTime.WEEKS));
-            durationMap2.put(PunishmentType.WARN, new RankDuration(3, BanTime.WEEKS));
+            durationMap2.put(PunishmentType.MUTE, new RankDuration(1, TimeUnit.DAYS));
+            durationMap2.put(PunishmentType.BAN, new RankDuration(2, TimeUnit.WEEKS));
+            durationMap2.put(PunishmentType.WARN, new RankDuration(3, TimeUnit.WEEKS));
 
             return times;
         },
     "A list of rank based duration limits for each punishment type.",
-        "(You must have Vault installed for this feature to work)",
+        "(" + Plugins.VAULT + " and a compatible permissions plugins are required)",
+        "(Player permission groups are auto-detected)",
         "This will prevent players to punish others for a time longer than you set here.",
-        "Player permission groups will be auto-deetected",
+        "'Amount' = amount of units for specified time unit. Example: 'TimeUnit' = '" + TimeUnit.DAYS.name() + "' and 'Amount' = '3' equals to 3 days.",
+        "For the '" + TimeUnit.PERMANENT.name() + "' time unit, amount value does not matter.",
+        "Available Time Units: " + StringUtil.inlineEnum(TimeUnit.class, ", "),
         "The greatest duration limit will be used if player has multiple ranks with duration limits.",
-        "To remove limit for certain punishment type, set its 'Duration' to -1.",
+        "To remove limit for certain punishment type, set 'Amount' to -1.",
         "To remove all limits, give '" + BansPerms.BYPASS_DURATION_LIMIT.getName() + "' permission."
-    ).setWriter((cfg, path, map) -> map.forEach((rank, times) -> times.forEach((type, time) -> time.write(cfg, path + "." + rank + "." + type.name()))));
+    );
 
-    public static final JOption<Integer> PUNISHMENTS_WARN_MAX_AMOUNT = JOption.create("Punishments.Warn.Max_Amount", 5,
-        "How many warns player can receive before they all will be auto expired?",
-        "Set this to -1 for unlimit.");
+    public static final ConfigValue<Integer> PUNISHMENTS_WARN_MAX_AMOUNT = ConfigValue.create("Punishments.Warn.Max_Amount",
+        5,
+        "Sets active warn limit for a player when all previous warns gets expired.",
+        "Example: With default value 5, when player gets 5th active warn, all previous 4 active warns becomes expired.",
+        "This setting is required for the 'Warns -> Auto_Commands' feature to work properly.",
+        "Set to '0' or '-1' for unlimit."
+    );
 
-    public static final JOption<Map<Integer, List<String>>> PUNISHMENTS_WARN_AUTO_COMMANDS = new JOption<Map<Integer, List<String>>>(
-        "Punishments.Warn.Auto_Commands",
-        (cfg, path, def) -> {
-            Map<Integer, List<String>> map = new HashMap<>();
-            for (String sId : cfg.getSection(path)) {
-                int amount = StringUtil.getInteger(sId, -1);
-                if (amount <= 0) continue;
-
-                map.put(amount, cfg.getStringList(path + "." + sId));
-            }
-            return map;
-        },
+    public static final ConfigValue<Map<Integer, List<String>>> PUNISHMENTS_WARN_AUTO_COMMANDS = ConfigValue.forMap("Punishments.Warn.Auto_Commands",
+        (sId) -> NumberUtil.getInteger(sId, 0),
+        (cfg, path, sId) -> cfg.getStringList(path + "." + sId),
+        (cfg, path, map) -> map.forEach((amount, commands) -> cfg.set(path + "." + amount, commands)),
         () -> Map.of(
-            3, Collections.singletonList("mute " + Placeholders.PLAYER_NAME + " 15min"),
-            5, Collections.singletonList("kick " + Placeholders.PLAYER_NAME)
+            3, Lists.newList("mute " + PLAYER_NAME + " " + 15 + TimeUnit.MINUTES.getAliases()[0]),
+            5, Lists.newList("kick " + PLAYER_NAME)
         ),
-        "A list of commands to be executed when player got certain amount of warnings.",
-        "Commands get executed from the server console.",
-        "Use '" + Placeholders.PLAYER_NAME + "' placeholder for a player name."
-    ).setWriter((cfg, path, map) -> map.forEach((amount, commands) -> cfg.set(path + "." + amount, commands)));
+        "Executes custom commands (from console) when player reaches certain amount of active warns.",
+        "Use '" + PLAYER_NAME + "' placeholder for a player name."
+    );
 }

@@ -4,7 +4,7 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
-import su.nightexpress.sunlight.command.teleport.impl.TeleportRequest;
+import su.nightexpress.sunlight.module.ptp.TeleportRequest;
 
 public class PlayerTeleportRequestEvent extends Event implements Cancellable {
 

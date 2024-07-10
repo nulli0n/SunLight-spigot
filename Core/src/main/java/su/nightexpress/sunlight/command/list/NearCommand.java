@@ -1,92 +1,119 @@
 package su.nightexpress.sunlight.command.list;
 
 import me.clip.placeholderapi.PlaceholderAPI;
+import net.md_5.bungee.api.chat.ClickEvent;
 import org.bukkit.Location;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import su.nexmedia.engine.api.command.CommandResult;
-import su.nexmedia.engine.api.command.GeneralCommand;
-import su.nexmedia.engine.api.config.JOption;
-import su.nexmedia.engine.api.config.JYML;
-import su.nexmedia.engine.utils.Colorizer;
-import su.nexmedia.engine.utils.EngineUtils;
-import su.nexmedia.engine.utils.PlayerUtil;
-import su.nightexpress.sunlight.Perms;
+import su.nightexpress.nightcore.command.experimental.CommandContext;
+import su.nightexpress.nightcore.command.experimental.argument.ParsedArguments;
+import su.nightexpress.nightcore.command.experimental.builder.DirectNodeBuilder;
+import su.nightexpress.nightcore.command.experimental.node.DirectNode;
+import su.nightexpress.nightcore.config.ConfigValue;
+import su.nightexpress.nightcore.config.FileConfig;
+import su.nightexpress.nightcore.util.Lists;
+import su.nightexpress.nightcore.util.NumberUtil;
+import su.nightexpress.nightcore.util.Players;
+import su.nightexpress.nightcore.util.Plugins;
 import su.nightexpress.sunlight.Placeholders;
-import su.nightexpress.sunlight.SunLight;
-import su.nightexpress.sunlight.command.teleport.TeleportCommand;
-import su.nightexpress.sunlight.command.teleport.TeleportRequestCommand;
+import su.nightexpress.sunlight.SunLightPlugin;
+import su.nightexpress.sunlight.command.CommandPerms;
+import su.nightexpress.sunlight.command.CommandRegistry;
+import su.nightexpress.sunlight.command.template.CommandTemplate;
 import su.nightexpress.sunlight.config.Lang;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class NearCommand extends GeneralCommand<SunLight> {
+import static su.nightexpress.nightcore.util.text.tag.Tags.*;
+import static su.nightexpress.sunlight.Placeholders.*;
+
+public class NearCommand {
 
     public static final String NAME = "near";
 
-    private final int          radius;
-    private final List<String> format;
+    private static int          radius;
+    private static List<String> listFormat;
+    private static String       entryFormat;
 
-    public NearCommand(@NotNull SunLight plugin, @NotNull JYML cfg, @NotNull String[] aliases) {
-        super(plugin, aliases, Perms.COMMAND_NEAR);
-        this.setDescription(plugin.getMessage(Lang.COMMAND_NEAR_DESC));
-        this.setUsage(plugin.getMessage(Lang.COMMAND_NEAR_USAGE));
-        this.setPlayerOnly(true);
-
-        this.radius = JOption.create("Near.Radius", 100,
-            "Sets the block radius to look for players in.").read(cfg);
-
-        this.format = JOption.create("Near.Format",
-            List.of(
-                "#ffeea2",
-                "#ffeea2Players in #fdba5e+" + Placeholders.GENERIC_RADIUS + " #ffeea2blocks from you:",
-                "#ffeea2",
-                "#ffeea2▪ #fdba5e" + Placeholders.PLAYER_NAME + ": #ffeea2" + Placeholders.GENERIC_AMOUNT + " blocks away <? show_text:\"#ddeceeClick to send teleport request.\" run_command:\"/" + TeleportCommand.NAME + " " + TeleportRequestCommand.NAME + " " + Placeholders.PLAYER_NAME + "\" ?>#aefd5e[TPA]</>",
-                "#ffeea2"
-            ),
-            "List format for nearby players.",
-            "You can use " + EngineUtils.PLACEHOLDER_API + " here.",
-            "JSON is also supported: " + Placeholders.ENGINE_URL_LANG_JSON).mapReader(Colorizer::apply).read(cfg);
+    public static void load(@NotNull SunLightPlugin plugin) {
+        CommandRegistry.registerDirectExecutor(NAME, (template, config) -> builder(plugin, template, config));
+        CommandRegistry.addSimpleTemplate(NAME);
     }
 
-    @Override
-    protected void onExecute(@NotNull CommandSender sender, @NotNull CommandResult result) {
-        Player player = (Player) sender;
+    public static DirectNodeBuilder builder(@NotNull SunLightPlugin plugin, @NotNull CommandTemplate template, @NotNull FileConfig config) {
+        radius = ConfigValue.create("Settings.Near.Radius",
+            100,
+            "Sets radius for the '" + NAME + "' command."
+        ).read(config);
 
-        Map<Player, Integer> listNear = new HashMap<>();
+        listFormat = ConfigValue.create("Settings.Near.Format",
+            Lists.newList(
+                " ",
+                LIGHT_YELLOW.enclose(BOLD.enclose("Nearby Players:")),
+                GENERIC_ENTRY,
+                " "
+            ),
+            "List format for the '" + NAME + "' command.",
+            "Use '" + GENERIC_RADIUS + "' placeholder for command radius value.",
+            "Available text formations: " + WIKI_TEXT_URL
+        ).read(config);
+
+        entryFormat = ConfigValue.create("Settings.Near.EntryFormat",
+            LIGHT_GRAY.enclose(LIGHT_YELLOW.enclose("●") + " %vault_prefix%" +
+                HOVER.encloseHint(CLICK.enclose(PLAYER_DISPLAY_NAME, ClickEvent.Action.SUGGEST_COMMAND, "/ptp request " + PLAYER_NAME), GRAY.enclose("Click to send teleport request."))
+                + "%vault_suffix%" + " " + GRAY.enclose("(" + WHITE.enclose(GENERIC_AMOUNT) + " blocks away)")
+            ),
+            "Player entry format.",
+            "Available text formations: " + WIKI_TEXT_URL,
+            Plugins.PLACEHOLDER_API + " is supported here."
+        ).read(config);
+
+        return DirectNode.builder(plugin, template.getAliases())
+            .playerOnly()
+            .description(Lang.COMMAND_NEAR_DESC)
+            .permission(CommandPerms.NEAR)
+            .executes((context, arguments) -> execute(plugin, context, arguments))
+            ;
+    }
+
+    public static boolean execute(@NotNull SunLightPlugin plugin, @NotNull CommandContext context, @NotNull ParsedArguments arguments) {
+        Player player = context.getExecutor();
+        if (player == null) return false;
+
+        Map<Player, Double> playerMap = new HashMap<>();
         Location location = player.getLocation();
 
         player.getNearbyEntities(radius, radius, radius).forEach(entity -> {
-            if (!(entity instanceof Player pNear)) return;
-            if (!player.canSee(pNear)) return;
+            if (!(entity instanceof Player nearby)) return;
+            if (!player.canSee(nearby)) return;
 
-            listNear.put(pNear, (int) location.distance(pNear.getLocation()));
+            playerMap.put(nearby, location.distance(nearby.getLocation()));
         });
 
-        if (listNear.isEmpty()) {
-            plugin.getMessage(Lang.COMMAND_NEAR_ERROR_NOTHING).replace(Placeholders.GENERIC_RADIUS, this.radius).send(sender);
-            return;
+        if (playerMap.isEmpty()) {
+            Lang.COMMAND_NEAR_NOTHING.getMessage().replace(GENERIC_RADIUS, radius).send(player);
+            return true;
         }
 
-        for (String line : this.format) {
-            if (line.contains(Placeholders.PLAYER_NAME)) {
-                listNear.forEach((nearPlayer, dist) -> {
-                    String name = nearPlayer.getName();
-                    String line2 = line
-                        .replace(Placeholders.GENERIC_AMOUNT, String.valueOf(dist))
-                        .replace(Placeholders.PLAYER_NAME, name);
+        for (String line : listFormat) {
+            if (line.contains(GENERIC_ENTRY)) {
+                playerMap.entrySet().stream().sorted(Map.Entry.comparingByValue()).forEach(mapEntry -> {
+                    Player nearPlayer = mapEntry.getKey();
+                    double distance = mapEntry.getValue();
 
-                    if (EngineUtils.hasPlaceholderAPI()) {
-                        line2 = PlaceholderAPI.setPlaceholders(nearPlayer, line2);
+                    String entry = Placeholders.forPlayer(nearPlayer).apply(entryFormat).replace(GENERIC_AMOUNT, NumberUtil.format(distance));
+                    if (Plugins.hasPlaceholderAPI()) {
+                        entry = PlaceholderAPI.setPlaceholders(nearPlayer, entry);
                     }
-                    PlayerUtil.sendRichMessage(sender, line2);
+                    Players.sendModernMessage(player, entry);
                 });
                 continue;
             }
-            PlayerUtil.sendRichMessage(sender, line.replace(Placeholders.GENERIC_RADIUS, String.valueOf(radius)));
+            Players.sendModernMessage(player, line.replace(GENERIC_RADIUS, NumberUtil.format(radius)));
         }
+
+        return true;
     }
 }

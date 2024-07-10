@@ -1,1208 +1,1605 @@
-# ▄▄   ▄▄ ▄▄▄▄▄▄▄ ▄▄▄▄▄▄▄ ▄▄▄   ▄ ▄▄▄     ▄▄▄ ▄▄    ▄ ▄▄▄▄▄▄▄
-#█  █▄█  █       █       █   █ █ █   █   █   █  █  █ █       █
-#█       █    ▄▄▄█    ▄▄▄█   █▄█ █   █   █   █   █▄█ █    ▄▄▄█
-#█       █   █▄▄▄█   █▄▄▄█      ▄█   █   █   █       █   █▄▄▄
-#█       █    ▄▄▄█    ▄▄▄█     █▄█   █▄▄▄█   █  ▄    █    ▄▄▄█
-#█ ██▄██ █   █▄▄▄█   █▄▄▄█    ▄  █       █   █ █ █   █   █▄▄▄
-#█▄█   █▄█▄▄▄▄▄▄▄█▄▄▄▄▄▄▄█▄▄▄█ █▄█▄▄▄▄▄▄▄█▄▄▄█▄█  █▄▄█▄▄▄▄▄▄▄█
+#            __                             __
+#       ____/ /__  ____  ____  ____  __  __/ /_
+#      / __  / _ \/ __ \/ __ \/_  / / / / / __/
+#     / /_/ /  __/ /_/ / /_/ / / /_/ /_/ / /_
+#     \__,_/\___/ .___/\____/ /___/\__, /\__/
+#              /_/                /____/
 #
-# Translated by Male_Czarne
-# Language: Polish
+# Translated by depozyt
+# Discord: depozytek
 
+# W celu zgłoszenia jakichkolwiek błędów w tłumaczeniu, dodaj mnie na Discorda, którego nazwa znajduje się wyżej.
+
+# Tutaj możesz utworzyć własne niestandardowe symbole zastępcze, aby użyć ich w konfiguracji języka.
+# Key = Placeholder, Value = Replacer.
+Placeholders:
+  '%red%': '#fd5e5e'
+  '%gray%': '#d4d9d8'
+  '%green%': '#aefd5e'
 Generic:
   Command:
     Cooldown:
-      Default: '{message: ~prefix: false;}&cMusisz poczekać &c%time% &czanim
-        znów użyjesz &e%cmd% &c.'
-      Onetime: '{message: ~prefix: false;}&cTa komenda jest jednorazowa
-        już jej użyłeś.'
+      Default: '<! prefix:"false" !>#fd5e5eMusisz poczekać #fdba5e%time%#fd5e5e zanim będziesz mógł ponownie użyć #fdba5e%command%#fd5e5e.'
+      OneTime: <! prefix:"false" !>#fd5e5eTo polecenie można użyć tylko raz i już zostało użyte.
 Command:
   Air:
-    Desc: Preglądaj lub zarządzaj powietrzem gracza.
-    Show:
-      Usage: '[player]'
-      Desc: Przeglądaj pozostały oraz maksymalny poziom powietrza gracza.
-      Done:
-        - '{message: ~prefix: false;}'
-        - '&6&m            &6&l[ &ePowietrze gracza &a%player_name% &6&l]&6&m            &7'
-        - '&7'
-        - '&e    Pozostałe: &6%air_remaining_ticks% &7(&f%air_remaining_seconds% seconds&7)'
-        - '&e    Maksymalne: &6%air_maximum_ticks% &7(&f%air_maximum_seconds% seconds&7)'
-        - '&7'
-        - '&7  {json: ~showText: &7Add air to a player.; ~suggestCommand: /air give
-        %player_name% ;}&a&l[Give]{end-json}   {json: ~showText: &7Take air from a
-        player.; ~suggestCommand: /air take %player_name% ;}&c&l[Take]{end-json}   {json:
-        ~showText: &7Set air for a player.; ~suggestCommand: /air set %player_name%
-        ;}&e&l[Set]{end-json}   {json: ~showText: &7Reset air for a player.; ~runCommand:
-        /air set %player_name% 0;}&d&l[Reset]{end-json}&7'
-        - '&7'
-        - '&6&m                                              &7'
+    Desc: Zarządzaj punktami powietrza.
+    Usage: <operacja> <ilość> [gracz] [-max] [-s]
     Give:
-      Desc: Daj graczu powietrze.
-      Usage: '[player] <type> <amount>'
-      Done: '{message: ~prefix: false;}&eGiven &a%amount% &eair ticks to &6%player_name%&e.
-        Air Level: &6%air_remaining_ticks%&e/&6%air_maximum_ticks%&e.'
+      Target: '#ffeea2Dodano #fdba5e%amount%#ffeea2 pkt powietrza dla #fdba5e%player_display_name%#ffeea2. Nowe pkt powietrza: #fdba5e%current%#ffeea2/#fdba5e%max%#ffeea2.'
+      Notify: '<! type:"action_bar" !>#ffeea2Otrzymałeś #fdba5e%amount%#ffeea2 pkt powietrza: #fdba5e%current%#ffeea2/#fdba5e%max%#ffeea2.'
     Take:
-      Desc: Zabierz graczu powietrze.
-      Usage: '[player] <type> <amount>'
-      Done: '{message: ~prefix: false;}&eTaken &c%amount% &eair ticks from &6%player_name%&e.
-        Air Level: &6%air_remaining_ticks%&e/&6%air_maximum_ticks%&e.'
+      Target: '#ffeea2Usunięto #fdba5e%amount%#ffeea2 pkt powietrza od #fdba5e%player_display_name%#ffeea2. Nowe pkt powietrza: #fdba5e%current%#ffeea2/#fdba5e%max%#ffeea2.'
+      Notify: '<! type:"action_bar" !>#ffeea2Straciłeś #fdba5e%amount%#ffeea2 pkt powietrza: #fdba5e%current%#ffeea2/#fdba5e%max%#ffeea2.'
     Set:
-      Desc: Ustaw poziom powietrza gracza.
-      Usage: '[player] <type> <amount>'
-      Done: '{message: ~prefix: false;}&eSet &6%amount% &eair ticks for &6%player_name%&e.
-        Air Level: &6%air_remaining_ticks%&e/&6%air_maximum_ticks%&e.'
+      Target: '#ffeea2Ustawiono #fdba5e%amount%#ffeea2 pkt powietrza dla #fdba5e%player_display_name%#ffeea2. Nowe pkt powietrza: #fdba5e%current%#ffeea2/#fdba5e%max%#ffeea2.'
+      Notify: '<! type:"action_bar" !>#ffeea2Twoje pkt powietrza ustawione na #fdba5e%amount%#ffeea2: #fdba5e%current%#ffeea2/#fdba5e%max%#ffeea2.'
   Anvil:
-    Desc: Otwórz przenośne kowadło.
-    Usage: '[player]'
-    Done:
-      Others: '{message: ~prefix: false;}&eOpened portable anvil for &6%player_name%&e.'
-  Armor:
-    Desc: Przeglądaj lub zarządzaj ekwipunkiem gracza.
-    Usage: <player>
+    Desc: Otwórz przenośną kowadło.
+    Usage: '[gracz] [-s]'
+    Target: '#ffeea2Otworzyłeś przenośne kowadło dla #fdba5e%player_display_name%#ffeea2.'
+    Notify: <! type:"action_bar" !>#ffeea2Otworzyłeś przenośne kowadło!
   Back:
-    Desc: Powróć do ostatniej lokalizacji.
-    Usage: '[player]'
+    Desc: Powróć gracza do poprzedniej lokalizacji.
+    Usage: '[gracz] [-s]'
     Error:
-      Empty: '{message: ~prefix: false; ~type: ACTION_BAR; ~sound: ENTITY_VILLAGER_NO;}&cNie
-        znaleziono lokacji do której można powrócić.'
-    Notify: '{message: ~prefix: false; ~type: ACTION_BAR; ~sound: ENTITY_ENDERMAN_TELEPORT;}&ePowrócono
-      do ostatniej lokacji.'
-    Done: '&eGracz &6%player_name%&e powrócił do ostatniej lokacji.'
+      Nothing: <! type:"action_bar" sound:"ENTITY_VILLAGER_NO" !>#fd5e5eNie masz zapisanej poprzedniej lokalizacji.
+    Notify: <! type:"action_bar" sound:"ENTITY_ENDERMAN_TELEPORT" !>#ffeea2Wróciłeś do poprzedniej lokalizacji.
+    Target: '#ffeea2Gracz #fdba5e%player_display_name%#ffeea2 został teleportowany do poprzedniej lokalizacji.'
   Broadcast:
-    Desc: Nadaj wiadomość.
-    Usage: <message>
-    Format: '{message: ~prefix: false;}&6[&eBroadcast&6] &c%msg%'
-  Burn:
-    Desc: Podpal gracza na ustalony czas.
-    Usage: <player> <time>
-    Done: '{message: ~prefix: false;}&eGracz &6%player_name% &epodpalony na &6%time%
-      &esekund or &6%ticks% &eticks.'
-  ClearChat:
-    Desc: Wyczyść czat.
-    Done: '{message: ~prefix: false;}&7Czat wyczyszczony przez &a%player%&7.'
+    Desc: Ogłoszenie na chacie.
+    Usage: <wiadomość>
+    Format: <! prefix:"false" !>&6[&eOgłoszenie&6] &c%msg%
   CText:
-    Invalid: '{message: ~prefix: false;}&7TXT file &c%file% &7not found!'
+    Invalid: <! prefix:"false" !>&7Nie znaleziono pliku TXT &c%file% &7!
   Condense:
-    Desc: Skonwertuj przedmioty w bloki.
+    Desc: Kondensuj przedmioty w bloki.
+    Usage: ''
     Error:
-      Nothing: '{message: ~prefix: false;}&cNothing to condense.'
-      NotEnough: '{message: ~prefix: false;}&cNot enough items to convert &e%item_from%
-        &cto &e%item_result%&c. Need at least &e%amount%&c.'
-    Done: '{message: ~prefix: false;}&eConverted &ax%amount_from% %item_from% &eto
-      &ax%amount_result% %item_result%'
+      Nothing: <! type:"action_bar" sound:"ENTITY_VILLAGER_NO" !>#fd5e5eNie ma czego kondensować.
+      NotEnough: '#ffeea2Za mało przedmiotów do przekształcenia #fd5e5e%source%#ffeea2 w #fd5e5e%result%#ffeea2. Potrzebujesz minimum #fd5e5e%amount%#ffeea2.'
+    Done: '#ffeea2Przekształcono #fdba5ex%total% %source%#ffeea2 na #fdba5ex%amount% %result%#ffeea2.'
   DeathBack:
-    Desc: Powróć do lokacji śmierci.
-    Usage: '[player]'
+    Desc: Przywróć gracza do miejsca śmierci.
+    Usage: '[gracz] [-s]'
     Error:
-      Empty: '{message: ~prefix: false; ~type: ACTION_BAR; ~sound: ENTITY_VILLAGER_NO;}&cNie
-        znaleziono lokacji śmierci.'
-    Notify: '{message: ~prefix: false; ~type: ACTION_BAR; ~sound: ENTITY_ENDERMAN_TELEPORT;}&ePowrócono
-      do lokacji śmierci.'
-    Done: '&eGracz &6%player_name%&e powrócił do lokacji swojej śmeirci.'
+      Nothing: <! type:"action_bar" sound:"ENTITY_VILLAGER_NO" !>#fd5e5eNie masz zapisanej lokalizacji śmierci.
+    Notify: <! type:"action_bar" sound:"ENTITY_ENDERMAN_TELEPORT" !>#ffeea2Wróciłeś do miejsca śmierci.
+    Target: '#ffeea2Gracz #fdba5e%player_display_name%#ffeea2 został teleportowany do miejsca śmierci.'
   Disposal:
-    Usage: '[player]'
-    Desc: Otwórz kosz.
-    Done: '&eOtworzono kosz gracza &6%player_name%&e.'
+    Usage: '[gracz] [-s]'
+    Desc: Otwórz przenośny kosz.
+    Target: '#ffeea2Otworzyłeś kosz dla #fdba5e%player_display_name%#ffeea2.'
+    Notify: <! type:"action_bar" sound:"ITEM_ARMOR_EQUIP_LEATHER" !>#ffeea2Otworzyłeś przenośny kosz!
+  Dimension:
+    Usage: <świat> [gracz] [-s]
+    Desc: Teleportuj [gracza] do świata.
+    Target: '#ffeea2Teleportowano #fdba5e%player_display_name%#ffeea2 do świata #fdba5e%world%#ffeea2.'
+    Notify: '<! type:"action_bar" sound:"ENTITY_ENDERMAN_TELEPORT" !>#ffeea2Teleportowano do świata #fdba5e%world%#ffeea2.'
   Enchant:
-    Desc: (Dis)Zaklnij przedmiot w użyciu.
-    Usage: '[player] <slot> <enchantment> <level>'
-    Done:
-      Enchanted: '{message: ~prefix: false; ~sound: BLOCK_ENCHANTMENT_TABLE_USE;}&eZaklnięto
-        &6%item%&e z &6%enchantment% %level%&e w slocie &6%slot%&e gracza &6%player_name%.'
-      Disenchanted: '{message: ~prefix: false; ~sound: BLOCK_GRINDSTONE_USE;}&eZaklnięcie
-        &6%enchantment% &ezostało usunięte z &6%item%&e w slocie &6%slot%&e gracza &6%player_name%.'
-    Notify:
-      Enchanted: '{message: ~prefix: false; ~sound: BLOCK_ENCHANTMENT_TABLE_USE;}&eTwój
-        &6%item% &ezostał zaklęty z &6%enchantment% %level%&e!'
-      Disenchanted: '{message: ~prefix: false; ~sound: BLOCK_GRINDSTONE_USE;}&eTwój
-        &6%item% &estracił zaklęcie &6%enchantment%&e.'
+    Desc: Enchantuj przedmioty gracza w określonym slocie.
+    Usage: <slot> <enchantment> <level> [gracz] [-s]
+    Enchanted:
+      Target: '<! sound:"BLOCK_ENCHANTMENT_TABLE_USE" !>#ffeea2Zaczarowano #fdba5e%item%#ffeea2 na #fdba5e%name% %amount%#ffeea2 w slocie #fdba5e%type%#ffeea2 dla #fdba5e%player_display_name%#ffeea2!'
+      Notify: '<! sound:"BLOCK_ENCHANTMENT_TABLE_USE" !>#ffeea2Twój przedmiot #fdba5e%item%#ffeea2 został zaczarowany na #fdba5e%name% %amount%#ffeea2!'
+    Disenchanted:
+      Target: '<! sound:"BLOCK_GRINDSTONE_USE" !>#ffeea2Usunięto #fdba5e%name%#ffeea2 z przedmiotu #fdba5e%item%#ffeea2 w slocie #fdba5e%type%#ffeea2 dla #fdba5e%player_display_name%#ffeea2.'
+      Notify: '<! sound:"BLOCK_GRINDSTONE_USE" !>#ffeea2Usunięto zaklęcie #fdba5e%name% %amount%#ffeea2#ffeea2 z przedmiotu #fdba5e%item%#ffeea2!'
   Enchanting:
-    Desc: Otwórz przenośny stół do zaklinania.
+    Desc: Otwórz przenośny enchant.
+    Usage: '[gracz] [-s]'
+    Notify: <! type:"action_bar" !>#ffeea2Otworzyłeś przenośny enchant!
+    Target: '#ffeea2Otworzyłeś przenośny enchant dla #fdba5e%player_display_name%#ffeea2.'
+  EnchantmentSeed:
+    Desc: Regeneruj ziarno czarów gracza.
+    Usage: '[gracz] [-s]'
+    Notify: '#ffeea2Twoje ziarno czarów zostało zaktualizowane. Dostępne są nowe oferty czarowania.'
+    Target: '#ffeea2Zaktualizowano ziarno czarów dla #fdba5e%player_display_name%#ffeea2.'
   Exp:
-    Desc: Przeglądaj lub zarządzaj punktami exp gracza.
-    Show:
-      Desc: Przeglądaj punkty exp gracza.
-      Usage: '[player]'
-      Done:
-        - '{message: ~prefix: false;}'
-        - '&6&m            &6&l[ &eExp of &a%player_name% &6&l]&6&m            &7'
-        - '&7'
-        - '&e    Level: &6%exp_level% &7(&f%exp_progress%% of the next level&7)'
-        - '&e    Exp to Next Level: &6%exp_required%'
-        - '&e    Total Experience: &6%exp_total%'
-        - '&7'
-        - '&7  {json: ~showText: &7Add exp to a player.; ~suggestCommand: /exp give
-        %player_name% ;}&a&l[Give]{end-json}   {json: ~showText: &7Take exp from a
-        player.; ~suggestCommand: /exp take %player_name% ;}&c&l[Take]{end-json}   {json:
-        ~showText: &7Set exp for a player.; ~suggestCommand: /exp set %player_name%
-        ;}&e&l[Set]{end-json}   {json: ~showText: &7Reset exp for a player.; ~runCommand:
-        /exp set %player_name% EXP 0;}&d&l[Reset]{end-json}&7'
-        - '&7'
-        - '&6&m                                              &7'
+    Desc: Zarządzaj punktami doświadczenia.
+    Usage: <operacja> <ilość> [gracz] [-s] [-l]
     Give:
-      Desc: Daj punkty exp graczu.
-      Usage: '[player] <type> <amount>'
-      Done: '{message: ~prefix: false;}&eGiven &a%amount% &eexp/levels to &6%player_name%&e.
-        Level: &6%exp_level%&e, Exp: &6%exp_total%&e.'
+      Target: '#ffeea2Dodano #fdba5e%amount%#ffeea2 doświadczenia, obecnie konto #fdba5e%player_display_name%#ffeea2 posiada #fdba5e%level%#ffeea2 poziom.'
+      Notify: '#ffeea2Otrzymałeś #fdba5e%amount%#ffeea2 doświadczenia, obecnie masz #fdba5e%level%#ffeea2 poziom.'
     Take:
-      Desc: Odbierz punkty exp graczu.
-      Usage: '[player] <type> <amount>'
-      Done: '{message: ~prefix: false;}&eTaken &c%amount% &eexp/levels from &6%player_name%&e.
-        Level: &6%exp_level%&e, Exp: &6%exp_total%&e.'
+      Target: '#ffeea2Usunięto #fdba5e%amount%#ffeea2 doświadczenia, obecnie konto #fdba5e%player_display_name%#ffeea2 posiada #fdba5e%level%#ffeea2 poziom.'
+      Notify: '#ffeea2Straciłeś #fdba5e%amount%#ffeea2 doświadczenia, obecnie masz #fdba5e%level%#ffeea2 poziom.'
     Set:
-      Desc: Ustaw punkty exp gracza.
-      Usage: '[player] <type> <amount>'
-      Done: '{message: ~prefix: false;}&eSet &6%amount% &eexp/levels for &6%player_name%&e.
-        Level: &6%exp_level%&e, Exp: &6%exp_total%&e.'
+      Target: '#ffeea2Ustawiono #fdba5e%amount%#ffeea2 doświadczenia, obecnie konto #fdba5e%player_display_name%#ffeea2 posiada #fdba5e%level%#ffeea2 poziom.'
+      Notify: '#ffeea2Twoje doświadczenie ustawiono na #fdba5e%amount%#ffeea2, obecnie masz #fdba5e%level%#ffeea2 poziom.'
   Enderchest:
-    Desc: Komendy zarządzające skrzyniami endu.
-    Usage: '[help]'
+    Desc: Wszystkie narzędzia zwiazane z enderchestem.
+    Usage: '[pomoc]'
     Clear:
-      Desc: Wyczyść skrzynię endu.
-      Usage: '[player]'
+      Desc: Wyczyść enderchest gracza.
+      Usage: '[gracz] [-s]'
       Done:
-        Others: '{message: ~sound: BLOCK_FIRE_EXTINGUISH;}Wyczyszczono skrzynię endu gracza &e%player_name%!'
-        Executor: '{message: ~type: ACTION_BAR; ~sound: BLOCK_FIRE_EXTINGUISH;}&7[&bEnder
-          Chest Cleared&7]'
-        Notify: '{message: ~sound: BLOCK_FIRE_EXTINGUISH;}Twoja skrzynia endu została
-          wyczyszczona przez gracza &e%player_name%&7!'
+        Target: '<! sound:"BLOCK_FIRE_EXTINGUISH" !>#ffeea2Wyczyszczono enderchest gracza #fdba5e%player_display_name%#ffeea2!'
+        Notify: <! type:"action_bar" sound:"BLOCK_FIRE_EXTINGUISH" !>#ffeea2Twój enderchest został wyczyszczony!
     Copy:
-      Desc: Skopiuj ekwipunek gracza.
-      Usage: <from> [to]
+      Desc: Skopiuj enderchest gracza.
+      Usage: <z> [do]
       Done:
-        Executor: '{message: ~sound: ITEM_ARMOR_EQUIP_LEATHER;}Skopiowano skrzynię endu
-          gracza &e%player_name%&7.'
-        Others: '{message: ~sound: ITEM_ARMOR_EQUIP_LEATHER;}}Skopiowano skrzynię endu
-          gracza &e%player_from_name%&7 dla &e%player_to_name%&7.'
+        Executor: '<! sound:"ITEM_ARMOR_EQUIP_LEATHER" !>#ffeea2Skopiowano enderchest gracza #fdba5e%player_display_name%#ffeea2.'
+        Others: '<! sound:"ITEM_ARMOR_EQUIP_LEATHER" !>#ffeea2Skopiowano enderchest #fdba5e%source%#ffeea2 do #fdba5e%target%#ffeea2.'
     Fill:
-      Desc: Wypełnij skrzynię endu gracza danym przedmiotem.
-      Usage: <player> <item...>
+      Desc: Wypełnij enderchest gracza określonymi przedmiotami.
+      Usage: <gracz> <przedmiot>
       Done:
-        Executor: '{message: ~sound: ENTITY_ITEM_PICKUP;}Wypełniono skrzynię endu
-          gracza &e%player_name%&7 z &e%item_name%&7.'
+        Executor: '<! sound:"ENTITY_ITEM_PICKUP" !>#ffeea2Wypełniono enderchest gracza #fdba5e%player_display_name%#ffeea2 przedmiotem #fdba5e%item%#ffeea2.'
     Open:
-      Desc: Otwórz skrzynię ednu wyciszalnego gracza.
-      Usage: <player>
+      Desc: Otwórz enderchest gracza.
+      Usage: '[gracz]'
       Done:
-        Executor: '{message: ~sound: BLOCK_CHEST_OPEN;}Otworzono skrzynię endu
-          gracza &e%player_name%&7.'
-        Offline: '{message: ~sound: BLOCK_CHEST_CLOSE;}Zapisano skrzynię endu
-          gracza offline &e%player_name%&7.'
-      Error:
-        Offline:
-          Joined: '{message: ~sound: ENTITY_VILLAGER_NO;}&cSkrzynia endu nie zostanie zapisana
-            ponieważ gracz &e%player_name%&7 jest teraz online. Użyj tej komendy ponownie.'
+        Executor: <! sound:"BLOCK_CHEST_OPEN" !>#ffeea2Otwarzyłeś przenośny enderchest!
+    Repair:
+      Desc: Napraw wszystkie przedmioty w endercheście.
+      Usage: '[gracz] [-s]'
+      Notify: <! sound:"BLOCK_ANVIL_USE" !>#ffeea2Wszystkie przedmioty w twoim endercheście zostały naprawione!
+      Target: '<! sound:"BLOCK_ANVIL_USE" !>#ffeea2Naprawiono wszystkie przedmioty w endercheście gracza #fdba5e%player_display_name%#ffeea2!'
   Extinguish:
-    Desc: Ugaś gracza.
-    Usage: '[player]'
-    Notify: '{message: ~prefix: false; ~type: ACTION_BAR; ~sound: BLOCK_FIRE_EXTINGUISH;}&eUgaszono
-      Cię.'
-    Done: '{message: ~prefix: false; ~sound: BLOCK_FIRE_EXTINGUISH;}&eGracz &6%player_name%
-      &ezostał ugaszony.'
+    Desc: Ugaś ogień dla gracza.
+    Usage: '[gracz] [-s]'
+    Notify: <! type:"action_bar" sound:"BLOCK_FIRE_EXTINGUISH" !>#ffeea2Zostałeś ugaszony.
+    Target: '<! sound:"BLOCK_FIRE_EXTINGUISH" !>#ffeea2Gracz #fdba5e%player_display_name%#ffeea2 został ugaszony.'
+  Equip:
+    Desc: Przenieś przedmiot trzymany w ręce do wyznaczonego miejsca w zbroi.
+    Usage: <slot>
+    Done: '<! sound:"ITEM_ARMOR_EQUIP_LEATHER" !>#ffeea2Wyposażono #fdba5e%item%#ffeea2.'
   Feed:
-    Desc: Nakarm gracza.
-    Usage: '[player]'
+    Desc: Uzupełnij poziom jedzenia.
+    Usage: '[gracz] [-sat] [-s]'
     Done:
-      Self: '{message: ~prefix: false;}&7Nakarmiono!'
-      Others: '{message: ~prefix: false;}&7Nakarmiono gracza &e%player%&7!'
+      Self: <! sound:"ENTITY_GENERIC_EAT" !>#ffeea2Twój poziom jedzenia został uzupełniony!
+      Others: '<! sound:"ENTITY_GENERIC_EAT" !>#ffeea2Uzupełniono poziom jedzenia dla #fdba5e%player_display_name%#ffeea2!'
   Fly:
-    Desc: Przełącz tryb lotu.
-    Usage: '[player] [0/1]'
-    Done: '{message: ~prefix: false;}&eTryb lotu gracza &6%player_name%&e: &6%state%&e.'
-    Notify: '{message: ~prefix: false;}&eTryb lotu: &6%state%&e.'
-    Error:
-      BadWorld: '{message: ~prefix: false;}&cLatanie nie jest tutaj dozwolone!'
-  GameMode:
-    Desc: Zmień gamemode.
-    Usage: '[player] <mode>'
-    Notify: '{message: ~prefix: false;}&eGame Mode: &6%gamemode%&e.'
-    Done: '{message: ~prefix: false;}&eGame Mode gracza &6%player_name%&e: &6%gamemode%&e.'
-  God:
-    Desc: Przełącz God mode.
-    Usage: '[player] [0/1]'
-    Damage:
-      Notify:
-        Out: '{message: ~prefix: false; ~type: ACTION_BAR;}&cNie możesz zadawać obrażeń
-          w God mode!'
-    Toggle:
-      Notify: '{message: ~prefix: false;}&eGod mode: &6%state%&e.'
-      Done: '{message: ~prefix: false;}&eGod mode gracza &6%player%&e: &6%state%&e.'
-    Error:
-      World: '{message: ~prefix: false;}&cGod mode nie jest tutaj dozwolony!'
-  Hat:
-    Desc: Załóż przedmiot w ręce na głowę.
-    Done: '{message: ~prefix: false; ~type: ACTION_BAR; ~sound: ITEM_ARMOR_EQUIP_LEATHER;}&eCzapa
-      na łbie'
-  Heal:
-    Desc: Ulecz.
-    Usage: '[player]'
+    Desc: Przełącz tryb latania.
+    Usage: '[gracz] [-on] [-off] [-s]'
+    Target: '#ffeea2Możliwość latania gracza #fdba5e%player_display_name%#ffeea2 została #fdba5e%state%#ffeea2.'
+    Notify: '#ffeea2Możliwość latania została #fdba5e%state%#ffeea2.'
+  FlySpeed:
+    Desc: Zmień prędkość latania gracza.
+    Usage: <prędkość> [gracz] [-s]
     Done:
-      Self: '{message: ~prefix: false;}&7Uleczono Cię!'
-      Others: '{message: ~prefix: false;}&7Uleczono gracza &e%player%&7!'
+      Notify: '#ffeea2Twoja prędkość lotu została ustawiona na #fdba5e%amount%#ffeea2.'
+      Target: '#ffeea2Prędkość lotu gracza #fdba5e%player_display_name%#ffeea2 została ustawiona na #fdba5e%amount%#ffeea2.'
+  Fire:
+    Desc: Zarządzaj czasem trwania ognia.
+    Usage: <operacja> <ilość> [gracz]
+    Give:
+      Target: '#ffeea2Dodano #fdba5e%time%s#ffeea2 ognia dla #fdba5e%player_display_name%#ffeea2.'
+    Take:
+      Target: '#ffeea2Skróciłeś czas ognia dla #fdba5e%player_display_name%#ffeea2 do #fdba5e%time%s#ffeea2.'
+    Set:
+      Target: '#ffeea2Ustawiono #fdba5e%time%s#ffeea2 ognia dla #fdba5e%player_display_name%#ffeea2.'
+  Food:
+    Desc: Zarządzaj poziomem głodu.
+    Usage: <operacja> <ilość> [gracz] [-s]
+    Give:
+      Target: '#ffeea2Przyznano #fdba5e%amount%#ffeea2 pkt głodu dla #fdba5e%player_display_name%#ffeea2. Aktualny stan: #fdba5e%current%#ffeea2/#fdba5e%max%#ffeea2.'
+      Notify: '<! type:"action_bar" !>#ffeea2Otrzymałeś #fdba5e%amount%#ffeea2 punktów głodu. Stan: #fdba5e%current%#ffeea2/#fdba5e%max%#ffeea2.'
+    Take:
+      Target: '#ffeea2Odebrano #fdba5e%amount%#ffeea2 pkt głodu dla #fdba5e%player_display_name%#ffeea2. Aktualny stan: #fdba5e%current%#ffeea2/#fdba5e%max%#ffeea2.'
+      Notify: '<! type:"action_bar" !>#ffeea2Zmniejszono Twój poziom głodu o #fdba5e%amount%#ffeea2 punktów. Stan: #fdba5e%current%#ffeea2/#fdba5e%max%#ffeea2.'
+    Set:
+      Target: '#ffeea2Ustawiono #fdba5e%amount%#ffeea2 pkt głodu dla #fdba5e%player_display_name%#ffeea2. Aktualny stan: #fdba5e%current%#ffeea2/#fdba5e%max%#ffeea2.'
+      Notify: '<! type:"action_bar" !>#ffeea2Twój poziom jedzenia został ustawiony na #fdba5e%amount%#ffeea2/#fdba5e%max%#ffeea2.'
+  FoodGod:
+    Desc: Przełącz nieskończony tryb jedzenia.
+    Usage: '[gracz] [-on] [-off] [-s]'
+    Target: '#ffeea2Nieskończona ilość jedzenia została dla #fdba5e%player_display_name%#ffeea2 została #fdba5e%state%#ffeea2.'
+    Notify: '#ffeea2Nieskończona ilość jedzenia została #fdba5e%state%#ffeea2.'
+  Grindstone:
+    Desc: Otwórz przenośne kamień szlifierski.
+    Usage: '[gracz] [-s]'
+    Notify: <! type:"action_bar" !>#ffeea2Otworzyłeś kamień szlifierski.
+    Target: '#ffeea2Otworzyłeś kamień szlifierski dla #fdba5e%player_display_name%#ffeea2.'
+  GameMode:
+    Desc: Zmień tryb gry.
+    Usage: <tryb gry> [gracz] [-s]
+    Notify: '#ffeea2Twój tryb gry został ustawiony na #fdba5e%type%#ffeea2.'
+    Target: '#ffeea2Ustawiłeś tryb #fdba5e%type%#ffeea2 dla #fdba5e%player_display_name%#ffeea2.'
+  God:
+    Desc: Przełącz tryb nieśmiertelności.
+    Usage: '[gracz] [-on] [-off] [-s]'
+    Notify:
+      DamageDisabled: <! type:"action_bar" !>#fd5e5eNie możesz zadawać obrażeń w trybie nieśmiertelności!
+      BadWorld: '#fd5e5eUwaga: #ffeea2Tryb nieśmiertelności jest wyłączony w tym świecie!'
+    Toggle:
+      Notify: '#ffeea2Nieśmiertelność została #fdba5e%state%#ffeea2.'
+      Target: '#ffeea2Nieśmiertelność dla #fdba5e%player_display_name%#ffeea2 została #fdba5e%state%#ffeea2.'
+  Heal:
+    Desc: Przywróć zdrowie gracza.
+    Usage: '[gracz] [-eff] [-s]'
+    Notfiy: '#ffeea2Zostałeś uzdrowiony!'
+    Target: '#ffeea2Gracz #fdba5e%player_display_name%#ffeea2 został uzdrowiony.'
+  Health:
+    Desc: Zarządzaj zdrowiem gracza.
+    Usage: <operacja> <ilość> [gracz] [-s]
+    Add:
+      Target: '#ffeea2Przyznano #fdba5e%amount%#ffeea2 pkt zdrowia dla #fdba5e%player_display_name%#ffeea2. Aktualne zdrowie: #fdba5e%current%#ffeea2/#fdba5e%max%#ffeea2.'
+      Notify: '<! type:"action_bar" !>#ffeea2Otrzymałeś #fdba5e%amount%#ffeea2 pkt zdrowia: #fdba5e%current%#ffeea2/#fdba5e%max%#ffeea2.'
+    Remove:
+      Target: '#ffeea2Zabrano #fdba5e%amount%#ffeea2 pkt zdrowia od #fdba5e%player_display_name%#ffeea2. Aktualne zdrowie: #fdba5e%current%#ffeea2/#fdba5e%max%#ffeea2.'
+      Notify: '<! type:"action_bar" !>#ffeea2Straciłeś #fdba5e%amount%#ffeea2 pkt zdrowia. Stan: #fdba5e%current%#ffeea2/#fdba5e%max%#ffeea2.'
+    Set:
+      Target: '#ffeea2Ustawiono #fdba5e%amount%#ffeea2 pkt zdrowia dla #fdba5e%player_display_name%#ffeea2. Aktualne zdrowie: #fdba5e%current%#ffeea2/#fdba5e%max%#ffeea2.'
+      Notify: '<! type:"action_bar" !>#ffeea2Twoje zdrowie zostało ustawione na #fdba5e%amount%#ffeea2/#fdba5e%max%#ffeea2.'
   Ignore:
-    Desc: Dodaj/Usuń gracza do/z czarnej listy.
-    Usage: '[player]'
-    Done: '{message: ~prefix: false;}&7Gracz &e%player% &7dodany do czarnej listy.
-      Możesz zmienić ustawienia lub usunąć z niej gracza używając &e/ignore'
-    Error:
-      Already: '{message: ~prefix: false;}&cGracz &e%player% &cjest już na czarnej liście.'
-      Bypass: '{message: ~prefix: false;}&cGracz &e%player% &cnie może zostać dodany na czarną listę!'
+    Desc: Zarządzaj swoją czarną listą graczy.
+    Usage: '[pomoc]'
+    Add:
+      Desc: Dodaj gracza do czarnej listy.
+      Usage: <gracz>
+      Done: '#ffeea2Gracz #fd5e5e%player_name%#ffeea2 został dodany do czarnej listy. Możesz zmienić ustawienia lub odblokować go za pomocą #fd5e5e/ignore list'
+      Error:
+        AlreadyIn: '#ffeea2Gracz jest już na czarnej liście.'
+    Remove:
+      Desc: Usuń gracza z czarnej listy.
+      Usage: <gracz>
+      Done: '#ffeea2Gracz #fdba5e%player_name%#ffeea2 został usunięty z czarnej listy.'
+      Error:
+        NotIn: '#ffeea2Gracz nie jest na czarnej liście.'
+    List:
+      Desc: Wyświetl swoją czarną listę graczy.
+      Usage: ''
   Inventory:
-    Desc: Komendy zarządzające ekwipunkiem gracza.
-    Usage: '[help]'
+    Desc: Zarządzaj ekwipunkiem gracza.
+    Usage: '[pomoc]'
     Clear:
-      Desc: Wyczyść ekwipunek swój lub gracza.
-      Usage: '[player]'
+      Desc: Wyczyść własny lub inny ekwipunek gracza.
+      Usage: '[gracz] [-s]'
       Done:
-        Others: '{message: ~sound: BLOCK_FIRE_EXTINGUISH;}Wyczyszczono ekwipunek
-          gracza &e%player_name%&7!'
-        Executor: '{message: ~type: ACTION_BAR; ~sound: BLOCK_FIRE_EXTINGUISH;}&7[&bInventory
-          Cleared&7]'
-        Notify: '{message: ~sound: BLOCK_FIRE_EXTINGUISH;}Twój ekwipunek został wyczyszczony
-          przez &e%player_name%&7!'
+        Target: '<! sound:"BLOCK_FIRE_EXTINGUISH" !>#ffeea2Wyczyszczono ekwipunek gracza #fdba5e%player_display_name%#ffeea2!'
+        Notify: <! sound:"BLOCK_FIRE_EXTINGUISH" !>#ffeea2Twój ekwipunek został wyczyszczony!
     Copy:
       Desc: Skopiuj ekwipunek gracza.
-      Usage: <from> [to]
+      Usage: <z> [do]
       Done:
-        Executor: '{message: ~sound: ITEM_ARMOR_EQUIP_LEATHER;}Skopiowano ekwipunek
-          gracza &e%player_name%&7.'
-        Others: '{message: ~sound: ITEM_ARMOR_EQUIP_LEATHER;}Skopiowano ekwipunek
-          gracza &e%player_from_name%&7 dla &e%player_to_name%&7.'
+        Notify: '<! sound:"ITEM_ARMOR_EQUIP_LEATHER" !>#ffeea2Skopiowano ekwipunek gracza #fdba5e%player_display_name%#ffeea2.'
+        Target: '<! sound:"ITEM_ARMOR_EQUIP_LEATHER" !>#ffeea2Skopiowano ekwipunek #fdba5e%source%#ffeea2 do #fdba5e%target%#ffeea2.'
     Fill:
-      Desc: Wypełnij ekwipunek gracza wybranymi przedmiotami.
-      Usage: <player> <item...>
-      Done:
-        Executor: '{message: ~sound: ENTITY_ITEM_PICKUP;}Wypełniono ekwipunek
-          gracza &e%player_name%&7 z &e%item_name%&7.'
+      Desc: Wypełnij ekwipunek gracza określonym(i) przedmiotem(ami).
+      Usage: <gracz> <przedmiot>
+      Done: '<! sound:"ENTITY_ITEM_PICKUP" !>#ffeea2Wypełniono ekwipunek gracza #fdba5e%player_display_name%#ffeea2 przedmiotem #fdba5e%item%#ffeea2.'
     Open:
-      Desc: Otwórz ekwipunek wyciszalnego gracza.
-      Usage: <player>
-      Done:
-        Executor: '{message: ~sound: BLOCK_CHEST_OPEN;}Otworzono ekwipunek
-          gracza &e%player_name%&7.'
-        Offline: '{message: ~sound: BLOCK_CHEST_CLOSE;}Saved offline &e%player_name%&7''s
-          inventory.'
-      Error:
-        Offline:
-          Joined: '{message: ~sound: ENTITY_VILLAGER_NO;}&cZmiany w ekwipunku nie zostaną
-            zapisane ponieważ gracz &e%player_name%&c jest teraz online. Użyj tej komendy ponownie.'
+      Desc: Otwórz edytowalny ekwipunek gracza.
+      Usage: <gracz>
+      Done: '<! sound:"BLOCK_CHEST_OPEN" !>#ffeea2Otwarto ekwipunek gracza #fdba5e%player_display_name%#ffeea2.'
+    Repair:
+      Desc: Napraw wszystkie przedmioty w ekwipunku gracza.
+      Usage: '[gracz] [-s]'
+      Notify: <! sound:"BLOCK_ANVIL_USE" !>#ffeea2Wszystkie przedmioty w twoim ekwipunku zostały naprawione!
+      Target: '<! sound:"BLOCK_ANVIL_USE" !>#ffeea2Naprawiono wszystkie przedmioty w ekwipunku gracza #fdba5e%player_display_name%#ffeea2!'
   Item:
-    Desc: Komendy zarządzające przedmiotami.
-    Usage: '[help]'
+    Desc: Zarządzaj przedmiotami.
+    Usage: '[pomoc]'
     Error:
-      Material: '&c%name%&7 jest niepoprawny!'
+      Material: '#fdba5e%type%#fd5e5e nie jest prawidłowym materiałem!'
+      EmptyHand: '#fd5e5eMusisz trzymać przedmiot!'
     Amount:
-      Desc: Zmień ilość przedmiotów.
-      Usage: <amount>
-      Done: '{message: ~sound: ENTITY_ITEM_PICKUP;}Wybrano ilość &ex%item_amount%&7 dla &e%item_name%&7!'
-    Enchant:
-      Desc: Zaklnij/Usuń zaklęcie przedmiot/u w ręce.
-      Usage: <enchantment> <level>
-      Done:
-        Enchanted: '{message: ~sound: BLOCK_ENCHANTMENT_TABLE_USE;}&e%item_name%&7
-          zaklęto z &e%enchantment_name% %enchantment_level%&7!'
-        Disenchanted: '{message: ~sound: UI_STONECUTTER_TAKE_RESULT;}Zaklęcie &e%enchantment_name%&7
-          usunięte z &e%item_name%&7!'
-    Flag:
-      Desc: Add or remove item flags.
-      Add:
-        Desc: Add specified flag to the item.
-        Usage: <item flag>
-        Done: '{message: ~sound: BLOCK_ANVIL_USE;}Added &e%item_flag%&7 flag to the
-          item!'
-      Remove:
-        Desc: Remove specified flag from the item.
-        Usage: <item flag>
-        Done: '{message: ~sound: BLOCK_ANVIL_USE;}Removed &e%item_flag%&7 flag from
-          the item.'
-      Clear:
-        Desc: Clear item flags.
-        Done: '{message: ~sound: BLOCK_ANVIL_USE;}Item flags cleared!'
-    Get:
-      Desc: Otrzymaj wybrany przedmiot.
-      Usage: <material> [amount]
-      Done: '{message: ~sound: ENTITY_ITEM_PICKUP;}Otrzymałeś &ex%item_amount%&7 &e%item_type%&7!
-        Co prawda mogłeś zdobyć to grając w grę ale nie no spoko... Mleczka też chcesz?
-        Tatuś nie wróci w najbliższym czasie.'
-    Give:
-      Desc: Daj wybrany przedmiot graczu.
-      Usage: <player> <material> [amount]
-      Done: '{message: ~sound: ENTITY_ITEM_FRAME_ADD_ITEM;}Dałeś &ex%item_amount%&7
-        &e%item_type%&7 graczu &e%player_name%&7!'
-      Notify: '{message: ~sound: ENTITY_ITEM_PICKUP;}&e%item_sender%&7 podarował Ci &ex%item_amount%&7
-        &e%item_type%&7!'
-    Take:
-      Desc: Zabierz przedmiot graczu.
-      Usage: <player> <material> [amount]
-      Done: '{message: ~sound: ENTITY_ITEM_FRAME_REMOVE_ITEM;}Zabrałeś &ex%item_amount%&7
-        &e%item_type%&7 z ekwipunku &e%player_name%&7!'
+      Desc: Zmień ilość przedmiotu.
+      Usage: '[ilość]'
+      Done: '<! sound:"ENTITY_ITEM_PICKUP" !>#ffeea2Ustawiono ilość przedmiotu #fdba5e%item%#ffeea2 na x#fdba5e%amount%#ffeea2.'
+    Damage:
+      Desc: Zmień uszkodzenie przedmiotu.
+      Usage: '[ilość]'
+      Done: '<! sound:"BLOCK_ANVIL_USE" !>#ffeea2Ustawiono uszkodzenie przedmiotu #fdba5e%item%#ffeea2 na #fdba5e%amount%#ffeea2.'
       Error:
-        NotEnough: '{message: ~sound: ENTITY_VILLAGER_NO;}&cNie można oebrać przedmiotów.
-          Gracz &e%player_name%&c nie ma wystarczająco &e%item_type%s &4(&c%item_has%&4/&c%item_amount%&4)&c!'
-      Notify: '{message: ~sound: ENTITY_ITEM_FRAME_REMOVE_ITEM;}&e%item_sender%&7
-        Odebrał Ci &ex%item_amount% &e%item_type%&7!'
-    Lore:
-      Desc: Zmień opis przedmiotu.
+        NotDamageable: <! sound:"ENTITY_VILLAGER_NO" !>#fdba5e%item%#fd5e5e nie może być uszkodzony.
+    Enchant:
+      Desc: Enchantuj przedmiot w dłoni.
+      Usage: <enchant> <poziom>
+      Done:
+        Enchanted: '<! sound:"BLOCK_ENCHANTMENT_TABLE_USE" !>#fdba5e%item%#ffeea2 został zaczarowany na #fdba5e%name% poziomu %level%!'
+        Disenchanted: '<! sound:"BLOCK_ENCHANTMENT_TABLE_USE" !>#ffeea2Usunieto zaklęcie #fdba5e%name%#ffeea2 z przedmiotu #fdba5e%item%#ffeea2!'
+    Flag:
+      Desc: Dodaj lub usuń flagi przedmiotu.
+      Usage: '[pomoc]'
       Add:
-        Desc: Dodaj nową linię do opisu przedmiotu.
-        Usage: <text> [position]
-        Done: '{message: ~sound: BLOCK_ANVIL_USE;}Dodano nową linię opisu!'
+        Desc: Dodaj określoną flagę do przedmiotu.
+        Usage: <flaga>
+        Done: '<! sound:"BLOCK_ANVIL_USE" !>#ffeea2Dodano flagę #fdba5e%name%#ffeea2 do przedmiotu!'
       Remove:
-        Desc: Usuń linię z opisu przedmiotu.
-        Usage: <position>
-        Done: '{message: ~sound: BLOCK_ANVIL_USE;}Usunięto linię z opisu przedmiotu.'
+        Desc: Usuń określoną flagę z przedmiotu.
+        Usage: <flaga>
+        Done: '<! sound:"BLOCK_ANVIL_USE" !>#ffeea2Usunięto flagę #fdba5e%name%#ffeea2 z przedmiotu.'
       Clear:
-        Desc: Wyczyść opis przedmiotu.
-        Done: '{message: ~sound: BLOCK_ANVIL_USE;}Wyczyszczono opis przedmiotu!'
+        Desc: Wyczyść flagi przedmiotu.
+        Done: <! sound:"BLOCK_ANVIL_USE" !>#ffeea2Flagi przedmiotu usunięte!
+    Get:
+      Desc: Pobierz określony stack przedmiotów.
+      Usage: <materiał> [ilość] [-name <nazwa>] [-lore <tekst>] [-ench <zaklęcie:poziom>] [-model <modelData>]
+      Done: '<! sound:"ENTITY_ITEM_PICKUP" !>#ffeea2Otrzymałeś #fdba5ex%amount%#ffeea2 #fdba5e%type%#ffeea2!'
+    Give:
+      Desc: Daj określoną ilość przedmiotów graczowi.
+      Usage: <gracz> <materiał> [ilość] [-name <nazwa>] [-lore <tekst>] [-ench <zaklęcie:poziom>] [-model <modelData>]
+      Done: '<! sound:"ENTITY_ITEM_PICKUP" !>#ffeea2Dałeś #fdba5ex%amount%#ffeea2 #fdba5e%type%#ffeea2 graczowi #fdba5e%player_display_name%#ffeea2!'
+      Notify: '<! sound:"ENTITY_ITEM_PICKUP" !>#ffeea2Otrzymałeś #fdba5ex%amount%#ffeea2 #fdba5e%type%#ffeea2!'
+    Take:
+      Desc: Weź określony stos przedmiotów od gracza.
+      Usage: <gracz> <materiał> [ilość] [-name <nazwa>] [-lore <tekst>] [-ench <czar:poziom>] [-model <modelData>]
+      Done: '<! sound:"ENTITY_GLOW_ITEM_FRAME_REMOVE_ITEM" !>#ffeea2Odebrano #fdba5ex%amount%#ffeea2 #fdba5e%type%#ffeea2 od gracza #fdba5e%player_display_name%#ffeea2!'
+      Error:
+        NotEnough: '<! sound:"ENTITY_VILLAGER_NO" !>#fd5e5eGracz nie ma wystarczającej ilości #fdba5e%type%#fd5e5e (%amount%/%total%)!'
+      Notify: '<! sound:"ENTITY_GLOW_ITEM_FRAME_REMOVE_ITEM" !>#fdba5ex%amount%#ffeea2 #fdba5e%type%#ffeea2 zostało zabrane z twojego ekwipunku!'
+    Lore:
+      Desc: Zmień lore przedmiotu.
+      Usage: '[pomoc]'
+      Add:
+        Desc: Dodaj nową linię lore.
+        Usage: <tekst> [-pos <pozycja>]
+        Done: <! sound:"BLOCK_ANVIL_USE" !>#ffeea2Dodano nową linię lore do przedmiotu!
+      Remove:
+        Desc: Usuń linię lore z przedmiotu.
+        Usage: <pozycja>
+        Done: <! sound:"BLOCK_ANVIL_USE" !>#ffeea2Usunięto lore z przedmiotu.
+      Clear:
+        Desc: Wyczyść lore przedmiotu.
+        Done: <! sound:"BLOCK_ANVIL_USE" !>#ffeea2Wyczyszczono lore przedmiotu!
     Model:
       Desc: Zmień dane modelu przedmiotu.
       Usage: <model data>
-      Done: '{message: ~sound: BLOCK_ANVIL_USE;}Ustawiono &e%item_model%&7 jako dane modelu
-        dla &e%item_name%&7!'
+      Done: '<! sound:"BLOCK_ANVIL_USE" !>#ffeea2Ustawiono #fdba5e%amount%#ffeea2 jako dane modelu przedmiotu #fdba5e%item%#ffeea2!'
     Name:
-      Desc: Zmień wyświetlaną nazwę przedmiotu.
-      Usage: <name>
+      Desc: Zmień nazwę wyświetlaną przedmiotu.
+      Usage: '[nazwa]'
       Done:
-        Changed: '{message: ~sound: BLOCK_ANVIL_USE;}Zmieniono nazwę przedmiotu!'
-        Reset: '{message: ~sound: BLOCK_ANVIL_USE;}Zwrócono domyślną nazwę przedmiotu.'
+        Changed: <! sound:"BLOCK_ANVIL_USE" !>#ffeea2Pomyślnie zmieniłeś nazwe przedmiotu!
+        Reset: <! sound:"BLOCK_ANVIL_USE" !>#ffeea2Nazwa przedmiotu przywrócona do domyślnej.
+    Potion:
+      Error:
+        NotAPotion: '#fd5e5eMusisz trzymać miksturę!'
+        InvalidEffect: '#fd5e5eNieprawidłowy efekt!'
+      Add:
+        Desc: Dodaj efekt do mikstury.
+        Usage: <efekt> <moc> <czas trwania>
+        Done: '#ffeea2Dodano efekt mikstury!'
     Spawn:
-      Desc: Utwórz wybrany przedmiot.
-      Usage: <material> <amount> [world] [x] [y] [z]
-      Done: '{message: ~sound: ENTITY_ITEM_PICKUP;}Utworzono &ex%item_amount% %item_name%&7
-        w &e%item_x%&7, &e%item_y%&7, &e%item_z%&7 na świecie &e%item_world%&7!'
-  List:
-    Desc: Pokaż dostępnych graczy i ich rangi.
-  Me:
-    Desc: Pokaż aktywność na czacie.
-    Usage: <action>
-  Mobkill:
-    Desc: Zabij wybranych wrogów.
-    Usage: <type>
-    Done:
-      Type: '{message: ~prefix: false;}&7Zabito &a%amount% %type%&7!'
-      All: '{message: ~prefix: false;}&7Zabito &a%amount% &7wrogów!'
-  More:
-    Desc: Zwiększ ilość przedmiotu w ręce.
+      Desc: Stwórz określony stos przedmiotów.
+      Usage: <materiał> <ilość> [świat] [x] [y] [z] [-name <nazwa>] [-lore <tekst>] [-ench <zaklęcie:poziom>] [-model <modelData>]
+      Done: '<! sound:"ENTITY_ITEM_PICKUP" !>#ffeea2Pomyślnie stworzono #fdba5ex%amount%#ffeea2 #fdba5e%type%#ffeea2 na pozycjach #fdba5e%location_x%, %location_y%, %location_z%#ffeea2 w świecie #fdba5e%location_world%#ffeea2!'
+    Unbreakable:
+      Desc: Tworzy niezniszczalny przedmiot.
+      Usage: ''
+      Done: '<! sound:"BLOCK_ANVIL_USE" !>#ffeea2Status niezniszczalności bedzie włączony: #fdba5e%state%#ffeea2.'
+      Error:
+        NotDamageable: <! sound:"ENTITY_VILLAGER_NO" !>#fdba5e%item%#fd5e5eNie może być niezniszczalny!
+  Loom:
+    Desc: Otwórz przenośne krosno.
+    Usage: '[gracz] [-s]'
+    Notify: <! type:"action_bar" !>#ffeea2Otworzyłeś krosno.
+    Target: '#ffeea2Otworzyłeś krosno dla #fdba5e%player_display_name%#ffeea2.'
+  Mob:
+    Desc: Narzędzia zarządzania mobami.
+    Usage: '[pomoc]'
+    Kill:
+      Desc: Zabij określone typy mobów.
+      Usage: <typ> [-r <promień>] [-w <świat>] [-lim <limit>]
+      Error:
+        Type: '#fd5e5eByt #fdba5e%type%#fd5e5e nie może być zabity!'
+      Done: '<! prefix:"false" sound:"ENTITY_ZOMBIE_DEATH" !>#ffeea2Zabito #fdba5ex%amount% %type%#ffeea2 w świecie #fdba5e%world%#ffeea2 w promieniu #fdba5e%radius%#ffeea2 bloków.'
+    Clear:
+      Desc: Zabij wszystkie żywe istoty.
+      Usage: '[promień] [-w <świat>]'
+      Done: '<! sound:"ENTITY_ZOMBIE_DEATH" !>#ffeea2Zabito #fdba5e%amount%#ffeea2 mobów w świecie #fdba5e%world%#ffeea2 w promieniu #fdba5e%radius%#ffeea2 bloków.'
+    Spawn:
+      Desc: Stwórz określonego moba.
+      Usage: <typ> [ilość] [-name <nazwa>]
+      Error:
+        Type: '#fd5e5eTen typ bytu jest nieprawidłowy lub nie może być stworzony!'
+      Done: '#ffeea2Stworzono #fdba5ex%amount% %type%#ffeea2.'
   Near:
-    Desc: Pokaż graczy w pobliżu.
+    Desc: Pokaż najbliższych graczy.
+    Usage: ''
     Error:
-      None: '{message: ~prefix: false;}&7Nie znaleziono graczy w promieniu &e%radius%&7
-        bloków.'
+      Nothing: '#ffeea2Brak graczy w promieniu #fdba5e%radius%#ffeea2 bloków.'
   Nick:
-    Desc: Zmień nick.
-    Usage: '[nick]'
-    Done:
-      Others: '{message: ~prefix: false;}&7Gracz &e%player% &7zmienił swój nick na &e%nick%&7.'
-      Self: '{message: ~prefix: false;}&7Twój nick został zmieniony na &e%nick%&7.'
+    Desc: Zarządzanie niestandardowy nick.
+    Usage: '[pomoc]'
+    Clear:
+      Desc: Usuń niestandardowy nick gracza.
+      Usage: '[gracz] [-s]'
+      Target: '#ffeea2Usunięto niestandardowy nick dla #fdba5e%player_display_name%#ffeea2.'
+      Notify: '#ffeea2Twój niestandardowy nick został usunięty.'
+    Set:
+      Desc: Ustaw nick dla gracza.
+      Usage: <gracz> <nick> [-s]
+      Target: '#ffeea2Ustawiono #fdba5e%name%#ffeea2 jako nick dla #fdba5e%player_name%#ffeea2.'
+      Notify: '#ffeea2Twój nick został ustawiony na #fdba5e%name%#ffeea2.'
+    Change:
+      Desc: Zmień swój nick.
+      Usage: <pseudonim>
+      Done: '#ffeea2Ustawiono nick na #fdba5e%name%#ffeea2.'
     Error:
-      Blacklisted: '{message: ~prefix: false;}&cNick zawiera zablokowane wyrazy.'
-      Long: '{message: ~prefix: false;}&cNick nie może być dłuższy niż &e20 znaków&c.'
-      Short: '{message: ~prefix: false;}&cNick nie może być krótszy niż &e3 znaki&c.'
+      BadWords: '#fd5e5ePseudonim zawiera zakazane słowa.'
+      Regex: '#fd5e5ePseudonim zawiera niedozwolone znaki.'
+      TooLong: '#fd5e5ePseudonim nie może być dłuższy niż #fdba5e%amount%#fd5e5e znaków.'
+      TooShort: '#fd5e5ePseudonim musi zawierać co najmniej #fdba5e%amount%#fd5e5e znaków.'
   NoPhantom:
-    Desc: Przełącz ataki fantomów.
-    Usage: '[0/1] [player]'
+    Desc: Przełącz pojawianie się phantomów wokół gracza.
+    Usage: '[gracz] [-on] [-off] [-s]'
     Toggle:
-      Self: '{message: ~prefix: false;}&7Anti-Phantom: &e%state%'
-      Others: '{message: ~prefix: false;}&7Anti-Phantom dla &e%player%&7: &e%state%'
+      Notify: '#ffeea2Możliwość atakowania ciebie przez Phantomy została #fdba5e%state%#ffeea2.'
+      Target: '#ffeea2Możliwość atakowania przez Phantomy gracza #fdba5e%player_display_name%#ffeea2 została #fdba5e%state%#ffeea2.'
+  NoMobTarget:
+    Desc: Przełącz celowanie mobów [dla gracza].
+    Usage: '[gracz] [-on] [-off] [-s]'
+    Toggle:
+      Notify: '#ffeea2Możliwość atakowania ciebie przez moby została #fdba5e%state%#ffeea2.'
+      Target: '#ffeea2Możliwość atakowania gracza przez moby dla #fdba5e%player_display_name%#ffeea2 została #fdba5e%state%#ffeea2.'
   PlayerInfo:
-    Desc: Pokaż informacje gracza.
-    Usage: <player>
-  Potion:
-    Desc: Modyfikuj mikstury.
-    Usage: <effect> <amplifier> <duration>
-    Error:
-      NotAPotion: '{message: ~prefix: false;}&cMusisz trzymać miksturę w ręce!'
-      InvalidEffect: '{message: ~prefix: false;}&cNiepoprawny efekt!'
-    Done: '{message: ~prefix: false;}&7Stworzono miksturę!'
-  Repair:
-    Desc: Napraw przedmiot w ekwipunku.
-    Usage: '[all]'
-    Done:
-      Hand: '{message: ~prefix: false;}&7Naprawiono!'
-      All: '{message: ~prefix: false;}&7Naprawiono wszystkie przedmioty w ekwipunku!'
-  Reply:
-    Desc: Odpowiedź na prywatną wiadomość.
-    Usage: <text>
-    Error:
-      Empty: '{message: ~prefix: false;}&7Nie masz komu odpowiedzieć.'
+    Desc: Pokaż informacje o graczu.
+    Usage: <gracz>
+  PlayerList:
+    Desc: Pokaż listę graczy online.
   Skull:
-    Desc: Otrzymaj głowę wybranego gracza.
-    Usage: <name>
-    Done: '{message: ~prefix: false;}&7Zdobyłeś głowę &e%player%&7.'
-  SocialSpy:
-    Desc: Podsłuchuj gracza.
-    Usage: '[1/0] [player]'
-    Toggle:
-      Self: '{message: ~prefix: false;}&7Socialspy: &e%state%'
-      Others: '{message: ~prefix: false;}&7Socialspy dla &e%player%&7: &e%state%'
+    Desc: Zdobądź [gracza] głowę.
+    Usage: <nazwa>
+    Done: '#ffeea2Otrzymałeś głowę #fdba5e%player_name%#ffeea2.'
   Spawner:
     Desc: Zmień typ spawnera.
-    Usage: <type>
-    Done: '{message: ~prefix: false;}&7Typ spawnera zmieniony na &e%type%&7.'
+    Usage: <typ>
+    Done: <! prefix:"false" !>&7Zmieniono typ spawnera na &e%type%&7.
     Error:
-      Type: '{message: ~prefix: false;}&7Ten typ spawnera nie jest dostępny.'
-      Block: '{message: ~prefix: false;}&cMusisz nacelować na &espawner'
-  SpawnMob:
-    Desc: Spawnuj wybrane moby.
-    Usage: <type> [amount]
-    Done: '{message: ~prefix: false;}&7Utworzono &ex%amount% %type%&7.'
+      Type: <! prefix:"false" !>&7Ten typ nie może być stworzony.
+      Block: <! prefix:"false" !>&cMusisz patrzeć na &espawner
   Speed:
-    Desc: Zmień prędkość chodzenia/latania.
-    Usage: <speed> [player]
+    Desc: Zmień prędkość chodzenia.
+    Usage: <prędkość> [gracz] [-s]
     Done:
-      Self:
-        Walk: '{message: ~prefix: false;}&7Ustawiona prędkość chodu: &e%speed%'
-        Fly: '{message: ~prefix: false;}&7Ustawiona prędkość lotu: &e%speed%'
-      Others:
-        Walk: '{message: ~prefix: false;}&7Ustawiona prędkość chodu: &e%speed% &7dla &e%player%'
-        Fly: '{message: ~prefix: false;}&7Ustawiona prędkość lotu: &e%speed% &7dla &e%player%'
+      Notify: '#ffeea2Twoja prędkość chodzenia została ustawiona na #fdba5e%amount%#ffeea2.'
+      Target: '#ffeea2Ustawiono prędkość chodzenia dla #fdba5e%player_display_name%#ffeea2 na #fdba5e%amount%#ffeea2.'
   Sudo:
-    Desc: Zmuś grracza do wpisania komendy lub wiadomości na czacie.
-    Usage: <player> <type> <message>
-    Done: '{message: ~prefix: false;}&7Zmuszono &e%player% &7do napisania: &e%message%'
+    Desc: Wymuś wykonanie polecenia lub wiadomości na czacie przez gracza.
+    Usage: <gracz> <polecenie> [-c]
+    Done:
+      Command: '#ffeea2Zmuszono gracza #fdba5e%player_display_name%#ffeea2 do wykonania polecenia: #fdba5e/%command%#ffeea2.'
+      Chat: '#ffeea2Zmuszono gracza #fdba5e%player_display_name%#ffeea2 do wykonania polecenia: #fdba5e/%command%#ffeea2.'
   Suicide:
-    Desc: Popełnij śmierć.
-    Done: '{message: ~prefix: false;}&4%player%&c sam się zdechł.'
-  System:
-    Desc: Informacje systemowe serwera.
+    Desc: Popełnij samobójstwo.
+    Done: <! prefix:"false" !>#fdba5e%player_display_name%#ffeea2 popełnił samobójstwo.
   Teleport:
-    Desc: Komendy teleportacji.
-    Usage: '[help]'
+    Desc: Narzędzia teleportacji.
+    Usage: '[pomoc]'
     Error:
       Requests:
-        Cooldown: '{message: ~sound: ENTITY_VILLAGER_NO;}&cMożesz znów poprosić o teleport
-          za &e%request_cooldown%'
-        Disabled: '{message: ~sound: ENTITY_VILLAGER_NO;}&cNie możesz prosić &e%player_name%&c
-          o teleportowanie Cię.'
+        Cooldown: '<! sound:"ENTITY_VILLAGER_NO" !>#fd5e5eMożesz wysłać kolejną prośbę o teleportację za #fdba5e%time%'
+        Disabled: '<! sound:"ENTITY_VILLAGER_NO" !>#fd5e5eNie możesz wysłać prośby o teleportację do #fdba5e%player_name%#fd5e5e.'
     Accept:
-      Desc: Zaakceptuj prośbę o teleport.
-      Usage: '[player]'
+      Desc: Zaakceptuj zaproszenie do teleportacji/zaproszenie.
+      Usage: '[gracz]'
       Notify:
-        Sender: '{message: ~sound: ENTITY_ENDERMAN_TELEPORT;}Zaakceptowałeś prośbę o teleport
-          gracza &a%player_name%&7!'
-        Target: '{message: ~sound: ENTITY_ENDERMAN_TELEPORT;}&7Gracz &a%player_name%&7
-          zaakceptował twoją prośbę o teleport!'
+        Sender: '<! sound:"ENTITY_ENDERMAN_TELEPORT" !>#ffeea2Zaakceptowałeś prośbę o teleportację od gracza #fdba5e%player_display_name%#ffeea2!'
+        Target: <! sound:"ENTITY_ENDERMAN_TELEPORT" !>#ffeea2Gracz # fdba5e%player_display_name%#ffeea2 zaakceptował twoją prośbę o teleportację!
       Error:
-        Nothing: '{message: ~sound: ENTITY_VILLAGER_NO;}&cNie znaleziono prośby do zaakceptowania
-          (lub skończył się czas na teleportację).'
+        Nothing: <! sound:"ENTITY_VILLAGER_NO" !>#ffeea2Zaproszenie nie jest już ważne..
     Decline:
-      Desc: Odrzuć prośbę o teleport.
-      Usage: '[player]'
+      Desc: Odrzuć przychodzące zaproszenie do teleportacji/zaproszenie.
+      Usage: '[gracz]'
       Notify:
-        Sender: '{message: ~sound: ENTITY_VILLAGER_NO;}Odrzuciłeś prośbę o teleport
-          od gracza &c%player_name%&7.'
-        Target: '{message: ~sound: ENTITY_VILLAGER_NO;}&7Gracz &e%player_name% &codrzucił
-          twoją prośbę o teleport.'
+        Sender: '<! sound:"ENTITY_VILLAGER_NO" !>#ffeea2Odrzuciłeś prośbę o teleportację od gracza #fdba5e%player_display_name%#ffeea2.'
+        Target: <! sound:"ENTITY_VILLAGER_NO" !>#fdba5e%player_display_name%#ffeea2 odrzucił twoją prośbę o teleportację.
       Error:
-        Nothing: '{message: ~sound: ENTITY_VILLAGER_NO;}&cNie znaleziono prośby do odrzucenia
-          (lub skończył się czas na teleportację).'
+        Nothing: <! sound:"ENTITY_VILLAGER_NO" !>#ffeea2Zaproszenie nie jest już ważne.
     Invite:
-      Desc: Zaproś gracza do teleportacji.
-      Usage: <player>
+      Desc: Wyślij prośbę do teleportacji do ciebie.
+      Usage: <gracz>
       Notify:
-        Sender: '{message: ~sound: ENTITY_ENDER_PEARL_THROW;}Wysłano zaproszenie do
-          teleportacji graczu &e%player_name%&7.'
+        Sender: '<! sound:"ENTITY_ENDER_PEARL_THROW" !>#ffeea2Wysłano prośbę o teleportację do gracza #fdba5e%player_display_name%#ffeea2.'
         Target:
-          - '{message: ~prefix: false;}'
-          - '&6&m                 &6&l[ &e&lTeleport Invite &6&l]&6&m                 &7'
-          - '&6Gracz &e%player_name%&6 zaprasza Cię do teleportacji.'
-          - '&6Wpisz &a/tp accept %player_name% &6aby zaakceptować zaproszenie.'
-          - '&6lub &c/tp decline %player_name% &6aby odrzucić zaproszenie.'
-          - '&7'
-          - '&7             {json: ~showText: &7Zostaniesz teleportowany do &a%player_name%&7.;
-          ~runCommand: /tp accept %player_name%;}&a&l[Accept]{end-json}         {json:
-          ~showText:&7Nie zostaniesz teleportowany do &c%player_name%&7.; ~runCommand:
-          /tp decline %player_name%;}&c&l[Decline]{end-json}'
-          - '&7'
+          - <! prefix:"false" sound:"ENTITY_ENDER_PEARL_THROW" !>
+          - '#ffeea2'
+          - '#ffeea2&lZaproszenie do teleportacji:'
+          - '#ffeea2'
+          - '#ffeea2Gracz #fdba5e%player_display_name%#ffeea2 zaprasza cię do teleportacji do niego.'
+          - '#ffeea2Wpisz #aefd5e/teleport accept %player_name%#ffeea2, aby zaakceptować i się teleportować.'
+          - '#ffeea2lub #fd5e5e/teleport decline %player_name%#ffeea2, aby odrzucić.'
+          - '#ffeea2'
+          - '#ffeea2             <? show_text:"#d4d9d8Zostaniesz teleportowany do #aefd5e%player_display_name%#d4d9d8." run_command:"/teleport accept %player_name%"?>#aefd5e&l[Accept]</> #ffeea2        <? show_text:"#d4d9d8Nie zostaniesz teleportowany do #fd5e5e%player_display_name%#d4d9d8." run_command:"/teleport decline %player_name%"?>#fd5e5e&l[Decline]</>'
+          - '#ffeea2'
+          - '#ffeea2'
     Location:
-      Desc: Teleportuj się w wybrane miejsce.
-      Usage: <x> <y> <z> [player]
+      Desc: Teleportuj się na określone współrzędne.
+      Usage: <x> <y> <z> [gracz] [-w <świat>] [-s]
       Done:
-        Self: '{message: ~sound: ENTITY_ENDERMAN_TELEPORT;}Teleportowanie do &eX: %location_x%&7,
-          &eY: %location_y%&7, &eZ: %location_z%&7 w świecie &e%location_world%&7...'
-        Others: '{message: ~sound: ENTITY_ENDERMAN_TELEPORT;}Gracz &e%player_name%
-          &7teleportował się do &eX: %location_x%&7, &eY: %location_y%&7, &eZ: %location_z%&7
-          w świecie &e%location_world%&7.'
-        Notify: '{message: ~sound: ENTITY_ENDERMAN_TELEPORT;}Zostałeś teleportowany do
-          &eX: %location_x%&7, &eY: %location_y%&7, &eZ: %location_z%&7 w świecie &e%location_world%&7
-          przez &e%player_name%&7.'
+        Target: '<! sound:"ENTITY_ENDERMAN_TELEPORT" !>#ffeea2Gracz #fdba5e%player_display_name%#ffeea2 teleportowany na #fdba5e%location_x%, %location_y%, %location_z%#ffeea2 w świecie #fdba5e%location_world%#ffeea2.'
+        Notify: '<! sound:"ENTITY_ENDERMAN_TELEPORT" !>#ffeea2Zostałeś teleportowany na #fdba5e%location_x%, %location_y%, %location_z%#ffeea2 w świecie #fdba5e%location_world%#ffeea2.'
     Request:
-      Desc: Wyślij prośbę o teleport.
-      Usage: <player>
+      Desc: Wyślij prośbę o teleportację do gracza.
+      Usage: <gracz>
       Notify:
-        Sender: Wysłano prośbę o teleport do &e%player_name%&7.
+        Sender: '<! sound:"ENTITY_ENDER_PEARL_THROW" !>#ffeea2Wysłano prośbę o teleportację do #fdba5e%player_display_name%#ffeea2.'
         Target:
-          - '{message: ~prefix: false;}'
-          - '&6&m                 &6&l[ &e&lTeleport Request &6&l]&6&m                 &7'
-          - '&6Gracz &e%player_name%&6 chce się do Ciebie teleportować.'
-          - '&6Wpisz &a/tp accept %player_name% &6aby zaakceptować'
-          - '&6lub &c/tp decline %player_name% &6aby odmówić.'
-          - '&7'
-          - '&7             {json: ~showText: &a%player_name% &7teleportuje się do
-          Ciebie.; ~runCommand: /tp accept %player_name%;}&a&l[Accept]{end-json}         {json:
-          ~showText:&c%player_name% &7nie teleportuje się do Ciebie.; ~runCommand: /tp
-          decline %player_name%;}&c&l[Decline]{end-json}'
-          - '&7'
-    Settings:
-      Desc: Zarządaj ustawieniami teleportacji.
-      Usage: '[player]'
+          - <! prefix:"false" sound:"ENTITY_ENDER_PEARL_THROW" !>
+          - '#ffeea2'
+          - '#ffeea2&lProśba o teleportację:'
+          - '#ffeea2'
+          - '#ffeea2Gracz #fdba5e%player_display_name%#ffeea2 chce być teleportowany do ciebie.'
+          - '#ffeea2Wpisz #aefd5e/teleport accept %player_name%#ffeea2, aby zaakceptować i go teleportować.'
+          - '#ffeea2lub #fd5e5e/teleport decline %player_name%#ffeea2, aby odrzucić.'
+          - '#ffeea2'
+          - '#ffeea2             <? show_text:"#aefd5e%player_display_name%#d4d9d8 zostanie teleportowany do ciebie." run_command:"/teleport accept %player_name%"?>#aefd5e&l[Accept]</> #ffeea2        <? show_text:"#fd5e5e%player_display_name%#d4d9d8 nie zostanie teleportowany do ciebie." run_command:"/teleport decline %player_name%"?>#fd5e5e&l[Decline]</>'
+          - '#ffeea2'
+          - '#ffeea2'
+    Toggle:
+      Desc: Przełączanie prośb o teleportację/zaproszeń.
+      Usage: '[gracz] [-on] [-off] [-s]'
+      Target: '#ffeea2Możliwość wysyłania zapytań o teleportację dla #fdba5e%player_display_name%#ffeea2 została #fdba5e%state%#ffeea2.'
+      Notify: '#ffeea2Możliwość wysyłania zapytań o teleportację została #fdba5e%state%#ffeea2.'
     Summon:
-      Desc: Przywołaj gracza do swojej lokacji.
-      Usage: <player>
-      Notify:
-        Sender: '{message: ~sound: ENTITY_ENDERMAN_TELEPORT;}Przywołano gracza &a%player_name%&7.'
-        Target: '{message: ~sound: ENTITY_ENDERMAN_TELEPORT;}Zostałeś przywołany przez
-          &e%player_name%&7.'
+      Desc: Przywołaj gracza na swoją lokalizację.
+      Usage: <gracz> [-s]
+      Target: '<! sound:"ENTITY_ENDERMAN_TELEPORT" !>#ffeea2Teleportowano gracza #fdba5e%player_display_name%#ffeea2 do twojej lokalizacji.'
+      Notify: '<! sound:"ENTITY_ENDERMAN_TELEPORT" !>#ffeea2Zostałeś teleportowany przez #fdba5e%player_display_name%#ffeea2.'
     To:
-      Desc: Teleportuj siebie lub kogoś do wynramego gracza.
-      Usage: <player> | <player1> <player2>
-      Done:
-        Self: '{message: ~sound: ENTITY_ENDERMAN_TELEPORT;}Teleportowanie do &e%player_name%&7...'
-        Others: '{message: ~sound: ENTITY_ENDERMAN_TELEPORT;}Gracz &e%player_1% &7teleportowany
-          do &e%player_2%&7!'
-      Notify:
-        Sender: '{message: ~sound: ENTITY_ENDERMAN_TELEPORT;}Zostałeś teleportowany
-          do &e%player_name%&7!'
-        Target: '{message: ~sound: ENTITY_ENDERMAN_TELEPORT;}Gracz &e%player_name%
-          &7został do Ciebie teleportowany!'
+      Desc: Teleportuj się do określonego gracza.
+      Usage: <gracz>
+      Done: '<! sound:"ENTITY_ENDERMAN_TELEPORT" !>#ffeea2Teleportowałeś się do #fdba5e%player_display_name%#ffeea2.'
+    Send:
+      Desc: Teleportuj jednego gracza do innego.
+      Usage: <gracz> <cel> [-s]
+      Target: '<! sound:"ENTITY_ENDERMAN_TELEPORT" !>#ffeea2Gracz #fdba5e%source%#ffeea2 został teleportowany do #fdba5e%target%#ffeea2.'
+      Notify: '<! sound:"ENTITY_ENDERMAN_TELEPORT" !>#ffeea2Zostałeś teleportowany do #fdba5e%player_display_name%#ffeea2.'
     Top:
-      Desc: Teleportuj się na najwyższy blok nad tobą.
-      Usage: '[player]'
-      Done:
-        Self: '{message: ~sound: ENTITY_ENDERMAN_TELEPORT;}Teleportowanie na najwyższy
-          blok...'
-        Others: '{message: ~sound: ENTITY_ENDERMAN_TELEPORT;}Gracz &e%player_name%
-          &7został teleportowany na najwyższy blok.'
-        Notify: '{message: ~sound: ENTITY_ENDERMAN_TELEPORT;}Zostałeś teleportowany
-          na najwyższy blok przez &e%player_name%&7.'
-  Tell:
-    Desc: Wyślij prywatną wiadomość.
-    Usage: <player> <message>
+      Desc: Teleportuj gracza na najwyższy blok powyżej.
+      Usage: '[gracz] [-s]'
+      Target: '<! sound:"ENTITY_ENDERMAN_TELEPORT" !>#ffeea2Gracz #fdba5e%player_display_name%#ffeea2 został teleportowany na najwyższy blok.'
+      Notify: <! sound:"ENTITY_ENDERMAN_TELEPORT" !>#ffeea2Zostałeś teleportowany na najwyższy blok.
   Time:
-    Desc: Ustaw lub sprawdź godzinę.
-    Done: '{message: ~prefix: false;}&7Czas ustawiony na: &e%time%&7 w świecie &e%world%&7.'
-    Info: '{message: ~prefix: false;}&7Czas na świecie &e%world%&7: &6%ticks% ticks&7,
-      &6%time%'
-  Thunder:
-    Desc: Przywołaj błyskawicę.
-    Usage: '[player]'
-    Done:
-      Player: '{message: ~prefix: false;}&7Przywołano błyskawicę na &e%player%&7!'
-      Block: '{message: ~prefix: false;}&7Przywołano błyskawicę!'
-  UnIgnore:
-    Desc: Odblokuj gracza.
-    Usage: '[player]'
-    Done: '{message: ~prefix: false;}&7Gracz &e%player% &7odblokowany.'
-    Error:
-      Already: '{message: ~prefix: false;}&cGracz &e%player% &cnie jest zablokowany.'
+    Desc: Narzędzia zarządzania czasem.
+    Usage: '[pomoc]'
+    Show:
+      Desc: Wyświetl osobisty i bieżący czas świata.
+      Usage: '[-w <świat>]'
+      Info:
+        - <! prefix:"false" !>
+        - '#ffeea2'
+        - '#ffeea2&lInformacje o czasie:'
+        - '#ffeea2'
+        - '#ffeea2▪ #fdba5eCzas w świecie: #ffeea2%world_time%#d4d9d8 (%world_ticks% tiki)'
+        - '#ffeea2▪ #fdba5eOsobisty czas: #ffeea2%player_time%#d4d9d8 (%player_ticks% tiki)'
+        - '#ffeea2▪ #fdba5eCzas serwera: #ffeea2%server_time%'
+        - '#ffeea2'
+    Set:
+      Desc: Ustaw czas w świecie.
+      Usage: <tiki> [-w <świat>]
+      Done: '#ffeea2Ustawiono czas na #fdba5e%time%#d4d9d8 (%total% tiki)#ffeea2 w świecie #fdba5e%world%#ffeea2.'
+    Personal:
+      Desc: Ustaw osobisty czas gracza.
+      Usage: <tiki> [gracz] [-r] [-s]
+      Target: '#ffeea2Ustawiono czas na #fdba5e%time%#d4d9d8 (%total% tiki)#ffeea2 dla #fdba5e%player_display_name%#ffeea2.'
+      Notify: '#ffeea2Twój osobisty czas został ustawiony na #fdba5e%time%#d4d9d8 (%total% tiki)#ffeea2.'
+  Smite:
+    Desc: Uderz gracza piorunem.
+    Usage: '[gracz] [-s]'
+    Target: '#ffeea2Uderzono piorunem gracza #fdba5e%player_name%#ffeea2!'
+    Notify: '#ffeea2Zostałeś uderzony piorunem!'
   Vanish:
-    Desc: Przełącz vanish.
-    Toggle: '{message: ~prefix: false;}&7Vanish: &e%state%'
+    Desc: Przełącz tryb niewidzialności gracza.
+    Usage: '[gracz] [-on] [-off] [-s]'
+    Notify: '#ffeea2Niewidzialność została #fdba5e%state%#ffeea2.'
+    Target: '#ffeea2Niewidzialność dla gracza #fdba5e%player_display_name%#ffeea2 została #fdba5e%state%#ffeea2.'
   Weather:
-    Desc: Zmień pogodę.
-    Usage: <sun/storm> [world]
-    Done: '{message: ~prefix: false;}&7Ustawiono &e%weather%&7 w świecie &e%world%&7.'
+    Desc: Zmień pogodę w świecie.
+    Usage: <typ> [-w <świat>]
+    Set: '#ffeea2Ustawiono #fdba5e%type%#ffeea2 w świecie #fdba5e%world%#ffeea2.'
   Workbench:
-    Desc: Otwórz przenośny stół rzemieślniczy.
-  Afk:
-    Desc: Przełącz tryb AFK.
-User:
-  Ignore:
-    PrivateMessage: '{message: ~prefix: false;}&cTen gracz nie pozwala Ci na
-      wysyłanie prywatnych wiadomości.'
-    TeleportRequest: '{message: ~prefix: false;}&cTen gracz nie pozwala Ci na
-      wysyłanie próśb o teleport.'
-  Settings:
-    Teleport:
-      Editor:
-        Enter:
-          Player: '&7Wprowadź &aimię gracza&7...'
+    Desc: Otwórz przenośny crafting.
+    Usage: '[gracz] [-s]'
+    Target: '#ffeea2Otwarto przenośny warsztat dla #fdba5e%player_display_name%#ffeea2.'
+    Notify: <! type:"action_bar" !>#ffeea2Otworzyłeś przenośny crafting!
+  Mentions:
+    Desc: Przełączanie [gracza] wzmianki.
+    Usage: '[gracz] [-on] [-off] [-s]'
+    Toggle:
+      Notify: '#ffeea2Możliwość oznaczania ciebie na chacie została #fdba5e%state%#ffeea2.'
+      Target: '#ffeea2Możliwość oznaczania na chacie gracza #fdba5e%player_name%#ffeea2 została #fdba5e%state%#ffeea2.'
+  TogglePM:
+    Desc: Przełącz prywatne wiadomości.
+    Usage: '[gracz] [-on] [-off] [-s]'
+    Toggle:
+      Notify: '#ffeea2Możliwość prowadzenia prywatnej konwersacji z tobą została #fdba5e%state%#ffeea2.'
+      Target: '#ffeea2Możliwość prowadzenia prywatnej konwersacji z graczem #fdba5e%player_name%#ffeea2 została #fdba5e%state%#ffeea2.'
 Other:
-  PlayerData:
-    Error:
-      Read: '{message: ~sound: BLOCK_ANVIL_PLACE;}&cWystąpił nieoczekiwany błąd podczas
-        próby odczytu pliku danych gracza.'
-      Write: '{message: ~sound: BLOCK_ANVIL_PLACE;}&cWystąpił nieoczekiwany błąd podczas
-        próby zapisu pliku danych gracza.'
-  Menu:
-    List_Delimiter: '&a▸ '
-  Free: '&aFree'
-  'On': '&aON'
-  'Off': '&cOFF'
-  Enabled: '&aEnabled'
-  Disabled: '&cDisabled'
-  Eternity: Eternity
+  Enabled: '#aefd5eWłączona'
+  Disabled: '#fd5e5eWyłączona'
 Error:
-  InvalidName: '{message: ~prefix: false;}&cNiepoprawne imię: &e%name%&c. Zawiera niedozwolone
-    znaki.'
+  Enchantment:
+    Invalid: '#fd5e5eNieprawidłowe zaklęcie!'
+  Player:
+    NoItem: '#fd5e5eGracz nie posiada przedmiotu!'
   Material:
-    Invalid: '&cPodano niewłaściwe materiały!'
-  Enchant: '{message: ~prefix: false;}&cNiepoprawne zaklęcie!'
-  Self: '{message: ~prefix: false;}&cNie można założyć tego na siebie!'
+    Invalid: '&cNie podano prawidłowego materiału!'
 EquipmentSlot:
-  HAND: W ręce
-  OFF_HAND: W drugiej ręce
+  HAND: Ręka
+  OFF_HAND: Druga ręka
   FEET: Stopy
   LEGS: Nogi
-  CHEST: Tułów
+  CHEST: Klatka piersiowa
   HEAD: Głowa
-WarpSortType:
-  WARP_NAME: Nazwa warpa
-  WARP_ID: Id warpa
-  RATING: klasyfikacja
+GameMode:
+  CREATIVE: Kreatywny
+  SURVIVAL: Przetrwanie
+  ADVENTURE: Przygoda
+  SPECTATOR: Obserwator
+WeatherType:
+  CLEAR: Czyste niebo
+  STORM: Burze
+  THUNDER: Burze z piorunami
+Bans:
+  Command:
+    History:
+      Mute:
+        Desc: Wyświetl historię wyciszeń gracza.
+        Usage: <gracz>
+      Ban:
+        Desc: Wyświetl historię banów gracza.
+        Usage: <gracz>
+      Warn:
+        Desc: Wyświetl historię ostrzeżeń gracza.
+        Usage: <gracz>
+    BanList:
+      Desc: Lista zbanowanych graczy i adresów IP.
+    MuteList:
+      Desc: Lista wyciszonych graczy i adresów IP.
+    WarnList:
+      Desc: Lista ostrzeżonych graczy.
+    Ban:
+      Desc: Zbanuj gracza.
+      Usage: <gracz> <czas> [powód]
+    Banip:
+      Desc: Zbanuj adres IP.
+      Usage: <gracz/ip> <czas> [powód]
+    Mute:
+      Desc: Wycisz gracza po nazwie lub IP.
+      Usage: <gracz/ip> <czas> [powód]
+    Kick:
+      Desc: Wyrzuć gracza po nazwie lub IP.
+      Usage: <gracz/ip> [powód]
+    Unmute:
+      Desc: Odcisz gracza po nazwie lub IP.
+      Usage: <gracz/ip>
+    Unban:
+      Desc: Odbanuj gracza po nazwie lub IP.
+      Usage: <gracz/ip>
+    Warn:
+      Desc: Ostrzeż gracza.
+      Usage: <gracz> <czas> [powód]
+    Unwarn:
+      Desc: Usuń najnowsze ostrzeżenie gracza.
+      Usage: <gracz>
+  Punishment:
+    Error:
+      RankPriority: '#d4d9d8Nie możesz ukarać #fd5e5e%user%#d4d9d8!'
+      RankDuration: '#d4d9d8Nie możesz ukarać na dłużej niż #fd5e5e%time%#d4d9d8!'
+      Immune: <! prefix:"false" !>#fd5e5e%user%#d4d9d8 nie może być ukarany.
+      NotBanned: <! prefix:"false" !>#fd5e5e%user%#d4d9d8 nie jest zbanowany.
+      NotMuted: <! prefix:"false" !>#fd5e5e%user%#d4d9d8 nie jest wyciszony.
+      NotWarned: <! prefix:"false" !>#fd5e5e%user%#d4d9d8 nie ma aktywnych ostrzeżeń.
+      NotIP: <! prefix:"false" !>#fd5e5e%user% nie jest adresem IP!
+  Pardon:
+    Error:
+      RankPriority: '#d4d9d8Nie możesz ułaskawić #aefd5e%user%#d4d9d8!'
+  Ban:
+    User:
+      Perma:
+        Done: '<! prefix:"false" !>#fd5e5e%punishment_user%#d4d9d8 został zbanowany na stałe: #fd5e5e%punishment_reason%'
+        Broadcast: '<! prefix:"false" !>#fd5e5e%punishment_punisher%#d4d9d8 na stałe zbanował #fd5e5e%punishment_user% <? show_text:"&7Powód: &f%punishment_reason%<newline>&7Data: &f%punishment_date_created%" ?>#fdba5e[Szczegóły]</>'
+      Temp:
+        Done: '<! prefix:"false" !>#fd5e5e%punishment_user%#d4d9d8 został zbanowany na #fd5e5e%punishment_expires_in%#d4d9d8. Powód: #fd5e5e%punishment_reason%'
+        Broadcast: '<! prefix:"false" !>#fd5e5e%punishment_punisher%#d4d9d8 zbanował #fd5e5e%punishment_user% <? show_text:"&7Czas trwania: &f%punishment_expires_in%<newline>&7Powód: &f%punishment_reason%<newline>&7Data: &f%punishment_date_created%<newline>&7Wygasa: &f%punishment_date_expired%" ?>#fdba5e[Szczegóły]</>'
+    IP:
+      Perma:
+        Done: '<! prefix:"false" !>#d4d9d8IP #fd5e5e%punishment_user%#d4d9d8 zostało zbanowane na stałe: #fd5e5e%punishment_reason%'
+        Broadcast: '<! prefix:"false" !>#fd5e5e%punishment_punisher%#d4d9d8 na stałe zbanował IP #fd5e5e%punishment_user% <? show_text:"&7Powód: &f%punishment_reason%<newline>&7Data: &f%punishment_date_created%" ?>#fdba5e[Szczegóły]</>'
+      Temp:
+        Done: '<! prefix:"false" !>#d4d9d8IP #fd5e5e%punishment_user%#d4d9d8 zostało zbanowane na #fd5e5e%punishment_expires_in%#d4d9d8. Powód: #fd5e5e%punishment_reason%'
+        Broadcast: '<! prefix:"false" !>#fd5e5e%punishment_punisher%#d4d9d8 zbanował IP #fd5e5e%punishment_user% <? show_text:"&7Czas trwania: &f%punishment_expires_in%<newline>&7Powód: &f%punishment_reason%<newline>&7Data: &f%punishment_date_created%<newline>&7Wygasa: &f%punishment_date_expired%" ?>#fdba5e[Szczegóły]</>'
+  Unban:
+    User:
+      Done: '<! prefix:"false" !>Odbanowano użytkownika: #aefd5e%punishment_user%#d4d9d8.'
+      Broadcast: '<! prefix:"false" !>#aefd5e%admin%#d4d9d8 odbanował użytkownika: #aefd5e%punishment_user%#d4d9d8.'
+    IP:
+      Done: '<! prefix:"false" !>Odbanowano IP: #aefd5e%punishment_user%#d4d9d8.'
+      Broadcast: '<! prefix:"false" !>#aefd5e%admin%#d4d9d8 odbanował IP: #aefd5e%punishment_user%#d4d9d8.'
+  Kick:
+    Done: '<! prefix:"false" !>#fd5e5e%punishment_user%#d4d9d8 został wyrzucony za #fd5e5e%punishment_reason%'
+    Broadcast: '<! prefix:"false" !>#fd5e5e%punishment_punisher%#d4d9d8 wyrzucił #fd5e5e%punishment_user% <? show_text:"&7Powód: &f%punishment_reason%" ?>#fdba5e[Szczegóły]</>'
+  Mute:
+    User:
+      Perma:
+        Done: '<! prefix:"false" !>#fd5e5e%punishment_user%#d4d9d8 został wyciszony na stałe: #fd5e5e%punishment_reason%'
+        Notify: '<! prefix:"false" !>#fd5e5eZostałeś wyciszony na stałe! <? show_text:"&7Przez: &f%punishment_punisher%<newline>&7Wygasa: &f%punishment_expires_in%<newline>&7Powód: &f%punishment_reason%<newline>&7Data: &f%punishment_date_created%" ?>#fdba5e[Szczegóły]</>'
+        Broadcast: '<! prefix:"false" !>#fd5e5e%punishment_punisher%#d4d9d8 na stałe wyciszył #fd5e5e%punishment_user% <? show_text:"&7Powód: &f%punishment_reason%<newline>&7Data: &f%punishment_date_created%" ?>#fdba5e[Szczegóły]</>'
+      Temp:
+        Done: '<! prefix:"false" !>#fd5e5e%punishment_user%#d4d9d8 został wyciszony na #fd5e5e%punishment_expires_in%#d4d9d8. Powód: #fd5e5e%punishment_reason%'
+        Notify: '<! prefix:"false" !>#fd5e5eZostałeś wyciszony! <? show_text:"&7Przez: &f%punishment_punisher%<newline>&7Czas trwania: &f%punishment_expires_in%<newline>&7Powód: &f%punishment_reason%<newline>&7Data: &f%punishment_date_created%<newline>&7Wygasa: &f%punishment_date_expired%" ?>#fdba5e[Szczegóły]</>'
+        Broadcast: '<! prefix:"false" !>#fd5e5e%punishment_punisher%#d4d9d8 wyciszył #fd5e5e%punishment_user% <? show_text:"&7Czas trwania: &f%punishment_expires_in%<newline>&7Powód: &f%punishment_reason%<newline>&7Data: &f%punishment_date_created%<newline>&7Wygasa: &f%punishment_date_expired%" ?>#fdba5e[Szczegóły]</>'
+    IP:
+      Perma:
+        Done: '<! prefix:"false" !>IP #fd5e5e%punishment_user%#d4d9d8 zostało wyciszone na stałe: #fd5e5e%punishment_reason%'
+        Notify: '<! prefix:"false" !>#fd5e5eZostałeś wyciszony na stałe! <? show_text:"&7Przez: &f%punishment_punisher%<newline>&7Wygasa: &f%punishment_expires_in%<newline>&7Powód: &f%punishment_reason%<newline>&7Data: &f%punishment_date_created%" ?>#fdba5e[Szczegóły]</>'
+        Broadcast: '<! prefix:"false" !>#fd5e5e%punishment_punisher%#d4d9d8 na stałe wyciszył IP #fd5e5e%punishment_user% <? show_text:"&7Powód: &f%punishment_reason%<newline>&7Data: &f%punishment_date_created%" ?>#fdba5e[Szczegóły]</>'
+      Temp:
+        Done: '<! prefix:"false" !>IP #fd5e5e%punishment_user%#d4d9d8 zostało wyciszone na #fd5e5e%punishment_expires_in%#d4d9d8. Powód: #fd5e5e%punishment_reason%'
+        Notify: '<! prefix:"false" !>#fd5e5eZostałeś wyciszony! <? show_text:"&7Przez: &f%punishment_punisher%<newline>&7Czas trwania: &f%punishment_expires_in%<newline>&7Powód: &f%punishment_reason%<newline>&7Data: &f%punishment_date_created%<newline>&7Wygasa: &f%punishment_date_expired%" ?>#fdba5e[Szczegóły]</>'
+        Broadcast: '<! prefix:"false" !>#fd5e5e%punishment_punisher%#d4d9d8 wyciszył IP #fd5e5e%punishment_user% <? show_text:"&7Czas trwania: &f%punishment_expires_in%<newline>&7Powód: &f%punishment_reason%<newline>&7Data: &f%punishment_date_created%<newline>&7Wygasa: &f%punishment_date_expired%" ?>#fdba5e[Szczegóły]</>'
+  Unmute:
+    User:
+      Done: '<! prefix:"false" !>Odciszono użytkownika: #aefd5e%punishment_user%#d4d9d8.'
+      Broadcast: '<! prefix:"false" !>#aefd5e%admin%#d4d9d8 odciszył użytkownika: #aefd5e%punishment_user%#d4d9d8.'
+    IP:
+      Done: '<! prefix:"false" !>Odciszono IP: #aefd5e%punishment_user%#d4d9d8.'
+      Broadcast: '<! prefix:"false" !>#aefd5e%admin%#d4d9d8 odciszył IP: #aefd5e%punishment_user%#d4d9d8.'
+  Warn:
+    User:
+      Temp:
+        Done: '<! prefix:"false" !>#fd5e5e%punishment_user%#d4d9d8 został ostrzeżony na #fd5e5e%punishment_expires_in%#d4d9d8. Powód: #fd5e5e%punishment_reason%'
+        Notify: '<! prefix:"false" !>#fd5e5eZostałeś ostrzeżony! <? show_text:"&7Przez: &f%punishment_punisher%<newline>&7Czas trwania: &f%punishment_expires_in%<newline>&7Powód: &f%punishment_reason%<newline>&7Data: &f%punishment_date_created%<newline>&7Wygasa: &f%punishment_date_expired%" ?>#fdba5e[Szczegóły]</>'
+        Broadcast: '<! prefix:"false" !>#fd5e5e%punishment_punisher%#d4d9d8 ostrzegł #fd5e5e%punishment_user% <? show_text:"&7Czas trwania: &f%punishment_expires_in%<newline>&7Powód: &f%punishment_reason%<newline>&7Data: &f%punishment_date_created%<newline>&7Wygasa: &f%punishment_date_expired%" ?>#fdba5e[Szczegóły]</>'
+      Perma:
+        Done: '<! prefix:"false" !>#fd5e5e%punishment_user%#d4d9d8 został ostrzeżony na stałe za #fd5e5e%punishment_reason%'
+        Notify: '<! prefix:"false" !>#fd5e5eZostałeś ostrzeżony! <? show_text:"&7Przez: &f%punishment_punisher%<newline>&7Wygasa: &f%punishment_expires_in%<newline>&7Powód: &f%punishment_reason%<newline>&7Data: &f%punishment_date_created%" ?>#fdba5e[Szczegóły]</>'
+        Broadcast: '<! prefix:"false" !>#fd5e5e%punishment_punisher%#d4d9d8 na stałe ostrzegł #fd5e5e%punishment_user% <? show_text:"&7Powód: &f%punishment_reason%<newline>&7Data: &f%punishment_date_created%" ?>#fdba5e[Szczegóły]</>'
+  Unwarn:
+    User:
+      Done: '<! prefix:"false" !>#d4d9d8Usunięto ostrzeżenie od #aefd5e%punishment_user%#d4d9d8.'
+      Broadcast: '<! prefix:"false" !>#aefd5e%punishment_punisher%#d4d9d8 usunął ostrzeżenie od #aefd5e%punishment_user%#d4d9d8.'
+PunishmentType:
+  BAN: Ban
+  MUTE: Wyciszenie
+  WARN: Ostrzeżenie
 Worlds:
   Command:
-    Goto:
-      Usage: <world>
-      Desc: Teleportuj się do wybranego świata.
-      Done: Whoosh!
-    Move:
-      Usage: <player> <world>
-      Desc: Teleportuj gracza do wybranego świata.
-      Done: '{message: ~prefix: false;}&e%player% &7przeniesiony do świata &e%world%&7!'
     WorldManager:
-      Desc: Menadżer świata
+      Desc: Narzędzia zarządzania światami.
+    Worlds:
       Create:
-        Usage: <name>
-        Desc: Stwórz nowy konfig świata.
-        Error: Świat z tą nazwą już istnieje!
-        Done: '{message: ~prefix: false;}&7Stworzono nowy konfig świata: &a%world_id%&7!'
+        Usage: <nazwa>
+        Desc: Utwórz nową konfigurację świata.
+        Error: '#ea3131Świat o tej nazwie już istnieje!'
+        Done: '#ffeea2Utworzono konfigurację świata: #ea9631%world_id%#ffeea2!'
       Delete:
-        Usage: <world> [withFolder]
-        Desc: Usuń wybrany świat i jego konfig.
-        Error: '{message: ~prefix: false;}&cNie można usunąć świata! Świat jest naładowany
-          olub wystąpił błąd dostępu do pliku.'
-        Done: '{message: ~prefix: false;}&7Usunięto świat &a%world_id%&7!'
+        Usage: <świat> [-f]
+        Desc: Usuń określoną konfigurację świata [i folder ze światem].
+        Error: '#ea3131Nie można usunąć świata #ea9631%world_id%#ea3131! Świat jest załadowany lub wystąpił błąd dostępu do plików.'
+        Done: '#ffeea2Usunięto świat #ea9631%world_id%#ffeea2!'
       Editor:
         Desc: Otwórz edytor świata.
       Load:
-        Usage: <world>
-        Desc: Załaduj wybrany świat na serwer.
-        Error: '{message: ~prefix: false;}&cŚwiat jest załadowany lub jego ustawienia
-          są niepoprawne!'
-        Done: '{message: ~prefix: false;}&7Załadowano świat: &a%world_id%&7!'
+        Usage: <świat>
+        Desc: Załaduj określony świat na serwer.
+        Error: '#ea3131Świat jest już załadowany lub ustawienia świata są nieprawidłowe!'
+        Done: '#ffeea2Załadowano świat: #ea9631%world_id%#ffeea2!'
       Unload:
-        Usage: <world>
-        Desc: Zdejmij wybrany świat z serwera.
-        Error: '{message: ~prefix: false;}&cŚwiat jest już zdjęty lub wystąpił
-          wewnętrzny błąd serwera!'
-        Done: '{message: ~prefix: false;}&7Zdjęto świat: &a%world_id%&7!'
+        Usage: <świat>
+        Desc: Wyładuj określony świat z serwera.
+        Error: '#ea3131Świat jest już wyładowany!'
+        Done: '#ffeea2Wyładowano świat: #ea9631%world_id%#ffeea2!'
+  AutoWipe:
+    MoveOut: '#aaa8a8Zostałeś teleportowany z powodu automatycznego resetowania świata.'
+    Notify:
+      - <! prefix:"false" !>
+      - '#aaa8a8'
+      - '#fd5e5eUwaga: #d4d9d8Świat zostanie zresetowany automatycznie za #fd5e5e%time%'
+      - '#aaa8a8'
   Error:
-    BadCommand: '{message: ~prefix: false;}&cNie możesz tu użyć tej komendy!'
+    CommandBlocked: '#ea3131Nie możesz używać tego polecenia w tym świecie!'
+    FlyDisabled: '#ea3131Latanie jest niedozwolone w tym świecie!'
   Editor:
     Enter:
-      Seed: '&7Wprowadź &anasienie&7 świata...'
-      Generator: '&7Wprowadź nazwę &ageneratora&7...'
-Environment:
-  NORMAL: Normalny
-  NETHER: Nether
-  THE_END: The End
-  CUSTOM: Niestandardowy
-WorldType:
-  NORMAL: Normalny
-  FLAT: Płaski
-  LARGE_BIOMES: Wielkie biomy
-  AMPLIFIED: Powiększony
+      Value: '#aaa8a8Wprowadź #74ea31[Wartość]'
+      Spawns: '#aaa8a8Wprowadź #74ea31[Kategorię] [Wartość]'
+      Seconds: '#aaa8a8Wprowadź #74ea31[Ilość sekund]'
+      Generator: '#aaa8a8Wprowadź #74ea31[Nazwę generatora]'
+    World:
+      Object:
+        Name: '#ead931&lŚwiat: &f%world_id%'
+        Lore:
+          - '#ead931&lObecnie:'
+          - '#ead931▪ #aaa8a8Utworzony: #ead931%world_is_created%'
+          - '#ead931▪ #aaa8a8Załadowany: #ead931%world_is_loaded%'
+          - '#ead931▪ #aaa8a8Automatyczne ładowanie: #ead931%world_auto_load%'
+          - ''
+          - '#74ea31&lAkcje:'
+          - '#74ea31▪ #aaa8a8LPM: #74ea31Ustawienia'
+          - '#74ea31▪ #aaa8a8Shift-Right: #74ea31Usuń #fd5e5e(Jeśli nie utworzony)'
+      AutoLoad:
+        Name: '#ead931&lAutomatyczne Ładowanie'
+        Lore:
+          - '#ead931▪ #aaa8a8Włączone: #ead931%world_auto_load%'
+          - ''
+          - '#aaa8a8Ustawia, czy ten świat będzie'
+          - '#aaa8a8automatycznie ładowany przy starcie serwera.'
+          - ''
+          - '#74ea31&lAkcje:'
+          - '#74ea31▪ #aaa8a8LPM: #74ea31Przełącz'
+      Load:
+        Name: '#ead931&lZaładuj Świat'
+        Lore: []
+      Unload:
+        Name: '#ead931&lWyładuj Świat'
+        Lore: []
+      Delete:
+        Name: '#ead931&lUsuń Świat'
+        Lore:
+          - '#aaa8a8Usuń konfigurację świata i/lub pliki świata.#fd5e5e (Brak cofnięcia)'
+          - ''
+          - '#74ea31&lAkcje:'
+          - '#74ea31▪ #aaa8a8[Klawisz Q/Drop]: #74ea31Usuń Pliki'
+          - '#74ea31▪ #aaa8a8Shift-Right: #74ea31Usuń Konfigurację i Pliki'
+      Generator:
+        Name: '#ead931&l[Creator] Generator Fragmentów'
+        Lore:
+          - '#ead931▪ #aaa8a8Obecny: #ead931%world_generator%'
+          - ''
+          - '#aaa8a8Ustawia generator fragmentów dla tego świata.'
+          - '#aaa8a8Zaproponuje wszystkie dostępne generatory'
+          - '#aaa8a8w tym te z innych wtyczek.'
+          - ''
+          - '#74ea31&lAkcje:'
+          - '#74ea31▪ #aaa8a8LPM: #74ea31Zmień'
+      Environment:
+        Name: '#ead931&l[Creator] Środowisko'
+        Lore:
+          - '#ead931▪ #aaa8a8Obecne: #ead931%world_environment%'
+          - ''
+          - '#aaa8a8Ustawia środowisko świata.'
+          - ''
+          - '#74ea31&lAkcje:'
+          - '#74ea31▪ #aaa8a8LPM: #74ea31Przełącz'
+      Structures:
+        Name: '#ead931&l[Creator] Generacja Struktur'
+        Lore:
+          - '#ead931▪ #aaa8a8Włączone: #ead931%world_structures%'
+          - ''
+          - '#aaa8a8Ustawia, czy struktury powinny być'
+          - '#aaa8a8generowane w tym świecie.'
+          - ''
+          - '#74ea31&lAkcje:'
+          - '#74ea31▪ #aaa8a8LPM: #74ea31Przełącz'
+      GameRules:
+        Name: '#ead931&lZasady Gry'
+        Lore:
+          - '#aaa8a8Zarządzaj zasadami gry w tym świecie tutaj!'
+          - ''
+          - '#74ea31&lAkcje:'
+          - '#74ea31▪ #aaa8a8LPM: #74ea31Nawiguj'
+      AutoWipe:
+        Name: '#ead931&lAutomatyczny Wipe'
+        Lore:
+          - '#aaa8a8Ustawia, czy ten świat'
+          - '#aaa8a8powinien być automatycznie resetowany'
+          - '#aaa8a8z pewnym interwałem.'
+          - ''
+          - '#ead931&lObecnie:'
+          - '#ead931▪ #aaa8a8Włączone: #ead931%world_auto_wipe_enabled%'
+          - '#ead931▪ #aaa8a8Interwał: #ead931%world_auto_wipe_interval%'
+          - '#ead931▪ #aaa8a8Ostatni Wipe: #ead931%world_auto_wipe_last_wipe%'
+          - '#ead931▪ #aaa8a8Następny Wipe: #ead931%world_auto_wipe_next_wipe%'
+          - ''
+          - '#74ea31&lAkcje:'
+          - '#74ea31▪ #aaa8a8LPM: #74ea31Przełącz'
+          - '#74ea31▪ #aaa8a8PPM: #74ea31Zmień Interwał'
+          - '#74ea31▪ #aaa8a8[Klawisz Q/Drop]: #74ea31Ustaw Ostatni Czas'
+      AutoSave:
+        Name: '#ead931&lAutomatyczne Zapisywanie'
+        Lore:
+          - '#ead931▪ #aaa8a8Włączone: #ead931%world_auto_save%'
+          - ''
+          - '#aaa8a8Ustawia, czy świat'
+          - '#aaa8a8będzie automatycznie zapisywany.'
+          - ''
+          - '#74ea31&lAkcje:'
+          - '#74ea31▪ #aaa8a8LPM: #74ea31Przełącz'
+      PvPAllowed:
+        Name: '#ead931&lDozwolone PvP'
+        Lore:
+          - '#ead931▪ #aaa8a8Włączone: #ead931%world_pvp_allowed%'
+          - ''
+          - '#aaa8a8Ustawia ustawienie PvP dla tego świata.'
+          - ''
+          - '#74ea31&lAkcje:'
+          - '#74ea31▪ #aaa8a8LPM: #74ea31Przełącz'
+      Difficulty:
+        Name: '#ead931&lTrudność'
+        Lore:
+          - '#ead931▪ #aaa8a8Obecna: #ead931%world_difficulty%'
+          - ''
+          - '#aaa8a8Ustawia trudność świata.'
+          - ''
+          - '#74ea31&lAkcje:'
+          - '#74ea31▪ #aaa8a8LPM: #74ea31Przełącz'
+      SpawnLimits:
+        Name: '#ead931&lLimity Spawnu'
+        Lore:
+          - '#aaa8a8Ustawia limit liczby Spawn Category'
+          - '#aaa8a8jednostek, które mogą się pojawić w danym fragmencie'
+          - '#aaa8a8w tym świecie.'
+          - ''
+          - '#ead931&lObecnie:'
+          - '#aaa8a8%world_spawn_limits%'
+          - ''
+          - '#ea9631&lNotatki:'
+          - '#ea9631▪ #aaa8a8Użyj #fdba5e-1#d4d9d8 dla braku limitu.'
+          - ''
+          - '#74ea31&lAkcje:'
+          - '#74ea31▪ #aaa8a8LPM: #74ea31Zmień'
+      SpawnTicks:
+        Name: '#ead931&lTicki na Spawn'
+        Lore:
+          - '#aaa8a8Ustawia ticki świata na'
+          - '#aaa8a8spawn jednostek kategorii Spawn Category.'
+          - ''
+          - '#ead931&lObecnie:'
+          - '#aaa8a8%world_spawn_ticks%'
+          - ''
+          - '#74ea31&lAkcje:'
+          - '#74ea31▪ #aaa8a8LPM: #74ea31Zmień'
+      Rule:
+        Object:
+          Name: '#ead931&lZasada: &f%name%'
+          Lore:
+            - '#ead931▪ #aaa8a8Wartość: #ead931%value%'
+            - ''
+            - '#74ea31&lAkcje:'
+            - '#74ea31▪ #aaa8a8LPM: #74ea31Przełącz / Zmień'
 Difficulty:
-  PEACEFUL: Pokojowy
+  PEACEFUL: Spokojny
   EASY: Łatwy
   NORMAL: Normalny
   HARD: Trudny
+Spawns:
+  Command:
+    Spawns:
+      Desc: Zarządzanie spawnami.
+      Usage: '[help]'
+      Delete:
+        Desc: Usuń określony spawn.
+        Usage: <nazwa>
+        Done:
+          - <! type:"titles:20:50:20" !>
+          - '#fd5e5e&lSpawn Usunięty'
+          - '#d4d9d8Usunąłeś #fd5e5e%spawn_name%#d4d9d8 spawn!'
+      Create:
+        Desc: Utwórz punkt spawnu.
+        Usage: '[nazwa]'
+        Done:
+          - <! type:"titles:20:50:20" !>
+          - '#aefd5e&lSpawn Ustawiony!'
+          - '#d4d9d8Id spawnu: #aefd5e%spawn_id%#d4d9d8 | Edytor: #aefd5e/spawns editor'
+      Teleport:
+        Desc: Teleportuj na określony spawn.
+        Usage: '[spawn] [gracz]'
+        Notify: '#d4d9d8Teleportowanie #fdf35e%player_display_name%#d4d9d8 na #fdf35e%spawn_id%#d4d9d8 spawn.'
+        Done:
+          - <! type:"titles:20:60:20" !>
+          - '#fdf35e&lSpawn'
+          - '#d4d9d8Zostałeś teleportowany na #fdf35e%spawn_name%#d4d9d8 spawn.'
+      Editor:
+        Desc: Otwórz edytor spawnów.
+  Spawn:
+    Error:
+      Invalid: '#fd5e5eSpawn nie istnieje.'
+  Editor:
+    Enter:
+      Name: '#d4d9d8Wprowadź #aefd5e[Nazwę Spawnu]'
+      Priority: '#d4d9d8Wprowadź #aefd5e[Priorytet]'
+      Group: '#d4d9d8Wprowadź #aefd5e[Nazwę Grupy]'
+Editor:
+  SpawnsEditorType:
+    SPAWN_OBJECT:
+      Name: '#ead931&l%spawn_name%#d4d9d8 (&f%spawn_id%#d4d9d8)'
+      Lore:
+        - '#ead931▪ #aaa8a8Priorytet: #ead931%spawn_priority%'
+        - '#ead931▪ #aaa8a8Wymagane Uprawnienie: #ead931%spawn_permission_required%'
+        - ''
+        - '#74ea31&lAkcje:'
+        - '#74ea31▪ #aaa8a8LPM: #74ea31Edytuj'
+        - '#74ea31▪ #aaa8a8Shift-Right: #74ea31Usuń #fd5e5e(Bez Cofnięcia)'
+    SPAWN_CHANGE_NAME:
+      Name: '#ead931&lNazwa Wyświetlana'
+      Lore:
+        - '#aaa8a8Ustawia nazwę wyświetlaną spawnu.'
+        - '#aaa8a8Jest używana w wiadomościach i GUI.'
+        - ''
+        - '#ead931&lObecnie:'
+        - '#ead931▪ #aaa8a8Nazwa Wyświetlana: #ead931%spawn_name%'
+        - ''
+        - '#74ea31&lAkcje:'
+        - '#74ea31▪ #aaa8a8LPM: #74ea31Zmień'
+    SPAWN_CHANGE_LOCATION:
+      Name: '#ead931&lLokalizacja'
+      Lore:
+        - '#aaa8a8To miejsce, gdzie gracze będą teleportowani.'
+        - ''
+        - '#ead931&lObecnie:'
+        - '#ead931▪ #aaa8a8Lokalizacja: #ead931%spawn_location_x%, %spawn_location_y%, %spawn_location_z% w %spawn_location_world%'
+        - ''
+        - '#74ea31&lAkcje:'
+        - '#74ea31▪ #aaa8a8LPM: #74ea31Ustaw na Twojej Pozycji'
+        - '#74ea31▪ #aaa8a8PPM: #74ea31Synchronizuj z World Spawn'
+    SPAWN_CHANGE_PERMISSION:
+      Name: '#ead931&lWymagane Uprawnienie'
+      Lore:
+        - '#aaa8a8Ustawia, czy gracze'
+        - '#aaa8a8muszą mieć uprawnienie, aby'
+        - '#aaa8a8używać tego spawnu.'
+        - ''
+        - '#ead931&lObecnie:'
+        - '#ead931▪ #aaa8a8Włączone: #ead931%spawn_permission_required%'
+        - '#ead931▪ #aaa8a8Węzeł Uprawnień: #ead931%spawn_permission_node%'
+        - ''
+        - '#74ea31&lAkcje:'
+        - '#74ea31▪ #aaa8a8LPM: #74ea31Przełącz'
+    SPAWN_CHANGE_DEFAULT:
+      Name: '#ead931&lCzy Domyślny?'
+      Lore:
+        - '#aaa8a8Ustawia, czy ten spawn'
+        - '#aaa8a8jest domyślnym.'
+        - '#aaa8a8Domyślny spawn używany jest, gdy nie ma'
+        - '#aaa8a8innych ustawionych, określonych lub dostępnych spawnów.'
+        - ''
+        - '#ead931&lObecnie:'
+        - '#ead931▪ #aaa8a8Jest Domyślny: #ead931%spawn_is_default%'
+        - ''
+        - '#74ea31&lAkcje:'
+        - '#74ea31▪ #aaa8a8LPM: #74ea31Przełącz'
+    SPAWN_CHANGE_PRIORITY:
+      Name: '#ead931&lPriorytet'
+      Lore:
+        - '#aaa8a8Gdy dostępne są wielokrotne spawnu dla gracza,'
+        - '#aaa8a8używany będzie ten z największym priorytetem.'
+        - ''
+        - '#ea9631&lNotatki:'
+        - '#aaa8a8To ma znaczenie tylko dla spawnów logowania/śmierci.'
+        - ''
+        - '#ead931&lObecnie:'
+        - '#ead931▪ #aaa8a8Priorytet: #ead931%spawn_priority%'
+        - ''
+        - '#74ea31&lAkcje:'
+        - '#74ea31▪ #aaa8a8LPM: #74ea31Zmień'
+    SPAWN_CHANGE_LOGIN_TELEPORT:
+      Name: '#ead931&lTeleport przy Logowaniu'
+      Lore:
+        - '#aaa8a8Gdy #fdf35e''Globalne''#d4d9d8 jest włączone, wszyscy gracze z'
+        - '#aaa8a8określonych grup będą teleportowani'
+        - '#aaa8a8do tego spawnu przy logowaniu.'
+        - ''
+        - '#aaa8a8Gdy #fdf35e''Dla Nowych Graczy''#d4d9d8 jest włączone,'
+        - '#aaa8a8tylko gracze dołączający po raz pierwszy'
+        - '#aaa8a8będą teleportowani przy logowaniu.'
+        - ''
+        - '#ead931&lObecnie:'
+        - '#ead931▪ #aaa8a8Globalne: #ead931%spawn_login_teleport_enabled%'
+        - '#ead931▪ #aaa8a8Dla Nowych Graczy: #ead931%spawn_login_teleport_newbies%'
+        - '#ead931▪ #aaa8a8Dotyczy Grupy: #ead931%spawn_login_teleport_groups%'
+        - ''
+        - '#74ea31&lAkcje:'
+        - '#74ea31▪ #aaa8a8LPM: #74ea31Przełącz Globalne'
+        - '#74ea31▪ #aaa8a8PPM: #74ea31Przełącz Nowi Gracze'
+        - '#74ea31▪ #aaa8a8Shift-Lewy: #74ea31Dodaj Grupę'
+        - '#74ea31▪ #aaa8a8Shift-Prawy: #74ea31Wyczyść Grupy'
+    SPAWN_CHANGE_RESPAWN_TELEPORT:
+      Name: '#ead931&lTeleport przy Odrodzeniu'
+      Lore:
+        - '#aaa8a8Gdy włączone, wszyscy gracze z określonych grup'
+        - '#aaa8a8będą teleportowani do tego spawnu'
+        - '#aaa8a8po odrodzeniu po śmierci.'
+        - ''
+        - '#ea9631&lNotatki:'
+        - '#aaa8a8To nie zadziała dla graczy'
+        - '#aaa8a8z wybranym domem do odrodzenia.'
+        - ''
+        - '#ead931&lObecnie:'
+        - '#ead931▪ #aaa8a8Włączone: #ead931%spawn_respawn_teleport_enabled%'
+        - '#ead931▪ #aaa8a8Dotyczy Grupy: #ead931%spawn_respawn_teleport_groups%'
+        - ''
+        - '#74ea31&lAkcje:'
+        - '#74ea31▪ #aaa8a8LPM: #74ea31Przełącz'
+        - '#74ea31▪ #aaa8a8Shift-Lewy: #74ea31Dodaj Grupę'
+        - '#74ea31▪ #aaa8a8Shift-Prawy: #74ea31Wyczyść Grupy'
+  KitsEditorType:
+    KIT_OBJECT:
+      Name: '#ead931&l%kit_name%#d4d9d8 (&f%kit_id%#d4d9d8)'
+      Lore:
+        - '#ead931▪ #aaa8a8Priorytet: #ead931%kit_priority%'
+        - '#ead931▪ #aaa8a8Wymagane Uprawnienie: #ead931%kit_permission_required%'
+        - ''
+        - '#74ea31&lAkcje:'
+        - '#74ea31▪ #aaa8a8LPM: #74ea31Edytuj'
+        - '#74ea31▪ #aaa8a8Shift-Right: #74ea31Usuń #fd5e5e(Bez Cofnięcia)'
+    KIT_CHANGE_NAME:
+      Name: '#ead931&lNazwa Wyświetlana'
+      Lore:
+        - '#aaa8a8Ustawia nazwę wyświetlaną zestawu.'
+        - '#aaa8a8Jest używana w GUI, wiadomościach, itp.'
+        - ''
+        - '#ead931&lObecnie:'
+        - '#ead931▪ #aaa8a8Nazwa Wyświetlana: #ead931%kit_name%'
+        - ''
+        - '#74ea31&lAkcje:'
+        - '#74ea31▪ #aaa8a8LPM: #74ea31Zmień'
+    KIT_CHANGE_DESCRIPTION:
+      Name: '#ead931&lOpis'
+      Lore:
+        - '#aaa8a8Ustawia opis zestawu.'
+        - '#aaa8a8Podaj krótki opis dla graczy.'
+        - ''
+        - '#ead931&lObecnie:'
+        - '#aaa8a8%kit_description%'
+        - ''
+        - '#74ea31&lAkcje:'
+        - '#74ea31▪ #aaa8a8LPM: #74ea31Dodaj Linię'
+        - '#74ea31▪ #aaa8a8PPM: #74ea31Wyczyść'
+    KIT_CHANGE_COOLDOWN:
+      Name: '#ead931&lCzas Oczekiwania'
+      Lore:
+        - '#aaa8a8Ustawia czas oczekiwania na ponowne użycie (w sekundach).'
+        - '#aaa8a8Gracze będą musieli czekać określony czas'
+        - '#aaa8a8zanim będą mogli go użyć ponownie.'
+        - ''
+        - '#ead931&lObecnie:'
+        - '#ead931▪ #aaa8a8Czas Oczekiwania: #ead931%kit_cooldown%'
+        - ''
+        - '#ea9631&lNotatki:'
+        - '#ea9631▪ #aaa8a8Ustaw #fdba5e-1#d4d9d8 dla jednorazowego użycia.'
+        - '#ea9631▪ #aaa8a8Ustaw #fdba5e0#d4d9d8 aby wyłączyć.'
+        - ''
+        - '#74ea31&lAkcje:'
+        - '#74ea31▪ #aaa8a8LPM: #74ea31Zmień'
+        - '#74ea31▪ #aaa8a8PPM: #74ea31Jednorazowe'
+    KIT_CHANGE_PERMISSION:
+      Name: '#ead931&lWymagane Uprawnienie'
+      Lore:
+        - '#aaa8a8Ustawia, czy gracz musi'
+        - '#aaa8a8mieć uprawnienie, aby'
+        - '#aaa8a8użyć tego zestawu.'
+        - ''
+        - '#ead931&lObecnie:'
+        - '#ead931▪ #aaa8a8Wymagane: #ead931%kit_permission_required%'
+        - '#ead931▪ #aaa8a8Węzeł: #ead931%kit_permission_node%'
+        - ''
+        - '#74ea31&lAkcje:'
+        - '#74ea31▪ #aaa8a8LPM: #74ea31Przełącz'
+    KIT_CHANGE_COST:
+      Name: '#ead931&lKoszt Użycia'
+      Lore:
+        - '#aaa8a8Ustawia ile gracz musi zapłacić'
+        - '#aaa8a8aby użyć tego zestawu.'
+        - ''
+        - '#ead931&lObecnie:'
+        - '#ead931▪ #aaa8a8Kwota: #ead931%kit_cost_money%'
+        - ''
+        - '#ea3131&lOstrzeżenie:'
+        - '#ea3131▪ #aaa8a8Musisz mieć zainstalowany Vault i Economy.'
+        - ''
+        - '#74ea31&lAkcje:'
+        - '#74ea31▪ #aaa8a8LPM: #74ea31Zmień'
+        - '#74ea31▪ #aaa8a8PPM: #74ea31Wyłącz'
+    KIT_CHANGE_PRIORITY:
+      Name: '#ead931&lPriorytet'
+      Lore:
+        - '#aaa8a8Ustawia priorytet zestawu.'
+        - '#aaa8a8Ta opcja jest przydatna do definiowania kolejności zestawów.'
+        - ''
+        - '#ead931&lObecnie:'
+        - '#ead931▪ #aaa8a8Priorytet: #ead931%kit_priority%'
+        - ''
+        - '#74ea31&lAkcje:'
+        - '#74ea31▪ #aaa8a8LPM: #74ea31Zmień'
+    KIT_CHANGE_ICON:
+      Name: '#ead931&lIkona'
+      Lore:
+        - '#aaa8a8Ustawia ikonę zestawu.'
+        - '#aaa8a8Jest używana w GUI do wyświetlania zestawów.'
+        - ''
+        - '#74ea31&lAkcje:'
+        - '#74ea31▪ #aaa8a8Przeciągnij i Upuść: #74ea31Zamień'
+    KIT_CHANGE_COMMANDS:
+      Name: '#ead931&lPolecenia'
+      Lore:
+        - '#aaa8a8Lista poleceń, które zostaną wykonane'
+        - '#aaa8a8gdy gracz użyje tego zestawu.'
+        - ''
+        - '#ead931&lObecnie:'
+        - '#aaa8a8%kit_commands%'
+        - ''
+        - '#74ea31&lAkcje:'
+        - '#74ea31▪ #aaa8a8LPM: #74ea31Dodaj Polecenie'
+        - '#74ea31▪ #aaa8a8PPM: #74ea31Wyczyść'
+    KIT_CHANGE_INVENTORY:
+      Name: '#ead931&lZawartość Ekwipunku'
+      Lore:
+        - '#aaa8a8Przedmioty dodane do ekwipunku gracza.'
+        - ''
+        - '#ea9631&lNotatki:'
+        - '#ea9631▪ #aaa8a8Sprawdź wiki wtyczki dla informacji o slotach.'
+        - ''
+        - '#74ea31&lAkcje:'
+        - '#74ea31▪ #aaa8a8LPM: #74ea31Nawiguj'
+    KIT_CHANGE_ARMOR:
+      Name: '#ead931&lZawartość Pancerza'
+      Lore:
+        - '#aaa8a8Przedmioty, które zostaną założone na sloty pancerza gracza.'
+        - ''
+        - '#ea9631&lNotatki:'
+        - '#ea9631▪ #aaa8a8Buty → Nogi → Tułów → Hełm → Druga Ręka'
+        - ''
+        - '#74ea31&lAkcje:'
+        - '#74ea31▪ #aaa8a8LPM: #74ea31Nawiguj'
 Homes:
   Command:
-    DeleteHome:
-      Desc: Usuń dom.
-      Usage: '[home] &7lub &e/%cmd% [player] [home]'
-      Error: '{message: ~prefix: false;}&cNie można usunąć domu. Dom o tym id
-        nie istnieje.'
-      Done:
-        Own:
-          - '{message: ~prefix: false; ~type: TITLES; ~fadeIn: 20; ~stay: 50; ~fadeOut:20;}&c&lDom
-          został usunięty'
-          - '&7Usunąłeś dom &c%home_id%&7.'
-        Other:
-          - '{message: ~prefix: false; ~type: TITLES; ~fadeIn: 20; ~stay: 50; ~fadeOut:20;}&c&lDom
-          usunięty'
-          - '&7Usunąłeś dom &c%home_id%&7 gracza &c%home_owner%&7.'
-    Home:
-      Desc: Teleportuj do domu.
-      Usage: '[home] &7lub &e/%cmd% [player] [home]'
-      Error:
-        Invalid: '{message: ~prefix: false;}&7Ten dom nie istnieje.'
-      Done:
-        Own:
-          - '{message: ~prefix: false; ~type: TITLES; ~fadeIn: 20; ~stay: 50; ~fadeOut:20;}&e&lDom'
-          - '&7Teleportowałeś się do domu &e%home_name%&7.'
-        Other:
-          - '{message: ~prefix: false; ~type: TITLES; ~fadeIn: 20; ~stay: 50; ~fadeOut:20;}&e&lDom'
-          - '&7Teleportowałeś się do domu &c%home_id%&7 gracza &c%home_owner%&7.'
     Homes:
-      Desc: Zarządaj swoimi domami.
-      Usage: '[player]'
-    SetHome:
-      Desc: Wybierz tę lokację na dom.
-      Usage: '[home]'
+      Desc: Zarządzanie domami.
+      Usage: '[help]'
+      Delete:
+        Desc: Usuń dom.
+        Usage: <dom>
+      Teleport:
+        Desc: Teleportuj do domu.
+        Usage: <dom>
+      Visit:
+        Desc: Odwiedź publiczny dom lub dom, do którego masz zaproszenie.
+        Usage: <gracz> <dom>
+      Invite:
+        Desc: Zaproś gracza do domu.
+        Usage: <gracz> [dom]
+      Invute:
+        Usage: '#ffeea2Zaprosiłeś #fdba5e%player_name%#ffeea2 do swojego domu %home_name%#ffeea2!'
+      List:
+        Desc: Lista domów.
+        Usage: '[gracz]'
+      Set:
+        Desc: Utwórz nowy punkt domowy.
+        Usage: '[nazwa]'
+    HomesAdmin:
+      Desc: Narzędzia administracyjne zarządzania domami.
+      Usage: '[help]'
+      Delete:
+        Desc: Usuń dom gracza.
+        Usage: <gracz> [dom]
+        Done:
+          Single: 'Usunąłeś dom #aefd5e%player_name%#d4d9d8 o nazwie #aefd5e%home_id%#d4d9d8.'
+          All: 'Usunąłeś wszystkie domy #aefd5e%player_name%#d4d9d8.'
+      Create:
+        Desc: Utwórz dom dla gracza.
+        Usage: <gracz> [nazwa]
+        Done:
+          Fresh: 'Utworzyłeś dom #aefd5e%home_id%#d4d9d8 dla #aefd5e%player_name%#d4d9d8.'
+          Edited: 'Zaktualizowałeś lokalizację domu #aefd5e%player_name%#d4d9d8 o nazwie #aefd5e%home_id%#d4d9d8.'
+  Home:
+    Teleport:
+      - <! type:"titles:20:50:20" sound:"ENTITY_ENDERMAN_TELEPORT" !>
+      - '#aefd5e&lDom'
+      - '#d4d9d8Zostałeś teleportowany do swojego domu #aefd5e%home_name%#d4d9d8.'
+    Visit:
+      Success:
+        - <! type:"titles:20:50:20" sound:"ENTITY_ENDERMAN_TELEPORT" !>
+        - '#fdf35e&lGość w Domu'
+        - '#d4d9d8Odwiedziłeś dom #fdf35e%home_owner%#d4d9d8 o nazwie #fdf35e%home_name%#d4d9d8.'
       Error:
-        Limit: '{message: ~prefix: false;}&cOsiągnąłeś limit domów. Nie możesz
-          postawić ich więcej.'
-        World: '{message: ~prefix: false;}&cNie możesz postawić domu w ymn świecie!'
-        Region: '{message: ~prefix: false;}&cNie możesz postawić domu w tym regionie!'
+        NotPermitted: <! sound:"ENTITY_VILLAGER_NO" !>#fd5e5eNie masz zaproszenia do tego domu!
+    Set:
+      Error:
+        Limit: '#fd5e5eOsiągnąłeś limit domów. Nie możesz ustawić więcej.'
+        World: '#fd5e5eNie możesz ustawić domu w tym świecie!'
+        Region: '#fd5e5eNie możesz ustawić domu w tym regionie!'
+        Protection: '#fd5e5eNie możesz ustawić domu w chronionym obszarze!'
+      Success:
+        - <! type:"titles:20:50:20" sound:"BLOCK_WOODEN_DOOR_OPEN" !>
+        - '#aefd5e&lDom Ustawiony!'
+        - '#d4d9d8Teleport: #aefd5e/homes teleport %home_id%#d4d9d8 | Menu: #aefd5e/homes list'
+      Edited:
+        - <! type:"titles:20:50:20" sound:"BLOCK_WOODEN_DOOR_CLOSE" !>
+        - '#aefd5e&lDom Ustawiony!'
+        - '#d4d9d8Lokalizacja domu została zaktualizowana.'
+    Delete:
       Done:
-        - '{message: ~prefix: false; ~type: TITLES; ~fadeIn: 20; ~stay: 50; ~fadeOut:20;}&a&lDom
-        postawiony!'
-        - '&7Teleport: &a/home %home_id% &8| &7Menu: &a/homes'
+        - <! type:"titles:20:50:20" sound:"ENTITY_ZOMBIE_BREAK_WOODEN_DOOR" !>
+        - '#aefd5e&lDom Usunięty!'
+        - '#d4d9d8Usunąłeś dom #aefd5e%home_name%#d4d9d8.'
+    Error:
+      Invalid: '#fd5e5eDom o takiej nazwie nie istnieje.'
+      NotCreated: '#fd5e5eNie masz jeszcze żadnych utworzonych domów.'
   Editor:
     Enter:
-      InvitedPlayer: '&7Wprowadź &aimię gracza&7...'
-      Name: '&7Wprowadź &anazwę domu&7...'
+      PlayerName: '#d4d9d8Wprowadź #aefd5e[Nazwę Gracza]'
+      HomeName: '#d4d9d8Wprowadź #aefd5e[Nazwę Domu]'
+HomeType:
+  PUBLIC: Publiczny
+  PRIVATE: Prywatny
+# --------------------------------------------------
+# Kits Module Lang
+# --------------------------------------------------
 Kits:
   Command:
-    Kit:
-      Usage: <kit> [player]
-      Desc: Otrzymaj wybrany kit.
-    KitEditor:
-      Desc: Otwórz edytor kitu.
-    KitPreview:
-      Usage: <kit>
-      Desc: Podgląd zawartości kitu.
-  Kit:
-    Error:
-      NoKits: '{message: ~prefix: false;}&cŻaden kit nie jest dostępny.'
-      InvalidKit: '{message: ~prefix: false;}&cKit &e%kit_id% &cnie istnieje!'
-      NoPermission: '{message: ~prefix: false;}&cNie posiadasz pozwolenia na użycie
-        tego kitu!'
-      NotEnoughFunds: '{message: ~prefix: false;}&cNie stać Cię na ten kit!
-        Potrzebujesz &c$%kit_cost_money%&7.'
-      Cooldown:
-        Expirable: '{message: ~prefix: false;}&cMusisz poczekać jeszcze &e%kit_user_cooldown%
-          &czanim ponownie użyjesz tego kitu.'
-        OneTimed: '{message: ~prefix: false;}&cTen kit jest jednorazowy.
-          Już go użyłeś.'
-    Notify:
+    Kits:
+      Desc: Zarządzanie zestawami.
+      Usage: '[help]'
+      Editor:
+        Desc: Otwórz Edytor Zestawów.
+      Preview:
+        Desc: Podgląd zawartości określonego zestawu.
+        Usage: <zestaw> [gracz]
+        Others: '#ffeea2Otworzono podgląd zestawu #fdba5e%kit_name%#ffeea2 dla #fdba5e%player_display_name%#ffeea2.'
       Give:
-        Self: '{message: ~prefix: false;}&7Otrzymany kit: &a%kit_name% &8(%kit_id%)&7!'
-        Others: '{message: ~prefix: false;}&7Podarowano kit &a%kit_name% &8(%kit_id%) &7graczowi
-          &a%player%&7!'
+        Desc: Daj zestaw graczowi.
+        Usage: <zestaw> <gracz> [-s]
+        Done: '#ffeea2Dano zestaw #fdba5e%kit_name%#ffeea2 graczowi #fdba5e%player_display_name%#ffeea2!'
+        Notify: '<! prefix:"false" !>#ffeea2&oDano ci zestaw #fdba5e&o%kit_name% #ffeea2&ozestaw od #fdba5e&o%player_display_name%#ffeea2.'
+      Get:
+        Desc: Zdobądź określony zestaw.
+        Usage: <zestaw>
+      List:
+        Desc: Otwórz interfejs graficzny zestawów.
+        Usage: '[gracz]'
+        Others: '#ffeea2Otwarto interfejs graficzny zestawów dla #fdba5e%player_display_name%#ffeea2.'
+      ResetCooldown:
+        Desc: Zresetuj czas oczekiwania zestawu gracza.
+        Usage: <zestaw> [gracz] [-s]
+        Done: '#ffeea2Zresetowano czas oczekiwania zestawu #fdba5e%kit_name%#ffeea2 dla #fdba5e%player_name%#ffeea2.'
+        Notify: '#ffeea2Twój czas oczekiwania zestawu #fdba5e%kit_name%#ffeea2 został zresetowany!'
+      SetCooldown:
+        Desc: Ustaw czas oczekiwania zestawu gracza.
+        Usage: <zestaw> <ilość> [gracz] [-s]
+        Done: '#ffeea2Ustawiono czas oczekiwania zestawu #fdba5e%kit_name%#ffeea2 z #fdba5e%amount%#ffeea2 dla #fdba5e%player_name%#ffeea2.'
+        Notify: '#ffeea2Twój czas oczekiwania zestawu #fdba5e%kit_name%#ffeea2 został ustawiony na #fdba5e%amount%#ffeea2!'
+  Kit:
+    Get:
+      - <! type:"titles:20:60:20" sound:"ITEM_ARMOR_EQUIP_LEATHER" !>
+      - '#aefd5e&lZestaw Odebrany!'
+      - '#d4d9d8Otrzymałeś zestaw #aefd5e%kit_name%#d4d9d8!'
+    Error:
+      NoKits: '#fd5e5eNie ma dostępnych zestawów.'
+      InvalidKit: '#fd5e5eNie ma takiego zestawu.'
+      NoPermission: '#fd5e5eNie masz uprawnień do używania tego zestawu!'
+      NotEnoughFunds: '#fd5e5eNie stać cię na ten zestaw! Potrzebujesz #fdba5e$%kit_cost_money%#fd5e5e.'
+      Cooldown:
+        Expirable: '#fd5e5eMusisz poczekać #fdba5e%cooldown%#fd5e5e zanim będziesz mógł użyć tego zestawu ponownie.'
+        OneTimed: '#fd5e5eJuż użyłeś tego zestawu. Nie możesz go więcej użyć.'
   Editor:
     Enter:
-      KitId: '&7Ustaw &aunikatowy identyfikator &7kitu...'
-      Command: '&7Ustaw &akomendę&7...'
-      Cooldown: '&7Ustaw &aczas odnowienia&7... &a(w sekundach)'
-      Cost: '&7Ustaw &akoszt kitu&7...'
-      Name: '&7Ustaw &anazwę&7...'
-      Description: '&7Ustaw &aopis&7...'
-      Priority: '&7Ustaw nowy &apriorytet&7...'
+      Id: '#d4d9d8Wprowadź #aefd5e[Identyfikator Zestawu]'
+      Command: '#d4d9d8Wprowadź #aefd5e[Polecenie]'
+      Cooldown: '#d4d9d8Wprowadź #aefd5e[Ilość Sekund]'
+      Cost: '#d4d9d8Wprowadź #aefd5e[Koszt]'
+      Name: '#d4d9d8Wprowadź #aefd5e[Nazwę Wyświetlaną]'
+      Description: '#d4d9d8Wprowadź #aefd5e[Opis]'
+      Priority: '#d4d9d8Wprowadź #aefd5e[Priorytet]'
     Error:
-      AlreadyExists: '&cKit już istnieje!'
+      AlreadyExists: '#fd5e5eZestaw już istnieje!'
 Warps:
   Command:
-    DeleteWarp:
-      Desc: Usuń wybrany warp.
-      Usage: <warp>
-      Done:
-        - '{message: ~prefix: false; ~type: TITLES; ~fadeIn: 20; ~stay: 80; ~fadeOut:
-        20;}&c&lWarp usunięty.'
-        - '&7Nazwa warpu: &c%warp_name% &7| Warp Id: &c%warp_id%'
-    SetWarp:
-      Desc: Ustaw nowy warp.
-      Usage: <warp>
-      Done:
-        New:
-          - '{message: ~prefix: false; ~type: TITLES; ~fadeIn: 20; ~stay: 80; ~fadeOut:
-          20;}&a&lUtworzono warp!'
-          - '&7Warp Id: &a%warp_id% &7| Edytuj go w &a/warps'
-        Location:
-          - '{message: ~prefix: false; ~type: TITLES; ~fadeIn: 20; ~stay: 80; ~fadeOut:
-          20;}&a&lWarp zmieniony!'
-          - '&7Lokacja warpu zaktualizowana.'
-      Error:
-        Limit:
-          - '{message: ~prefix: false; ~type: TITLES; ~fadeIn: 20; ~stay: 80; ~fadeOut:
-          20;}&c&lBłąd warpu!'
-          - '&7Osiągnąłeś limit warpów.'
-        World:
-          - '{message: ~prefix: false; ~type: TITLES; ~fadeIn: 20; ~stay: 80; ~fadeOut:
-          20;}&c&lBłąd warpów!'
-          - '&7Nie możesz tworzyć warpów w tym świecie.'
-        Exists:
-          - '{message: ~prefix: false; ~type: TITLES; ~fadeIn: 20; ~stay: 80; ~fadeOut:
-          20;}&c&lBłąd warpu!'
-          - '&7Warp o tej nazwie już istnieje!'
-    Warp:
-      Desc: Przeglądaj warpy lub teleportuj się.
-      Usage: <warp> [player]
     Warps:
-      Done:
-        Self:
-          - '{message: ~prefix: false; ~type: TITLES; ~fadeIn: 20; ~stay: 60; ~fadeOut:
-          20;}&e&l%warp_name%'
-          - '%warp_welcome_message%'
-        Others: '{message: ~prefix: false;}Gracz &a%player% &7teleportował się do warpu
-          &a%warp_name%&7...'
-    WarpEditor:
-      Desc: Otwórz edytor warpów.
+      Desc: Zarządzanie warpami.
+      Usage: '[help]'
+      Delete:
+        Desc: Usuń określony warp.
+        Usage: <warp>
+      Create:
+        Desc: Ustaw nowy warp.
+        Usage: <warp>
+      Teleport:
+        Desc: Teleportuj do określonego warpa.
+        Usage: <warp> [gracz]
+        Others: Gracz &a%player% &7teleportowany na warp &a%warp_name%&7...
+      List:
+        Desc: Otwórz interfejs graficzny warpów.
+        Usage: '[gracz]'
+        Others: 'Otworzono interfejs graficzny warpów dla #aefd5e%player_display_name%#d4d9d8.'
+      ResetCooldown:
+        Desc: Zresetuj czas oczekiwania warpa gracza.
+        Usage: <warp> [gracz] [-s]
+        Done: '#ffeea2Zresetowano czas oczekiwania warpa #fdba5e%warp_name%#ffeea2 dla #fdba5e%player_name%#ffeea2.'
+        Notify: '#ffeea2Twój czas oczekiwania warpa #fdba5e%warp_name%#ffeea2 został zresetowany!'
+      SetCooldown:
+        Desc: Ustaw czas oczekiwania warpa gracza.
+        Usage: <warp> <ilość> [gracz] [-s]
+        Done: '#ffeea2Ustawiono czas oczekiwania warpa #fdba5e%warp_name%#ffeea2 z #fdba5e%amount%#ffeea2 dla #fdba5e%player_name%#ffeea2.'
+        Notify: '#ffeea2Twój czas oczekiwania warpa #fdba5e%warp_name%#ffeea2 został ustawiony na #fdba5e%amount%#ffeea2!'
   Warp:
     Error:
-      Invalid: '{message: ~prefix: false;}&cWarp &e%warp_id% &cnie istnieje!'
-      NoPerm:
-        - '{message: ~prefix: false; ~type: TITLES; ~fadeIn: 20; ~stay: 80; ~fadeOut:
-        20;}&c&lBłąd warpu!'
-        - '&7Nie posiadasz pozwolenia do tego warpu!'
+      Invalid: '#fd5e5eNieprawidłowy warp!'
+    Creation:
+      New:
+        - <! type:"titles:20:50:30" sound:"BLOCK_ANVIL_PLACE" !>
+        - '#aefd5e&lWarp Utworzony!'
+        - '#d4d9d8Teleport: #aefd5e/warp %warp_id%#d4d9d8 | Edytuj w: #aefd5e /warplist'
+      Relocate:
+        - <! type:"titles:20:50:30" sound:"BLOCK_ANVIL_PLACE" !>
+        - '#aefd5e&lWarp Przeniesiony!'
+        - '#d4d9d8Warp #aefd5e%warp_name%#d4d9d8 został przeniesiony tutaj.'
+      Error:
+        Limit:
+          - <! type:"titles:20:50:30" sound:"ENTITY_VILLAGER_NO" !>
+          - '#fd5e5e&lLimit Osiągnięty!'
+          - '#d4d9d8Osiągnąłeś limit warpów.'
+        World:
+          - <! type:"titles:20:50:30" sound:"ENTITY_VILLAGER_NO" !>
+          - '#fd5e5e&lZakazany Świat!'
+          - '#fd5e5eNie możesz tworzyć warpów w tym świecie.'
+        Exists:
+          - <! type:"titles:20:50:30" sound:"ENTITY_VILLAGER_NO" !>
+          - '#fd5e5e&lJuż Istnieje!'
+          - '#d4d9d8Warp o takiej nazwie już istnieje!'
+        Unsafe:
+          - <! type:"titles:20:50:30" sound:"ENTITY_VILLAGER_NO" !>
+          - '#fd5e5e&lNiebezpieczna Lokalizacja!'
+          - '#d4d9d8Nie możesz tworzyć warpów tutaj!'
     Teleport:
+      Done:
+        - <! type:"titles:20:50:30" sound:"ENTITY_ENDERMAN_TELEPORT" !>
+        - '#fdf35e&l%warp_name%'
+        - '#d4d9d8%warp_description%'
       Error:
         NotEnoughFunds:
-          - '{message: ~prefix: false; ~type: TITLES; ~fadeIn: 20; ~stay: 80; ~fadeOut:
-          20;}&c&lBłąd warpu!'
-          - '&7Potrzebujesz &c$%warp_teleport_cost_money%&7 aby teleportować się do tego warpu!'
-        Unsafe:
-          - '{message: ~prefix: false; ~type: TITLES; ~fadeIn: 20; ~stay: 80; ~fadeOut:
-          20;}&e&lNiebezpieczny warp!'
-          - '&7Proszę, poinformuj pomoc techniczną.'
+          - <! type:"titles:20:50:30" sound:"ENTITY_VILLAGER_NO" !>
+          - '#fd5e5e&lBrak Środków!'
+          - '#d4d9d8Potrzebujesz #fd5e5e$%warp_visit_cost%#d4d9d8, aby odwiedzić ten warp!'
+        NoPermission:
+          - <! type:"titles:20:50:30" sound:"ENTITY_VILLAGER_NO" !>
+          - '#fd5e5e&lBrak Uprawnień!'
+          - '#d4d9d8Nie masz uprawnień do warpa %warp_name%!'
+        Cooldown:
+          - <! type:"titles:20:50:30" sound:"ENTITY_VILLAGER_NO" !>
+          - '#fd5e5e&lCzas Oczekiwania!'
+          - '#d4d9d8Możesz odwiedzić #fd5e5e%warp_name%#d4d9d8 ponownie za #fd5e5e%cooldown%'
+        Time:
+          - <! type:"titles:20:50:30" sound:"ENTITY_VILLAGER_NO" !>
+          - '#fd5e5e&lZła Porа!'
+          - '#fdba5e%warp_name%#d4d9d8 nie jest dostępny do odwiedzin teraz.'
+  Delete:
+    Done:
+      - <! type:"titles:20:50:30" sound:"BLOCK_GLASS_BREAK" !>
+      - '#fd5e5e&lWarp Usunięty'
+      - '#d4d9d8Warp #fd5e5e%warp_name%#d4d9d8 został usunięty.'
   Editor:
-    Error:
-      Description:
-        Length: Długość linii nie może być dłuższa niż &c%length% znaków&7.
-        Size: Ilość linii nie może być dłuższa niż &c%size%&7.
     Enter:
-      Welcome: '&7Ustaw powitanie...'
-      CostMoney: '&7Podaj koszt teleportacji...'
-      Name: '&7Ustal nazwę...'
-      Description: '&7Ustaw opis...'
+      CostMoney: '#d4d9d8Wprowadź #aefd5e[Koszt]'
+      Command: '#d4d9d8Wprowadź #aefd5e[Nazwę Polecenia]'
+      Times: '#d4d9d8Wprowadź #aefd5e[Czasy] #fdba5e (10:00 14:00)'
+      Cooldown: '#d4d9d8Wprowadź #aefd5e[Czas Oczekiwania]'
+      Name: '#d4d9d8Wprowadź #aefd5e[Nazwę Wyświetlaną]'
+      Description: '#d4d9d8Wprowadź #aefd5e[Opis]'
+WarpSortType:
+  WARP_NAME: Nazwa Warpa
+  WARP_ID: Identyfikator Warpa
+  WARP_TYPE: Typ Warpa
+  VISIT_COST: Koszt Odwiedzin
 WarpType:
-  PLAYER: Gracz
-  SERVER: Serwer
+  SERVER: Serwerowy
+  PLAYER: Gracza
 Chat:
   Chat:
     AntiSpam:
       Similar:
-        Msg: '{message: ~prefix: false;}&cNie spam wiadomościami!'
-        Cmd: '{message: ~prefix: false;}&cNie spam komendami!'
+        Msg: <! prefix:"false" !>&cNie spamuj wiadomościami!
+        Cmd: <! prefix:"false" !>&cNie spamuj poleceniami!
       Delay:
-        Msg: '{message: ~prefix: false;}&cMusisz czekać &c%time% &czanim znów
-          wyślesz wiadomość.'
-        Cmd: '{message: ~prefix: false;}&cMusisz czekać &c%time% &czanim znów
-          użyjesz komendy.'
+        Msg: <! prefix:"false" !>&cMusisz poczekać &c%time% &czanim będziesz mógł wysłać kolejną wiadomość.
+        Cmd: <! prefix:"false" !>&cMusisz poczekać &c%time% &czanim będziesz mógł użyć kolejnego polecenia.
+    Mention:
+      Error:
+        Cooldown: <! prefix:"false" !>&cMożesz wspomnieć &e%name%&c ponownie za &e%time%&c.
   Command:
     ShortChannel:
-      Desc: Zmień kanał czatu lub wyślij wiadomość na kanał
-      Usage: '[message]'
+      Desc: Przełącz kanał czatu lub wyślij wiadomość na kanał
+      Usage: '[wiadomość]'
     Channel:
-      Desc: Zarządzaj kanałami czatu.
+      Desc: Zarządzaj swoimi kanałami czatu.
       Join:
-        Usage: <channel>
+        Usage: <kanał>
       Leave:
         Desc: Opuść kanał.
-        Usage: <channel>
+        Usage: <kanał>
       Set:
-        Desc: Ustaw kanał jako domyślny.
-        Usage: <channel>
+        Desc: Ustaw domyślny kanał.
+        Usage: <kanał>
     Join:
-      Desc: Dołącz na kanał.
+      Desc: Dołącz do kanału.
+    ClearChat:
+      Desc: Wyczyść czat.
+      Done: <! prefix:"false" !>&7Czat został wyczyszczony przez &a%player_display_name%&7.
+    Me:
+      Desc: Pokaż akcję w czacie.
+      Usage: <operacja>
+    Reply:
+      Desc: Szybka odpowiedź na ostatnią prywatną wiadomość.
+      Usage: <wiadomość>
+      Error:
+        Empty: <! prefix:"false" !>&cNie otrzymałeś żadnych prywatnych wiadomości.
+    Tell:
+      Desc: Wyślij prywatną wiadomość do gracza.
+      Usage: <gracz> <wiadomość>
+    Spy:
+      Desc: Funkcje Szpiegowskie Czatu
+      Usage: '[help]'
+      Mode:
+        Desc: Przełącza określony tryb Szpiegowania, informując gracza.
+        Usage: <typ> [gracz] [stan]
+        Done:
+          Others: '#ffeea2Możliwość szpiegowania &c%type% #ffeea2dla #fdba5e%player_display_name% #ffeea2została &f%state%#ffeea2.'
+          Notify: '#ffeea2Możliwość szpiegowania &c%type% #ffeea2została &f%state%#ffeea2.'
+      Logger:
+        Desc: Umożliwia dodanie lub usunięcie trybu szpiegowania bez informowania gracza.
+        Usage: <add | remove> <typ> <gracz>
+        Done:
+          Add: '#ffeea2Możliwość szpiegowania &c%type% #ffeea2dla #fdba5e%player_display_name% #ffeea2została &f%state%#ffeea2.'
   Channel:
     Join:
-      Success: '{message: ~prefix: false;}&7Dołączyłeś do kanału &a%channel_name%&7.'
+      Success: <! prefix:"false" !>&7Dołączyłeś do kanału czatu &a%channel_name% &7.
       Error:
-        NoPermission: '{message: ~prefix: false;}&cNie masz pozwolenia na
-          dołączenie do tego kanału.'
-        AlreadyIn: '{message: ~prefix: false;}&cJuż dołączyłeś do tego kanału!'
+        NoPermission: <! prefix:"false" !>&cNie masz uprawnień do dołączenia do tego kanału.
+        AlreadyIn: <! prefix:"false" !>&cJuż dołączyłeś do tego kanału!
     Leave:
-      Success: '{message: ~prefix: false;}&7Opuściłeś kanał &c%channel_name%&7.'
+      Success: <! prefix:"false" !>&7Opuściłeś kanał czatu &c%channel_name%&7.
       Error:
-        NotIn: '{message: ~prefix: false;}&cNie jesteś na kanale!'
+        NotIn: <! prefix:"false" !>&cNie jesteś na tym kanale!
     Set:
-      Success: '{message: ~prefix: false;}&7Kanał ustawiony jako domyślny: &e%channel_name%&7.'
+      Success: '<! prefix:"false" !>&7Ustawiono domyślny kanał: &e%channel_name%&7.'
     Error:
-      Invalid: '{message: ~prefix: false;}&cNiepoprawny kanał!'
-Menu:
-  Command:
-    Menu:
-      Desc: Otwórz określone menu.
-      Usage: <id> [player]
-      Others:
-        Done: '{message: ~prefix: false;}&7Otworzono &e%menu% menu &7dla &e%player%&7.'
+      Invalid: <! prefix:"false" !>&cNieprawidłowy kanał!
+PrivateMessage:
   Error:
-    Invalid: '{message: ~prefix: false;}&cTo menu nie istnieje!'
-    NoPermission: '{message: ~prefix: false;}&cNie masz pozwolenia na użycie
-      tego menu!'
-Afk:
-  Enter: '{message: ~prefix: false;}&e*** &6%player% &ejest teraz AFK... ***'
-  Exit: '{message: ~prefix: false;}&e*** &6%player% &ewraca po &6%time% &e***'
-  Kick: '&eZostałeś wyrzucony za bycie AFK dłużej niż &6%time%&e!'
-  TellNotify: '{message: ~prefix: false;}&e*** &6%player% &ejest teraz AFK i może nie
-    odpowiadać na wysłane wiadomości. &e***'
-Enhancements:
-  Command:
-    ChestSort:
-      Desc: Przełącz sortowanie skrzyń.
-      Toggle: '{message: ~prefix: false;}&7Sort skrzyń: &e%state%'
-    Chairs:
-      Desc: Przełącz funkcję krzeseł.
-      Toggle: '{message: ~prefix: false;}&7Krzesła: &e%state%'
-    Sit:
-      Desc: Usiądź na bloku, na którym stoisz.
-Scoreboard:
-  Command:
-    Scoreboard:
-      Desc: Przełącz tablicę wyników.
-      Toggle: '{message: ~prefix: false;}&7Tablica wyników: &e%state%'
-Bans:
-  Kick:
-    Kicked:
-      - '&c&nWyrzucono Cię z serwera!'
-      - '&7'
-      - '&cPowód: &e%punishment_reason%'
-      - '&cAdmin: &e%punishment_punisher%'
-    Banned:
-      Perma:
-        - '&c&nPermanentnie zbanowano Cię na tym serwerze!'
-        - '&7'
-        - '&cPowód: &e%punishment_reason% &7| &cAdmin: &e%punishment_punisher%'
-        - '&cData egzekucji: &e%punishment_date_created%'
-        - '&7'
-        - '&7Adres odwołania: &fhttps://rule34.paheal.net/post/view/5279607#search=minecraft'
-      Temp:
-        - '&c&nZbanowano Cię na tym serwerze!'
-        - '&7'
-        - '&cPowód: &e%punishment_reason% &7| &cAdmin: &e%punishment_punisher%'
-        - '&cData egzekucji: &e%punishment_date_created%'
-        - '&7'
-        - '&cOdbanowanie nastąpi za: &f%punishment_expires_in%'
-        - '&7'
-        - '&7Adres odwołania: &fhttps://discord.gg/vFNXm9dq'
-    Done: '{message: ~prefix: false;}&7Gracz &c%punishment_user% &7został wyrzucony.
-      Powód: &c%punishment_reason%'
-    Broadcast: '{message: ~prefix: false;}&7Admin &c%punishment_punisher% &7wyrzucił
-      &c%punishment_user%&7. Powód: &c%punishment_reason%'
-  Command:
-    History:
-      Mute:
-        Desc: Podgląd historii wyciszeń gracza.
-        Usage: '[player]'
-      Ban:
-        Desc: Podgląd historii banów gracza.
-        Usage: '[player]'
-      Warn:
-        Desc: Podgląd historii upomnień gracza.
-        Usage: '[player]'
-    List:
-      Ban:
-        Desc: Lista wszystkich zbanowanych graczy i ich IP.
-      Mute:
-        Desc: Lista wszystkich wyciszonych graczy i ich IP.
-      Warn:
-        Desc: Lista wszystkich upomnionych graczy i ich IP.
-    Ban:
-      Desc: Zbanuj gracza.
-      Usage: <player> <time> <reason>
-    Banip:
-      Desc: Zbanuj adres IP.
-      Usage: <player/ip> <time> <reason>
-    Mute:
-      Desc: Wycisz gracza lub graczy z IP.
-      Usage: <player/ip> <time> <reason>
-    Kick:
-      Desc: Wyrzuć gracza lub graczy z IP.
-      Usage: <player/ip> <reason>
-    Unmute:
-      Desc: Odcisz gracza lub IP.
-      Usage: <player/ip>
-    Unban:
-      Desc: Odbanuj gracza lub IP.
-      Usage: <player/ip>
-    Warn:
-      Desc: Upomnij gracza.
-      Usage: <player> <time> <reason>
-    Unwarn:
-      Desc: Zdejmij ostatnie upomnienie gracza.
-      Usage: <player>
-  Ban:
-    User:
-      Perma:
-        Done: '{message: ~prefix: false;}&7Gracz &c%punishment_user% &7został permanentnie
-          zbanowany: &c%punishment_reason%'
-        Broadcast: '{message: ~prefix: false;}&7Admin &c%punishment_punisher% &7permanentnie
-          zbanował &c%punishment_user%&7. Powód: &c%punishment_reason%'
-      Temp:
-        Done: '{message: ~prefix: false;}&7Gracz &c%punishment_user% &7został zbanowany
-          na &c%punishment_expires_in%&7. Powód: &c%punishment_reason%'
-        Broadcast: '{message: ~prefix: false;}&7Admin &c%punishment_punisher% &7zbanował
-          &c%punishment_user% &7na &c%punishment_expires_in%&7. Powód: &c%punishment_reason%'
-    IP:
-      Perma:
-        Done: '{message: ~prefix: false;}&7IP &c%punishment_user% &7zostało permanentnie
-          zbanowane. Powód: &c%punishment_reason%'
-        Broadcast: '{message: ~prefix: false;}&7Admin &c%punishment_punisher% &7permanentnie
-          abanował IP &c%punishment_user%&7. Powód: &c%punishment_reason%'
-      Temp:
-        Done: '{message: ~prefix: false;}&7IP &c%punishment_user% &7zostało zbanowane
-          na &c%punishment_expires_in%&7. Powód: &c%punishment_reason%'
-        Broadcast: '{message: ~prefix: false;}&7Admin &c%punishment_punisher% &7zbanował
-          IP &c%punishment_user% &7na &c%punishment_expires_in%&7. Powód: &c%punishment_reason%'
-  Unban:
-    User:
-      Done: '{message: ~prefix: false;}&7Gracz odbanowany: &a%punishment_user%&7.'
-      Broadcast: '{message: ~prefix: false;}&7Admin &a%admin% &7odbanował gracza: &a%punishment_user%&7.'
-    IP:
-      Done: '{message: ~prefix: false;}&7IP odbanowane: &a%punishment_user%&7.'
-      Broadcast: '{message: ~prefix: false;}&7Admin &a%admin% &7odbanował IP: &a%punishment_user%&7.'
-  Mute:
-    User:
-      Perma:
-        Done: '{message: ~prefix: false;}&7Gracz &c%punishment_user% &7został permanentnie
-          wyciszony: &c%punishment_reason%'
-        Notify:
-          - '{message: ~prefix: false;}'
-          - '&8&m                                                       &7'
-          - '&c&l Permanentnie wyciszono Cię!'
-          - '&7'
-          - '&7       Powód: &c%punishment_reason%&7.'
-          - '&8&m                                                       &7'
-        Broadcast: '{message: ~prefix: false;}&7Admin &c%punishment_punisher% &7permanentnie
-          wyciszył &c%punishment_user%&7. Powód: &c%punishment_reason%'
-      Temp:
-        Done: '{message: ~prefix: false;}&7Gracz &c%punishment_user% &7został wyciszony
-          na &c%punishment_expires_in%&7. Powód: &c%punishment_reason%'
-        Notify:
-          - '{message: ~prefix: false;}'
-          - '&8&m                                                       &7'
-          - '&c&l        Wyciszono Cię!'
-          - '&7'
-          - '&7       Powód: &c%punishment_reason%&7.'
-          - '&7         Wyciszenia kończy się za: &c%punishment_expires_in%'
-          - '&8&m                                                       &7'
-        Broadcast: '{message: ~prefix: false;}&7Admin &c%punishment_punisher% &7wyciszył
-          &c%punishment_user% &7na &c%punishment_expires_in%&7. Powód: &c%punishment_reason%'
-    IP:
-      Perma:
-        Done: '{message: ~prefix: false;}&7IP &c%punishment_user% &7zostało permanentnie
-          wyciszone: &c%punishment_reason%'
-        Notify:
-          - '{message: ~prefix: false;}'
-          - '&8&m                                                       &7'
-          - '&c&l Permanentnie wyciszono Cię!'
-          - '&7'
-          - '&7       Powód: &c%punishment_reason%&7.'
-          - '&8&m                                                       &7'
-        Broadcast: '{message: ~prefix: false;}&7Admin &c%punishment_punisher% &7permanentnie
-          wyciszył IP &c%punishment_user%&7. Powód: &c%punishment_reason%'
-      Temp:
-        Done: '{message: ~prefix: false;}&7IP &c%punishment_user% &7zostało wyciszone
-          na &c%punishment_expires_in%&7. Powód: &c%punishment_reason%'
-        Notify:
-          - '{message: ~prefix: false;}'
-          - '&8&m                                                       &7'
-          - '&c&l        Wyciszono Cię!'
-          - '&7'
-          - '&7       Powód: &c%punishment_reason%&7.'
-          - '&7         Wyciszenie kończy się za: &c%punishment_expires_in%'
-          - '&8&m                                                       &7'
-        Broadcast: '{message: ~prefix: false;}&7Admin &c%punishment_punisher% &7wyciszył
-          IP &c%punishment_user% &7na &c%punishment_expires_in%&7. Powód: &c%punishment_reason%'
-  Unmute:
-    User:
-      Done: '{message: ~prefix: false;}&7Gracz odciszony: &a%punishment_user%&7.'
-      Broadcast: '{message: ~prefix: false;}&7Admin &a%admin% &7odciszył gracza: &a%punishment_user%&7.'
-    IP:
-      Done: '{message: ~prefix: false;}&7IP odciszone: &a%punishment_user%&7.'
-      Broadcast: '{message: ~prefix: false;}&7Admin &a%admin% &7odciszył IP: &a%punishment_user%&7.'
-  Warn:
-    User:
-      Temp:
-        Done: '{message: ~prefix: false;}&7Gracz &c%punishment_user% &7został upomniony
-          na &c%punishment_expires_in%&7. Powód: &c%punishment_reason%&7.'
-        Notify:
-          - '{message: ~prefix: false;}'
-          - '&8&m                                                       &7'
-          - '&c&l        Zostałeś upomniony!'
-          - '&7'
-          - '&7       Powód: &c%punishment_reason%&7.'
-          - '&7         Upomnienie kończy się za: &c%punishment_expires_in%'
-          - '&8&m                                                       &7'
-        Broadcast: '{message: ~prefix: false;}&7Admin &c%punishment_punisher% &7upomniał
-          &c%punishment_user%&7 na &c%punishment_expires_in%&7. Powód: &c%punishment_reason%&7.'
-      Perma:
-        Done: '{message: ~prefix: false;}&7Gracz &c%punishment_user% &7został permanentnie
-          upomniony za &c%punishment_reason%&7.'
-        Notify:
-          - '{message: ~prefix: false;}'
-          - '&8&m                                                       &7'
-          - '&c&l        Zostałeś upomniony!'
-          - '&7'
-          - '&7       Powód: &c%punishment_reason%&7.'
-          - '&7         Upomnienie kończy się za: &c%punishment_expires_in%'
-          - '&8&m                                                       &7'
-        Broadcast: '{message: ~prefix: false;}&7Admin &c%punishment_punisher% &7permanentnie
-          upomniał &c%punishment_user%&7 za &c%punishment_reason%&7.'
-  Unwarn:
-    User:
-      Done: '{message: ~prefix: false;}&7Zdjęto upomnienie z gracza: &a%punishment_user%&7.'
-      Broadcast: '{message: ~prefix: false;}&7Admin &a%punishment_punisher% &7zdjął upomnienie
-        z gracza: &a%punishment_user%&7.'
-  Error:
-    Immune: '{message: ~prefix: false;}&c%user% &7nie może zostać ukarany.'
-    NotBanned: '{message: ~prefix: false;}&c%user% &7nie jest zbanowany.'
-    NotMuted: '{message: ~prefix: false;}&c%user% &7nie jest wyciszony.'
-    NotWarned: '{message: ~prefix: false;}&c%user% &7nie został upomniony.'
-    NotIP: '{message: ~prefix: false;}&c%ip% &7nie jest adresem IP!'
-  Other:
-    Never: Nigdy
-PunishmentType:
-  BAN: Ban
-  MUTE: Wyciszenie
-  WARN: Upomnienie
-Spawn:
-  Command:
-    DelSpawn:
-      Desc: Usuń wybrany spawn.
-      Usage: <name>
-      Done:
-        - '{message: ~prefix: false; ~type: TITLES; ~fadeIn: 10; ~stay: 50; ~fadeOut:
-        10;}&c&lSpawn usunięty'
-        - '&7Spawn Id: &c%spawn_id%'
-    SetSpawn:
-      Desc: Ustaw spawn.
-      Usage: '[name]'
-      Done:
-        - '{message: ~prefix: false; ~type: TITLES; ~fadeIn: 10; ~stay: 50; ~fadeOut:
-        10;}&a&lUstawiono spawn!'
-        - '&7Spawn Id: &a%spawn_id% &7| Editor: &a/spawneditor'
-    Spawn:
-      Desc: Teleportuj na wybrany spawn.
-      Usage: '[spawn] &7lub &f[player] [spawn]'
-      Done:
-        Self:
-          - '{message: ~prefix: false; ~type: TITLES; ~fadeIn: 10; ~stay: 80; ~fadeOut:
-          10;}&e&lSpawn'
-          - '&7Teleportowałeś się na spawn &e%spawn_name%&7.'
-        Others: '{message: ~prefix: false;}&7Teleportowanie &e%player% &7na spawn &e%spawn_id%&7...'
-      Error:
-        Empty: '{message: ~prefix: false;}&7Spawn &c%spawn_id% &7nie istnieje.'
-    SpawnEditor:
-      Desc: Otwórz edytor spawnu.
-  Editor:
-    Tip:
-      Name: '&7Wprowadź &anazwę&7 spawnu...'
-      Priority: '&7Wybierz &apriorytet&7 spawnu...'
-      AddGroup: '&7Wprowadź &anazwę grupową&7...'
+    Disabled: '#fdba5e%player_display_name%#fd5e5e wyłączył Prywatne Wiadomości.'
+ChatSpyType:
+  SOCIAL: Wiadomości i Poleceń
+  COMMAND: Poleceń
+  CHAT: Wiadomości
 RTP:
   Command:
     RTP:
-      Desc: Teleportuj w losowe miejsce.
+      Desc: Teleportuj się do losowego miejsca.
   Teleport:
     Error:
-      World: '{message: ~prefix: false;}&cLosowy teleport nie jest dozwolony na tym świecie.'
-      AlreadyIn: '{message: ~prefix: false;}&cZostałeś już teleportowany!'
+      AlreadyIn: '#fd5e5eJesteś już w RTP!'
     Notify:
       Done:
-        - '{message: ~type: TITLES; ~fadeIn: 10; ~stay: 60; ~fadeOut: 10;}&a&lUdany
-        teleport! '
-        - ' &7&lJesteś tutaj: &8[&7X: &b%x%&7] &8[&7Y: &b%y%&7] &8[&7Z: &b%z%&7]'
+        - <! type:"titles:20:80:20" sound:"ENTITY_ENDERMAN_TELEPORT" !>
+        - '#aefd5e&lUdany Teleport!'
+        - '#d4d9d8Lokalizacja: #aefd5e%location_x%#d4d9d8, #aefd5e%location_y%#d4d9d8, #aefd5e%location_z%'
       Search:
-        - '{message: ~type: TITLES; ~fadeIn: 10; ~stay: 100; ~fadeOut: 10;}&e&lWyszukiwanie
-        lokacji... '
-        - ' &7&lPrzetwarzanie: &8[&6%attempt_current%&7/&6%attempt_max%&8]'
+        - <! type:"titles:20:100:20" sound:"BLOCK_LAVA_POP" !>
+        - '#ffeea2&lSzukanie lokalizacji...'
+        - '#d4d9d8Proces: #fdba5e%current%#d4d9d8/#fdba5e%max%'
       Failure:
-        - '{message: ~type: TITLES; ~fadeIn: 10; ~stay: 60; ~fadeOut: 10;}&c&lNie odnaleziono
-        lokacji: '
-        - ' &7&lNie można znaleźć lokacji.'
+        - <! type:"titles:20:80:20" sound:"ENTITY_VILLAGER_NO" !>
+        - '#fd5e5e&lTeleport Nieudany'
+        - '#d4d9d8Nie udało się znaleźć bezpiecznej lokalizacji.'
+Extras:
+  Command:
+    Chairs:
+      Desc: Przełącz funkcję krzeseł gracza.
+      Usage: '[gracz] [-on] [-off] [-s]'
+      Notify: '#ffeea2Możliwość siadania na dywany i schody została #fdba5e%state%#ffeea2.'
+      Target: '#ffeea2Możliwość siadania na dywany i schody dla #fdba5e%player_name%#ffeea2 została #fdba5e%state%#ffeea2.'
+    Sit:
+      Desc: .
+      Usage: '[gracz] [-s]'
+      Notify: '#ffeea2Teraz siedzisz.'
+      Target: '#ffeea2Zmuszono #fdba5e%player_name%#ffeea2 do siedzenia.'
+    ChestSort:
+      Desc: Przełącz funkcję sortowania skrzyń gracza.
+      Usage: '[gracz] [-on] [-off] [-s]'
+      Notify: '#ffeea2Możliwość sortowania skrzyń została #fdba5e%state%#ffeea2.'
+      Target: '#ffeea2Możliwość sortowania skrzyń dla #fdba5e%player_name%#ffeea2 została #fdba5e%state%#ffeea2.'
+Afk:
+  Command:
+    Afk:
+      Desc: Przełącz tryb AFK gracza.
+      Usage: '[gracz] [-on] [-off] [-s]'
+  Mode:
+    Enter: '<! prefix:"false" !>#fdba5e[AFK]#ffeea2 Gracz #fdba5e%player_display_name%#ffeea2 jest teraz AFK.'
+    Exit: '<! prefix:"false" !>#fdba5e[AFK]#ffeea2 Gracz #fdba5e%player_display_name%#ffeea2 wrócił po #fdba5e%time%#ffeea2'
+  Notify:
+    PrivateMessage: '<! prefix:"false" !>#fd5e5e[AFK]#ffeea2 Gracz #fdba5e%player_display_name%#ffeea2 jest AFK i może nie zauważyć Twojej wiadomości.'
+    TeleportRequest: '<! prefix:"false" !>#fd5e5e[AFK]#ffeea2 Gracz #fdba5e%player_display_name%#ffeea2 jest AFK i może nie zauważyć Twojego zaproszenia.'
+Scoreboard:
+  Command:
+    Scoreboard:
+      Desc: Przełącz Scoreboard gracza.
+      Usage: '[gracz] [-on] [-off] [-s]'
+      Notify: '#ffeea2Mozliwość widzenia scoreboarda została #fdba5e%state%'
+      Target: '#ffeea2Mozliwość widzenia scoreboarda dla gracza #fdba5e%player_name%#ffeea2 została #fdba5e%state%#ffeea2.'

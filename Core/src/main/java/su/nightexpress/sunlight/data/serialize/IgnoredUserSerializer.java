@@ -2,7 +2,7 @@ package su.nightexpress.sunlight.data.serialize;
 
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
-import su.nightexpress.sunlight.data.impl.IgnoredUser;
+import su.nightexpress.sunlight.core.user.IgnoredUser;
 import su.nightexpress.sunlight.utils.UserInfo;
 
 import java.lang.reflect.Type;

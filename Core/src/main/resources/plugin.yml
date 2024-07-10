@@ -1,10 +1,10 @@
 name: SunLight
-main: su.nightexpress.sunlight.SunLight
+main: su.nightexpress.sunlight.SunLightPlugin
 version: '${project.version}'
 description: Advanced, light & modern all-in-one server management plugin.
 author: NightExpress
-depend: [ NexEngine ]
+depend: [ nightcore ]
 softdepend:
   - PlaceholderAPI
   - ProtocolLib
-api-version: 1.17
+api-version: 1.18

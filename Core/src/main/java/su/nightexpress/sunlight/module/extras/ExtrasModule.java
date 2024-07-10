@@ -2,14 +2,14 @@ package su.nightexpress.sunlight.module.extras;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import su.nightexpress.sunlight.SunLight;
+import su.nightexpress.sunlight.SunLightPlugin;
 import su.nightexpress.sunlight.module.Module;
+import su.nightexpress.sunlight.module.ModuleInfo;
+import su.nightexpress.sunlight.module.extras.chairs.ChairsManager;
+import su.nightexpress.sunlight.module.extras.chestsort.SortManager;
 import su.nightexpress.sunlight.module.extras.config.ExtrasConfig;
 import su.nightexpress.sunlight.module.extras.config.ExtrasLang;
 import su.nightexpress.sunlight.module.extras.config.ExtrasPerms;
-import su.nightexpress.sunlight.module.extras.impl.chairs.ChairsManager;
-import su.nightexpress.sunlight.module.extras.impl.chestsort.SortManager;
-import su.nightexpress.sunlight.module.extras.impl.nerfphantoms.PhantomsListener;
 import su.nightexpress.sunlight.module.extras.listener.ExtrasGenericListener;
 import su.nightexpress.sunlight.module.extras.listener.PhysicsExplosionListener;
 
@@ -18,44 +18,37 @@ public class ExtrasModule extends Module {
     private ChairsManager  chairsManager;
     private SortManager    sortManager;
 
-    public ExtrasModule(@NotNull SunLight plugin, @NotNull String id) {
+    public ExtrasModule(@NotNull SunLightPlugin plugin, @NotNull String id) {
         super(plugin, id);
     }
 
     @Override
-    public void onLoad() {
-        this.plugin.registerPermissions(ExtrasPerms.class);
-        this.plugin.getLangManager().loadMissing(ExtrasLang.class);
-        this.plugin.getLang().saveChanges();
-        this.getConfig().initializeOptions(ExtrasConfig.class);
-
-        if (ExtrasConfig.CHAIRS_ENABLED.get()) {
-            this.chairsManager = new ChairsManager(this);
-            this.chairsManager.setup();
-        }
-        if (ExtrasConfig.CHEST_SORT_ENABLED.get()) {
-            this.sortManager = new SortManager(this);
-            this.sortManager.setup();
-        }
-        if (ExtrasConfig.PHYSIC_EXPLOSIONS_ENABLED.get()) {
-            this.addListener(new PhysicsExplosionListener(plugin));
-        }
-        if (ExtrasConfig.NERF_PHANTOMS_ENABLED.get()) {
-            this.addListener(new PhantomsListener(plugin));
-        }
-        this.addListener(new ExtrasGenericListener(this));
+    protected void gatherInfo(@NotNull ModuleInfo moduleInfo) {
+        moduleInfo.setConfigClass(ExtrasConfig.class);
+        moduleInfo.setLangClass(ExtrasLang.class);
+        moduleInfo.setPermissionsClass(ExtrasPerms.class);
     }
 
     @Override
-    public void onShutdown() {
-        if (this.chairsManager != null) {
-            this.chairsManager.shutdown();
-            this.chairsManager = null;
+    protected void onModuleLoad() {
+        if (ExtrasConfig.CHAIRS_ENABLED.get()) {
+            this.chairsManager = new ChairsManager(this.plugin, this);
+            this.chairsManager.setup();
         }
-        if (this.sortManager != null) {
-            this.sortManager.shutdown();
-            this.sortManager = null;
+        if (ExtrasConfig.CHEST_SORT_ENABLED.get()) {
+            this.sortManager = new SortManager(this.plugin, this);
+            this.sortManager.setup();
         }
+        if (ExtrasConfig.PHYSIC_EXPLOSIONS_ENABLED.get()) {
+            this.addListener(new PhysicsExplosionListener(this.plugin));
+        }
+        this.addListener(new ExtrasGenericListener(this.plugin, this));
+    }
+
+    @Override
+    protected void onModuleUnload() {
+        if (this.chairsManager != null) this.chairsManager.shutdown();
+        if (this.sortManager != null) this.sortManager.shutdown();
     }
 
     @Nullable

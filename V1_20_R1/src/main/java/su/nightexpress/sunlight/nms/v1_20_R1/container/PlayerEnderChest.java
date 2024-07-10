@@ -6,7 +6,7 @@ import org.bukkit.craftbukkit.v1_20_R1.entity.CraftHumanEntity;
 import org.bukkit.craftbukkit.v1_20_R1.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_20_R1.inventory.CraftInventory;
 import org.jetbrains.annotations.NotNull;
-import su.nexmedia.engine.utils.Reflex;
+import su.nightexpress.nightcore.util.Reflex;
 
 public class PlayerEnderChest extends PlayerEnderChestContainer {
 

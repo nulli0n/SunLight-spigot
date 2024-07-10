@@ -3,16 +3,16 @@ package su.nightexpress.sunlight.module.scoreboard;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import su.nexmedia.engine.api.config.JYML;
-import su.nexmedia.engine.integration.VaultHook;
-import su.nexmedia.engine.utils.EngineUtils;
-import su.nexmedia.engine.utils.EntityUtil;
-import su.nexmedia.engine.utils.Placeholders;
-import su.nightexpress.sunlight.SunLight;
-import su.nightexpress.sunlight.data.impl.SunUser;
-import su.nightexpress.sunlight.data.impl.settings.UserSetting;
+import su.nightexpress.nightcore.config.FileConfig;
+import su.nightexpress.nightcore.util.Players;
+import su.nightexpress.nightcore.util.Plugins;
+import su.nightexpress.sunlight.SunLightPlugin;
+import su.nightexpress.sunlight.core.user.settings.Setting;
+import su.nightexpress.sunlight.core.user.settings.SettingRegistry;
+import su.nightexpress.sunlight.data.user.SunUser;
 import su.nightexpress.sunlight.hook.HookId;
 import su.nightexpress.sunlight.module.Module;
+import su.nightexpress.sunlight.module.ModuleInfo;
 import su.nightexpress.sunlight.module.scoreboard.command.ScoreboardCommand;
 import su.nightexpress.sunlight.module.scoreboard.config.SBConfig;
 import su.nightexpress.sunlight.module.scoreboard.config.SBLang;
@@ -20,32 +20,27 @@ import su.nightexpress.sunlight.module.scoreboard.config.SBPerms;
 import su.nightexpress.sunlight.module.scoreboard.impl.Board;
 import su.nightexpress.sunlight.module.scoreboard.impl.BoardConfig;
 import su.nightexpress.sunlight.module.scoreboard.listener.ScoreboardListener;
-import su.nightexpress.sunlight.module.scoreboard.task.BoardUpdateTask;
-import su.nightexpress.sunlight.utils.SimpleTextAnimator;
+import su.nightexpress.sunlight.utils.DynamicText;
 
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ScoreboardModule extends Module {
 
-    public static final UserSetting<Boolean> SETTING_SCOREBOARD = UserSetting.register("scoreboard", true, UserSetting.PARSER_BOOLEAN, true);
+    public static final Setting<Boolean> SETTING_SCOREBOARD = SettingRegistry.register(Setting.create("scoreboard", true, true));
 
-    public final  Map<String, SimpleTextAnimator> animationMap;
-    private final Map<Player, Board>              playerBoardMap;
+    private final Map<String, DynamicText> animationMap;
+    private final Map<Player, Board>       boardMap;
 
-    private BoardUpdateTask boardTask;
-
-    public ScoreboardModule(@NotNull SunLight plugin, @NotNull String id) {
+    public ScoreboardModule(@NotNull SunLightPlugin plugin, @NotNull String id) {
         super(plugin, id);
         this.animationMap = new HashMap<>();
-        this.playerBoardMap = new ConcurrentHashMap<>();
+        this.boardMap = new ConcurrentHashMap<>();
     }
 
     @Override
     public boolean canLoad() {
-        if (!EngineUtils.hasPlugin(HookId.PROTOCOL_LIB)) {
+        if (!Plugins.isLoaded(HookId.PROTOCOL_LIB)) {
             this.error("You must have " + HookId.PROTOCOL_LIB + " installed to use " + this.getName() + " module!");
             return false;
         }
@@ -53,62 +48,89 @@ public class ScoreboardModule extends Module {
     }
 
     @Override
-    public void onLoad() {
-        this.plugin.registerPermissions(SBPerms.class);
-        this.plugin.getLangManager().loadMissing(SBLang.class);
-        this.plugin.getLang().saveChanges();
-        this.getConfig().initializeOptions(SBConfig.class);
-
-        JYML animConf = JYML.loadOrExtract(this.plugin, this.getLocalPath(), "animations.yml");
-        for (String animId : animConf.getSection("")) {
-            SimpleTextAnimator animation = SimpleTextAnimator.read(animConf, animId, animId);
-            this.animationMap.put(animation.getId(), animation);
-        }
-
-        this.plugin.getCommandRegulator().register(ScoreboardCommand.NAME, (cfg1, aliases) -> new ScoreboardCommand(this, aliases), "board");
-
-        this.addListener(new ScoreboardListener(this));
-
-        this.boardTask = new BoardUpdateTask(this);
-        this.boardTask.start();
-
-        this.plugin.runTask(task -> {
-            this.plugin.getServer().getOnlinePlayers().forEach(player -> {
-                if (this.isScoreboardEnabled(player)) this.addBoard(player);
-            });
-        });
+    protected void gatherInfo(@NotNull ModuleInfo moduleInfo) {
+        moduleInfo.setConfigClass(SBConfig.class);
+        moduleInfo.setLangClass(SBLang.class);
+        moduleInfo.setPermissionsClass(SBPerms.class);
     }
 
     @Override
-    public void onShutdown() {
-        if (this.boardTask != null) {
-            this.boardTask.stop();
-            this.boardTask = null;
-        }
-        this.playerBoardMap.values().forEach(Board::remove);
-        this.playerBoardMap.clear();
+    protected void onModuleLoad() {
+        this.loadAnimations();
+
+        this.registerCommands();
+
+        this.addListener(new ScoreboardListener(this.plugin, this));
+
+        this.addTask(this.plugin.createAsyncTask(this::updateBoards).setTicksInterval(1L));
+        this.plugin.runTask(task -> this.loadPlayerBoards());
+    }
+
+    @Override
+    protected void onModuleUnload() {
+        this.boardMap.values().forEach(Board::remove);
+        this.boardMap.clear();
         this.animationMap.clear();
+    }
+
+    private void loadAnimations() {
+        FileConfig config = FileConfig.loadOrExtract(this.plugin, this.getLocalPath(), SBConfig.FILE_ANIMATIONS);
+        if (config.getSection("").isEmpty()) {
+            SBConfig.getDefaultAnimations().forEach(dynamicText -> dynamicText.write(config, dynamicText.getId()));
+        }
+
+        for (String sId : config.getSection("")) {
+            DynamicText dynamicText = DynamicText.read(config, sId, sId);
+            this.animationMap.put(dynamicText.getId(), dynamicText);
+        }
+        config.saveChanges();
+    }
+
+    private void loadPlayerBoards() {
+        this.plugin.getServer().getOnlinePlayers().forEach(player -> {
+            if (this.isScoreboardEnabled(player)) this.addBoard(player);
+        });
+    }
+
+    private void registerCommands() {
+        ScoreboardCommand.load(this.plugin, this);
     }
 
     @Nullable
     public BoardConfig getBoardConfig(@NotNull Player player) {
-        //Set<String> groups = PlayerUtil.getPermissionGroups(player);
+        Set<String> groups = Players.getPermissionGroups(player);
 
         return SBConfig.BOARD_CONFIGS.get().values().stream()
-            .filter(board -> board.getGroups().contains(VaultHook.getPermissionGroup(player)) || board.getGroups().contains(Placeholders.WILDCARD))
-            .filter(board -> board.getWorlds().contains(player.getWorld().getName()) || board.getWorlds().contains(Placeholders.WILDCARD))
+            .filter(board -> board.isGoodWorld(player.getWorld()) && board.isGoodRank(groups))
             .max(Comparator.comparingInt(BoardConfig::getPriority))
             .orElse(null);
     }
 
     @NotNull
-    public Map<Player, Board> getPlayerBoardMap() {
-        return playerBoardMap;
+    public Collection<DynamicText> getAnimations() {
+        return this.animationMap.values();
+    }
+
+    @NotNull
+    public Map<Player, Board> getBoardMap() {
+        return boardMap;
+    }
+
+    @NotNull
+    public Collection<Board> getBoards() {
+        return new HashSet<>(this.boardMap.values());
     }
 
     @Nullable
     public Board getBoard(@NotNull Player player) {
-        return this.playerBoardMap.get(player);
+        return this.boardMap.get(player);
+    }
+
+
+    public void updateBoards() {
+        if (this.boardMap.isEmpty()) return;
+
+        this.getBoards().forEach(Board::updateIfReady);
     }
 
     public boolean hasBoard(@NotNull Player player) {
@@ -123,16 +145,13 @@ public class ScoreboardModule extends Module {
     }
 
     public void addBoard(@NotNull Player player, @NotNull BoardConfig boardConfig) {
-        if (EntityUtil.isNPC(player)) return;
         if (this.hasBoard(player)) return;
 
-        this.playerBoardMap.computeIfAbsent(player, k -> new Board(player, this, boardConfig)).create();
+        this.boardMap.computeIfAbsent(player, k -> new Board(player, this, boardConfig)).create();
     }
 
     public void removeBoard(@NotNull Player player) {
-        if (EntityUtil.isNPC(player)) return;
-
-        Board board = this.playerBoardMap.remove(player);
+        Board board = this.boardMap.remove(player);
         if (board == null) return;
 
         board.remove();

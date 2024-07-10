@@ -1,578 +1,961 @@
 package su.nightexpress.sunlight.config;
 
+import org.bukkit.GameMode;
 import org.bukkit.Sound;
-import org.jetbrains.annotations.NotNull;
-import su.nexmedia.engine.api.lang.LangKey;
-import su.nexmedia.engine.lang.EngineLang;
-import su.nightexpress.sunlight.Placeholders;
-import su.nightexpress.sunlight.SunLightAPI;
-import su.nightexpress.sunlight.command.ignore.IgnoreCommand;
-import su.nightexpress.sunlight.command.list.CondenseCommand;
-import su.nightexpress.sunlight.command.teleport.TeleportAcceptCommand;
-import su.nightexpress.sunlight.command.teleport.TeleportCommand;
-import su.nightexpress.sunlight.command.teleport.TeleportDeclineCommand;
-import su.nightexpress.sunlight.command.time.TimeShowCommand;
+import org.bukkit.inventory.EquipmentSlot;
+import su.nightexpress.nightcore.core.CoreLang;
+import su.nightexpress.nightcore.language.entry.LangEnum;
+import su.nightexpress.nightcore.language.entry.LangString;
+import su.nightexpress.nightcore.language.entry.LangText;
+import su.nightexpress.nightcore.language.message.OutputType;
+import su.nightexpress.sunlight.command.list.ExperienceCommand;
+import su.nightexpress.sunlight.command.list.IgnoreCommands;
+import su.nightexpress.sunlight.command.list.WeatherCommands;
 
-import static su.nexmedia.engine.utils.Colors.*;
+import static su.nightexpress.nightcore.util.text.tag.Tags.*;
+import static su.nightexpress.nightcore.language.tag.MessageTags.*;
 import static su.nightexpress.sunlight.Placeholders.*;
 
-public class Lang extends EngineLang {
+public class Lang extends CoreLang {
 
-    private static final String ACTION_BAR = "<! type:\"action_bar\" !>";
-    private static final String NO_PREFIX = "<! prefix:\"false\" !>";
+    public static final LangEnum<EquipmentSlot>          EQUIPMENT_SLOT = LangEnum.of("EquipmentSlot", EquipmentSlot.class);
+    public static final LangEnum<GameMode>               GAME_MODE      = LangEnum.of("GameMode", GameMode.class);
+    public static final LangEnum<ExperienceCommand.Type> EXP_TYPE       = LangEnum.of("ExperienceType", ExperienceCommand.Type.class);
+    public static final LangEnum<WeatherCommands.Type>   WEATHER_TYPE   = LangEnum.of("WeatherType", WeatherCommands.Type.class);
 
-    public static final LangKey GENERIC_COMMAND_COOLDOWN_DEFAULT  = LangKey.of("Generic.Command.Cooldown.Default", NO_PREFIX + RED + "You have to wait " + ORANGE + Placeholders.GENERIC_TIME + RED + " before you can use " + ORANGE + Placeholders.GENERIC_COMMAND + RED + " again.");
-    public static final LangKey GENERIC_COMMAND_COOLDOWN_ONE_TIME = LangKey.of("Generic.Command.Cooldown.OneTime", NO_PREFIX + RED + "This command is one-time and you already have used it.");
+    public static final LangString COMMAND_ARGUMENT_NAME_SLOT     = LangString.of("Command.Argument.Name.Slot", "slot");
+    public static final LangString COMMAND_ARGUMENT_NAME_ENCHANT  = LangString.of("Command.Argument.Name.Enchant", "enchant");
+    public static final LangString COMMAND_ARGUMENT_NAME_LEVEL    = LangString.of("Command.Argument.Name.Level", "level");
+    public static final LangString COMMAND_ARGUMENT_NAME_TARGET   = LangString.of("Command.Argument.Name.Target", "target");
+    public static final LangString COMMAND_ARGUMENT_NAME_TYPE     = LangString.of("Command.Argument.Name.Type", "type");
+    public static final LangString COMMAND_ARGUMENT_NAME_TIME     = LangString.of("Command.Argument.Name.Time", "time");
+    public static final LangString COMMAND_ARGUMENT_NAME_MODE     = LangString.of("Command.Argument.Name.Mode", "mode");
+    public static final LangString COMMAND_ARGUMENT_NAME_IP       = LangString.of("Command.Argument.Name.IPAddress", "address");
+    public static final LangString COMMAND_ARGUMENT_NAME_RADIUS   = LangString.of("Command.Argument.Name.Radius", "radius");
+    public static final LangString COMMAND_ARGUMENT_NAME_TEXT     = LangString.of("Command.Argument.Name.Text", "text");
+    //public static final LangString COMMAND_ARGUMENT_NAME_COMMAND  = LangString.of("Command.Argument.Name.Command", "command");
+    public static final LangString COMMAND_ARGUMENT_NAME_POSITION = LangString.of("Command.Argument.Name.Position", "position");
+    public static final LangString COMMAND_ARGUMENT_NAME_X        = LangString.of("Command.Argument.Name.X", "x");
+    public static final LangString COMMAND_ARGUMENT_NAME_Y        = LangString.of("Command.Argument.Name.Y", "y");
+    public static final LangString COMMAND_ARGUMENT_NAME_Z        = LangString.of("Command.Argument.Name.Z", "z");
 
-    public static final LangKey COMMAND_AIR_DESC          = LangKey.of("Command.Air.Desc", "Manage [player's] air ticks.");
-    public static final LangKey COMMAND_AIR_USAGE         = LangKey.of("Command.Air.Usage", "<action> <amount> [player] [-max] [-s]");
-    public static final LangKey COMMAND_AIR_ADD_TARGET    = LangKey.of("Command.Air.Give.Target", LIGHT_YELLOW + "Added " + ORANGE + Placeholders.GENERIC_AMOUNT + LIGHT_YELLOW + " air ticks to " + ORANGE + Placeholders.PLAYER_DISPLAY_NAME + LIGHT_YELLOW + ". New air ticks: " + ORANGE + Placeholders.GENERIC_CURRENT + LIGHT_YELLOW + "/" + ORANGE + Placeholders.GENERIC_MAX + LIGHT_YELLOW + ".");
-    public static final LangKey COMMAND_AIR_REMOVE_TARGET = LangKey.of("Command.Air.Take.Target", LIGHT_YELLOW + "Removed " + ORANGE + Placeholders.GENERIC_AMOUNT + LIGHT_YELLOW + " air ticks from " + ORANGE + Placeholders.PLAYER_DISPLAY_NAME + LIGHT_YELLOW + ". New air ticks: " + ORANGE + Placeholders.GENERIC_CURRENT + LIGHT_YELLOW + "/" + ORANGE + Placeholders.GENERIC_MAX + LIGHT_YELLOW + ".");
-    public static final LangKey COMMAND_AIR_SET_TARGET    = LangKey.of("Command.Air.Set.Target", LIGHT_YELLOW + "Set " + ORANGE + Placeholders.GENERIC_AMOUNT + LIGHT_YELLOW + " air ticks for " + ORANGE + Placeholders.PLAYER_DISPLAY_NAME + LIGHT_YELLOW + ". New air ticks: " + ORANGE + Placeholders.GENERIC_CURRENT + LIGHT_YELLOW + "/" + ORANGE + Placeholders.GENERIC_MAX + LIGHT_YELLOW + ".");
-    public static final LangKey COMMAND_AIR_ADD_NOTIFY    = LangKey.of("Command.Air.Give.Notify", ACTION_BAR + LIGHT_YELLOW + "You got " + ORANGE + Placeholders.GENERIC_AMOUNT + LIGHT_YELLOW + " air ticks: " + ORANGE + Placeholders.GENERIC_CURRENT + LIGHT_YELLOW + "/" + ORANGE + Placeholders.GENERIC_MAX + LIGHT_YELLOW + ".");
-    public static final LangKey COMMAND_AIR_REMOVE_NOTIFY = LangKey.of("Command.Air.Take.Notify", ACTION_BAR + LIGHT_YELLOW + "You lost " + ORANGE + Placeholders.GENERIC_AMOUNT + LIGHT_YELLOW + " air ticks: " + ORANGE + Placeholders.GENERIC_CURRENT + LIGHT_YELLOW + "/" + ORANGE + Placeholders.GENERIC_MAX + LIGHT_YELLOW + ".");
-    public static final LangKey COMMAND_AIR_SET_NOTIFY    = LangKey.of("Command.Air.Set.Notify", ACTION_BAR + LIGHT_YELLOW + "Your air ticks set to " + ORANGE + Placeholders.GENERIC_AMOUNT + LIGHT_YELLOW + ": " + ORANGE + Placeholders.GENERIC_CURRENT + LIGHT_YELLOW + "/" + ORANGE + Placeholders.GENERIC_MAX + LIGHT_YELLOW + ".");
-
-    public static final LangKey COMMAND_ANVIL_DESC   = LangKey.of("Command.Anvil.Desc", "Open portable anvil.");
-    public static final LangKey COMMAND_ANVIL_USAGE  = LangKey.of("Command.Anvil.Usage", "[player] [-s]");
-    public static final LangKey COMMAND_ANVIL_TARGET = LangKey.of("Command.Anvil.Target", LIGHT_YELLOW + "Opened portable anvil for " + ORANGE + Placeholders.PLAYER_DISPLAY_NAME + LIGHT_YELLOW + ".");
-    public static final LangKey COMMAND_ANVIL_NOTIFY = LangKey.of("Command.Anvil.Notify", "<! type:\"action_bar\" !>" + LIGHT_YELLOW + "You opened portable anvil.");
-
-    public static final LangKey COMMAND_BACK_DESC          = LangKey.of("Command.Back.Desc", "Return [player] to previous location.");
-    public static final LangKey COMMAND_BACK_USAGE         = LangKey.of("Command.Back.Usage", "[player] [-s]");
-    public static final LangKey COMMAND_BACK_ERROR_NOTHING = LangKey.of("Command.Back.Error.Nothing",
-        "<! type:\"action_bar\" sound:\"" + Sound.ENTITY_VILLAGER_NO.name() + "\" !>" + RED + "You don't have back location.");
-    public static final LangKey COMMAND_BACK_NOTIFY        = LangKey.of("Command.Back.Notify",
-        "<! type:\"action_bar\" sound:\"" + Sound.ENTITY_ENDERMAN_TELEPORT.name() + "\" !>" + LIGHT_YELLOW + "You returned to your previous location.");
-    public static final LangKey COMMAND_BACK_TARGET        = LangKey.of("Command.Back.Target", LIGHT_YELLOW + "Player " + ORANGE + Placeholders.PLAYER_DISPLAY_NAME + LIGHT_YELLOW + " teleported to his previous location.");
-
-    @Deprecated public static final LangKey Command_Broadcast_Desc      = new LangKey("Command.Broadcast.Desc", "Broadcast a message.");
-    @Deprecated public static final LangKey Command_Broadcast_Usage     = new LangKey("Command.Broadcast.Usage", "<message>");
-    @Deprecated public static final LangKey Command_Broadcast_Format    = new LangKey("Command.Broadcast.Format", NO_PREFIX + "&6[&eBroadcast&6] &c%msg%");
-
-
-    public static final LangKey Command_CText_Invalid          = new LangKey("Command.CText.Invalid", NO_PREFIX + "&7TXT file &c%file% &7not found!");
-
-    public static final LangKey COMMAND_CONDENSE_DESC             = LangKey.of("Command.Condense.Desc", "Condense items into blocks.");
-    public static final LangKey COMMAND_CONDENSE_USAGE            = LangKey.of("Command.Condense.Usage", "");
-    public static final LangKey COMMAND_CONDENSE_ERROR_NOTHING    = LangKey.of("Command.Condense.Error.Nothing",
-        "<! type:\"action_bar\" sound:\"" + Sound.ENTITY_VILLAGER_NO.name() + "\" !>" + RED + "Nothing to condense.");
-    public static final LangKey COMMAND_CONDENSE_ERROR_NOT_ENOUGH = LangKey.of("Command.Condense.Error.NotEnough", LIGHT_YELLOW + "Not enough items to convert " + RED + CondenseCommand.PLACEHOLDER_SOURCE + LIGHT_YELLOW + " to " + RED + CondenseCommand.PLACEHOLDER_RESULT + LIGHT_YELLOW + ". Need at least " + RED + Placeholders.GENERIC_AMOUNT + LIGHT_YELLOW + ".");
-    public static final LangKey COMMAND_CONDENSE_DONE             = LangKey.of("Command.Condense.Done", LIGHT_YELLOW + "Converted " + ORANGE + "x" + CondenseCommand.PLACEHOLDER_TOTAL + " " + CondenseCommand.PLACEHOLDER_SOURCE + LIGHT_YELLOW + " to " + ORANGE + "x" + Placeholders.GENERIC_AMOUNT + " " + CondenseCommand.PLACEHOLDER_RESULT + LIGHT_YELLOW + ".");
-
-    public static final LangKey COMMAND_DEATH_BACK_DESC        = LangKey.of("Command.DeathBack.Desc", "Return [player] to death location.");
-    public static final LangKey COMMAND_DEATH_BACK_USAGE        = LangKey.of("Command.DeathBack.Usage", "[player] [-s]");
-    public static final LangKey COMMAND_DEATH_BACK_ERROR_NOTHING = LangKey.of("Command.DeathBack.Error.Nothing",
-        "<! type:\"action_bar\" sound:\"" + Sound.ENTITY_VILLAGER_NO.name() + "\" !>" + RED + "You don't have death location.");
-    public static final LangKey COMMAND_DEATH_BACK_NOTIFY        = LangKey.of("Command.DeathBack.Notify",
-        "<! type:\"action_bar\" sound:\"" + Sound.ENTITY_ENDERMAN_TELEPORT.name() + "\" !>" + LIGHT_YELLOW + "You returned to your death location.");
-    public static final LangKey COMMAND_DEATH_BACK_TARGET        = LangKey.of("Command.DeathBack.Target", LIGHT_YELLOW + "Player " + ORANGE + Placeholders.PLAYER_DISPLAY_NAME + LIGHT_YELLOW + " teleported to his death location.");
-
-    public static final LangKey COMMAND_DISPOSAL_USAGE = LangKey.of("Command.Disposal.Usage", "[player] [-s]");
-    public static final LangKey COMMAND_DISPOSAL_DESC   = LangKey.of("Command.Disposal.Desc", "Open a disposal menu.");
-    public static final LangKey COMMAND_DISPOSAL_TARGET = LangKey.of("Command.Disposal.Target", LIGHT_YELLOW + "Opened disposal for " + ORANGE + Placeholders.PLAYER_DISPLAY_NAME + LIGHT_YELLOW + ".");
-    public static final LangKey COMMAND_DISPOSAL_NOTIFY = LangKey.of("Command.Disposal.Notify", "<! type:\"action_bar\" sound:\"" + Sound.ITEM_ARMOR_EQUIP_LEATHER.name() + "\" !>" + LIGHT_YELLOW + "You opened disposal.");
-
-    public static final LangKey COMMAND_DIMENSION_USAGE = LangKey.of("Command.Dimension.Usage", "<world> [player] [-s]");
-    public static final LangKey COMMAND_DIMENSION_DESC   = LangKey.of("Command.Dimension.Desc", "Teleport [player] to a world.");
-    public static final LangKey COMMAND_DIMENSION_TARGET = LangKey.of("Command.Dimension.Target", LIGHT_YELLOW + "Teleported " + ORANGE + Placeholders.PLAYER_DISPLAY_NAME + LIGHT_YELLOW + " to the " + ORANGE + Placeholders.GENERIC_WORLD + LIGHT_YELLOW + ".");
-    public static final LangKey COMMAND_DIMENSION_NOTIFY = LangKey.of("Command.Dimension.Notify", "<! type:\"action_bar\" sound:\"" + Sound.ENTITY_ENDERMAN_TELEPORT.name() + "\" !>" + LIGHT_YELLOW + "You travelled to the " + ORANGE + Placeholders.GENERIC_WORLD + LIGHT_YELLOW + ".");
-
-    public static final LangKey COMMAND_ENCHANT_DESC  = LangKey.of("Command.Enchant.Desc", "(Dis)Enchant [player's] item in specified slot.");
-    public static final LangKey COMMAND_ENCHANT_USAGE = LangKey.of("Command.Enchant.Usage", "<slot> <enchantment> <level> [player] [-s]");
-
-    public static final LangKey COMMAND_ENCHANT_ENCHANTED_TARGET = LangKey.of("Command.Enchant.Enchanted.Target",
-        "<! sound:\"" + Sound.BLOCK_ENCHANTMENT_TABLE_USE.name() + "\" !>" +
-            LIGHT_YELLOW + "Enchanted " + ORANGE + Placeholders.GENERIC_ITEM + LIGHT_YELLOW + " with " +
-            ORANGE + Placeholders.GENERIC_NAME + " " + Placeholders.GENERIC_AMOUNT + LIGHT_YELLOW + " in " +
-            ORANGE + Placeholders.PLAYER_DISPLAY_NAME + LIGHT_YELLOW + "'s " + ORANGE + Placeholders.GENERIC_TYPE + LIGHT_YELLOW + " slot!");
-
-    public static final LangKey COMMAND_ENCHANT_DISENCHANTED_TARGET = LangKey.of("Command.Enchant.Disenchanted.Target",
-        "<! sound:\"" + Sound.BLOCK_GRINDSTONE_USE.name() + "\" !>" +
-            LIGHT_YELLOW + "Enchantment " + ORANGE + Placeholders.GENERIC_NAME + LIGHT_YELLOW + " have been removed from " +
-            ORANGE + Placeholders.GENERIC_ITEM + LIGHT_YELLOW + " in " +
-            ORANGE + Placeholders.PLAYER_DISPLAY_NAME + LIGHT_YELLOW + "'s " + ORANGE + Placeholders.GENERIC_TYPE + LIGHT_YELLOW + " slot.");
-
-    public static final LangKey COMMAND_ENCHANT_ENCHANTED_NOTIFY = LangKey.of("Command.Enchant.Enchanted.Notify",
-        "<! sound:\"" + Sound.BLOCK_ENCHANTMENT_TABLE_USE.name() + "\" !>" +
-            LIGHT_YELLOW + "Your " + ORANGE + Placeholders.GENERIC_ITEM + LIGHT_YELLOW + " have been enchanted with " +
-            ORANGE + Placeholders.GENERIC_NAME + " " + Placeholders.GENERIC_AMOUNT + LIGHT_YELLOW + "!");
-
-    public static final LangKey COMMAND_ENCHANT_DISENCHANTED_NOTIFY = LangKey.of("Command.Enchant.Disenchanted.Notify",
-        "<! sound:\"" + Sound.BLOCK_GRINDSTONE_USE.name() + "\" !>" +
-            LIGHT_YELLOW + "Your " + ORANGE + Placeholders.GENERIC_ITEM + LIGHT_YELLOW + " have been disenchanted from " +
-            ORANGE + Placeholders.GENERIC_NAME + " " + Placeholders.GENERIC_AMOUNT + LIGHT_YELLOW + "!");
-
-    public static final LangKey COMMAND_ENCHANTING_DESC   = LangKey.of("Command.Enchanting.Desc", "Open portable enchanting table.");
-    public static final LangKey COMMAND_ENCHANTING_USAGE  = LangKey.of("Command.Enchanting.Usage", "[player] [-s]");
-    public static final LangKey COMMAND_ENCHANTING_NOTIFY = LangKey.of("Command.Enchanting.Notify", ACTION_BAR + LIGHT_YELLOW + "You opened enchanting table.");
-    public static final LangKey COMMAND_ENCHANTING_TARGET = LangKey.of("Command.Enchanting.Target", LIGHT_YELLOW + "Opened enchanting table for " + ORANGE + Placeholders.PLAYER_DISPLAY_NAME + LIGHT_YELLOW + ".");
-
-    public static final LangKey COMMAND_ENCHANTMENT_SEED_DESC   = LangKey.of("Command.EnchantmentSeed.Desc", "Regenerate [player's] enchantment seed.");
-    public static final LangKey COMMAND_ENCHANTMENT_SEED_USAGE  = LangKey.of("Command.EnchantmentSeed.Usage", "[player] [-s]");
-    public static final LangKey COMMAND_ENCHANTMENT_SEED_NOTIFY = LangKey.of("Command.EnchantmentSeed.Notify", LIGHT_YELLOW + "Your enchantment seed has been updated. New enchantment offers are available.");
-    public static final LangKey COMMAND_ENCHANTMENT_SEED_TARGET = LangKey.of("Command.EnchantmentSeed.Target", LIGHT_YELLOW + "Updated enchantment seed for " + ORANGE + Placeholders.PLAYER_DISPLAY_NAME + LIGHT_YELLOW + ".");
-
-    public static final LangKey COMMAND_EXP_DESC          = LangKey.of("Command.Exp.Desc", "Manage [player's] exp points.");
-    public static final LangKey COMMAND_EXP_USAGE         = LangKey.of("Command.Exp.Usage", "<action> <amount> [player] [-s] [-l]");
-    public static final LangKey COMMAND_EXP_ADD_TARGET    = LangKey.of("Command.Exp.Give.Target", LIGHT_YELLOW + "Added " + ORANGE + Placeholders.GENERIC_AMOUNT + LIGHT_YELLOW + " exp/levels to " + ORANGE + Placeholders.PLAYER_DISPLAY_NAME + LIGHT_YELLOW + ". XP: " + ORANGE + Placeholders.GENERIC_TOTAL + LIGHT_YELLOW + ", Level: " + ORANGE + Placeholders.GENERIC_LEVEL + LIGHT_YELLOW + ".");
-    public static final LangKey COMMAND_EXP_REMOVE_TARGET = LangKey.of("Command.Exp.Take.Target", LIGHT_YELLOW + "Removed " + ORANGE + Placeholders.GENERIC_AMOUNT + LIGHT_YELLOW + " exp/levels from " + ORANGE + Placeholders.PLAYER_DISPLAY_NAME + LIGHT_YELLOW + ". XP: " + ORANGE + Placeholders.GENERIC_TOTAL + LIGHT_YELLOW + ", Level: " + ORANGE + Placeholders.GENERIC_LEVEL + LIGHT_YELLOW + ".");
-    public static final LangKey COMMAND_EXP_SET_TARGET    = LangKey.of("Command.Exp.Set.Target", LIGHT_YELLOW + "Set " + ORANGE + Placeholders.GENERIC_AMOUNT + LIGHT_YELLOW + " exp/levels for " + ORANGE + Placeholders.PLAYER_DISPLAY_NAME + LIGHT_YELLOW + ". XP: " + ORANGE + Placeholders.GENERIC_TOTAL + LIGHT_YELLOW + ", Level" + ORANGE + Placeholders.GENERIC_LEVEL + LIGHT_YELLOW + ".");
-    public static final LangKey COMMAND_EXP_ADD_NOTIFY    = LangKey.of("Command.Exp.Give.Notify", LIGHT_YELLOW + "You got " + ORANGE + Placeholders.GENERIC_AMOUNT + LIGHT_YELLOW + " exp/levels: " + ORANGE + Placeholders.GENERIC_TOTAL + LIGHT_YELLOW + " XP, " + ORANGE + Placeholders.GENERIC_LEVEL + LIGHT_YELLOW + "Level(s).");
-    public static final LangKey COMMAND_EXP_REMOVE_NOTIFY = LangKey.of("Command.Exp.Take.Notify", LIGHT_YELLOW + "You lost " + ORANGE + Placeholders.GENERIC_AMOUNT + LIGHT_YELLOW + " exp/levels: " + ORANGE + Placeholders.GENERIC_TOTAL + LIGHT_YELLOW + " XP, " + ORANGE + Placeholders.GENERIC_LEVEL + LIGHT_YELLOW + "Level(s).");
-    public static final LangKey COMMAND_EXP_SET_NOTIFY    = LangKey.of("Command.Exp.Set.Notify", LIGHT_YELLOW + "Your exp/level set to " + ORANGE + Placeholders.GENERIC_AMOUNT + LIGHT_YELLOW + ": " + ORANGE + Placeholders.GENERIC_TOTAL + LIGHT_YELLOW + " XP, " + ORANGE + Placeholders.GENERIC_LEVEL + LIGHT_YELLOW + "Level(s).");
-
-    public static final LangKey COMMAND_ENDERCHEST_DESC  = LangKey.of("Command.Enderchest.Desc", "Player Enderchest tools.");
-    public static final LangKey COMMAND_ENDERCHEST_USAGE = LangKey.of("Command.Enderchest.Usage", "[help]");
-
-    public static final LangKey COMMAND_ENDERCHEST_CLEAR_DESC        = LangKey.of("Command.Enderchest.Clear.Desc", "Clear [player's] ender chest.");
-    public static final LangKey COMMAND_ENDERCHEST_CLEAR_USAGE       = LangKey.of("Command.Enderchest.Clear.Usage", "[player] [-s]");
-    public static final LangKey COMMAND_ENDERCHEST_CLEAR_DONE_TARGET = LangKey.of("Command.Enderchest.Clear.Done.Target", "<! sound:\"" + Sound.BLOCK_FIRE_EXTINGUISH.name() + "\" !>" + LIGHT_YELLOW + "Cleared " + ORANGE + Placeholders.PLAYER_DISPLAY_NAME + LIGHT_YELLOW + "'s ender chest!");
-    public static final LangKey COMMAND_ENDERCHEST_CLEAR_DONE_NOTIFY = LangKey.of("Command.Enderchest.Clear.Done.Notify", "<! type:\"action_bar\" sound:\"" + Sound.BLOCK_FIRE_EXTINGUISH.name() + "\" !>" + LIGHT_YELLOW + "Your ender chest has been cleared!");
-
-    public static final LangKey COMMAND_ENDERCHEST_COPY_DESC          = LangKey.of("Command.Enderchest.Copy.Desc", "Copy player's ender chest.");
-    public static final LangKey COMMAND_ENDERCHEST_COPY_USAGE         = LangKey.of("Command.Enderchest.Copy.Usage", "<from> [to]");
-    public static final LangKey COMMAND_ENDERCHEST_COPY_DONE_EXECUTOR = LangKey.of("Command.Enderchest.Copy.Done.Executor", "<! sound:\"" + Sound.ITEM_ARMOR_EQUIP_LEATHER.name() + "\" !>" + LIGHT_YELLOW + "Copied " + ORANGE + Placeholders.PLAYER_DISPLAY_NAME + LIGHT_YELLOW + "'s ender chest.");
-    public static final LangKey COMMAND_ENDERCHEST_COPY_DONE_OTHERS   = LangKey.of("Command.Enderchest.Copy.Done.Others", "<! sound:\"" + Sound.ITEM_ARMOR_EQUIP_LEATHER.name() + "\" !>" + LIGHT_YELLOW + "Copied " + ORANGE + Placeholders.GENERIC_SOURCE + LIGHT_YELLOW + "'s ender chest to " + ORANGE + Placeholders.GENERIC_TARGET + LIGHT_YELLOW + ".");
-
-    public static final LangKey COMMAND_ENDERCHEST_FILL_DESC          = LangKey.of("Command.Enderchest.Fill.Desc", "Fill player's ender chest with specified item(s).");
-    public static final LangKey COMMAND_ENDERCHEST_FILL_USAGE         = LangKey.of("Command.Enderchest.Fill.Usage", "<player> <item...>");
-    public static final LangKey COMMAND_ENDERCHEST_FILL_DONE_EXECUTOR = LangKey.of("Command.Enderchest.Fill.Done.Executor", "<! sound:\"" + Sound.ENTITY_ITEM_PICKUP.name() + "\" !>" + LIGHT_YELLOW + "Filled " + ORANGE + Placeholders.PLAYER_DISPLAY_NAME + LIGHT_YELLOW + "'s ender chest with " + ORANGE + Placeholders.GENERIC_ITEM + LIGHT_YELLOW + ".");
-
-    public static final LangKey COMMAND_ENDERCHEST_OPEN_DESC          = LangKey.of("Command.Enderchest.Open.Desc", "Open mutable [player's] ender chest.");
-    public static final LangKey COMMAND_ENDERCHEST_OPEN_USAGE         = LangKey.of("Command.Enderchest.Open.Usage", "[player]");
-    public static final LangKey COMMAND_ENDERCHEST_OPEN_DONE_EXECUTOR = LangKey.of("Command.Enderchest.Open.Done.Executor", "<! sound:\"" + Sound.BLOCK_CHEST_OPEN.name() + "\" !>" + LIGHT_YELLOW + "Opened " + ORANGE + Placeholders.PLAYER_DISPLAY_NAME + LIGHT_YELLOW + "'s ender chest.");
-
-    public static final LangKey COMMAND_ENDERCHEST_REPAIR_DESC   = LangKey.of("Command.Enderchest.Repair.Desc", "Repair all items in [player's] ender chest.");
-    public static final LangKey COMMAND_ENDERCHEST_REPAIR_USAGE  = LangKey.of("Command.Enderchest.Repair.Usage", "[player] [-s]");
-    public static final LangKey COMMAND_ENDERCHEST_REPAIR_NOTIFY = LangKey.of("Command.Enderchest.Repair.Notify", "<! sound:\"" + Sound.BLOCK_ANVIL_USE.name() + "\" !>" + LIGHT_YELLOW + "All items in your ender chest has been repaired!");
-    public static final LangKey COMMAND_ENDERCHEST_REPAIR_TARGET = LangKey.of("Command.Enderchest.Repair.Target", "<! sound:\"" + Sound.BLOCK_ANVIL_USE.name() + "\" !>" + LIGHT_YELLOW + "Repaired all items in " + ORANGE + Placeholders.PLAYER_DISPLAY_NAME + LIGHT_YELLOW + "'s ender chest!");
-
-    public static final LangKey COMMAND_EXTINGUISH_DESC   = LangKey.of("Command.Extinguish.Desc", "Extinguish [a player].");
-    public static final LangKey COMMAND_EXTINGUISH_USAGE  = LangKey.of("Command.Extinguish.Usage", "[player] [-s]");
-    public static final LangKey COMMAND_EXTINGUISH_NOTIFY = LangKey.of("Command.Extinguish.Notify", "<! type:\"action_bar\" sound:\"" + Sound.BLOCK_FIRE_EXTINGUISH.name() + "\" !>" + LIGHT_YELLOW + "You have been extinguished.");
-    public static final LangKey COMMAND_EXTINGUISH_TARGET = LangKey.of("Command.Extinguish.Target", "<! sound:\"" + Sound.BLOCK_FIRE_EXTINGUISH.name() + "\" !>" + LIGHT_YELLOW + "Player " + ORANGE + Placeholders.PLAYER_DISPLAY_NAME + LIGHT_YELLOW + " have been extinguished.");
-
-    public static final LangKey COMMAND_EQUIP_DESC  = LangKey.of("Command.Equip.Desc", "Equip hand item to specified armor slot.");
-    public static final LangKey COMMAND_EQUIP_USAGE = LangKey.of("Command.Equip.Usage", "<slot>");
-    public static final LangKey COMMAND_EQUIP_DONE  = LangKey.of("Command.Equip.Done", "<! sound:\"" + Sound.ITEM_ARMOR_EQUIP_LEATHER.name() + "\" !>" + LIGHT_YELLOW + "Equipped " + ORANGE + Placeholders.GENERIC_ITEM + LIGHT_YELLOW + ".");
-
-    public static final LangKey COMMAND_FEED_DESC   = LangKey.of("Command.Feed.Desc", "Fill [player's] food level.");
-    public static final LangKey COMMAND_FEED_USAGE  = LangKey.of("Command.Feed.Usage", "[player] [-sat] [-s]");
-    public static final LangKey COMMAND_FEED_NOTIFY = LangKey.of("Command.Feed.Done.Self", "<! sound:\"" + Sound.ENTITY_GENERIC_EAT.name() + "\" !>" + LIGHT_YELLOW + "You food level has been restored!");
-    public static final LangKey COMMAND_FEED_TARGET = LangKey.of("Command.Feed.Done.Others", "<! sound:\"" + Sound.ENTITY_GENERIC_EAT.name() + "\" !>" + LIGHT_YELLOW + "Restored " + ORANGE + Placeholders.PLAYER_DISPLAY_NAME + LIGHT_YELLOW + "'s food level!");
-
-    public static final LangKey COMMAND_FLY_DESC   = LangKey.of("Command.Fly.Desc", "Toggle [player's] fly.");
-    public static final LangKey COMMAND_FLY_USAGE  = LangKey.of("Command.Fly.Usage", "[player] [-on] [-off] [-s]");
-    public static final LangKey COMMAND_FLY_TARGET = LangKey.of("Command.Fly.Target", LIGHT_YELLOW + "Set flying for " + ORANGE + Placeholders.PLAYER_DISPLAY_NAME + LIGHT_YELLOW + " to " + ORANGE + Placeholders.GENERIC_STATE + LIGHT_YELLOW + ".");
-    public static final LangKey COMMAND_FLY_NOTIFY = LangKey.of("Command.Fly.Notify", LIGHT_YELLOW + "Flying " + ORANGE + Placeholders.GENERIC_STATE + LIGHT_YELLOW + ".");
-
-    public static final LangKey COMMAND_FLY_SPEED_DESC        = LangKey.of("Command.FlySpeed.Desc", "Change [player's] fly speed.");
-    public static final LangKey COMMAND_FLY_SPEED_USAGE       = LangKey.of("Command.FlySpeed.Usage", "<speed> [player] [-s]");
-    public static final LangKey COMMAND_FLY_SPEED_DONE_NOTIFY = LangKey.of("Command.FlySpeed.Done.Notify", LIGHT_YELLOW + "Your fly speed has been set to " + ORANGE + Placeholders.GENERIC_AMOUNT + LIGHT_YELLOW + ".");
-    public static final LangKey COMMAND_FLY_SPEED_DONE_TARGET = LangKey.of("Command.FlySpeed.Done.Target", "Set fly speed to " + ORANGE + Placeholders.GENERIC_AMOUNT + LIGHT_YELLOW + " for " + ORANGE + Placeholders.PLAYER_DISPLAY_NAME + LIGHT_YELLOW + ".");
-
-    public static final LangKey COMMAND_FIRE_DESC          = LangKey.of("Command.Fire.Desc", "Manage [player's] fire ticks.");
-    public static final LangKey COMMAND_FIRE_USAGE         = LangKey.of("Command.Fire.Usage", "<action> <amount> [player]");
-    public static final LangKey COMMAND_FIRE_ADD_TARGET    = LangKey.of("Command.Fire.Give.Target", LIGHT_YELLOW + "Added " + ORANGE + Placeholders.GENERIC_AMOUNT + LIGHT_YELLOW + " fire ticks to " + ORANGE + Placeholders.PLAYER_DISPLAY_NAME + LIGHT_YELLOW + ". New fire ticks: " + ORANGE + Placeholders.GENERIC_TOTAL + GRAY + " (" + Placeholders.GENERIC_TIME + "s)");
-    public static final LangKey COMMAND_FIRE_REMOVE_TARGET = LangKey.of("Command.Fire.Take.Target", LIGHT_YELLOW + "Removed " + ORANGE + Placeholders.GENERIC_AMOUNT + LIGHT_YELLOW + " fire ticks from " + ORANGE + Placeholders.PLAYER_DISPLAY_NAME + LIGHT_YELLOW + ". New fire ticks: " + ORANGE + Placeholders.GENERIC_TOTAL + GRAY + " (" + Placeholders.GENERIC_TIME + "s)");
-    public static final LangKey COMMAND_FIRE_SET_TARGET    = LangKey.of("Command.Fire.Set.Target", LIGHT_YELLOW + "Set " + ORANGE + Placeholders.GENERIC_AMOUNT + LIGHT_YELLOW + " fire ticks for " + ORANGE + Placeholders.PLAYER_DISPLAY_NAME + LIGHT_YELLOW + ". New fire ticks: " + ORANGE + Placeholders.GENERIC_TOTAL + GRAY + " (" + Placeholders.GENERIC_TIME + "s)");
-
-    public static final LangKey COMMAND_FOOD_DESC          = LangKey.of("Command.Food.Desc", "Manage [player's] food level.");
-    public static final LangKey COMMAND_FOOD_USAGE         = LangKey.of("Command.Food.Usage", "<action> <amount> [player] [-s]");
-    public static final LangKey COMMAND_FOOD_ADD_TARGET    = LangKey.of("Command.Food.Give.Target", LIGHT_YELLOW + "Added " + ORANGE + Placeholders.GENERIC_AMOUNT + LIGHT_YELLOW + " food points to " + ORANGE + Placeholders.PLAYER_DISPLAY_NAME + LIGHT_YELLOW + ". New food level: " + ORANGE + Placeholders.GENERIC_CURRENT + LIGHT_YELLOW + "/" + ORANGE + Placeholders.GENERIC_MAX + LIGHT_YELLOW + ".");
-    public static final LangKey COMMAND_FOOD_REMOVE_TARGET = LangKey.of("Command.Food.Take.Target", LIGHT_YELLOW + "Removed " + ORANGE + Placeholders.GENERIC_AMOUNT + LIGHT_YELLOW + " food points from " + ORANGE + Placeholders.PLAYER_DISPLAY_NAME + LIGHT_YELLOW + ". New food level: " + ORANGE + Placeholders.GENERIC_CURRENT + LIGHT_YELLOW + "/" + ORANGE + Placeholders.GENERIC_MAX + LIGHT_YELLOW + ".");
-    public static final LangKey COMMAND_FOOD_SET_TARGET    = LangKey.of("Command.Food.Set.Target", LIGHT_YELLOW + "Set " + ORANGE + Placeholders.GENERIC_AMOUNT + LIGHT_YELLOW + " food points for " + ORANGE + Placeholders.PLAYER_DISPLAY_NAME + LIGHT_YELLOW + ". New food level: " + ORANGE + Placeholders.GENERIC_CURRENT + LIGHT_YELLOW + "/" + ORANGE + Placeholders.GENERIC_MAX + LIGHT_YELLOW + ".");
-    public static final LangKey COMMAND_FOOD_ADD_NOTIFY    = LangKey.of("Command.Food.Give.Notify", ACTION_BAR + LIGHT_YELLOW + "You got " + ORANGE + Placeholders.GENERIC_AMOUNT + LIGHT_YELLOW + " food points: " + ORANGE + Placeholders.GENERIC_CURRENT + LIGHT_YELLOW + "/" + ORANGE + Placeholders.GENERIC_MAX + LIGHT_YELLOW + ".");
-    public static final LangKey COMMAND_FOOD_REMOVE_NOTIFY = LangKey.of("Command.Food.Take.Notify", ACTION_BAR + LIGHT_YELLOW + "You lost " + ORANGE + Placeholders.GENERIC_AMOUNT + LIGHT_YELLOW + " food points: " + ORANGE + Placeholders.GENERIC_CURRENT + LIGHT_YELLOW + "/" + ORANGE + Placeholders.GENERIC_MAX + LIGHT_YELLOW + ".");
-    public static final LangKey COMMAND_FOOD_SET_NOTIFY    = LangKey.of("Command.Food.Set.Notify", ACTION_BAR + LIGHT_YELLOW + "Your food level has been set to " + ORANGE + Placeholders.GENERIC_AMOUNT + LIGHT_YELLOW + "/" + ORANGE + Placeholders.GENERIC_MAX + ".");
-
-    public static final LangKey COMMAND_FOOD_GOD_DESC   = LangKey.of("Command.FoodGod.Desc", "Toggle [player's] Food God.");
-    public static final LangKey COMMAND_FOOD_GOD_USAGE  = LangKey.of("Command.FoodGod.Usage", "[player] [-on] [-off] [-s]");
-    public static final LangKey COMMAND_FOOD_GOD_TARGET = LangKey.of("Command.FoodGod.Target", LIGHT_YELLOW + "Set Food God for " + ORANGE + Placeholders.PLAYER_DISPLAY_NAME + LIGHT_YELLOW + " to " + ORANGE + Placeholders.GENERIC_STATE + LIGHT_YELLOW + ".");
-    public static final LangKey COMMAND_FOOD_GOD_NOTIFY = LangKey.of("Command.FoodGod.Notify", LIGHT_YELLOW + "Food God " + ORANGE + Placeholders.GENERIC_STATE + LIGHT_YELLOW + ".");
-
-    public static final LangKey COMMAND_GRINDSTONE_DESC   = LangKey.of("Command.Grindstone.Desc", "Open portable grindstone.");
-    public static final LangKey COMMAND_GRINDSTONE_USAGE  = LangKey.of("Command.Grindstone.Usage", "[player] [-s]");
-    public static final LangKey COMMAND_GRINDSTONE_NOTIFY = LangKey.of("Command.Grindstone.Notify", ACTION_BAR + LIGHT_YELLOW + "You opened grindstone.");
-    public static final LangKey COMMAND_GRINDSTONE_TARGET = LangKey.of("Command.Grindstone.Target", LIGHT_YELLOW + "Opened grindstone for " + ORANGE + Placeholders.PLAYER_DISPLAY_NAME + LIGHT_YELLOW + ".");
-
-    public static final LangKey COMMAND_GAME_MODE_DESC  = LangKey.of("Command.GameMode.Desc", "Change [player's] gamemode.");
-    public static final LangKey COMMAND_GAME_MODE_USAGE  = LangKey.of("Command.GameMode.Usage", "<gamemode> [player] [-s]");
-    public static final LangKey COMMAND_GAME_MODE_NOTIFY = LangKey.of("Command.GameMode.Notify", LIGHT_YELLOW + "Your game mode has been set to " + ORANGE + Placeholders.GENERIC_TYPE + LIGHT_YELLOW + ".");
-    public static final LangKey COMMAND_GAME_MODE_TARGET = LangKey.of("Command.GameMode.Target", LIGHT_YELLOW + "Set " + ORANGE + Placeholders.GENERIC_TYPE + LIGHT_YELLOW + " game mode for " + ORANGE + Placeholders.PLAYER_DISPLAY_NAME + LIGHT_YELLOW + ".");
-
-    public static final LangKey COMMAND_GOD_DESC              = LangKey.of("Command.God.Desc", "Toggle [player's] God Mode.");
-    public static final LangKey COMMAND_GOD_USAGE             = LangKey.of("Command.God.Usage", "[player] [-on] [-off] [-s]");
-    public static final LangKey COMMAND_GOD_DAMAGE_NOTIFY_OUT = LangKey.of("Command.God.Notify.DamageDisabled", ACTION_BAR + RED + "You can't inflict damage in God Mode!");
-    public static final LangKey COMMAND_GOD_TOGGLE_NOTIFY     = LangKey.of("Command.God.Toggle.Notify", LIGHT_YELLOW + "Your God Mode has been " + ORANGE + Placeholders.GENERIC_STATE + LIGHT_YELLOW + ".");
-    public static final LangKey COMMAND_GOD_TOGGLE_TARGET     = LangKey.of("Command.God.Toggle.Target", LIGHT_YELLOW + "Set God Mode " + ORANGE + Placeholders.GENERIC_STATE + LIGHT_YELLOW + " for " + ORANGE + Placeholders.PLAYER_DISPLAY_NAME + LIGHT_YELLOW + ".");
-    public static final LangKey COMMAND_GOD_NOTIFY_BAD_WORLD  = LangKey.of("Command.God.Notify.BadWorld", RED + "Warning: " + LIGHT_YELLOW + "God Mode is disabled in this world!");
-
-    public static final LangKey COMMAND_HEAL_DESC        = LangKey.of("Command.Heal.Desc", "Restore [player's] health.");
-    public static final LangKey COMMAND_HEAL_USAGE       = LangKey.of("Command.Heal.Usage", "[player] [-eff] [-s]");
-    public static final LangKey COMMAND_HEAL_NOTIFY = LangKey.of("Command.Heal.Notfiy", LIGHT_YELLOW + "You have been healed!");
-    public static final LangKey COMMAND_HEAL_TARGET = LangKey.of("Command.Heal.Target", LIGHT_YELLOW + "Player " + ORANGE + Placeholders.PLAYER_DISPLAY_NAME + LIGHT_YELLOW + " has been healed.");
-
-    public static final LangKey COMMAND_HEALTH_DESC          = LangKey.of("Command.Health.Desc", "Manage [player's] health.");
-    public static final LangKey COMMAND_HEALTH_USAGE         = LangKey.of("Command.Health.Usage", "<action> <amount> [player] [-s]");
-    public static final LangKey COMMAND_HEALTH_ADD_TARGET    = LangKey.of("Command.Health.Add.Target", LIGHT_YELLOW + "Added " + ORANGE + Placeholders.GENERIC_AMOUNT + LIGHT_YELLOW + " health to " + ORANGE + Placeholders.PLAYER_DISPLAY_NAME + LIGHT_YELLOW + ". New health: " + ORANGE + Placeholders.GENERIC_CURRENT + LIGHT_YELLOW + "/" + ORANGE + Placeholders.GENERIC_MAX + LIGHT_YELLOW + ".");
-    public static final LangKey COMMAND_HEALTH_REMOVE_TARGET = LangKey.of("Command.Health.Remove.Target", LIGHT_YELLOW + "Removed " + ORANGE + Placeholders.GENERIC_AMOUNT + LIGHT_YELLOW + " health from " + ORANGE + Placeholders.PLAYER_DISPLAY_NAME + LIGHT_YELLOW + ". New health: " + ORANGE + Placeholders.GENERIC_CURRENT + LIGHT_YELLOW + "/" + ORANGE + Placeholders.GENERIC_MAX + LIGHT_YELLOW + ".");
-    public static final LangKey COMMAND_HEALTH_SET_TARGET    = LangKey.of("Command.Health.Set.Target", LIGHT_YELLOW + "Set " + ORANGE + Placeholders.GENERIC_AMOUNT + LIGHT_YELLOW + " health for " + ORANGE + Placeholders.PLAYER_DISPLAY_NAME + LIGHT_YELLOW + ". New health: " + ORANGE + Placeholders.GENERIC_CURRENT + LIGHT_YELLOW + "/" + ORANGE + Placeholders.GENERIC_MAX + LIGHT_YELLOW + ".");
-    public static final LangKey COMMAND_HEALTH_ADD_NOTIFY    = LangKey.of("Command.Health.Add.Notify", ACTION_BAR + LIGHT_YELLOW + "You got " + ORANGE + Placeholders.GENERIC_AMOUNT + LIGHT_YELLOW + " health: " + ORANGE + Placeholders.GENERIC_CURRENT + LIGHT_YELLOW + "/" + ORANGE + Placeholders.GENERIC_MAX + LIGHT_YELLOW + ".");
-    public static final LangKey COMMAND_HEALTH_REMOVE_NOTIFY = LangKey.of("Command.Health.Remove.Notify", ACTION_BAR + LIGHT_YELLOW + "You lost " + ORANGE + Placeholders.GENERIC_AMOUNT + LIGHT_YELLOW + " health: " + ORANGE + Placeholders.GENERIC_CURRENT + LIGHT_YELLOW + "/" + ORANGE + Placeholders.GENERIC_MAX + LIGHT_YELLOW + ".");
-    public static final LangKey COMMAND_HEALTH_SET_NOTIFY    = LangKey.of("Command.Health.Set.Notify", ACTION_BAR + LIGHT_YELLOW + "Your health has been set to " + ORANGE + Placeholders.GENERIC_AMOUNT + LIGHT_YELLOW + "/" + ORANGE + Placeholders.GENERIC_MAX + ".");
-
-    // I - Commands --------------------------------------------------------
-    public static final LangKey COMMAND_IGNORE_DESC                 = LangKey.of("Command.Ignore.Desc", "Manage your player blacklist.");
-    public static final LangKey COMMAND_IGNORE_USAGE                = LangKey.of("Command.Ignore.Usage", "[help]");
-    public static final LangKey COMMAND_IGNORE_ADD_DESC             = LangKey.of("Command.Ignore.Add.Desc", "Add player to your blacklist.");
-    public static final LangKey COMMAND_IGNORE_ADD_USAGE            = LangKey.of("Command.Ignore.Add.Usage", "<player>");
-    public static final LangKey COMMAND_IGNORE_ADD_DONE             = LangKey.of("Command.Ignore.Add.Done", LIGHT_YELLOW + "Player " + RED + Placeholders.PLAYER_NAME + LIGHT_YELLOW + " added to the blacklist. You can change settings or unblock him using " + RED + "/" + IgnoreCommand.NAME + " list");
-    public static final LangKey COMMAND_IGNORE_ADD_ERROR_ALREADY_IN = LangKey.of("Command.Ignore.Add.Error.AlreadyIn", LIGHT_YELLOW + "Player is already blacklisted.");
-    public static final LangKey COMMAND_IGNORE_REMOVE_DESC          = LangKey.of("Command.Ignore.Remove.Desc", "Remove player from blacklist.");
-    public static final LangKey COMMAND_IGNORE_REMOVE_USAGE         = LangKey.of("Command.Ignore.Remove.Usage", "<player>");
-    public static final LangKey COMMAND_IGNORE_REMOVE_DONE          = LangKey.of("Command.Ignore.Remove.Done", LIGHT_YELLOW + "Player " + ORANGE + Placeholders.PLAYER_NAME + LIGHT_YELLOW + " has ben removed from the blacklist.");
-    public static final LangKey COMMAND_IGNORE_REMOVE_ERROR_NOT_IN  = LangKey.of("Command.Ignore.Remove.Error.NotIn", LIGHT_YELLOW + "Player is not blacklisted.");
-    public static final LangKey COMMAND_IGNORE_LIST_DESC            = LangKey.of("Command.Ignore.List.Desc", "View your player blacklist.");
-    public static final LangKey COMMAND_IGNORE_LIST_USAGE           = LangKey.of("Command.Ignore.List.Usage", "");
-
-    public static final LangKey COMMAND_INVENTORY_DESC  = LangKey.of("Command.Inventory.Desc", "Player Inventory management tools.");
-    public static final LangKey COMMAND_INVENTORY_USAGE = LangKey.of("Command.Inventory.Usage", "[help]");
-
-    public static final LangKey COMMAND_INVENTORY_CLEAR_DESC        = LangKey.of("Command.Inventory.Clear.Desc", "Clear your own or other player's inventory.");
-    public static final LangKey COMMAND_INVENTORY_CLEAR_USAGE       = LangKey.of("Command.Inventory.Clear.Usage", "[player] [-s]");
-    public static final LangKey COMMAND_INVENTORY_CLEAR_DONE_TARGET = LangKey.of("Command.Inventory.Clear.Done.Target", "<! sound:\"" + Sound.BLOCK_FIRE_EXTINGUISH.name() + "\" !>" + LIGHT_YELLOW + "Cleared " + ORANGE + Placeholders.PLAYER_DISPLAY_NAME + LIGHT_YELLOW + "'s inventory!");
-    public static final LangKey COMMAND_INVENTORY_CLEAR_DONE_NOTIFY = LangKey.of("Command.Inventory.Clear.Done.Notify", "<! sound:\"" + Sound.BLOCK_FIRE_EXTINGUISH.name() + "\" !>" + LIGHT_YELLOW + "Your inventory has been cleared!");
-
-    public static final LangKey COMMAND_INVENTORY_COPY_DESC        = LangKey.of("Command.Inventory.Copy.Desc", "Copy player's inventory.");
-    public static final LangKey COMMAND_INVENTORY_COPY_USAGE       = LangKey.of("Command.Inventory.Copy.Usage", "<from> [to]");
-    public static final LangKey COMMAND_INVENTORY_COPY_DONE_NOTIFY = LangKey.of("Command.Inventory.Copy.Done.Notify", "<! sound:\"" + Sound.ITEM_ARMOR_EQUIP_LEATHER.name() + "\" !>" + LIGHT_YELLOW + "Copied " + ORANGE + Placeholders.PLAYER_DISPLAY_NAME + LIGHT_YELLOW + "'s inventory.");
-    public static final LangKey COMMAND_INVENTORY_COPY_DONE_TARGET = LangKey.of("Command.Inventory.Copy.Done.Target", "<! sound:\"" + Sound.ITEM_ARMOR_EQUIP_LEATHER.name() + "\" !>" + LIGHT_YELLOW + "Copied " + ORANGE + Placeholders.GENERIC_SOURCE + LIGHT_YELLOW + "'s inventory to " + ORANGE + Placeholders.GENERIC_TARGET + LIGHT_YELLOW + ".");
-
-    public static final LangKey COMMAND_INVENTORY_FILL_DESC  = LangKey.of("Command.Inventory.Fill.Desc", "Fill player's inventory with specified item(s).");
-    public static final LangKey COMMAND_INVENTORY_FILL_USAGE = LangKey.of("Command.Inventory.Fill.Usage", "<player> <item...>");
-    public static final LangKey COMMAND_INVENTORY_FILL_DONE  = LangKey.of("Command.Inventory.Fill.Done", "<! sound:\"" + Sound.ENTITY_ITEM_PICKUP.name() + "\" !>" + LIGHT_YELLOW + "Filled " + ORANGE + Placeholders.PLAYER_DISPLAY_NAME + LIGHT_YELLOW + "'s inventory with " + ORANGE + Placeholders.GENERIC_ITEM + LIGHT_YELLOW  +".");
-
-    public static final LangKey COMMAND_INVENTORY_OPEN_DESC  = LangKey.of("Command.Inventory.Open.Desc", "Open mutable player's inventory.");
-    public static final LangKey COMMAND_INVENTORY_OPEN_USAGE = LangKey.of("Command.Inventory.Open.Usage", "<player>");
-    public static final LangKey COMMAND_INVENTORY_OPEN_DONE  = LangKey.of("Command.Inventory.Open.Done", "<! sound:\"" + Sound.BLOCK_CHEST_OPEN.name() + "\" !>" + LIGHT_YELLOW + "Opened " + ORANGE + Placeholders.PLAYER_DISPLAY_NAME + LIGHT_YELLOW + "'s inventory.");
-
-    public static final LangKey COMMAND_INVENTORY_REPAIR_DESC   = LangKey.of("Command.Inventory.Repair.Desc", "Repair all items in [player's] inventory.");
-    public static final LangKey COMMAND_INVENTORY_REPAIR_USAGE  = LangKey.of("Command.Inventory.Repair.Usage", "[player] [-s]");
-    public static final LangKey COMMAND_INVENTORY_REPAIR_NOTIFY = LangKey.of("Command.Inventory.Repair.Notify", "<! sound:\"" + Sound.BLOCK_ANVIL_USE.name() + "\" !>" + LIGHT_YELLOW + "All items in your inventory has been repaired!");
-    public static final LangKey COMMAND_INVENTORY_REPAIR_TARGET = LangKey.of("Command.Inventory.Repair.Target", "<! sound:\"" + Sound.BLOCK_ANVIL_USE.name() + "\" !>" + LIGHT_YELLOW + "Repaired all items in " + ORANGE + Placeholders.PLAYER_DISPLAY_NAME + LIGHT_YELLOW + "'s inventory!");
-
-    public static final LangKey COMMAND_ITEM_DESC           = LangKey.of("Command.Item.Desc", "Item management tools.");
-    public static final LangKey COMMAND_ITEM_USAGE          = LangKey.of("Command.Item.Usage", "[help]");
-    public static final LangKey COMMAND_ITEM_ERROR_MATERIAL = LangKey.of("Command.Item.Error.Material", ORANGE + Placeholders.GENERIC_TYPE + RED + " is not a valid material!");
-    public static final LangKey COMMAND_ITEM_ERROR_EMPTY_HAND = LangKey.of("Command.Item.Error.EmptyHand", RED + "You must hold an item!");
-
-    public static final LangKey COMMAND_ITEM_AMOUNT_DESC  = LangKey.of("Command.Item.Amount.Desc", "Change item amount.");
-    public static final LangKey COMMAND_ITEM_AMOUNT_USAGE = LangKey.of("Command.Item.Amount.Usage", "[amount]");
-    public static final LangKey COMMAND_ITEM_AMOUNT_DONE  = LangKey.of("Command.Item.Amount.Done", "<! sound:\"" + Sound.ENTITY_ITEM_PICKUP.name() + "\" !>" + LIGHT_YELLOW + "Set " + ORANGE + Placeholders.GENERIC_ITEM + LIGHT_YELLOW + " amount to x" + ORANGE + Placeholders.GENERIC_AMOUNT + LIGHT_YELLOW + ".");
-
-    public static final LangKey COMMAND_ITEM_DAMAGE_DESC  = LangKey.of("Command.Item.Damage.Desc", "Change item's damage.");
-    public static final LangKey COMMAND_ITEM_DAMAGE_USAGE = LangKey.of("Command.Item.Damage.Usage", "[amount]");
-    public static final LangKey COMMAND_ITEM_DAMAGE_DONE  = LangKey.of("Command.Item.Damage.Done", "<! sound:\"" + Sound.BLOCK_ANVIL_USE.name() + "\" !>" + LIGHT_YELLOW + "Set " + ORANGE + Placeholders.GENERIC_ITEM + LIGHT_YELLOW + " damage to " + ORANGE + Placeholders.GENERIC_AMOUNT + LIGHT_YELLOW + ".");
-    public static final LangKey COMMAND_ITEM_DAMAGE_ERROR_BAD_ITEM  = LangKey.of("Command.Item.Damage.Error.NotDamageable", "<! sound:\"" + Sound.ENTITY_VILLAGER_NO.name() + "\" !>" + ORANGE + Placeholders.GENERIC_ITEM + RED + " can not be damaged.");
-
-    public static final LangKey COMMAND_ITEM_ENCHANT_DESC              = LangKey.of("Command.Item.Enchant.Desc", "(Dis)Enchant an item in hand.");
-    public static final LangKey COMMAND_ITEM_ENCHANT_USAGE             = LangKey.of("Command.Item.Enchant.Usage", "<enchantment> <level>");
-    public static final LangKey COMMAND_ITEM_ENCHANT_DONE_ENCHANTED    = LangKey.of("Command.Item.Enchant.Done.Enchanted", "<! sound:\"" + Sound.BLOCK_ENCHANTMENT_TABLE_USE.name() + "\" !>" + ORANGE + Placeholders.GENERIC_ITEM + LIGHT_YELLOW + " enchanted with " + ORANGE + Placeholders.GENERIC_NAME + " " + Placeholders.GENERIC_LEVEL + "!");
-    public static final LangKey COMMAND_ITEM_ENCHANT_DONE_DISENCHANTED = LangKey.of("Command.Item.Enchant.Done.Disenchanted", "<! sound:\"" + Sound.BLOCK_ENCHANTMENT_TABLE_USE.name() + "\" !>" + LIGHT_YELLOW + "Enchantment " + ORANGE + Placeholders.GENERIC_NAME + LIGHT_YELLOW + " removed from " + ORANGE + Placeholders.GENERIC_ITEM + LIGHT_YELLOW + "!");
-
-    public static final LangKey COMMAND_ITEM_FLAG_DESC         = LangKey.of("Command.Item.Flag.Desc", "Add or remove item flags.");
-    public static final LangKey COMMAND_ITEM_FLAG_USAGE        = LangKey.of("Command.Item.Flag.Usage", "[help]");
-    public static final LangKey COMMAND_ITEM_FLAG_ADD_DESC     = LangKey.of("Command.Item.Flag.Add.Desc", "Add specified flag to the item.");
-    public static final LangKey COMMAND_ITEM_FLAG_ADD_USAGE    = LangKey.of("Command.Item.Flag.Add.Usage", "<flag>");
-    public static final LangKey COMMAND_ITEM_FLAG_ADD_DONE     = LangKey.of("Command.Item.Flag.Add.Done", "<! sound:\"" + Sound.BLOCK_ANVIL_USE.name() + "\" !>" + LIGHT_YELLOW + "Added " + ORANGE + Placeholders.GENERIC_NAME + LIGHT_YELLOW + " flag to the item!");
-    public static final LangKey COMMAND_ITEM_FLAG_REMOVE_DESC  = LangKey.of("Command.Item.Flag.Remove.Desc", "Remove specified flag from the item.");
-    public static final LangKey COMMAND_ITEM_FLAG_REMOVE_USAGE = LangKey.of("Command.Item.Flag.Remove.Usage", "<flag>");
-    public static final LangKey COMMAND_ITEM_FLAG_REMOVE_DONE  = LangKey.of("Command.Item.Flag.Remove.Done", "<! sound:\"" + Sound.BLOCK_ANVIL_USE.name() + "\" !>" + LIGHT_YELLOW + "Removed " + ORANGE + Placeholders.GENERIC_NAME + LIGHT_YELLOW + " flag from the item.");
-    public static final LangKey COMMAND_ITEM_FLAG_CLEAR_DESC   = LangKey.of("Command.Item.Flag.Clear.Desc", "Clear item flags.");
-    public static final LangKey COMMAND_ITEM_FLAG_CLEAR_DONE   = LangKey.of("Command.Item.Flag.Clear.Done", "<! sound:\"" + Sound.BLOCK_ANVIL_USE.name() + "\" !>" + LIGHT_YELLOW + "Item flags removed!");
-
-    public static final LangKey COMMAND_ITEM_GET_DESC  = LangKey.of("Command.Item.Get.Desc", "Get specified item stack.");
-    public static final LangKey COMMAND_ITEM_GET_USAGE = LangKey.of("Command.Item.Get.Usage", "<material> [amount] [-name <name>] [-lore <text>] [-ench <enchant:level] [-model <modelData>]");
-    public static final LangKey COMMAND_ITEM_GET_DONE  = LangKey.of("Command.Item.Get.Done", "<! sound:\"" + Sound.ENTITY_ITEM_PICKUP.name() + "\" !>" + LIGHT_YELLOW + "You got " + ORANGE + "x" + Placeholders.GENERIC_AMOUNT + LIGHT_YELLOW + " of " + ORANGE + Placeholders.GENERIC_TYPE + LIGHT_YELLOW + "!");
-
-    public static final LangKey COMMAND_ITEM_GIVE_DESC   = LangKey.of("Command.Item.Give.Desc", "Give specified item stack to a player.");
-    public static final LangKey COMMAND_ITEM_GIVE_USAGE  = LangKey.of("Command.Item.Give.Usage", "<player> <material> [amount] [-name <name>] [-lore <text>] [-ench <enchant:level] [-model <modelData>]");
-    public static final LangKey COMMAND_ITEM_GIVE_DONE   = LangKey.of("Command.Item.Give.Done", "<! sound:\"" + Sound.ENTITY_ITEM_PICKUP.name() + "\" !>" + LIGHT_YELLOW + "You gave " + ORANGE + "x" + Placeholders.GENERIC_AMOUNT + LIGHT_YELLOW + " of " + ORANGE + Placeholders.GENERIC_TYPE + LIGHT_YELLOW + " to " + ORANGE + Placeholders.PLAYER_DISPLAY_NAME + LIGHT_YELLOW + "!");
-    public static final LangKey COMMAND_ITEM_GIVE_NOTIFY = LangKey.of("Command.Item.Give.Notify", "<! sound:\"" + Sound.ENTITY_ITEM_PICKUP.name() + "\" !>" + LIGHT_YELLOW + "You got " + ORANGE + "x" + Placeholders.GENERIC_AMOUNT + LIGHT_YELLOW + " of " + ORANGE + Placeholders.GENERIC_TYPE + LIGHT_YELLOW + "!");
-
-    public static final LangKey COMMAND_ITEM_TAKE_DESC             = LangKey.of("Command.Item.Take.Desc", "Take specified item stack from a player.");
-    public static final LangKey COMMAND_ITEM_TAKE_USAGE            = LangKey.of("Command.Item.Take.Usage", "<player> <material> [amount] [-name <name>] [-lore <text>] [-ench <enchant:level] [-model <modelData>]");
-    public static final LangKey COMMAND_ITEM_TAKE_DONE             = LangKey.of("Command.Item.Take.Done", "<! sound:\"" + Sound.ENTITY_GLOW_ITEM_FRAME_REMOVE_ITEM.name() + "\" !>" + LIGHT_YELLOW + "You took " + ORANGE + "x" +  Placeholders.GENERIC_AMOUNT + LIGHT_YELLOW + " of " + ORANGE + Placeholders.GENERIC_TYPE + LIGHT_YELLOW + " from " + ORANGE + Placeholders.PLAYER_DISPLAY_NAME + LIGHT_YELLOW + "!");
-    public static final LangKey COMMAND_ITEM_TAKE_ERROR_NOT_ENOUGH = LangKey.of("Command.Item.Take.Error.NotEnough", "<! sound:\"" + Sound.ENTITY_VILLAGER_NO.name() + "\" !>" + RED + "Could not take item(s). Player don't have enough " + ORANGE + Placeholders.GENERIC_TYPE + RED + " (" + Placeholders.GENERIC_AMOUNT + "/" + Placeholders.GENERIC_TOTAL + ")!");
-    public static final LangKey COMMAND_ITEM_TAKE_NOTIFY           = LangKey.of("Command.Item.Take.Notify", "<! sound:\"" + Sound.ENTITY_GLOW_ITEM_FRAME_REMOVE_ITEM.name() + "\" !>" + ORANGE + "x" + Placeholders.GENERIC_AMOUNT + LIGHT_YELLOW + " of " + ORANGE + Placeholders.GENERIC_TYPE + LIGHT_YELLOW + " has been taken from your inventory!");
-
-    public static final LangKey COMMAND_ITEM_LORE_DESC         = LangKey.of("Command.Item.Lore.Desc", "Change item lore.");
-    public static final LangKey COMMAND_ITEM_LORE_USAGE        = LangKey.of("Command.Item.Lore.Usage", "[help]");
-    public static final LangKey COMMAND_ITEM_LORE_ADD_DESC     = LangKey.of("Command.Item.Lore.Add.Desc", "Add a new line to item lore.");
-    public static final LangKey COMMAND_ITEM_LORE_ADD_USAGE    = LangKey.of("Command.Item.Lore.Add.Usage", "<text> [-pos <position>]");
-    public static final LangKey COMMAND_ITEM_LORE_ADD_DONE     = LangKey.of("Command.Item.Lore.Add.Done", "<! sound:\"" + Sound.BLOCK_ANVIL_USE.name() + "\" !>" + LIGHT_YELLOW + "Added a new line to item lore!");
-    public static final LangKey COMMAND_ITEM_LORE_REMOVE_DESC  = LangKey.of("Command.Item.Lore.Remove.Desc", "Remove a line from item lore.");
-    public static final LangKey COMMAND_ITEM_LORE_REMOVE_USAGE = LangKey.of("Command.Item.Lore.Remove.Usage", "<position>");
-    public static final LangKey COMMAND_ITEM_LORE_REMOVE_DONE  = LangKey.of("Command.Item.Lore.Remove.Done", "<! sound:\"" + Sound.BLOCK_ANVIL_USE.name() + "\" !>" + LIGHT_YELLOW + "Removed the line from item lore.");
-    public static final LangKey COMMAND_ITEM_LORE_CLEAR_DESC   = LangKey.of("Command.Item.Lore.Clear.Desc", "Clear item lore.");
-    public static final LangKey COMMAND_ITEM_LORE_CLEAR_DONE   = LangKey.of("Command.Item.Lore.Clear.Done", "<! sound:\"" + Sound.BLOCK_ANVIL_USE.name() + "\" !>" + LIGHT_YELLOW + "Item lore cleared!");
-
-    public static final LangKey COMMAND_ITEM_MODEL_DESC  = LangKey.of("Command.Item.Model.Desc", "Change item model data.");
-    public static final LangKey COMMAND_ITEM_MODEL_USAGE = LangKey.of("Command.Item.Model.Usage", "<model data>");
-    public static final LangKey COMMAND_ITEM_MODEL_DONE  = LangKey.of("Command.Item.Model.Done", "<! sound:\"" + Sound.BLOCK_ANVIL_USE.name() + "\" !>" + LIGHT_YELLOW + "Set " + ORANGE + Placeholders.GENERIC_AMOUNT + LIGHT_YELLOW + " as " + ORANGE + Placeholders.GENERIC_ITEM + LIGHT_YELLOW + " model data!");
-
-    public static final LangKey COMMAND_ITEM_NAME_DESC         = LangKey.of("Command.Item.Name.Desc", "Change item display name.");
-    public static final LangKey COMMAND_ITEM_NAME_USAGE        = LangKey.of("Command.Item.Name.Usage", "[name]");
-    public static final LangKey COMMAND_ITEM_NAME_DONE_CHANGED = LangKey.of("Command.Item.Name.Done.Changed", "<! sound:\"" + Sound.BLOCK_ANVIL_USE.name() + "\" !>" + LIGHT_YELLOW + "Item renamed!");
-    public static final LangKey COMMAND_ITEM_NAME_DONE_RESET   = LangKey.of("Command.Item.Name.Done.Reset", "<! sound:\"" + Sound.BLOCK_ANVIL_USE.name() + "\" !>" + LIGHT_YELLOW + "Item name restored to default.");
-
-    public static final LangKey COMMAND_ITEM_POTION_ERROR_NOT_A_POTION   = LangKey.of("Command.Item.Potion.Error.NotAPotion", RED + "You must hold a potion!");
-    public static final LangKey COMMAND_ITEM_POTION_ERROR_INVALID_EFFECT = LangKey.of("Command.Item.Potion.Error.InvalidEffect", RED + "Invalid effect!");
-    public static final LangKey COMMAND_ITEM_POTION_ADD_DESC             = LangKey.of("Command.Item.Potion.Add.Desc", "Add effect to a potion.");
-    public static final LangKey COMMAND_ITEM_POTION_ADD_USAGE            = LangKey.of("Command.Item.Potion.Add.Usage", "<effect> <amplifier> <duration>");
-    public static final LangKey COMMAND_ITEM_POTION_ADD_DONE             = LangKey.of("Command.Item.Potion.Add.Done", LIGHT_YELLOW + "Potion effect added!");
-
-    public static final LangKey COMMAND_ITEM_SPAWN_DESC  = LangKey.of("Command.Item.Spawn.Desc", "Spawn specified item stack.");
-    public static final LangKey COMMAND_ITEM_SPAWN_USAGE = LangKey.of("Command.Item.Spawn.Usage", "<material> <amount> [world] [x] [y] [z] [-name <name>] [-lore <text>] [-ench <enchant:level] [-model <modelData>]");
-    public static final LangKey COMMAND_ITEM_SPAWN_DONE  = LangKey.of("Command.Item.Spawn.Done", "<! sound:\"" + Sound.ENTITY_ITEM_PICKUP.name() + "\" !>" + LIGHT_YELLOW + "Created " + ORANGE + "x" + Placeholders.GENERIC_AMOUNT + LIGHT_YELLOW + " " + ORANGE + Placeholders.GENERIC_TYPE + LIGHT_YELLOW + " at " + ORANGE + Placeholders.LOCATION_X + ", " + Placeholders.LOCATION_Y + ", " + Placeholders.LOCATION_Z + LIGHT_YELLOW + " in " + ORANGE + Placeholders.LOCATION_WORLD + LIGHT_YELLOW + "!");
-
-    public static final LangKey COMMAND_ITEM_UNBREAKABLE_DESC           = LangKey.of("Command.Item.Unbreakable.Desc", "Makes item (un)breakable.");
-    public static final LangKey COMMAND_ITEM_UNBREAKABLE_USAGE          = LangKey.of("Command.Item.Unbreakable.Usage", "");
-    public static final LangKey COMMAND_ITEM_UNBREAKABLE_DONE           = LangKey.of("Command.Item.Unbreakable.Done", "<! sound:\"" + Sound.BLOCK_ANVIL_USE.name() + "\" !>" + LIGHT_YELLOW + "Set " + ORANGE + Placeholders.GENERIC_ITEM + LIGHT_YELLOW + " Unbreakable: " + ORANGE + Placeholders.GENERIC_STATE + LIGHT_YELLOW + ".");
-    public static final LangKey COMMAND_ITEM_UNBREAKABLE_ERROR_BAD_ITEM = LangKey.of("Command.Item.Unbreakable.Error.NotDamageable", "<! sound:\"" + Sound.ENTITY_VILLAGER_NO.name() + "\" !>" + ORANGE + Placeholders.GENERIC_ITEM + RED + " can not be (un)breakable.");
-
-    public static final LangKey COMMAND_LOOM_DESC   = LangKey.of("Command.Loom.Desc", "Open portable loom.");
-    public static final LangKey COMMAND_LOOM_USAGE  = LangKey.of("Command.Loom.Usage", "[player] [-s]");
-    public static final LangKey COMMAND_LOOM_NOTIFY = LangKey.of("Command.Loom.Notify", ACTION_BAR + LIGHT_YELLOW + "You opened loom.");
-    public static final LangKey COMMAND_LOOM_TARGET = LangKey.of("Command.Loom.Target", LIGHT_YELLOW + "Opened loom for " + ORANGE + Placeholders.PLAYER_DISPLAY_NAME + LIGHT_YELLOW + ".");
-
-    public static final LangKey COMMAND_MOB_DESC  = LangKey.of("Command.Mob.Desc", "Mob management tools.");
-    public static final LangKey COMMAND_MOB_USAGE = LangKey.of("Command.Mob.Usage", "[help]");
-
-    public static final LangKey COMMAND_MOB_KILL_DESC       = LangKey.of("Command.Mob.Kill.Desc", "Kill specified mob types.");
-    public static final LangKey COMMAND_MOB_KILL_USAGE      = LangKey.of("Command.Mob.Kill.Usage", "<type> [-r <radius>] [-w <world>] [-lim <limit>]");
-    public static final LangKey COMMAND_MOB_KILL_ERROR_TYPE = LangKey.of("Command.Mob.Kill.Error.Type", RED + "Entity " + ORANGE + Placeholders.GENERIC_TYPE + RED + " can not be killed!");
-    public static final LangKey COMMAND_MOB_KILL_DONE       = LangKey.of("Command.Mob.Kill.Done",
-        "<! prefix:\"false\" sound:\"" + Sound.ENTITY_ZOMBIE_DEATH.name() + "\" !>" +
-            LIGHT_YELLOW + "Killed " + ORANGE + "x" + GENERIC_AMOUNT + " " + GENERIC_TYPE + LIGHT_YELLOW + " in " + ORANGE + GENERIC_WORLD + LIGHT_YELLOW + " within " + ORANGE + GENERIC_RADIUS + LIGHT_YELLOW + " blocks."
+    public static final LangText GENERIC_COMMAND_COOLDOWN_DEFAULT = LangText.of("Generic.Command.Cooldown.Default",
+        TAG_NO_PREFIX,
+        LIGHT_RED.enclose("You have to wait " + LIGHT_ORANGE.enclose(GENERIC_TIME) + " before you can use " + LIGHT_ORANGE.enclose(GENERIC_COMMAND) + " again.")
     );
 
-    public static final LangKey COMMAND_MOB_CLEAR_DESC       = LangKey.of("Command.Mob.Clear.Desc", "Kill all living entities.");
-    public static final LangKey COMMAND_MOB_CLEAR_USAGE      = LangKey.of("Command.Mob.Clear.Usage", "[radius] [-w <world>]");
-    public static final LangKey COMMAND_MOB_CLEAR_DONE       = LangKey.of("Command.Mob.Clear.Done",
-        "<! sound:\"" + Sound.ENTITY_ZOMBIE_DEATH.name() + "\" !>" +
-            LIGHT_YELLOW + "Killed " + ORANGE + GENERIC_AMOUNT + LIGHT_YELLOW + " mobs in " + ORANGE + GENERIC_WORLD + LIGHT_YELLOW + " within " + ORANGE + GENERIC_RADIUS + LIGHT_YELLOW + " blocks."
+    public static final LangText GENERIC_COMMAND_COOLDOWN_ONE_TIME = LangText.of("Generic.Command.Cooldown.OneTime",
+        TAG_NO_PREFIX,
+        LIGHT_RED.enclose("This command is one-time and you already have used it.")
     );
 
-    public static final LangKey COMMAND_MOB_SPAWN_DESC       = LangKey.of("Command.Mob.Spawn.Desc", "Spawn specified mob.");
-    public static final LangKey COMMAND_MOB_SPAWN_USAGE      = LangKey.of("Command.Mob.Spawn.Usage", "<type> [amount] [-name <name>]");
-    public static final LangKey COMMAND_MOB_SPAWN_ERROR_TYPE = LangKey.of("Command.Mob.Spawn.Error.Type", RED + "This Entity Type is invalid or can not be spawned!");
-    public static final LangKey COMMAND_MOB_SPAWN_DONE       = LangKey.of("Command.Mob.Spawn.Done", LIGHT_YELLOW + "Created " + ORANGE + "x" + Placeholders.GENERIC_AMOUNT + " " + Placeholders.GENERIC_TYPE + LIGHT_YELLOW + ".");
+    public static final LangString COMMAND_AIR_ADD_DESC    = LangString.of("Command.Air.Add.Desc", "Add air ticks.");
+    public static final LangString COMMAND_AIR_SET_DESC    = LangString.of("Command.Air.Set.Desc", "Set air ticks.");
+    public static final LangString COMMAND_AIR_REMOVE_DESC = LangString.of("Command.Air.Remove.Desc", "Remove air ticks.");
 
-    public static final LangKey COMMAND_NEAR_DESC       = LangKey.of("Command.Near.Desc", "Show nearest players.");
-    public static final LangKey COMMAND_NEAR_USAGE         = LangKey.of("Command.Near.Usage", "");
-    public static final LangKey COMMAND_NEAR_ERROR_NOTHING = LangKey.of("Command.Near.Error.Nothing", LIGHT_YELLOW + "There are no players in radius of " + ORANGE + Placeholders.GENERIC_RADIUS + LIGHT_YELLOW + " blocks.");
+    public static final LangText COMMAND_AIR_ADD_TARGET = LangText.of("Command.Air.Give.Target",
+        LIGHT_GRAY.enclose("Added " + LIGHT_YELLOW.enclose(GENERIC_AMOUNT) + " air ticks to " + LIGHT_YELLOW.enclose(PLAYER_DISPLAY_NAME) + ". New air ticks: " + LIGHT_YELLOW.enclose(GENERIC_CURRENT) + "/" + LIGHT_YELLOW.enclose(GENERIC_MAX) + ".")
+    );
 
-    // N - Commands --------------------------------------------------------
-    public static final LangKey COMMAND_NICK_DESC                   = LangKey.of("Command.Nick.Desc", "Custom nick management.");
-    public static final LangKey COMMAND_NICK_USAGE                  = LangKey.of("Command.Nick.Usage", "[help]");
-    public static final LangKey COMMAND_NICK_CLEAR_DESC             = LangKey.of("Command.Nick.Clear.Desc", "Remove [player's] custom nick.");
-    public static final LangKey COMMAND_NICK_CLEAR_USAGE            = LangKey.of("Command.Nick.Clear.Usage", "[player] [-s]");
-    public static final LangKey COMMAND_NICK_CLEAR_TARGET           = LangKey.of("Command.Nick.Clear.Target", LIGHT_YELLOW + "Removed custom nick for " + ORANGE + Placeholders.PLAYER_DISPLAY_NAME + LIGHT_YELLOW + ".");
-    public static final LangKey COMMAND_NICK_CLEAR_NOTIFY           = LangKey.of("Command.Nick.Clear.Notify", LIGHT_YELLOW + "You custom nick has been removed.");
-    public static final LangKey COMMAND_NICK_SET_DESC               = LangKey.of("Command.Nick.Set.Desc", "Set custom nick for a player.");
-    public static final LangKey COMMAND_NICK_SET_USAGE              = LangKey.of("Command.Nick.Set.Usage", "<player> <nick> [-s]");
-    public static final LangKey COMMAND_NICK_SET_TARGET             = LangKey.of("Command.Nick.Set.Target", LIGHT_YELLOW + "Set " + ORANGE + Placeholders.GENERIC_NAME + LIGHT_YELLOW + " as custom nick for " + ORANGE + Placeholders.PLAYER_NAME + LIGHT_YELLOW + ".");
-    public static final LangKey COMMAND_NICK_SET_NOTIFY             = LangKey.of("Command.Nick.Set.Notify", LIGHT_YELLOW + "Your custom nick has been set to " + ORANGE + Placeholders.GENERIC_NAME + LIGHT_YELLOW + ".");
-    public static final LangKey COMMAND_NICK_CHANGE_DESC            = LangKey.of("Command.Nick.Change.Desc", "Change your custom nick.");
-    public static final LangKey COMMAND_NICK_CHANGE_USAGE           = LangKey.of("Command.Nick.Change.Usage", "<nick>");
-    public static final LangKey COMMAND_NICK_CHANGE_DONE            = LangKey.of("Command.Nick.Change.Done", LIGHT_YELLOW + "Set custom nick to " + ORANGE + Placeholders.GENERIC_NAME + LIGHT_YELLOW + ".");
-    public static final LangKey COMMAND_NICK_CHANGE_ERROR_BAD_WORDS = LangKey.of("Command.Nick.Error.BadWords", RED + "Nick contains forbidden words.");
-    public static final LangKey COMMAND_NICK_CHANGE_ERROR_REGEX     = LangKey.of("Command.Nick.Error.Regex", RED + "Nick contains disallowed characters.");
-    public static final LangKey COMMAND_NICK_CHANGE_ERROR_TOO_LONG  = LangKey.of("Command.Nick.Error.TooLong", RED + "Nick can be no longer than " + ORANGE + Placeholders.GENERIC_AMOUNT + RED + " characters.");
-    public static final LangKey COMMAND_NICK_CHANGE_ERROR_TOO_SHORT = LangKey.of("Command.Nick.Error.TooShort", RED + "Nick must contain at least " + ORANGE + Placeholders.GENERIC_AMOUNT + RED + " characters.");
+    public static final LangText COMMAND_AIR_REMOVE_TARGET = LangText.of("Command.Air.Take.Target",
+        LIGHT_GRAY.enclose("Removed " + LIGHT_YELLOW.enclose(GENERIC_AMOUNT) + " air ticks from " + LIGHT_YELLOW.enclose(PLAYER_DISPLAY_NAME) + ". New air ticks: " + LIGHT_YELLOW.enclose(GENERIC_CURRENT) + "/" + LIGHT_YELLOW.enclose(GENERIC_MAX) + ".")
+    );
 
-    public static final LangKey COMMAND_NO_PHANTOM_DESC          = LangKey.of("Command.NoPhantom.Desc", "Toggle phantom spawns around [player].");
-    public static final LangKey COMMAND_NO_PHANTOM_USAGE         = LangKey.of("Command.NoPhantom.Usage", "[player] [-on] [-off] [-s]");
-    public static final LangKey COMMAND_NO_PHANTOM_TOGGLE_NOTIFY = LangKey.of("Command.NoPhantom.Toggle.Notify", LIGHT_YELLOW + "Anti-Phantom mode " + ORANGE + Placeholders.GENERIC_STATE + LIGHT_YELLOW + ".");
-    public static final LangKey COMMAND_NO_PHANTOM_TOGGLE_TARGET = LangKey.of("Command.NoPhantom.Toggle.Target", LIGHT_YELLOW + "Set Anti-Phantom mode " + ORANGE + Placeholders.GENERIC_STATE + LIGHT_YELLOW + " for " + ORANGE + Placeholders.PLAYER_DISPLAY_NAME + LIGHT_YELLOW + ".");
+    public static final LangText COMMAND_AIR_SET_TARGET = LangText.of("Command.Air.Set.Target",
+        LIGHT_GRAY.enclose("Set " + LIGHT_YELLOW.enclose(GENERIC_AMOUNT) + " air ticks for " + LIGHT_YELLOW.enclose(PLAYER_DISPLAY_NAME) + ". New air ticks: " + LIGHT_YELLOW.enclose(GENERIC_CURRENT) + "/" + LIGHT_YELLOW.enclose(GENERIC_MAX) + ".")
+    );
 
-    public static final LangKey COMMAND_NO_MOB_TARGET_DESC          = LangKey.of("Command.NoMobTarget.Desc", "Toggle mob targetting [for player].");
-    public static final LangKey COMMAND_NO_MOB_TARGET_USAGE         = LangKey.of("Command.NoMobTarget.Usage", "[player] [-on] [-off] [-s]");
-    public static final LangKey COMMAND_NO_MOB_TARGET_TOGGLE_NOTIFY = LangKey.of("Command.NoMobTarget.Toggle.Notify", LIGHT_YELLOW + "Anti-MobTarget mode " + ORANGE + Placeholders.GENERIC_STATE + LIGHT_YELLOW + ".");
-    public static final LangKey COMMAND_NO_MOB_TARGET_TOGGLE_TARGET = LangKey.of("Command.NoMobTarget.Toggle.Target", LIGHT_YELLOW + "Set Anti-MobTarget mode " + ORANGE + Placeholders.GENERIC_STATE + LIGHT_YELLOW + " for " + ORANGE + Placeholders.PLAYER_DISPLAY_NAME + LIGHT_YELLOW + ".");
+    public static final LangText COMMAND_AIR_ADD_NOTIFY = LangText.of("Command.Air.Give.Notify",
+        OUTPUT.enclose(OutputType.ACTION_BAR),
+        LIGHT_GRAY.enclose("You got " + LIGHT_YELLOW.enclose(GENERIC_AMOUNT) + " air ticks: " + LIGHT_YELLOW.enclose(GENERIC_CURRENT) + "/" + LIGHT_YELLOW.enclose(GENERIC_MAX) + ".")
+    );
 
-    public static final LangKey COMMAND_PLAYER_INFO_DESC  = LangKey.of("Command.PlayerInfo.Desc", "Show player info.");
-    public static final LangKey COMMAND_PLAYER_INFO_USAGE = LangKey.of("Command.PlayerInfo.Usage", "<player>");
-    public static final LangKey COMMAND_PLAYER_LIST_DESC  = LangKey.of("Command.PlayerList.Desc", "Show online player list.");
+    public static final LangText COMMAND_AIR_REMOVE_NOTIFY = LangText.of("Command.Air.Take.Notify",
+        OUTPUT.enclose(OutputType.ACTION_BAR),
+        LIGHT_GRAY.enclose("You lost " + LIGHT_YELLOW.enclose(GENERIC_AMOUNT) + " air ticks: " + LIGHT_YELLOW.enclose(GENERIC_CURRENT) + "/" + LIGHT_YELLOW.enclose(GENERIC_MAX) + ".")
+    );
 
-    public static final LangKey COMMAND_SKULL_DESC  = LangKey.of("Command.Skull.Desc", "Get [player's] head.");
-    public static final LangKey COMMAND_SKULL_USAGE = LangKey.of("Command.Skull.Usage", "<name>");
-    public static final LangKey COMMAND_SKULL_DONE  = LangKey.of("Command.Skull.Done", LIGHT_YELLOW + "You got " + ORANGE + Placeholders.PLAYER_NAME + LIGHT_YELLOW + "'s head.");
+    public static final LangText COMMAND_AIR_SET_NOTIFY = LangText.of("Command.Air.Set.Notify",
+        OUTPUT.enclose(OutputType.ACTION_BAR),
+        LIGHT_GRAY.enclose("Your air ticks set to " + LIGHT_YELLOW.enclose(GENERIC_AMOUNT) + ": " + LIGHT_YELLOW.enclose(GENERIC_CURRENT) + "/" + LIGHT_YELLOW.enclose(GENERIC_MAX) + ".")
+    );
 
-    // S - Commands --------------------------------------------------------
-    public static final LangKey Command_Spawner_Desc = new LangKey("Command.Spawner.Desc", "Change spawner type.");
-    public static final LangKey Command_Spawner_Usage           = new LangKey("Command.Spawner.Usage", "<type>");
-    public static final LangKey Command_Spawner_Done            = new LangKey("Command.Spawner.Done", NO_PREFIX + "&7Spawner type changed to &e%type%&7.");
-    public static final LangKey Command_Spawner_Error_Type      = new LangKey("Command.Spawner.Error.Type", NO_PREFIX + "&7This type can not be spawned.");
-    public static final LangKey Command_Spawner_Error_Block     = new LangKey("Command.Spawner.Error.Block", NO_PREFIX + "&cYou must look at &espawner");
+    
+    public static final LangString COMMAND_ANVIL_DESC = LangString.of("Command.Anvil.Desc", "Open portable anvil.");
 
-    public static final LangKey COMMAND_SPEED_DESC        = LangKey.of("Command.Speed.Desc", "Change [player's] walk speed.");
-    public static final LangKey COMMAND_SPEED_USAGE       = LangKey.of("Command.Speed.Usage", "<speed> [player] [-s]");
-    public static final LangKey COMMAND_SPEED_DONE_NOTIFY = LangKey.of("Command.Speed.Done.Notify", LIGHT_YELLOW + "Your walk speed has been set to " + ORANGE + Placeholders.GENERIC_AMOUNT + LIGHT_YELLOW + ".");
-    public static final LangKey COMMAND_SPEED_DONE_TARGET = LangKey.of("Command.Speed.Done.Target", "Set walk speed to " + ORANGE + Placeholders.GENERIC_AMOUNT + LIGHT_YELLOW + " for " + ORANGE + Placeholders.PLAYER_DISPLAY_NAME + LIGHT_YELLOW + ".");
+    public static final LangText COMMAND_ANVIL_TARGET = LangText.of("Command.Anvil.Target",
+        LIGHT_GRAY.enclose("Opened portable anvil for " + LIGHT_YELLOW.enclose(PLAYER_DISPLAY_NAME) + ".")
+    );
 
-    public static final LangKey COMMAND_SUDO_DESC         = LangKey.of("Command.Sudo.Desc", "Force player to execute a command or send a chat message.");
-    public static final LangKey COMMAND_SUDO_USAGE        = LangKey.of("Command.Sudo.Usage", "<player> <command> [-c]");
-    public static final LangKey COMMAND_SUDO_DONE_COMMAND = LangKey.of("Command.Sudo.Done.Command", LIGHT_YELLOW + "Forced " + ORANGE + Placeholders.PLAYER_DISPLAY_NAME + LIGHT_YELLOW + " to perform: " + ORANGE + "/" + Placeholders.GENERIC_COMMAND + LIGHT_YELLOW + ".");
-    public static final LangKey COMMAND_SUDO_DONE_CHAT    = LangKey.of("Command.Sudo.Done.Chat", LIGHT_YELLOW + "Forced " + ORANGE + Placeholders.PLAYER_DISPLAY_NAME + LIGHT_YELLOW + " to write: " + ORANGE + Placeholders.GENERIC_COMMAND + LIGHT_YELLOW + ".");
+    public static final LangText COMMAND_ANVIL_NOTIFY = LangText.of("Command.Anvil.Notify",
+        OUTPUT.enclose(OutputType.ACTION_BAR),
+        LIGHT_GRAY.enclose("You opened portable anvil.")
+    );
 
-    public static final LangKey COMMAND_SUICIDE_DESC = LangKey.of("Command.Suicide.Desc", "Commit suicide.");
-    public static final LangKey COMMAND_SUICIDE_DONE = LangKey.of("Command.Suicide.Done", "<! prefix:\"false\" !>" + ORANGE + Placeholders.PLAYER_DISPLAY_NAME + LIGHT_YELLOW + " commited suicide.");
+    
+    public static final LangString COMMAND_BROADCAST_DESC = LangString.of("Command.Broadcast.Desc", "Broadcast a message.");
 
-    public static final LangKey COMMAND_TELEPORT_DESC                    = LangKey.of("Command.Teleport.Desc", "Teleportation tools.");
-    public static final LangKey COMMAND_TELEPORT_USAGE                   = LangKey.of("Command.Teleport.Usage", "[help]");
-    public static final LangKey COMMAND_TELEPORT_ERROR_REQUESTS_COOLDOWN = LangKey.of("Command.Teleport.Error.Requests.Cooldown", "<! sound:\"" + Sound.ENTITY_VILLAGER_NO.name() + "\" !>" + RED + "You can send teleport request again in " + ORANGE + Placeholders.GENERIC_TIME);
-    public static final LangKey COMMAND_TELEPORT_ERROR_REQUESTS_DISABLED = LangKey.of("Command.Teleport.Error.Requests.Disabled", "<! sound:\"" + Sound.ENTITY_VILLAGER_NO.name() + "\" !>" + RED + "You can't send teleport requests to " + ORANGE + Placeholders.PLAYER_NAME + RED + ".");
+    
+    public static final LangString COMMAND_CONDENSE_DESC = LangString.of("Command.Condense.Desc", "Condense items into blocks.");
+    
+    public static final LangText COMMAND_CONDENSE_ERROR_NOTHING = LangText.of("Command.Condense.Error.Nothing",
+        SOUND.enclose(Sound.ENTITY_VILLAGER_NO),
+        LIGHT_GRAY.enclose("Nothing to condense.")
+    );
 
-    public static final LangKey COMMAND_TELEPORT_ACCEPT_DESC          = LangKey.of("Command.Teleport.Accept.Desc", "Accept incoming teleport request/invite.");
-    public static final LangKey COMMAND_TELEPORT_ACCEPT_USAGE         = LangKey.of("Command.Teleport.Accept.Usage", "[player]");
-    public static final LangKey COMMAND_TELEPORT_ACCEPT_NOTIFY_SENDER = LangKey.of("Command.Teleport.Accept.Notify.Sender", "<! sound:\"" + Sound.ENTITY_ENDERMAN_TELEPORT.name() + "\" !>" + LIGHT_YELLOW + "You accepted teleport request from " + ORANGE + Placeholders.PLAYER_DISPLAY_NAME + LIGHT_YELLOW + "!");
-    public static final LangKey COMMAND_TELEPORT_ACCEPT_NOTIFY_TARGET = LangKey.of("Command.Teleport.Accept.Notify.Target", "<! sound:\"" + Sound.ENTITY_ENDERMAN_TELEPORT.name() + "\" !>" + ORANGE + Placeholders.PLAYER_DISPLAY_NAME + LIGHT_YELLOW + " accepted your teleport request!");
-    public static final LangKey COMMAND_TELEPORT_ACCEPT_ERROR_NOTHING = LangKey.of("Command.Teleport.Accept.Error.Nothing", "<! sound:\"" + Sound.ENTITY_VILLAGER_NO.name() + "\" !>" + LIGHT_YELLOW + "Nothing to accept (or request is not valid anymore).");
+    public static final LangText COMMAND_CONDENSE_ERROR_NOT_ENOUGH = LangText.of("Command.Condense.Error.NotEnough",
+        LIGHT_GRAY.enclose("Not enough items to convert " + LIGHT_RED.enclose(GENERIC_SOURCE) + " to " + LIGHT_RED.enclose(GENERIC_RESULT) + ". Need at least " + LIGHT_RED.enclose(GENERIC_AMOUNT) + ".")
+    );
 
-    public static final LangKey COMMAND_TELEPORT_DECLINE_DESC          = LangKey.of("Command.Teleport.Decline.Desc", "Decline incoming teleport request/invite.");
-    public static final LangKey COMMAND_TELEPORT_DECLINE_USAGE         = LangKey.of("Command.Teleport.Decline.Usage", "[player]");
-    public static final LangKey COMMAND_TELEPORT_DECLINE_NOTIFY_SENDER = LangKey.of("Command.Teleport.Decline.Notify.Sender", "<! sound:\"" + Sound.ENTITY_VILLAGER_NO.name() + "\" !>" + LIGHT_YELLOW + "You declined teleport request of " + ORANGE + Placeholders.PLAYER_DISPLAY_NAME + LIGHT_YELLOW + ".");
-    public static final LangKey COMMAND_TELEPORT_DECLINE_NOTIFY_TARGET = LangKey.of("Command.Teleport.Decline.Notify.Target", "<! sound:\"" + Sound.ENTITY_VILLAGER_NO.name() + "\" !>" + ORANGE + Placeholders.PLAYER_DISPLAY_NAME + LIGHT_YELLOW + " declines your teleport request.");
-    public static final LangKey COMMAND_TELEPORT_DECLINE_ERROR_NOTHING = LangKey.of("Command.Teleport.Decline.Error.Nothing", "<! sound:\"" + Sound.ENTITY_VILLAGER_NO.name() + "\" !>" + LIGHT_YELLOW + "Nothing to decline (or request is not valid anymore).");
+    public static final LangText COMMAND_CONDENSE_DONE = LangText.of("Command.Condense.Done",
+        LIGHT_GRAY.enclose("Converted " + LIGHT_YELLOW.enclose("x" + GENERIC_TOTAL + " " + GENERIC_SOURCE) + " to " + LIGHT_YELLOW.enclose("x" + GENERIC_AMOUNT + " " + GENERIC_RESULT) + ".")
+    );
 
-    public static final LangKey COMMAND_TELEPORT_INVITE_DESC          = LangKey.of("Command.Teleport.Invite.Desc", "Prompt player to teleport to you.");
-    public static final LangKey COMMAND_TELEPORT_INVITE_USAGE         = LangKey.of("Command.Teleport.Invite.Usage", "<player>");
-    public static final LangKey COMMAND_TELEPORT_INVITE_NOTIFY_SENDER = LangKey.of("Command.Teleport.Invite.Notify.Sender", "<! sound:\"" + Sound.ENTITY_ENDER_PEARL_THROW.name() + "\" !>" + LIGHT_YELLOW + "Sent teleport request to " + ORANGE + Placeholders.PLAYER_DISPLAY_NAME + LIGHT_YELLOW + ".");
-    public static final LangKey COMMAND_TELEPORT_INVITE_NOTIFY_TARGET = LangKey.of("Command.Teleport.Invite.Notify.Target",
-        "<! prefix:\"false\" sound:\"" + Sound.ENTITY_ENDER_PEARL_THROW.name() + "\" !>" +
-            "\n" + LIGHT_YELLOW +
-            "\n" + LIGHT_YELLOW + "&lTeleport Invite:" +
-            "\n" + LIGHT_YELLOW +
-            "\n" + LIGHT_YELLOW + "Player " + ORANGE + Placeholders.PLAYER_DISPLAY_NAME + LIGHT_YELLOW + " invites you to teleport to him." +
-            "\n" + LIGHT_YELLOW + "Type " + GREEN + "/" + TeleportCommand.NAME + " " + TeleportAcceptCommand.NAME + " " + Placeholders.PLAYER_NAME + LIGHT_YELLOW + " to accept and teleport." +
-            "\n" + LIGHT_YELLOW + "or " + RED + "/" + TeleportCommand.NAME + " " + TeleportDeclineCommand.NAME + " " + Placeholders.PLAYER_NAME + LIGHT_YELLOW + " to decline." +
-            "\n" + LIGHT_YELLOW +
-            "\n" + LIGHT_YELLOW + "             <? show_text:\"" + GRAY + "You will be teleported to " + GREEN + Placeholders.PLAYER_DISPLAY_NAME + GRAY + ".\" run_command:\"/" + TeleportCommand.NAME + " " + TeleportAcceptCommand.NAME + " " + Placeholders.PLAYER_NAME + "\"?>" + GREEN + "&l[Accept]</> " + LIGHT_YELLOW + "        <? show_text:\"" + GRAY + "You won't be teleported to " + RED + Placeholders.PLAYER_DISPLAY_NAME + GRAY + ".\" run_command:\"/" + TeleportCommand.NAME + " " + TeleportDeclineCommand.NAME + " " + Placeholders.PLAYER_NAME + "\"?>" + RED + "&l[Decline]</>" +
-            "\n" + LIGHT_YELLOW +
-            "\n" + LIGHT_YELLOW);
 
-    public static final LangKey COMMAND_TELEPORT_LOCATION_DESC        = LangKey.of("Command.Teleport.Location.Desc", "Teleport to specified coordinates.");
-    public static final LangKey COMMAND_TELEPORT_LOCATION_USAGE       = LangKey.of("Command.Teleport.Location.Usage", "<x> <y> <z> [player] [-w <world>] [-s]");
-    public static final LangKey COMMAND_TELEPORT_LOCATION_DONE_TARGET = LangKey.of("Command.Teleport.Location.Done.Target", "<! sound:\"" + Sound.ENTITY_ENDERMAN_TELEPORT.name() + "\" !>" + LIGHT_YELLOW + "Player " + ORANGE + Placeholders.PLAYER_DISPLAY_NAME + LIGHT_YELLOW + " teleported to " + ORANGE + Placeholders.LOCATION_X + ", " + Placeholders.LOCATION_Y + ", " + Placeholders.LOCATION_Z + LIGHT_YELLOW + " in " + ORANGE + Placeholders.LOCATION_WORLD + LIGHT_YELLOW + ".");
-    public static final LangKey COMMAND_TELEPORT_LOCATION_DONE_NOTIFY = LangKey.of("Command.Teleport.Location.Done.Notify", "<! sound:\"" + Sound.ENTITY_ENDERMAN_TELEPORT.name() + "\" !>" + LIGHT_YELLOW + "You were teleported to " + ORANGE + Placeholders.LOCATION_X + ", " + Placeholders.LOCATION_Y + ", " + Placeholders.LOCATION_Z + LIGHT_YELLOW + " in " + ORANGE + Placeholders.LOCATION_WORLD + LIGHT_YELLOW + ".");
+    public static final LangString COMMAND_DISPOSAL_DESC = LangString.of("Command.Disposal.Desc", "Open a disposal menu.");
 
-    public static final LangKey COMMAND_TELEPORT_REQUEST_DESC          = LangKey.of("Command.Teleport.Request.Desc", "Send teleport request to a player.");
-    public static final LangKey COMMAND_TELEPORT_REQUEST_USAGE         = LangKey.of("Command.Teleport.Request.Usage", "<player>");
-    public static final LangKey COMMAND_TELEPORT_REQUEST_NOTIFY_SENDER = LangKey.of("Command.Teleport.Request.Notify.Sender", "<! sound:\"" + Sound.ENTITY_ENDER_PEARL_THROW.name() + "\" !>" + LIGHT_YELLOW + "Sent teleport request to " + ORANGE + Placeholders.PLAYER_DISPLAY_NAME + LIGHT_YELLOW + ".");
-    public static final LangKey COMMAND_TELEPORT_REQUEST_NOTIFY_TARGET = LangKey.of("Command.Teleport.Request.Notify.Target",
-        "<! prefix:\"false\" sound:\"" + Sound.ENTITY_ENDER_PEARL_THROW.name() + "\" !>" +
-            "\n" + LIGHT_YELLOW +
-            "\n" + LIGHT_YELLOW + "&lTeleport Request:" +
-            "\n" + LIGHT_YELLOW +
-            "\n" + LIGHT_YELLOW + "Player " + ORANGE + Placeholders.PLAYER_DISPLAY_NAME + LIGHT_YELLOW + " wants to be teleported to you." +
-            "\n" + LIGHT_YELLOW + "Type " + GREEN + "/" + TeleportCommand.NAME + " " + TeleportAcceptCommand.NAME + " " + Placeholders.PLAYER_NAME + LIGHT_YELLOW + " to accept and teleport him." +
-            "\n" + LIGHT_YELLOW + "or " + RED + "/" + TeleportCommand.NAME + " " + TeleportDeclineCommand.NAME + " " + Placeholders.PLAYER_NAME + LIGHT_YELLOW + " to decline." +
-            "\n" + LIGHT_YELLOW +
-            "\n" + LIGHT_YELLOW + "             <? show_text:\"" + GREEN + Placeholders.PLAYER_DISPLAY_NAME + GRAY + " will be teleported to you.\" run_command:\"/" + TeleportCommand.NAME + " " + TeleportAcceptCommand.NAME + " " + Placeholders.PLAYER_NAME + "\"?>" + GREEN + "&l[Accept]</> " + LIGHT_YELLOW + "        <? show_text:\"" + RED + Placeholders.PLAYER_DISPLAY_NAME + GRAY + " won't be teleported to you.\" run_command:\"/" + TeleportCommand.NAME + " " + TeleportDeclineCommand.NAME + " " + Placeholders.PLAYER_NAME + "\"?>" + RED + "&l[Decline]</>" +
-            "\n" + LIGHT_YELLOW +
-            "\n" + LIGHT_YELLOW);
+    public static final LangText COMMAND_DISPOSAL_TARGET = LangText.of("Command.Disposal.Target",
+        LIGHT_GRAY.enclose("Opened disposal for " + LIGHT_YELLOW.enclose(PLAYER_DISPLAY_NAME) + ".")
+    );
 
-    public static final LangKey COMMAND_TELEPORT_TOGGLE_DESC  = LangKey.of("Command.Teleport.Toggle.Desc", "Toggle teleport requests/invites.");
-    public static final LangKey COMMAND_TELEPORT_TOGGLE_USAGE = LangKey.of("Command.Teleport.Toggle.Usage", "[player] [-on] [-off] [-s]");
-    public static final LangKey COMMAND_TELEPORT_TOGGLE_TARGET = LangKey.of("Command.Teleport.Toggle.Target", LIGHT_YELLOW + "Teleport requests " + ORANGE + Placeholders.GENERIC_STATE + LIGHT_YELLOW + " for " + ORANGE + Placeholders.PLAYER_DISPLAY_NAME + LIGHT_YELLOW + ".");
-    public static final LangKey COMMAND_TELEPORT_TOGGLE_NOTIFY = LangKey.of("Command.Teleport.Toggle.Notify", LIGHT_YELLOW + "Teleport requests " + ORANGE + Placeholders.GENERIC_STATE + LIGHT_YELLOW + ".");
+    public static final LangText COMMAND_DISPOSAL_NOTIFY = LangText.of("Command.Disposal.Notify",
+        OUTPUT.enclose(OutputType.ACTION_BAR) + SOUND.enclose(Sound.BLOCK_CHEST_OPEN),
+        LIGHT_GRAY.enclose("You opened disposal.")
+    );
 
-    public static final LangKey COMMAND_TELEPORT_SUMMON_DESC   = LangKey.of("Command.Teleport.Summon.Desc", "Summon player at your location.");
-    public static final LangKey COMMAND_TELEPORT_SUMMON_USAGE  = LangKey.of("Command.Teleport.Summon.Usage", "<player> [-s]");
-    public static final LangKey COMMAND_TELEPORT_SUMMON_TARGET = LangKey.of("Command.Teleport.Summon.Target", "<! sound:\"" + Sound.ENTITY_ENDERMAN_TELEPORT.name() + "\" !>" + LIGHT_YELLOW + "Summoned " + ORANGE + Placeholders.PLAYER_DISPLAY_NAME + LIGHT_YELLOW + " to your location.");
-    public static final LangKey COMMAND_TELEPORT_SUMMON_NOTIFY = LangKey.of("Command.Teleport.Summon.Notify", "<! sound:\"" + Sound.ENTITY_ENDERMAN_TELEPORT.name() + "\" !>" + LIGHT_YELLOW + "You were summoned by " + ORANGE + Placeholders.PLAYER_DISPLAY_NAME + LIGHT_YELLOW + ".");
 
-    public static final LangKey COMMAND_TELEPORT_TO_DESC          = LangKey.of("Command.Teleport.To.Desc", "Teleport to specified player.");
-    public static final LangKey COMMAND_TELEPORT_TO_USAGE       = LangKey.of("Command.Teleport.To.Usage", "<player>");
-    public static final LangKey COMMAND_TELEPORT_TO_DONE        = LangKey.of("Command.Teleport.To.Done", "<! sound:\"" + Sound.ENTITY_ENDERMAN_TELEPORT.name() + "\" !>" + LIGHT_YELLOW + "Teleporting to " + ORANGE + Placeholders.PLAYER_DISPLAY_NAME + LIGHT_YELLOW + ".");
+    public static final LangString COMMAND_DIMENSION_DESC = LangString.of("Command.Dimension.Desc", "Teleport to a world.");
 
-    public static final LangKey COMMAND_TELEPORT_SEND_DESC   = LangKey.of("Command.Teleport.Send.Desc", "Teleport one player to another.");
-    public static final LangKey COMMAND_TELEPORT_SEND_USAGE  = LangKey.of("Command.Teleport.Send.Usage", "<player> <target> [-s]");
-    public static final LangKey COMMAND_TELEPORT_SEND_TARGET = LangKey.of("Command.Teleport.Send.Target", "<! sound:\"" + Sound.ENTITY_ENDERMAN_TELEPORT.name() + "\" !>" + LIGHT_YELLOW + "Player " + ORANGE + Placeholders.GENERIC_SOURCE + LIGHT_YELLOW + " teleported to " + ORANGE + Placeholders.GENERIC_TARGET + LIGHT_YELLOW + ".");
-    public static final LangKey COMMAND_TELEPORT_SEND_NOTIFY = LangKey.of("Command.Teleport.Send.Notify", "<! sound:\"" + Sound.ENTITY_ENDERMAN_TELEPORT.name() + "\" !>" + LIGHT_YELLOW + "You have been teleported to " + ORANGE + Placeholders.PLAYER_DISPLAY_NAME + LIGHT_YELLOW + ".");
+    public static final LangText COMMAND_DIMENSION_TARGET = LangText.of("Command.Dimension.Target",
+        LIGHT_GRAY.enclose("Teleported " + LIGHT_YELLOW.enclose(PLAYER_DISPLAY_NAME) + " to the " + LIGHT_YELLOW.enclose(GENERIC_WORLD) + ".")
+    );
 
-    public static final LangKey COMMAND_TELEPORT_TOP_DESC   = LangKey.of("Command.Teleport.Top.Desc", "Teleport [player] on the highest block above.");
-    public static final LangKey COMMAND_TELEPORT_TOP_USAGE  = LangKey.of("Command.Teleport.Top.Usage", "[player] [-s]");
-    public static final LangKey COMMAND_TELEPORT_TOP_TARGET = LangKey.of("Command.Teleport.Top.Target", "<! sound:\"" + Sound.ENTITY_ENDERMAN_TELEPORT.name() + "\" !>" + LIGHT_YELLOW + "Player " + ORANGE + Placeholders.PLAYER_DISPLAY_NAME + LIGHT_YELLOW + " teleported on the highest block.");
-    public static final LangKey COMMAND_TELEPORT_TOP_NOTIFY = LangKey.of("Command.Teleport.Top.Notify", "<! sound:\"" + Sound.ENTITY_ENDERMAN_TELEPORT.name() + "\" !>" + LIGHT_YELLOW + "You were teleported on the highest block.");
+    public static final LangText COMMAND_DIMENSION_NOTIFY = LangText.of("Command.Dimension.Notify",
+        OUTPUT.enclose(OutputType.ACTION_BAR) + SOUND.enclose(Sound.ENTITY_ENDERMAN_TELEPORT),
+        LIGHT_GRAY.enclose("You travelled to the " + LIGHT_YELLOW.enclose(GENERIC_WORLD) + ".")
+    );
 
-    public static final LangKey COMMAND_TIME_DESC  = LangKey.of("Command.Time.Desc", "Time management tools.");
-    public static final LangKey COMMAND_TIME_USAGE = LangKey.of("Command.Time.Usage", "[help]");
 
-    public static final LangKey COMMAND_TIME_SHOW_DESC  = LangKey.of("Command.Time.Show.Desc", "Display personal and current world time.");
-    public static final LangKey COMMAND_TIME_SHOW_USAGE = LangKey.of("Command.Time.Show.Usage", "[-w <world>]");
-    public static final LangKey COMMAND_TIME_SHOW_INFO  = LangKey.of("Command.Time.Show.Info",
-        "<! prefix:\"false\" !>" +
-            "\n" + LIGHT_YELLOW +
-            "\n" + LIGHT_YELLOW + "&lTime Info:" +
-            "\n" + LIGHT_YELLOW +
-            "\n" + LIGHT_YELLOW + "▪ " + ORANGE + Placeholders.GENERIC_WORLD + " Time: " + LIGHT_YELLOW +  TimeShowCommand.PLACEHOLDER_WORLD_TIME + GRAY + " (" + TimeShowCommand.PLACEHOLDER_WORLD_TICKS + " ticks)" +
-            "\n" + LIGHT_YELLOW + "▪ " + ORANGE + "Personal Time: " + LIGHT_YELLOW + TimeShowCommand.PLACEHOLDER_PLAYER_TIME + GRAY + " (" + TimeShowCommand.PLACEHOLDER_PLAYER_TICKS + " ticks)" +
-            "\n" + LIGHT_YELLOW + "▪ " + ORANGE + "Server Time: " + LIGHT_YELLOW + TimeShowCommand.PLACEHOLDER_SERVER_TIME +
-            "\n" + LIGHT_YELLOW);
+    public static final LangString COMMAND_ENCHANT_DESC = LangString.of("Command.Enchant.Desc", "(Dis)Enchant item in a slot.");
 
-    public static final LangKey COMMAND_TIME_SET_DESC  = LangKey.of("Command.Time.Set.Desc", "Set world's time.");
-    public static final LangKey COMMAND_TIME_SET_USAGE = LangKey.of("Command.Time.Set.Usage", "<ticks> [-w <world>]");
-    public static final LangKey COMMAND_TIME_SET_DONE  = LangKey.of("Command.Time.Set.Done", LIGHT_YELLOW + "Set time to " + ORANGE + Placeholders.GENERIC_TIME + GRAY + " (" + Placeholders.GENERIC_TOTAL + " ticks)" + LIGHT_YELLOW + " in world " + ORANGE + Placeholders.GENERIC_WORLD + LIGHT_YELLOW + ".");
+    public static final LangText COMMAND_ENCHANT_ERROR_NO_ITEM = LangText.of("Command.Enchant.Error.NoItem",
+        LIGHT_RED.enclose("No item to enchant!"));
 
-    public static final LangKey COMMAND_TIME_PERSONAL_DESC  = LangKey.of("Command.Time.Personal.Desc", "Set [player's] personal time.");
-    public static final LangKey COMMAND_TIME_PERSONAL_USAGE = LangKey.of("Command.Time.Personal.Usage", "<ticks> [player] [-r] [-s]");
-    public static final LangKey COMMAND_TIME_PERSONAL_TARGET  = LangKey.of("Command.Time.Personal.Target", LIGHT_YELLOW + "Set time to " + ORANGE + Placeholders.GENERIC_TIME + GRAY + " (" + Placeholders.GENERIC_TOTAL + " ticks)" + LIGHT_YELLOW + " for " + ORANGE + Placeholders.PLAYER_DISPLAY_NAME + LIGHT_YELLOW + ".");
-    public static final LangKey COMMAND_TIME_PERSONAL_NOTIFY  = LangKey.of("Command.Time.Personal.Notify", LIGHT_YELLOW + "Your personal time has been set to " + ORANGE + Placeholders.GENERIC_TIME + GRAY + " (" + Placeholders.GENERIC_TOTAL + " ticks)" + LIGHT_YELLOW + ".");
+    public static final LangText COMMAND_ENCHANT_ENCHANTED_TARGET = LangText.of("Command.Enchant.Enchanted.Target",
+        SOUND.enclose(Sound.BLOCK_ENCHANTMENT_TABLE_USE),
+        LIGHT_GRAY.enclose("Enchanted " + LIGHT_YELLOW.enclose(GENERIC_ITEM) + " with " +
+            LIGHT_YELLOW.enclose(GENERIC_NAME + " " + GENERIC_AMOUNT) + " in " +
+            LIGHT_YELLOW.enclose(PLAYER_DISPLAY_NAME) + "'s " + LIGHT_YELLOW.enclose(GENERIC_TYPE) + " slot!")
+    );
 
-    public static final LangKey COMMAND_SMITE_DESC   = LangKey.of("Command.Smite.Desc", "Smite [player] with lightning.");
-    public static final LangKey COMMAND_SMITE_USAGE  = LangKey.of("Command.Smite.Usage", "[player] [-s]");
-    public static final LangKey COMMAND_SMITE_TARGET = LangKey.of("Command.Smite.Target", LIGHT_YELLOW + "Smited " + ORANGE + Placeholders.PLAYER_NAME + LIGHT_YELLOW + "!");
-    public static final LangKey COMMAND_SMITE_NOTIFY = LangKey.of("Command.Smite.Notify", LIGHT_YELLOW + "You have been smited!");
 
-    public static final LangKey COMMAND_VANISH_DESC   = LangKey.of("Command.Vanish.Desc", "Toggle [player's] vanish mode.");
-    public static final LangKey COMMAND_VANISH_USAGE  = LangKey.of("Command.Vanish.Usage", "[player] [-on] [-off] [-s]");
-    public static final LangKey COMMAND_VANISH_NOTIFY = LangKey.of("Command.Vanish.Notify", LIGHT_YELLOW + "Vanish " + ORANGE + Placeholders.GENERIC_STATE + LIGHT_YELLOW + ".");
-    public static final LangKey COMMAND_VANISH_TARGET = LangKey.of("Command.Vanish.Target", LIGHT_YELLOW + "Set vanish " + ORANGE + Placeholders.GENERIC_STATE + LIGHT_YELLOW + " for " + ORANGE + Placeholders.PLAYER_DISPLAY_NAME + LIGHT_YELLOW + ".");
+    public static final LangText COMMAND_ENCHANT_DISENCHANTED_TARGET = LangText.of("Command.Enchant.Disenchanted.Target",
+        SOUND.enclose(Sound.BLOCK_GRINDSTONE_USE),
+        LIGHT_GRAY.enclose("Enchantment " + LIGHT_YELLOW.enclose(GENERIC_NAME) + " have been removed from " +
+            LIGHT_YELLOW.enclose(GENERIC_ITEM) + " in " +
+            LIGHT_YELLOW.enclose(PLAYER_DISPLAY_NAME) + "'s " + LIGHT_YELLOW.enclose(GENERIC_TYPE) + " slot.")
+    );
 
-    public static final LangKey COMMAND_WEATHER_DESC  = LangKey.of("Command.Weather.Desc", "Change world's weather.");
-    public static final LangKey COMMAND_WEATHER_USAGE = LangKey.of("Command.Weather.Usage", "<type> [-w <world>]");
-    public static final LangKey COMMAND_WEATHER_SET   = LangKey.of("Command.Weather.Set", LIGHT_YELLOW + "Set " + ORANGE + Placeholders.GENERIC_TYPE + LIGHT_YELLOW + " weather in " + ORANGE + Placeholders.GENERIC_WORLD + LIGHT_YELLOW + ".");
 
-    public static final LangKey COMMAND_WORKBENCH_DESC   = LangKey.of("Command.Workbench.Desc", "Open portable workbench.");
-    public static final LangKey COMMAND_WORKBENCH_USAGE  = LangKey.of("Command.Workbench.Usage", "[player] [-s]");
-    public static final LangKey COMMAND_WORKBENCH_TARGET = LangKey.of("Command.Workbench.Target", LIGHT_YELLOW + "Opened portable workbench for " + ORANGE + Placeholders.PLAYER_DISPLAY_NAME + LIGHT_YELLOW + ".");
-    public static final LangKey COMMAND_WORKBENCH_NOTIFY = LangKey.of("Command.Workbench.Notify", ACTION_BAR + LIGHT_YELLOW + "You opened portable workbench.");
+    public static final LangText COMMAND_ENCHANT_ENCHANTED_NOTIFY = LangText.of("Command.Enchant.Enchanted.Notify",
+        SOUND.enclose(Sound.BLOCK_ENCHANTMENT_TABLE_USE),
+        LIGHT_GRAY.enclose("Your " + LIGHT_YELLOW.enclose(GENERIC_ITEM) + " have been enchanted with " +
+            LIGHT_YELLOW.enclose(GENERIC_NAME + " " + GENERIC_AMOUNT) + "!")
+    );
 
-    // X - Commands --------------------------------------------------------
 
-    // Y - Commands --------------------------------------------------------
+    public static final LangText COMMAND_ENCHANT_DISENCHANTED_NOTIFY = LangText.of("Command.Enchant.Disenchanted.Notify",
+        SOUND.enclose(Sound.BLOCK_GRINDSTONE_USE),
+        LIGHT_GRAY.enclose("Your " + LIGHT_YELLOW.enclose(GENERIC_ITEM) + " have been disenchanted from " +
+            LIGHT_YELLOW.enclose(GENERIC_NAME) + "!")
+    );
 
-    // Z - Commands --------------------------------------------------------
 
-    public static final LangKey OTHER_ENABLED  = LangKey.of("Other.Enabled", GREEN + "Enabled");
-    public static final LangKey OTHER_DISABLED = LangKey.of("Other.Disabled", RED + "Disabled");
+    public static final LangString COMMAND_ENCHANTING_DESC = LangString.of("Command.Enchanting.Desc", "Open portable enchanting table.");
 
-    public static final LangKey             ERROR_ENCHANTMENT_INVALID = LangKey.of("Error.Enchantment.Invalid", RED + "Invalid enchantment!");
-    public static final LangKey ERROR_PLAYER_NO_ITEM = LangKey.of("Error.Player.NoItem", RED + "Player don't have an item!");
-    public static final LangKey ERROR_MATERIAL_INVALID = LangKey.of("Error.Material.Invalid", "&cNo valid material(s) provided!");
+    public static final LangText COMMAND_ENCHANTING_NOTIFY = LangText.of("Command.Enchanting.Notify",
+        OUTPUT.enclose(OutputType.ACTION_BAR),
+        LIGHT_GRAY.enclose("You opened enchanting table.")
+    );
 
-    @NotNull
-    public static LangKey getEnabled(boolean value) {
-        return (value ? OTHER_ENABLED : OTHER_DISABLED);
-    }
+    public static final LangText COMMAND_ENCHANTING_TARGET = LangText.of("Command.Enchanting.Target",
+        LIGHT_GRAY.enclose("Opened enchanting table for " + LIGHT_YELLOW.enclose(PLAYER_DISPLAY_NAME) + ".")
+    );
 
-    @NotNull
-    public static String getEnable(boolean value) {
-        return SunLightAPI.PLUGIN.getMessage(value ? OTHER_ENABLED : OTHER_DISABLED).getLocalized();
-    }
+
+    public static final LangString COMMAND_EXPERIENCE_ADD_DESC    = LangString.of("Command.Experience.Add.Desc", "Add xp points or levels.");
+    public static final LangString COMMAND_EXPERIENCE_REMOVE_DESC = LangString.of("Command.Experience.Remove.Desc", "Remove xp points or levels.");
+    public static final LangString COMMAND_EXPERIENCE_SET_DESC    = LangString.of("Command.Experience.Set.Desc", "Set xp points or levels.");
+    public static final LangString COMMAND_EXPERIENCE_VIEW_DESC   = LangString.of("Command.Experience.View.Desc", "View experience status.");
+
+    public static final LangText COMMAND_EXPERIENCE_ADD_INFO = LangText.of("Command.Experience.Add.Info",
+        TAG_NO_PREFIX,
+        " ",
+        LIGHT_GRAY.enclose("Added " + LIGHT_YELLOW.enclose(GENERIC_AMOUNT) + " " + GENERIC_TYPE + " to " + LIGHT_YELLOW.enclose(PLAYER_DISPLAY_NAME) + "."),
+        LIGHT_GRAY.enclose("New level: " + LIGHT_YELLOW.enclose(GENERIC_LEVEL)),
+        LIGHT_GRAY.enclose("Total experience: " + LIGHT_YELLOW.enclose(GENERIC_TOTAL)),
+        " "
+    );
+
+    public static final LangText COMMAND_EXPERIENCE_REMOVE_INFO = LangText.of("Command.Experience.Remove.Info",
+        TAG_NO_PREFIX,
+        " ",
+        LIGHT_GRAY.enclose("Removed " + LIGHT_YELLOW.enclose(GENERIC_AMOUNT) + " " + GENERIC_TYPE + " off " + LIGHT_YELLOW.enclose(PLAYER_DISPLAY_NAME) + "."),
+        LIGHT_GRAY.enclose("New level: " + LIGHT_YELLOW.enclose(GENERIC_LEVEL)),
+        LIGHT_GRAY.enclose("Total experience: " + LIGHT_YELLOW.enclose(GENERIC_TOTAL)),
+        " "
+    );
+
+    public static final LangText COMMAND_EXPERIENCE_SET_INFO = LangText.of("Command.Experience.Set.Info",
+        TAG_NO_PREFIX,
+        " ",
+        LIGHT_GRAY.enclose("Set " + LIGHT_YELLOW.enclose(GENERIC_AMOUNT) + " " + GENERIC_TYPE + " for " + LIGHT_YELLOW.enclose(PLAYER_DISPLAY_NAME) + "."),
+        LIGHT_GRAY.enclose("New level: " + LIGHT_YELLOW.enclose(GENERIC_LEVEL)),
+        LIGHT_GRAY.enclose("Total experience: " + LIGHT_YELLOW.enclose(GENERIC_TOTAL)),
+        " "
+    );
+
+    public static final LangText COMMAND_EXPERIENCE_VIEW_INFO = LangText.of("Command.Experience.Info.Info",
+        TAG_NO_PREFIX,
+        " ",
+        LIGHT_YELLOW.enclose(BOLD.enclose("Experience of " + PLAYER_DISPLAY_NAME + ":")),
+        LIGHT_GRAY.enclose("Level: " + LIGHT_YELLOW.enclose(GENERIC_LEVEL)),
+        LIGHT_GRAY.enclose("Total experience: " + LIGHT_YELLOW.enclose(GENERIC_TOTAL)),
+        LIGHT_GRAY.enclose("To next level: " + LIGHT_YELLOW.enclose(GENERIC_MAX)),
+        " "
+    );
+
+    public static final LangText COMMAND_EXPERIENCE_ADD_NOTIFY = LangText.of("Command.Experience.Add.Notify",
+        TAG_NO_PREFIX,
+        " ",
+        LIGHT_GRAY.enclose(LIGHT_YELLOW.enclose(GENERIC_AMOUNT) + " " + GENERIC_TYPE + " have been added to your experience!"),
+        LIGHT_GRAY.enclose("New level: " + LIGHT_YELLOW.enclose(GENERIC_LEVEL)),
+        LIGHT_GRAY.enclose("Total experience: " + LIGHT_YELLOW.enclose(GENERIC_TOTAL)),
+        " "
+    );
+
+    public static final LangText COMMAND_EXPERIENCE_REMOVE_NOTIFY = LangText.of("Command.Experience.Remove.Notify",
+        TAG_NO_PREFIX,
+        " ",
+        LIGHT_GRAY.enclose(LIGHT_YELLOW.enclose(GENERIC_AMOUNT) + " " + GENERIC_TYPE + " have been removed off your experience!"),
+        LIGHT_GRAY.enclose("New level: " + LIGHT_YELLOW.enclose(GENERIC_LEVEL)),
+        LIGHT_GRAY.enclose("Total experience: " + LIGHT_YELLOW.enclose(GENERIC_TOTAL)),
+        " "
+    );
+
+    public static final LangText COMMAND_EXPERIENCE_SET_NOTIFY = LangText.of("Command.Experience.Set.Notify",
+        TAG_NO_PREFIX,
+        " ",
+        LIGHT_GRAY.enclose(LIGHT_YELLOW.enclose(GENERIC_AMOUNT) + " " + GENERIC_TYPE + " have been set as your experience!"),
+        LIGHT_GRAY.enclose("New level: " + LIGHT_YELLOW.enclose(GENERIC_LEVEL)),
+        LIGHT_GRAY.enclose("Total experience: " + LIGHT_YELLOW.enclose(GENERIC_TOTAL)),
+        " "
+    );
+
+
+    public static final LangString COMMAND_ENDERCHEST_CLEAR_DESC  = LangString.of("Command.Enderchest.Clear.Desc", "Clear ender chest.");
+    public static final LangString COMMAND_ENDERCHEST_COPY_DESC   = LangString.of("Command.Enderchest.Copy.Desc", "Copy player's ender chest.");
+    public static final LangString COMMAND_ENDERCHEST_FILL_DESC   = LangString.of("Command.Enderchest.Fill.Desc", "Fill ender chest with specified item.");
+    public static final LangString COMMAND_ENDERCHEST_OPEN_DESC   = LangString.of("Command.Enderchest.Open.Desc", "Open ender chest.");
+    public static final LangString COMMAND_ENDERCHEST_REPAIR_DESC = LangString.of("Command.Enderchest.Repair.Desc", "Repair all ender chest items.");
+
+    public static final LangText COMMAND_ENDERCHEST_CLEAR_DONE_OTHERS = LangText.of("Command.Enderchest.Clear.Done.Target",
+        SOUND.enclose(Sound.BLOCK_FIRE_EXTINGUISH),
+        LIGHT_GRAY.enclose("Cleared " + LIGHT_YELLOW.enclose(PLAYER_DISPLAY_NAME) + "'s ender chest!")
+    );
+
+    public static final LangText COMMAND_ENDERCHEST_CLEAR_DONE_NOTIFY = LangText.of("Command.Enderchest.Clear.Done.Notify",
+        SOUND.enclose(Sound.BLOCK_FIRE_EXTINGUISH),
+        LIGHT_GRAY.enclose("Your ender chest has been cleared!")
+    );
+
+
+    public static final LangText COMMAND_ENDERCHEST_COPY_DONE_EXECUTOR = LangText.of("Command.Enderchest.Copy.Done.Executor",
+        SOUND.enclose(Sound.ITEM_ARMOR_EQUIP_LEATHER),
+        LIGHT_GRAY.enclose("Copied " + LIGHT_YELLOW.enclose(PLAYER_DISPLAY_NAME) + "'s ender chest.")
+    );
+
+    public static final LangText COMMAND_ENDERCHEST_COPY_DONE_OTHERS = LangText.of("Command.Enderchest.Copy.Done.Others",
+        SOUND.enclose(Sound.ITEM_ARMOR_EQUIP_LEATHER),
+        LIGHT_GRAY.enclose("Copied " + LIGHT_YELLOW.enclose(GENERIC_SOURCE) + "'s ender chest content to " + LIGHT_YELLOW.enclose(GENERIC_TARGET) + "'s ender chest.")
+    );
+
+
+    public static final LangText COMMAND_ENDERCHEST_FILL_DONE_EXECUTOR = LangText.of("Command.Enderchest.Fill.Done.Executor",
+        SOUND.enclose(Sound.ENTITY_ITEM_PICKUP),
+        LIGHT_GRAY.enclose("Filled " + LIGHT_YELLOW.enclose(PLAYER_DISPLAY_NAME) + "'s ender chest with " + LIGHT_YELLOW.enclose(GENERIC_ITEM) + ".")
+    );
+
+
+    public static final LangText COMMAND_ENDERCHEST_OPEN_DONE_EXECUTOR = LangText.of("Command.Enderchest.Open.Done.Executor",
+        SOUND.enclose(Sound.BLOCK_ENDER_CHEST_OPEN),
+        LIGHT_GRAY.enclose("Opened " + LIGHT_YELLOW.enclose(PLAYER_DISPLAY_NAME) + "'s ender chest.")
+    );
+
+
+    public static final LangText COMMAND_ENDERCHEST_REPAIR_NOTIFY = LangText.of("Command.Enderchest.Repair.Notify",
+        SOUND.enclose(Sound.BLOCK_ANVIL_USE),
+        LIGHT_GRAY.enclose("Repaired all ender chest items!")
+    );
+
+    public static final LangText COMMAND_ENDERCHEST_REPAIR_TARGET = LangText.of("Command.Enderchest.Repair.Target",
+        SOUND.enclose(Sound.BLOCK_ANVIL_USE),
+        LIGHT_GRAY.enclose("Repaired all items in " + LIGHT_YELLOW.enclose(PLAYER_DISPLAY_NAME) + "'s ender chest!")
+    );
+
+
+
+//    public static final LangString COMMAND_EXTINGUISH_DESC = LangString.of("Command.Extinguish.Desc", "Extinguish [a player].");
+//
+//    public static final LangText COMMAND_EXTINGUISH_NOTIFY = LangText.of("Command.Extinguish.Notify",
+//        "<! type:\"action_bar\" sound:\"" + Sound.BLOCK_FIRE_EXTINGUISH.name() + "\" !>" + LIGHT_YELLOW + "You have been extinguished.");
+//
+//    public static final LangText COMMAND_EXTINGUISH_TARGET = LangText.of("Command.Extinguish.Target",
+//        "<! sound:\"" + Sound.BLOCK_FIRE_EXTINGUISH.name() + "\" !>" + LIGHT_YELLOW + "Player " + LIGHT_YELLOW.enclose(PLAYER_DISPLAY_NAME) + LIGHT_YELLOW + " have been extinguished.");
+
+
+
+    public static final LangString COMMAND_HAT_DESC = LangString.of("Command.Hat.Desc", "Put item in head.");
+
+    public static final LangText COMMAND_HAT_DONE = LangText.of("Command.Hat.Done",
+        SOUND.enclose(Sound.ITEM_ARMOR_EQUIP_LEATHER),
+        LIGHT_GRAY.enclose("Enjoy your new hat!")
+    );
+
+
+
+    public static final LangString COMMAND_FLY_DESC = LangString.of("Command.Fly.Desc", "Toggle fly.");
+
+    public static final LangText COMMAND_FLY_TARGET = LangText.of("Command.Fly.Target",
+        LIGHT_GRAY.enclose("Set flying for " + LIGHT_YELLOW.enclose(PLAYER_DISPLAY_NAME) + " to " + LIGHT_YELLOW.enclose(GENERIC_STATE) + ".")
+    );
+
+    public static final LangText COMMAND_FLY_NOTIFY = LangText.of("Command.Fly.Notify",
+        LIGHT_GRAY.enclose("Flying " + LIGHT_YELLOW.enclose(GENERIC_STATE) + ".")
+    );
+
+
+    public static final LangString COMMAND_FLY_SPEED_DESC = LangString.of("Command.FlySpeed.Desc", "Change fly speed.");
+
+    public static final LangText COMMAND_FLY_SPEED_DONE_NOTIFY = LangText.of("Command.FlySpeed.Done.Notify",
+        LIGHT_GRAY.enclose("Your fly speed has been set to " + LIGHT_YELLOW.enclose(GENERIC_AMOUNT) + ".")
+    );
+
+    public static final LangText COMMAND_FLY_SPEED_DONE_TARGET = LangText.of("Command.FlySpeed.Done.Target",
+        LIGHT_GRAY.enclose("Set fly speed to " + LIGHT_YELLOW.enclose(GENERIC_AMOUNT) + " for " + LIGHT_YELLOW.enclose(PLAYER_DISPLAY_NAME) + ".")
+    );
+
+
+
+    public static final LangString COMMAND_FIRE_SET_DESC   = LangString.of("Command.Fire.Set.Desc", "Set fire ticks.");
+    public static final LangString COMMAND_FIRE_RESET_DESC = LangString.of("Command.Fire.Reset.Desc", "Reset fire ticks.");
+
+    public static final LangText COMMAND_FIRE_RESET_INFO = LangText.of("Command.Fire.Reset.Info",
+        SOUND.enclose(Sound.BLOCK_FIRE_EXTINGUISH),
+        LIGHT_GRAY.enclose("Reset " + LIGHT_YELLOW.enclose(PLAYER_DISPLAY_NAME) + "'s fire ticks value, aka extinguished.")
+    );
+
+    public static final LangText COMMAND_FIRE_RESET_TARGET = LangText.of("Command.Fire.Reset.Target",
+        SOUND.enclose(Sound.BLOCK_FIRE_EXTINGUISH),
+        LIGHT_GRAY.enclose("You have been extinguished.")
+    );
+
+    public static final LangText COMMAND_FIRE_SET_INFO = LangText.of("Command.Fire.Set.Info",
+        LIGHT_GRAY.enclose("Set " + LIGHT_YELLOW.enclose(PLAYER_DISPLAY_NAME) + "'s fire ticks to " + LIGHT_YELLOW.enclose(GENERIC_AMOUNT) + ", aka ignited for: " + LIGHT_YELLOW.enclose(GENERIC_TIME) + "s.")
+    );
+
+    public static final LangText COMMAND_FIRE_SET_TARGET = LangText.of("Command.Fire.Set.Target",
+        LIGHT_GRAY.enclose("You have been ignited for " + LIGHT_YELLOW.enclose(GENERIC_TIME) + "s.")
+    );
+
+
+
+    public static final LangString COMMAND_FOOD_LEVEL_ADD_DESC     = LangString.of("Command.Food.Add.Desc", "Add food points.");
+    public static final LangString COMMAND_FOOD_LEVEL_SET_DESC     = LangString.of("Command.Food.Set.Desc", "Set food level.");
+    public static final LangString COMMAND_FOOD_LEVEL_REMOVE_DESC  = LangString.of("Command.Food.Remove.Desc", "Remove food points.");
+    public static final LangString COMMAND_FOOD_LEVEL_RESTORE_DESC = LangString.of("Command.Food.Restore.Desc", "Restore food level.");
+
+    public static final LangText COMMAND_FOOD_LEVEL_ADD_TARGET = LangText.of("Command.Food.Give.Target",
+        LIGHT_GRAY.enclose("Added " + LIGHT_YELLOW.enclose(GENERIC_AMOUNT) + " food points to " + LIGHT_YELLOW.enclose(PLAYER_DISPLAY_NAME) + ". New food level: " + LIGHT_YELLOW.enclose(GENERIC_CURRENT) + "."));
+
+    public static final LangText COMMAND_FOOD_LEVEL_REMOVE_TARGET = LangText.of("Command.Food.Take.Target",
+        LIGHT_GRAY.enclose("Removed " + LIGHT_YELLOW.enclose(GENERIC_AMOUNT) + " food points from " + LIGHT_YELLOW.enclose(PLAYER_DISPLAY_NAME) + ". New food level: " + LIGHT_YELLOW.enclose(GENERIC_CURRENT) + "."));
+
+    public static final LangText COMMAND_FOOD_LEVEL_SET_TARGET = LangText.of("Command.Food.Set.Target",
+        LIGHT_GRAY.enclose("Set " + LIGHT_YELLOW.enclose(PLAYER_DISPLAY_NAME) + "'s food level to " + LIGHT_YELLOW.enclose(GENERIC_AMOUNT) + "."));
+
+    public static final LangText COMMAND_FOOD_LEVEL_ADD_NOTIFY = LangText.of("Command.Food.Give.Notify",
+        LIGHT_GRAY.enclose("Your food level has been increased by " + LIGHT_YELLOW.enclose(GENERIC_AMOUNT) + "."));
+
+    public static final LangText COMMAND_FOOD_LEVEL_REMOVE_NOTIFY = LangText.of("Command.Food.Take.Notify",
+        LIGHT_GRAY.enclose("Your food level has been decreased by " + LIGHT_YELLOW.enclose(GENERIC_AMOUNT) + "."));
+
+    public static final LangText COMMAND_FOOD_LEVEL_SET_NOTIFY = LangText.of("Command.Food.Set.Notify",
+        LIGHT_GRAY.enclose("Your food level has been set to " + LIGHT_YELLOW.enclose(GENERIC_AMOUNT) + "."));
+
+    public static final LangText COMMAND_FOOD_LEVEL_RESTORE_NOTIFY = LangText.of("Command.Food.Restore.Notify",
+        SOUND.enclose(Sound.ENTITY_GENERIC_EAT),
+        LIGHT_GRAY.enclose("You food level has been restored!"));
+
+    public static final LangText COMMAND_FOOD_LEVEL_RESTORE_INFO = LangText.of("Command.Food.Restore.Info",
+        SOUND.enclose(Sound.ENTITY_GENERIC_EAT),
+        LIGHT_GRAY.enclose("Restored " + LIGHT_YELLOW.enclose(PLAYER_DISPLAY_NAME) + "'s food level!"));
+
+
+
+
+    public static final LangString COMMAND_GRINDSTONE_DESC = LangString.of("Command.Grindstone.Desc", "Open portable grindstone.");
+
+    public static final LangText COMMAND_GRINDSTONE_NOTIFY = LangText.of("Command.Grindstone.Notify",
+        OUTPUT.enclose(OutputType.ACTION_BAR),
+        LIGHT_GRAY.enclose("You opened grindstone.")
+    );
+
+    public static final LangText COMMAND_GRINDSTONE_TARGET = LangText.of("Command.Grindstone.Target",
+        LIGHT_GRAY.enclose("Opened grindstone for " + LIGHT_YELLOW.enclose(PLAYER_DISPLAY_NAME) + ".")
+    );
+
+
+    public static final LangString COMMAND_GAME_MODE_TYPE_DESC = LangString.of("Command.GameMode.Type.Desc", "Set gamemode to " + GENERIC_TYPE + ".");
+
+    public static final LangText COMMAND_GAME_MODE_NOTIFY = LangText.of("Command.GameMode.Notify",
+        LIGHT_GRAY.enclose("Your game mode has been set to " + LIGHT_YELLOW.enclose(GENERIC_TYPE) + ".")
+    );
+
+    public static final LangText COMMAND_GAME_MODE_TARGET = LangText.of("Command.GameMode.Target",
+        LIGHT_GRAY.enclose("Set " + LIGHT_YELLOW.enclose(GENERIC_TYPE) + " game mode for " + LIGHT_YELLOW.enclose(PLAYER_DISPLAY_NAME) + ".")
+    );
+
+
+    public static final LangString COMMAND_HEALTH_ADD_DESC     = LangString.of("Command.Health.Add.Desc", "Add health points.");
+    public static final LangString COMMAND_HEALTH_SET_DESC     = LangString.of("Command.Health.Set.Desc", "Set health points.");
+    public static final LangString COMMAND_HEALTH_REMOVE_DESC  = LangString.of("Command.Health.Remove.Desc", "Remove health points.");
+    public static final LangString COMMAND_HEALTH_RESTORE_DESC = LangString.of("Command.Health.Restore.Desc", "Restore health.");
+
+    public static final LangText COMMAND_HEALTH_ADD_INFO = LangText.of("Command.Health.Add.Target",
+        LIGHT_GRAY.enclose("Added " + LIGHT_YELLOW.enclose(GENERIC_AMOUNT) + " health to " + LIGHT_YELLOW.enclose(PLAYER_DISPLAY_NAME) + ". New health: " + LIGHT_YELLOW.enclose(GENERIC_CURRENT) + "/" + LIGHT_YELLOW.enclose(GENERIC_MAX) + ".")
+    );
+
+    public static final LangText COMMAND_HEALTH_REMOVE_INFO = LangText.of("Command.Health.Remove.Target",
+        LIGHT_GRAY.enclose("Removed " + LIGHT_YELLOW.enclose(GENERIC_AMOUNT) + " health from " + LIGHT_YELLOW.enclose(PLAYER_DISPLAY_NAME) + ". New health: " + LIGHT_YELLOW.enclose(GENERIC_CURRENT) + "/" + LIGHT_YELLOW.enclose(GENERIC_MAX) + ".")
+    );
+
+    public static final LangText COMMAND_HEALTH_SET_INFO = LangText.of("Command.Health.Set.Target",
+        LIGHT_GRAY.enclose("Set " + LIGHT_YELLOW.enclose(GENERIC_AMOUNT) + " health for " + LIGHT_YELLOW.enclose(PLAYER_DISPLAY_NAME) + ". New health: " + LIGHT_YELLOW.enclose(GENERIC_CURRENT) + "/" + LIGHT_YELLOW.enclose(GENERIC_MAX) + ".")
+    );
+
+    public static final LangText COMMAND_HEALTH_ADD_NOTIFY = LangText.of("Command.Health.Add.Notify",
+        OUTPUT.enclose(OutputType.ACTION_BAR),
+        LIGHT_GRAY.enclose("You got " + LIGHT_YELLOW.enclose(GENERIC_AMOUNT) + " health: " + LIGHT_YELLOW.enclose(GENERIC_CURRENT) + "/" + LIGHT_YELLOW.enclose(GENERIC_MAX) + ".")
+    );
+
+    public static final LangText COMMAND_HEALTH_REMOVE_NOTIFY = LangText.of("Command.Health.Remove.Notify",
+        OUTPUT.enclose(OutputType.ACTION_BAR),
+        LIGHT_GRAY.enclose("You lost " + LIGHT_YELLOW.enclose(GENERIC_AMOUNT) + " health: " + LIGHT_YELLOW.enclose(GENERIC_CURRENT) + "/" + LIGHT_YELLOW.enclose(GENERIC_MAX) + ".")
+    );
+
+    public static final LangText COMMAND_HEALTH_SET_NOTIFY = LangText.of("Command.Health.Set.Notify",
+        OUTPUT.enclose(OutputType.ACTION_BAR),
+        LIGHT_GRAY.enclose("Your health has been set to " + LIGHT_YELLOW.enclose(GENERIC_AMOUNT) + "/" + LIGHT_YELLOW.enclose(GENERIC_MAX) + ".")
+    );
+
+    public static final LangText COMMAND_HEALTH_RESTORE_NOTIFY = LangText.of("Command.Health.Restore.Notfiy",
+        LIGHT_GRAY.enclose("You have been healed!")
+    );
+
+    public static final LangText COMMAND_HEALTH_RESTORE_INFO = LangText.of("Command.Health.Restore.Info",
+        LIGHT_GRAY.enclose("Player " + LIGHT_YELLOW.enclose(PLAYER_DISPLAY_NAME) + " has been healed.")
+    );
+
+
+
+    public static final LangString COMMAND_IGNORE_ADD_DESC    = LangString.of("Command.Ignore.Add.Desc", "Add player to the blacklist.");
+    public static final LangString COMMAND_IGNORE_LIST_DESC   = LangString.of("Command.Ignore.List.Desc", "Open player blacklist.");
+    public static final LangString COMMAND_IGNORE_REMOVE_DESC = LangString.of("Command.Ignore.Remove.Desc", "Remove player from the blacklist.");
+
+    public static final LangText COMMAND_IGNORE_ADD_DONE = LangText.of("Command.Ignore.Add.Done",
+        LIGHT_YELLOW.enclose(BOLD.enclose("Player Blocked!")),
+        LIGHT_GRAY.enclose("Player " + LIGHT_YELLOW.enclose(PLAYER_DISPLAY_NAME) + " added to the blacklist."),
+        LIGHT_GRAY.enclose("You can change settings or unblock them using " + LIGHT_YELLOW.enclose("/" + IgnoreCommands.DEF_LIST_ALIAS))
+    );
+
+    public static final LangText COMMAND_IGNORE_ADD_ERROR_ALREADY_IN = LangText.of("Command.Ignore.Add.Error.AlreadyIn",
+        LIGHT_GRAY.enclose("Player is already blocked.")
+    );
+
+    public static final LangText COMMAND_IGNORE_REMOVE_DONE = LangText.of("Command.Ignore.Remove.Done",
+        LIGHT_GRAY.enclose("Player " + LIGHT_YELLOW.enclose(PLAYER_NAME) + " has been unblocked.")
+    );
+
+    public static final LangText COMMAND_IGNORE_REMOVE_ERROR_NOT_IN = LangText.of("Command.Ignore.Remove.Error.NotIn",
+        LIGHT_GRAY.enclose("Player is not blocked.")
+    );
+
+
+    public static final LangString COMMAND_INVENTORY_CLEAR_DESC  = LangString.of("Command.Inventory.Clear.Desc", "Clear inventory.");
+    public static final LangString COMMAND_INVENTORY_COPY_DESC   = LangString.of("Command.Inventory.Copy.Desc", "Copy player's inventory.");
+    public static final LangString COMMAND_INVENTORY_FILL_DESC   = LangString.of("Command.Inventory.Fill.Desc", "Fill inventory with specified items.");
+    public static final LangString COMMAND_INVENTORY_OPEN_DESC   = LangString.of("Command.Inventory.Open.Desc", "Open player's inventory.");
+    public static final LangString COMMAND_INVENTORY_REPAIR_DESC = LangString.of("Command.Inventory.Repair.Desc", "Repair all inventory items.");
+
+    public static final LangText COMMAND_INVENTORY_CLEAR_DONE_TARGET = LangText.of("Command.Inventory.Clear.Done.Target",
+        SOUND.enclose(Sound.BLOCK_FIRE_EXTINGUISH),
+        LIGHT_GRAY.enclose("Cleared " + LIGHT_YELLOW.enclose(PLAYER_DISPLAY_NAME) + "'s inventory!")
+    );
+
+    public static final LangText COMMAND_INVENTORY_CLEAR_DONE_NOTIFY = LangText.of("Command.Inventory.Clear.Done.Notify",
+        SOUND.enclose(Sound.BLOCK_FIRE_EXTINGUISH),
+        LIGHT_GRAY.enclose("Your inventory has been cleared!")
+    );
+
+    public static final LangText COMMAND_INVENTORY_COPY_DONE_INFO = LangText.of("Command.Inventory.Copy.Done.Notify",
+        SOUND.enclose(Sound.ITEM_ARMOR_EQUIP_LEATHER),
+        LIGHT_GRAY.enclose("Copied " + LIGHT_YELLOW.enclose(PLAYER_DISPLAY_NAME) + "'s inventory.")
+    );
+
+    public static final LangText COMMAND_INVENTORY_COPY_DONE_OTHERS = LangText.of("Command.Inventory.Copy.Done.Target",
+        SOUND.enclose(Sound.ITEM_ARMOR_EQUIP_LEATHER),
+        LIGHT_GRAY.enclose("Copied " + LIGHT_YELLOW.enclose(GENERIC_SOURCE) + "'s inventory to " + LIGHT_YELLOW.enclose(GENERIC_TARGET) + "'s inventory.")
+    );
+
+    public static final LangText COMMAND_INVENTORY_FILL_DONE = LangText.of("Command.Inventory.Fill.Done",
+        SOUND.enclose(Sound.ENTITY_ITEM_PICKUP),
+        LIGHT_GRAY.enclose("Filled " + LIGHT_YELLOW.enclose(PLAYER_DISPLAY_NAME) + "'s inventory with " + LIGHT_YELLOW.enclose(GENERIC_ITEM) + ".")
+    );
+
+    public static final LangText COMMAND_INVENTORY_OPEN_DONE = LangText.of("Command.Inventory.Open.Done",
+        SOUND.enclose(Sound.BLOCK_CHEST_OPEN),
+        LIGHT_GRAY.enclose("Opened " + LIGHT_YELLOW.enclose(PLAYER_DISPLAY_NAME) + "'s inventory.")
+    );
+
+    public static final LangText COMMAND_INVENTORY_REPAIR_NOTIFY = LangText.of("Command.Inventory.Repair.Notify",
+        SOUND.enclose(Sound.BLOCK_ANVIL_USE),
+        LIGHT_GRAY.enclose("Repaired all inventory items!")
+    );
+
+    public static final LangText COMMAND_INVENTORY_REPAIR_TARGET = LangText.of("Command.Inventory.Repair.Target",
+        SOUND.enclose(Sound.BLOCK_ANVIL_USE),
+        LIGHT_GRAY.enclose("Repaired all items in " + LIGHT_YELLOW.enclose(PLAYER_DISPLAY_NAME) + "'s inventory!")
+    );
+
+
+    public static final LangString COMMAND_ITEM_AMOUNT_DESC      = LangString.of("Command.Item.Amount.Desc", "Change item amount.");
+    public static final LangString COMMAND_ITEM_DAMAGE_DESC      = LangString.of("Command.Item.Damage.Desc", "Change item's damage.");
+    public static final LangString COMMAND_ITEM_ENCHANT_DESC     = LangString.of("Command.Item.Enchant.Desc", "(Dis)Enchant an item in hand.");
+    public static final LangString COMMAND_ITEM_GET_DESC         = LangString.of("Command.Item.Get.Desc", "Get specified item stack.");
+    public static final LangString COMMAND_ITEM_GIVE_DESC        = LangString.of("Command.Item.Give.Desc", "Give specified item stack to a player.");
+    public static final LangString COMMAND_ITEM_TAKE_DESC        = LangString.of("Command.Item.Take.Desc", "Take item off a player.");
+    public static final LangString COMMAND_ITEM_LORE_ADD_DESC    = LangString.of("Command.Item.Lore.Add.Desc", "Add a lore.");
+    public static final LangString COMMAND_ITEM_LORE_REMOVE_DESC = LangString.of("Command.Item.Lore.Remove.Desc", "Remove a lore.");
+    public static final LangString COMMAND_ITEM_LORE_CLEAR_DESC  = LangString.of("Command.Item.Lore.Clear.Desc", "Clear lore.");
+    public static final LangString COMMAND_ITEM_MODEL_DESC       = LangString.of("Command.Item.Model.Desc", "Change item model data.");
+    public static final LangString COMMAND_ITEM_NAME_DESC        = LangString.of("Command.Item.Name.Desc", "Change item display name.");
+    public static final LangString COMMAND_ITEM_POTION_ADD_DESC  = LangString.of("Command.Item.Potion.Add.Desc", "Add effect to a potion.");
+    public static final LangString COMMAND_ITEM_REPAIR_DESC      = LangString.of("Command.Item.Repair.Desc", "Repair item.");
+    public static final LangString COMMAND_ITEM_SPAWN_DESC       = LangString.of("Command.Item.Spawn.Desc", "Spawn item in world.");
+    public static final LangString COMMAND_ITEM_UNBREAKABLE_DESC = LangString.of("Command.Item.Unbreakable.Desc", "Toggle unbreakable state.");
+
+    public static final LangText COMMAND_ITEM_AMOUNT_DONE = LangText.of("Command.Item.Amount.Done",
+        SOUND.enclose(Sound.ENTITY_ITEM_PICKUP),
+        LIGHT_GRAY.enclose("Set " + LIGHT_YELLOW.enclose(GENERIC_ITEM) + " stack amount to x" + LIGHT_YELLOW.enclose(GENERIC_AMOUNT) + ".")
+    );
+
+    public static final LangText COMMAND_ITEM_DAMAGE_DONE = LangText.of("Command.Item.Damage.Done",
+        SOUND.enclose(Sound.BLOCK_ANVIL_USE),
+        LIGHT_GRAY.enclose("Set " + LIGHT_YELLOW.enclose(GENERIC_ITEM) + " damage to " + LIGHT_YELLOW.enclose(GENERIC_AMOUNT) + ".")
+    );
+
+    public static final LangText COMMAND_ITEM_ENCHANT_DONE_ENCHANTED = LangText.of("Command.Item.Enchant.Done.Enchanted",
+        SOUND.enclose(Sound.BLOCK_ENCHANTMENT_TABLE_USE),
+        LIGHT_GRAY.enclose(LIGHT_YELLOW.enclose(GENERIC_ITEM) + " enchanted with " + LIGHT_YELLOW.enclose(GENERIC_NAME + " " + GENERIC_LEVEL) + "!")
+    );
+
+    public static final LangText COMMAND_ITEM_ENCHANT_DONE_DISENCHANTED = LangText.of("Command.Item.Enchant.Done.Disenchanted",
+        SOUND.enclose(Sound.BLOCK_ENCHANTMENT_TABLE_USE),
+        LIGHT_GRAY.enclose("Enchantment " + LIGHT_YELLOW.enclose(GENERIC_NAME) + " have been removed from " + LIGHT_YELLOW.enclose(GENERIC_ITEM) + "!")
+    );
+
+    public static final LangText COMMAND_ITEM_GET_DONE = LangText.of("Command.Item.Get.Done",
+        SOUND.enclose(Sound.ENTITY_ITEM_PICKUP),
+        LIGHT_GRAY.enclose("You got " + LIGHT_YELLOW.enclose("x" + GENERIC_AMOUNT + " " + GENERIC_TYPE) + "!")
+    );
+
+    public static final LangText COMMAND_ITEM_GIVE_DONE = LangText.of("Command.Item.Give.Done",
+        SOUND.enclose(Sound.ENTITY_ITEM_PICKUP),
+        LIGHT_GRAY.enclose("Added " + LIGHT_YELLOW.enclose("x" + GENERIC_AMOUNT + " " + GENERIC_TYPE) + " to " + LIGHT_YELLOW.enclose(PLAYER_DISPLAY_NAME) + "!")
+    );
+
+    public static final LangText COMMAND_ITEM_GIVE_NOTIFY = LangText.of("Command.Item.Give.Notify",
+        SOUND.enclose(Sound.ENTITY_ITEM_PICKUP),
+        LIGHT_GRAY.enclose(LIGHT_YELLOW.enclose("x" + GENERIC_AMOUNT + " " + GENERIC_TYPE) + " have been added to your inventory!")
+    );
+
+    public static final LangText COMMAND_ITEM_TAKE_DONE = LangText.of("Command.Item.Take.Done",
+        SOUND.enclose(Sound.ENTITY_GLOW_ITEM_FRAME_REMOVE_ITEM),
+        LIGHT_GRAY.enclose("Removed " + LIGHT_YELLOW.enclose("x" + GENERIC_AMOUNT) + " of " + LIGHT_YELLOW.enclose(GENERIC_TYPE) + " from " + LIGHT_YELLOW.enclose(PLAYER_DISPLAY_NAME) + "!")
+    );
+
+    public static final LangText COMMAND_ITEM_TAKE_ERROR_NOT_ENOUGH = LangText.of("Command.Item.Take.Error.NotEnough",
+        SOUND.enclose(Sound.ENTITY_VILLAGER_NO),
+        LIGHT_GRAY.enclose("Could not take item(s). Player don't have enough " + LIGHT_RED.enclose(GENERIC_TYPE) + " (" + WHITE.enclose(GENERIC_AMOUNT) + "/" + WHITE.enclose(GENERIC_TOTAL) + ")!")
+    );
+
+    public static final LangText COMMAND_ITEM_TAKE_NOTIFY = LangText.of("Command.Item.Take.Notify",
+        SOUND.enclose(Sound.ENTITY_GLOW_ITEM_FRAME_REMOVE_ITEM),
+        LIGHT_GRAY.enclose(LIGHT_YELLOW.enclose("x" + GENERIC_AMOUNT) + " of " + LIGHT_YELLOW.enclose(GENERIC_TYPE) + " has been taken from your inventory!")
+    );
+
+    public static final LangText COMMAND_ITEM_LORE_ADD_DONE = LangText.of("Command.Item.Lore.Add.Done",
+        SOUND.enclose(Sound.BLOCK_ANVIL_USE),
+        LIGHT_GRAY.enclose("Lore added!")
+    );
+
+    public static final LangText COMMAND_ITEM_LORE_REMOVE_DONE = LangText.of("Command.Item.Lore.Remove.Done",
+        SOUND.enclose(Sound.BLOCK_ANVIL_USE),
+        LIGHT_GRAY.enclose("Lore removed!")
+    );
+
+    public static final LangText COMMAND_ITEM_LORE_CLEAR_DONE = LangText.of("Command.Item.Lore.Clear.Done",
+        SOUND.enclose(Sound.BLOCK_ANVIL_USE),
+        LIGHT_GRAY.enclose("Lore cleared!")
+    );
+
+    public static final LangText COMMAND_ITEM_MODEL_DONE = LangText.of("Command.Item.Model.Done",
+        SOUND.enclose(Sound.BLOCK_ANVIL_USE),
+        LIGHT_GRAY.enclose("Set " + LIGHT_YELLOW.enclose(GENERIC_AMOUNT) + " as " + LIGHT_YELLOW.enclose(GENERIC_ITEM) + "'s model data!")
+    );
+
+    public static final LangText COMMAND_ITEM_NAME_DONE = LangText.of("Command.Item.Name.Done.Changed",
+        SOUND.enclose(Sound.BLOCK_ANVIL_USE),
+        LIGHT_GRAY.enclose("Item renamed!")
+    );
+
+    public static final LangText ERROR_ITEM_NOT_POTION = LangText.of("Error.ItemNotAPotion",
+        LIGHT_RED.enclose("You must hold a potion!")
+    );
+
+    public static final LangText COMMAND_ITEM_POTION_ADD_DONE = LangText.of("Command.Item.Potion.Add.Done",
+        LIGHT_GRAY.enclose("Potion effect added!")
+    );
+
+    public static final LangText COMMAND_ITEM_REPAIR_DONE = LangText.of("Command.Item.Repair.Done",
+        SOUND.enclose(Sound.BLOCK_ANVIL_USE),
+        LIGHT_GRAY.enclose("Item " + LIGHT_YELLOW.enclose(GENERIC_ITEM) + " repaired!")
+    );
+
+    public static final LangText COMMAND_ITEM_SPAWN_DONE = LangText.of("Command.Item.Spawn.Done",
+        SOUND.enclose(Sound.ENTITY_ITEM_PICKUP),
+        LIGHT_GRAY.enclose("Spawned " + LIGHT_YELLOW.enclose("x" + GENERIC_AMOUNT) + " " + LIGHT_YELLOW.enclose(GENERIC_TYPE) + " at " + LIGHT_YELLOW.enclose(LOCATION_X + ", " + LOCATION_Y + ", " + LOCATION_Z) + " in " + LIGHT_YELLOW.enclose(LOCATION_WORLD) + "!")
+    );
+
+    public static final LangText COMMAND_ITEM_UNBREAKABLE_DONE = LangText.of("Command.Item.Unbreakable.Done",
+        SOUND.enclose(Sound.BLOCK_ANVIL_USE),
+        LIGHT_GRAY.enclose("Set " + LIGHT_YELLOW.enclose(GENERIC_ITEM) + " Unbreakable: " + LIGHT_YELLOW.enclose(GENERIC_STATE) + ".")
+    );
+
+
+
+    public static final LangString COMMAND_LOOM_DESC = LangString.of("Command.Loom.Desc", "Open portable loom.");
+
+    public static final LangText COMMAND_LOOM_NOTIFY = LangText.of("Command.Loom.Notify",
+        OUTPUT.enclose(OutputType.ACTION_BAR),
+        LIGHT_GRAY.enclose("You opened loom.")
+    );
+
+    public static final LangText COMMAND_LOOM_TARGET = LangText.of("Command.Loom.Target",
+        LIGHT_GRAY.enclose("Opened loom for " + LIGHT_YELLOW.enclose(PLAYER_DISPLAY_NAME) + ".")
+    );
+
+
+
+    public static final LangString COMMAND_MOB_KILL_DESC = LangString.of("Command.Mob.Kill.Desc", "Kill specific mob.");
+    public static final LangString COMMAND_MOB_CLEAR_DESC = LangString.of("Command.Mob.Clear.Desc", "Kill all mobs.");
+    public static final LangString COMMAND_MOB_SPAWN_DESC = LangString.of("Command.Mob.Spawn.Desc", "Spawn a mob.");
+
+    public static final LangText COMMAND_MOB_KILL_DONE = LangText.of("Command.Mob.Kill.Done",
+        SOUND.enclose(Sound.ENTITY_ZOMBIE_DEATH),
+        LIGHT_GRAY.enclose("Killed " + LIGHT_YELLOW.enclose("x" + GENERIC_AMOUNT + " " + GENERIC_TYPE) + " in " + LIGHT_YELLOW.enclose(GENERIC_WORLD) + " within " + LIGHT_YELLOW.enclose(GENERIC_RADIUS) + " blocks.")
+    );
+
+    public static final LangText COMMAND_MOB_CLEAR_DONE = LangText.of("Command.Mob.Clear.Done",
+        SOUND.enclose(Sound.ENTITY_ZOMBIE_DEATH),
+        LIGHT_GRAY.enclose("Killed " + LIGHT_YELLOW.enclose(GENERIC_AMOUNT) + " mobs in " + LIGHT_YELLOW.enclose(GENERIC_WORLD) + " within " + LIGHT_YELLOW.enclose(GENERIC_RADIUS) + " blocks.")
+    );
+
+    public static final LangText COMMAND_MOB_SPAWN_DONE = LangText.of("Command.Mob.Spawn.Done",
+        LIGHT_GRAY.enclose("Created " + LIGHT_YELLOW.enclose("x" + GENERIC_AMOUNT + " " + GENERIC_TYPE) + ".")
+    );
+
+
+
+    public static final LangString COMMAND_NEAR_DESC = LangString.of("Command.Near.Desc", "Show nearest players.");
+
+    public static final LangText COMMAND_NEAR_NOTHING = LangText.of("Command.Near.Error.Nothing",
+        LIGHT_GRAY.enclose("There are no players in a " + LIGHT_YELLOW.enclose(GENERIC_RADIUS) + " block radius.")
+    );
+
+
+
+    public static final LangString COMMAND_NICK_CLEAR_DESC = LangString.of("Command.Nick.Clear.Desc", "Remove custom name.");
+    public static final LangString COMMAND_NICK_SET_DESC = LangString.of("Command.Nick.Set.Desc", "Set player's custom name.");
+    public static final LangString COMMAND_NICK_CHANGE_DESC = LangString.of("Command.Nick.Change.Desc", "Set custom name.");
+
+    public static final LangText COMMAND_NICK_CLEAR_TARGET = LangText.of("Command.Nick.Clear.Target",
+        LIGHT_GRAY.enclose("Removed " + LIGHT_YELLOW.enclose(PLAYER_DISPLAY_NAME) + "'s custom name."));
+
+    public static final LangText COMMAND_NICK_CLEAR_NOTIFY = LangText.of("Command.Nick.Clear.Notify",
+        LIGHT_GRAY.enclose("You custom name has been removed."));
+
+    public static final LangText COMMAND_NICK_SET_TARGET = LangText.of("Command.Nick.Set.Target",
+        LIGHT_GRAY.enclose("Set " + LIGHT_YELLOW.enclose(PLAYER_NAME) + "'s custom name to " + LIGHT_YELLOW.enclose(GENERIC_NAME) + "."));
+
+    public static final LangText COMMAND_NICK_SET_NOTIFY = LangText.of("Command.Nick.Set.Notify",
+        LIGHT_GRAY.enclose("You got a new custom name: " + LIGHT_YELLOW.enclose(GENERIC_NAME) + "."));
+
+    public static final LangText COMMAND_NICK_CHANGE_DONE = LangText.of("Command.Nick.Change.Done",
+        LIGHT_GRAY.enclose("You changed your custom name to " + LIGHT_YELLOW.enclose(GENERIC_NAME) + "."));
+
+    public static final LangText COMMAND_NICK_CHANGE_ERROR_BAD_WORDS = LangText.of("Command.Nick.Error.BadWords",
+        LIGHT_RED.enclose("This name is not allowed."));
+
+    public static final LangText COMMAND_NICK_CHANGE_ERROR_REGEX = LangText.of("Command.Nick.Error.Regex",
+        LIGHT_RED.enclose("Name contains forbidden characters."));
+
+    public static final LangText COMMAND_NICK_CHANGE_ERROR_TOO_LONG = LangText.of("Command.Nick.Error.TooLong",
+        LIGHT_GRAY.enclose("Name can't be no longer than " + LIGHT_RED.enclose(GENERIC_AMOUNT) + " characters."));
+
+    public static final LangText COMMAND_NICK_CHANGE_ERROR_TOO_SHORT = LangText.of("Command.Nick.Error.TooShort",
+        LIGHT_RED.enclose("Name can't be shorted than " + LIGHT_RED.enclose(GENERIC_AMOUNT) + " characters."));
+
+
+
+    public static final LangString COMMAND_PLAYER_INFO_DESC = LangString.of("Command.PlayerInfo.Desc", "Show player info.");
+
+
+
+    public static final LangString COMMAND_SKULL_CUSTOM_DESC = LangString.of("Command.Skull.Custom.Desc", "Create custom head.");
+    public static final LangString COMMAND_SKULL_PLAYER_DESC = LangString.of("Command.Skull.Player.Desc", "Get player head.");
+
+    public static final LangText COMMAND_SKULL_PLAYER_DONE = LangText.of("Command.Skull.Player.Done",
+        LIGHT_GRAY.enclose("You got " + LIGHT_YELLOW.enclose(PLAYER_NAME) + "'s head.")
+    );
+
+    public static final LangText COMMAND_SKULL_CUSTOM_DONE = LangText.of("Command.Skull.Custom.Done",
+        LIGHT_GRAY.enclose("Created custom head.")
+    );
+
+
+
+    public static final LangString COMMAND_STAFF_DESC = LangString.of("Command.Staff.Desc", "Show online staff.");
+
+    public static final LangText COMMAND_STAFF_EMPTY = LangText.of("Command.Staff.Empty",
+        LIGHT_GRAY.enclose("There is no staff online.")
+    );
+
+
+
+    public static final LangString COMMAND_SPAWNER_DESC = LangString.of("Command.Spawner.Desc", "Change spawner type.");
+
+    public static final LangText COMMAND_SPAWNER_DONE = LangText.of("Command.Spawner.Done",
+        LIGHT_GRAY.enclose("Spawner type changed to " + LIGHT_YELLOW.enclose(GENERIC_TYPE) + ".")
+    );
+
+    public static final LangText COMMAND_SPAWNER_ERROR_TYPE = LangText.of("Command.Spawner.Error.Type",
+        LIGHT_RED.enclose("This type can not be set for spawner.")
+    );
+
+    public static final LangText COMMAND_SPAWNER_ERROR_BLOCK = LangText.of("Command.Spawner.Error.Block",
+        LIGHT_RED.enclose("You must look at Spawner block!")
+    );
+
+
+
+    public static final LangString COMMAND_SPEED_DESC = LangString.of("Command.Speed.Desc", "Change walk speed.");
+
+    public static final LangText COMMAND_SPEED_DONE_NOTIFY = LangText.of("Command.Speed.Done.Notify",
+        LIGHT_GRAY.enclose("Your walk speed has been set to " + LIGHT_YELLOW.enclose(GENERIC_AMOUNT) + ".")
+    );
+
+    public static final LangText COMMAND_SPEED_DONE_TARGET = LangText.of("Command.Speed.Done.Target",
+        LIGHT_GRAY.enclose("Set walk speed to " + LIGHT_YELLOW.enclose(GENERIC_AMOUNT) + " for " + LIGHT_YELLOW.enclose(PLAYER_DISPLAY_NAME) + LIGHT_YELLOW + ".")
+    );
+
+
+
+    public static final LangString COMMAND_SUDO_COMMAND_DESC = LangString.of("Command.Sudo.Command.Desc", "Force player to execute a command.");
+    public static final LangString COMMAND_SUDO_CHAT_DESC    = LangString.of("Command.Sudo.Chat.Desc", "Force player to send a chat message.");
+
+    public static final LangText COMMAND_SUDO_DONE_COMMAND = LangText.of("Command.Sudo.Done.Command",
+        LIGHT_GRAY.enclose("Forced " + LIGHT_YELLOW.enclose(PLAYER_DISPLAY_NAME) + " to perform: " + LIGHT_YELLOW.enclose("/" + GENERIC_COMMAND))
+    );
+
+    public static final LangText COMMAND_SUDO_DONE_CHAT = LangText.of("Command.Sudo.Done.Chat",
+        LIGHT_GRAY.enclose("Forced " + LIGHT_YELLOW.enclose(PLAYER_DISPLAY_NAME) + " to say: " + LIGHT_YELLOW.enclose(GENERIC_COMMAND))
+    );
+
+
+
+    public static final LangString COMMAND_SUICIDE_DESC = LangString.of("Command.Suicide.Desc", "Commit suicide.");
+
+    public static final LangText COMMAND_SUICIDE_DONE = LangText.of("Command.Suicide.Done",
+        TAG_NO_PREFIX,
+        LIGHT_GRAY.enclose(LIGHT_YELLOW.enclose(PLAYER_DISPLAY_NAME) + LIGHT_YELLOW + " commited suicide.")
+    );
+
+
+    public static final LangString COMMAND_TELEPORT_LOCATION_DESC = LangString.of("Command.Teleport.Location.Desc", "Teleport to coordinates.");
+    public static final LangString COMMAND_TELEPORT_SUMMON_DESC   = LangString.of("Command.Teleport.Summon.Desc", "Summon player to you.");
+    public static final LangString COMMAND_TELEPORT_TO_DESC       = LangString.of("Command.Teleport.To.Desc", "Teleport to a player.");
+    public static final LangString COMMAND_TELEPORT_SEND_DESC     = LangString.of("Command.Teleport.Send.Desc", "Teleport one player to another.");
+    public static final LangString COMMAND_TELEPORT_TOP_DESC      = LangString.of("Command.Teleport.Top.Desc", "Teleport to the highest block.");
+
+    public static final LangText COMMAND_TELEPORT_LOCATION_DONE = LangText.of("Command.Teleport.Location.Done.Target",
+        SOUND.enclose(Sound.ENTITY_ENDERMAN_TELEPORT),
+        LIGHT_GRAY.enclose("Player " + LIGHT_YELLOW.enclose(PLAYER_DISPLAY_NAME) + " teleported to " + LIGHT_YELLOW.enclose(LOCATION_X + ", " + LOCATION_Y + ", " + LOCATION_Z) + " in " + LIGHT_YELLOW.enclose(LOCATION_WORLD) + ".")
+    );
+
+    public static final LangText COMMAND_TELEPORT_LOCATION_NOTIFY = LangText.of("Command.Teleport.Location.Done.Notify",
+        SOUND.enclose(Sound.ENTITY_ENDERMAN_TELEPORT),
+        LIGHT_GRAY.enclose("Teleport to " + LIGHT_YELLOW.enclose(LOCATION_X + ", " + LOCATION_Y + ", " + LOCATION_Z) + " in " + LIGHT_YELLOW.enclose(LOCATION_WORLD) + ".")
+    );
+
+    public static final LangText COMMAND_TELEPORT_SUMMON_DONE = LangText.of("Command.Teleport.Summon.Target",
+        SOUND.enclose(Sound.ENTITY_ENDERMAN_TELEPORT),
+        LIGHT_GRAY.enclose("You summonned " + LIGHT_YELLOW.enclose(PLAYER_DISPLAY_NAME) + ".")
+    );
+
+    public static final LangText COMMAND_TELEPORT_SUMMON_NOTIFY = LangText.of("Command.Teleport.Summon.Notify",
+        SOUND.enclose(Sound.ENTITY_ENDERMAN_TELEPORT),
+        LIGHT_GRAY.enclose("You were summoned by " + LIGHT_YELLOW.enclose(PLAYER_DISPLAY_NAME) + ".")
+    );
+
+    public static final LangText COMMAND_TELEPORT_TO_DONE = LangText.of("Command.Teleport.To.Done",
+        SOUND.enclose(Sound.ENTITY_ENDERMAN_TELEPORT),
+        LIGHT_GRAY.enclose("Teleport to " + LIGHT_YELLOW.enclose(PLAYER_DISPLAY_NAME) + "...")
+    );
+
+    public static final LangText COMMAND_TELEPORT_SEND_DONE = LangText.of("Command.Teleport.Send.Target",
+        SOUND.enclose(Sound.ENTITY_ENDERMAN_TELEPORT),
+        LIGHT_GRAY.enclose("Teleported " + LIGHT_YELLOW.enclose(GENERIC_SOURCE) + " to " + LIGHT_YELLOW.enclose(GENERIC_TARGET) + ".")
+    );
+
+    public static final LangText COMMAND_TELEPORT_SEND_NOTIFY = LangText.of("Command.Teleport.Send.Notify",
+        SOUND.enclose(Sound.ENTITY_ENDERMAN_TELEPORT),
+        LIGHT_GRAY.enclose("You have been teleported to " + LIGHT_YELLOW.enclose(PLAYER_DISPLAY_NAME) + ".")
+    );
+
+    public static final LangText COMMAND_TELEPORT_TOP_DONE = LangText.of("Command.Teleport.Top.Target",
+        SOUND.enclose(Sound.ENTITY_ENDERMAN_TELEPORT),
+        LIGHT_GRAY.enclose("Teleported " + LIGHT_YELLOW.enclose(PLAYER_DISPLAY_NAME) + " on the highest block.")
+    );
+
+    public static final LangText COMMAND_TELEPORT_TOP_NOTIFY = LangText.of("Command.Teleport.Top.Notify",
+        SOUND.enclose(Sound.ENTITY_ENDERMAN_TELEPORT),
+        LIGHT_GRAY.enclose("Teleport on the highest block...")
+    );
+
+
+    public static final LangString COMMAND_TIME_SHOW_DESC           = LangString.of("Command.Time.Show.Desc", "Display current world time.");
+    public static final LangString COMMAND_TIME_SET_DESC            = LangString.of("Command.Time.Set.Desc", "Set world's time.");
+    public static final LangString COMMAND_TIME_PERSONAL_SET_DESC   = LangString.of("Command.Time.Personal.Set.Desc", "Set personal time.");
+    public static final LangString COMMAND_TIME_PERSONAL_RESET_DESC = LangString.of("Command.Time.Personal.Reset.Desc", "Reset personal time.");
+
+    public static final LangText COMMAND_TIME_SHOW_INFO = LangText.of("Command.Time.Show.Print",
+        TAG_NO_PREFIX,
+        " ",
+        LIGHT_YELLOW.enclose(BOLD.enclose("Time Info:")),
+        LIGHT_GRAY.enclose(LIGHT_YELLOW.enclose("▪ ") + GENERIC_WORLD + " Time: " + LIGHT_YELLOW.enclose(GENERIC_TIME) + " (" + WHITE.enclose(GENERIC_TICKS + " ticks") + ")"),
+        LIGHT_GRAY.enclose(LIGHT_YELLOW.enclose("▪ ") + "Server Time: " + LIGHT_YELLOW.enclose(GENERIC_GLOBAL)),
+        " "
+    );
+
+    public static final LangText COMMAND_TIME_SET_DONE = LangText.of("Command.Time.Set.Done",
+        LIGHT_GRAY.enclose("Time set to " + LIGHT_YELLOW.enclose(GENERIC_TIME) + " (" + WHITE.enclose(GENERIC_TOTAL + " ticks") + ")" + " in world " + LIGHT_YELLOW.enclose(GENERIC_WORLD) + ".")
+    );
+
+    public static final LangText COMMAND_TIME_PERSONAL_SET_DONE = LangText.of("Command.Time.Personal.Set.Target",
+        LIGHT_GRAY.enclose("Set " + LIGHT_YELLOW.enclose(PLAYER_DISPLAY_NAME) + "'s time to " + LIGHT_YELLOW.enclose(GENERIC_TIME) + " (" + WHITE.enclose(GENERIC_TOTAL + " ticks") + ")" + ".")
+    );
+
+    public static final LangText COMMAND_TIME_PERSONAL_SET_NOTIFY = LangText.of("Command.Time.Personal.Set.Notify",
+        LIGHT_GRAY.enclose("Your personal time has been set to " + LIGHT_YELLOW.enclose(GENERIC_TIME) + " (" + WHITE.enclose(GENERIC_TOTAL + " ticks") + ")" + ".")
+    );
+
+    public static final LangText COMMAND_TIME_PERSONAL_RESET_DONE = LangText.of("Command.Time.Personal.Reset.Target",
+        LIGHT_GRAY.enclose("Reset " + LIGHT_YELLOW.enclose(PLAYER_DISPLAY_NAME) + "'s time.")
+    );
+
+    public static final LangText COMMAND_TIME_PERSONAL_RESET_NOTIFY = LangText.of("Command.Time.Personal.Reset.Notify",
+        LIGHT_GRAY.enclose("Your personal time has been reset.")
+    );
+
+
+
+    public static final LangString COMMAND_SMITE_DESC = LangString.of("Command.Smite.Desc", "Smite player with lightning.");
+
+    public static final LangText COMMAND_SMITE_TARGET = LangText.of("Command.Smite.Target",
+        LIGHT_GRAY.enclose("Smited " + LIGHT_YELLOW.enclose(PLAYER_NAME) + "!")
+    );
+
+    public static final LangText COMMAND_SMITE_NOTIFY = LangText.of("Command.Smite.Notify",
+        LIGHT_GRAY.enclose("You have been smited!")
+    );
+
+
+
+    public static final LangString COMMAND_WEATHER_TYPE_DESC = LangString.of("Command.Weather.Type.Desc", "Set weather to " + GENERIC_TYPE + ".");
+
+    public static final LangText COMMAND_WEATHER_SET = LangText.of("Command.Weather.Set",
+        LIGHT_GRAY.enclose("Set " + LIGHT_YELLOW.enclose(GENERIC_TYPE) + " weather in " + LIGHT_YELLOW.enclose(GENERIC_WORLD) + ".")
+    );
+
+
+
+    public static final LangString COMMAND_WORKBENCH_DESC  = LangString.of("Command.Workbench.Desc", "Open portable workbench.");
+
+    public static final LangText COMMAND_WORKBENCH_TARGET = LangText.of("Command.Workbench.Target",
+        LIGHT_GRAY.enclose("Opened portable workbench for " + LIGHT_YELLOW.enclose(PLAYER_DISPLAY_NAME) + ".")
+    );
+
+    public static final LangText COMMAND_WORKBENCH_NOTIFY = LangText.of("Command.Workbench.Notify",
+        OUTPUT.enclose(OutputType.ACTION_BAR),
+        LIGHT_GRAY.enclose("You opened portable workbench.")
+    );
+
+
+
+    public static final LangText ERROR_EMPTY_HAND = LangText.of("Error.EmptyHand",
+        SOUND.enclose(Sound.BLOCK_ANVIL_PLACE),
+        LIGHT_RED.enclose("You must hold an item!"));
+
+    public static final LangText ERROR_ITEM_NOT_DAMAGEABLE = LangText.of("Error.ItemNotDamageable",
+        SOUND.enclose(Sound.BLOCK_ANVIL_PLACE),
+        LIGHT_GRAY.enclose("Item " + LIGHT_RED.enclose(GENERIC_ITEM) + " doesn't have a durability.")
+    );
+
+    public static final LangText ERROR_COMMAND_INVALID_SLOT_ARGUMENT = LangText.of("Error.Command.Argument.InvalidSlot",
+        LIGHT_GRAY.enclose(LIGHT_RED.enclose(GENERIC_VALUE) + " is not a valid equipment slot!"));
+
+    public static final LangText ERROR_COMMAND_INVALID_TYPE_ARGUMENT = LangText.of("Error.Command.Argument.InvalidType",
+        LIGHT_GRAY.enclose(LIGHT_RED.enclose(GENERIC_VALUE) + " is not a valid type!"));
+
+    public static final LangText ERROR_COMMAND_INVALID_TIME_ARGUMENT = LangText.of("Error.Command.Argument.InvalidTime",
+        LIGHT_GRAY.enclose(LIGHT_RED.enclose(GENERIC_VALUE) + " is not a valid time!"));
+
+    public static final LangText ERROR_COMMAND_INVALID_MODE_ARGUMENT = LangText.of("Error.Command.Argument.InvalidMode",
+        LIGHT_GRAY.enclose(LIGHT_RED.enclose(GENERIC_VALUE) + " is not a valid mode!"));
+
+    public static final LangText ERROR_COMMAND_INVALID_IP_ARGUMENT = LangText.of("Error.Command.Argument.InvalidIPAddress",
+        LIGHT_GRAY.enclose(LIGHT_RED.enclose(GENERIC_VALUE) + " is not an IP address!"));
+
+
+
+    public static final LangString EDITOR_INPUT_GENERIC_VALUE = LangString.of("Editor.Input.Generic.Value",
+        LIGHT_GRAY.enclose("Enter " + LIGHT_GREEN.enclose("[Value]")));
+
+    public static final LangString EDITOR_INPUT_GENERIC_SECONDS = LangString.of("Editor.Input.Generic.Seconds",
+        LIGHT_GRAY.enclose("Enter " + LIGHT_GREEN.enclose("[Seconds Amount]")));
+
+    public static final LangString EDITOR_INPUT_GENERIC_NAME = LangString.of("Editor.Input.Generic.Name",
+        LIGHT_GRAY.enclose("Enter " + LIGHT_GREEN.enclose("[Name]")));
 }

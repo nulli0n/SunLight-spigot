@@ -1,40 +1,34 @@
 package su.nightexpress.sunlight.module.bans.punishment;
 
 import org.jetbrains.annotations.NotNull;
-import su.nexmedia.engine.api.config.JYML;
-import su.nexmedia.engine.utils.Colorizer;
+import su.nightexpress.nightcore.config.ConfigValue;
+import su.nightexpress.nightcore.config.FileConfig;
 
 public class PunishmentReason {
 
-    private final String id;
-    private       String message;
+    private String text;
 
-    public PunishmentReason(@NotNull String id, @NotNull String message) {
-        this.id = id.toLowerCase();
-        this.setMessage(message);
+    public PunishmentReason(@NotNull String text) {
+        this.setText(text);
     }
 
     @NotNull
-    public static PunishmentReason read(@NotNull JYML cfg, @NotNull String path, @NotNull String id) {
-        String message = cfg.getString(path + ".Message", "");
-        return new PunishmentReason(id, message);
+    public static PunishmentReason read(@NotNull FileConfig config, @NotNull String path) {
+        String message = ConfigValue.create(path + ".Message", "Violation of the rules.").read(config);
+
+        return new PunishmentReason(message);
     }
 
-    public void write(@NotNull JYML cfg, @NotNull String path) {
-        cfg.set(path + ".Message", this.getMessage());
-    }
-
-    @NotNull
-    public String getId() {
-        return id;
+    public void write(@NotNull FileConfig config, @NotNull String path) {
+        config.set(path + ".Message", this.getText());
     }
 
     @NotNull
-    public String getMessage() {
-        return message;
+    public String getText() {
+        return text;
     }
 
-    public void setMessage(@NotNull String message) {
-        this.message = Colorizer.apply(message);
+    public void setText(@NotNull String text) {
+        this.text = text;
     }
 }

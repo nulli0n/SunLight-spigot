@@ -1,55 +1,77 @@
 package su.nightexpress.sunlight.module.chat.command;
 
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import su.nexmedia.engine.api.command.CommandResult;
+import su.nightexpress.nightcore.command.experimental.CommandContext;
+import su.nightexpress.nightcore.command.experimental.argument.ArgumentTypes;
+import su.nightexpress.nightcore.command.experimental.argument.ParsedArguments;
+import su.nightexpress.nightcore.command.experimental.builder.DirectNodeBuilder;
+import su.nightexpress.nightcore.command.experimental.node.DirectNode;
+import su.nightexpress.nightcore.config.FileConfig;
 import su.nightexpress.sunlight.Placeholders;
-import su.nightexpress.sunlight.SunLight;
+import su.nightexpress.sunlight.SunLightPlugin;
+import su.nightexpress.sunlight.command.CommandArguments;
 import su.nightexpress.sunlight.command.CommandFlags;
-import su.nightexpress.sunlight.command.api.ToggleCommand;
+import su.nightexpress.sunlight.command.CommandRegistry;
+import su.nightexpress.sunlight.command.CommandTools;
+import su.nightexpress.sunlight.command.mode.ToggleMode;
+import su.nightexpress.sunlight.command.template.CommandTemplate;
 import su.nightexpress.sunlight.config.Lang;
-import su.nightexpress.sunlight.data.impl.SunUser;
-import su.nightexpress.sunlight.data.impl.settings.DefaultSettings;
-import su.nightexpress.sunlight.data.impl.settings.UserSetting;
+import su.nightexpress.sunlight.data.user.SunUser;
+import su.nightexpress.sunlight.core.user.settings.Setting;
+import su.nightexpress.sunlight.module.chat.ChatModule;
 import su.nightexpress.sunlight.module.chat.config.ChatLang;
 import su.nightexpress.sunlight.module.chat.config.ChatPerms;
 
-public class MentionsCommand extends ToggleCommand {
+public class MentionsCommand {
 
-    public static final String NAME = "mentions";
+    public static final String NODE = "mentions_toggle";
 
-    public MentionsCommand(@NotNull SunLight plugin, @NotNull String[] aliases) {
-        super(plugin, aliases, ChatPerms.COMMAND_MENTIONS, ChatPerms.COMMAND_MENTIONS_OTHERS);
-        this.setDescription(plugin.getMessage(ChatLang.COMMAND_MENTIONS_DESC));
-        this.setUsage(plugin.getMessage(ChatLang.COMMAND_MENTIONS_USAGE));
-        this.setAllowDataLoad();
+    public static void load(@NotNull SunLightPlugin plugin) {
+        CommandRegistry.registerDirectExecutor(NODE, (template, config) -> builder(plugin, template, config));
+
+        CommandRegistry.addTemplate("mentions", CommandTemplate.direct(new String[]{"mentions"}, NODE));
     }
 
-    protected void onExecute(@NotNull CommandSender sender, @NotNull CommandResult result) {
-        Player target = this.getCommandTarget(sender, result);
-        if (target == null) {
-            return;
-        }
+    @NotNull
+    public static DirectNodeBuilder builder(@NotNull SunLightPlugin plugin, @NotNull CommandTemplate template, @NotNull FileConfig config) {
+        return DirectNode.builder(plugin, template.getAliases())
+            .description(ChatLang.COMMAND_MENTIONS_DESC)
+            .permission(ChatPerms.COMMAND_MENTIONS)
+            .withArgument(CommandArguments.toggleMode(CommandArguments.MODE))
+            .withArgument(ArgumentTypes.playerName(CommandArguments.PLAYER).permission(ChatPerms.COMMAND_MENTIONS_OTHERS))
+            .withFlag(CommandFlags.silent().permission(ChatPerms.COMMAND_MENTIONS_OTHERS))
+            .executes((context, arguments) -> execute(plugin, context, arguments))
+            ;
+    }
 
-        ToggleCommand.Mode mode = this.getMode(sender, result);
-        UserSetting<Boolean> setting = DefaultSettings.MENTIONS;
-        SunUser user = this.plugin.getUserManager().getUserData(target);
-        user.getSettings().set(setting, mode.apply(user.getSettings().get(setting)));
-        this.plugin.getUserManager().saveUser(user);
+    public static boolean execute(@NotNull SunLightPlugin plugin, @NotNull CommandContext context, @NotNull ParsedArguments arguments) {
+        Player target = CommandTools.getTarget(plugin, context, arguments, CommandArguments.PLAYER, true);
+        if (target == null) return false;
 
-        if (sender != target) {
-            this.plugin.getMessage(ChatLang.COMMAND_MENTIONS_TOGGLE_TARGET)
-                .replace(Placeholders.GENERIC_STATE, Lang.getEnable(user.getSettings().get(setting)))
+        ToggleMode mode = CommandTools.getToggleMode(plugin, context, arguments, CommandArguments.MODE);
+
+        Setting<Boolean> setting = ChatModule.MENTIONS_SETTING;
+        SunUser user = plugin.getUserManager().getUserData(target);
+        boolean state = mode.apply(user.getSettings().get(setting));
+
+        user.getSettings().set(setting, state);
+        plugin.getUserManager().scheduleSave(user);
+
+        if (context.getSender() != target) {
+            ChatLang.COMMAND_MENTIONS_TOGGLE_TARGET.getMessage()
+                .replace(Placeholders.GENERIC_STATE, Lang.getEnabledOrDisabled(state))
                 .replace(Placeholders.forPlayer(target))
-                .send(sender);
+                .send(context.getSender());
         }
 
-        if (!result.hasFlag(CommandFlags.SILENT)) {
-            this.plugin.getMessage(ChatLang.COMMAND_MENTIONS_TOGGLE_NOTIFY)
-                .replace(Placeholders.GENERIC_STATE, Lang.getEnable(user.getSettings().get(setting)))
+        if (!arguments.hasFlag(CommandFlags.SILENT)) {
+            ChatLang.COMMAND_MENTIONS_TOGGLE_NOTIFY.getMessage()
+                .replace(Placeholders.GENERIC_STATE, Lang.getEnabledOrDisabled(state))
                 .send(target);
         }
+
+        return true;
     }
 }
 

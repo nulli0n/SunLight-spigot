@@ -6,8 +6,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.ChatType;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.protocol.game.ClientboundPlayerChatPacket;
-import net.minecraft.network.protocol.game.ClientboundSystemChatPacket;
+import net.minecraft.network.protocol.game.*;
 import net.minecraft.server.dedicated.DedicatedPlayerList;
 import net.minecraft.server.dedicated.DedicatedServer;
 import net.minecraft.server.level.ClientInformation;
@@ -28,7 +27,7 @@ import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.jetbrains.annotations.NotNull;
-import su.nexmedia.engine.utils.Reflex;
+import su.nightexpress.nightcore.util.Reflex;
 import su.nightexpress.sunlight.nms.SunNMS;
 import su.nightexpress.sunlight.nms.v1_20_R3.container.PlayerEnderChest;
 import su.nightexpress.sunlight.nms.v1_20_R3.container.PlayerInventory;
@@ -38,8 +37,7 @@ import java.util.UUID;
 
 public class V1_20_R3 implements SunNMS {
 
-    private static final Method SET_GAME_MODE = Reflex.getMethod(ServerPlayerGameMode.class, "a",
-        GameType.class, GameType.class);
+    private static final Method SET_GAME_MODE = Reflex.getMethod(ServerPlayerGameMode.class, "a", GameType.class, GameType.class);
 
     @Override
     public void dropFallingContent(@NotNull FallingBlock fallingBlock) {

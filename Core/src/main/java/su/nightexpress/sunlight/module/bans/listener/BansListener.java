@@ -3,88 +3,97 @@ package su.nightexpress.sunlight.module.bans.listener;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.player.*;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.jetbrains.annotations.NotNull;
-import su.nexmedia.engine.api.manager.AbstractListener;
-import su.nexmedia.engine.command.CommandRegister;
-import su.nexmedia.engine.utils.PlayerUtil;
-import su.nexmedia.engine.utils.StringUtil;
-import su.nightexpress.sunlight.SunLight;
-import su.nightexpress.sunlight.data.impl.SunUser;
-import su.nightexpress.sunlight.data.impl.settings.DefaultSettings;
+import su.nightexpress.nightcore.language.entry.LangText;
+import su.nightexpress.nightcore.manager.AbstractListener;
+import su.nightexpress.nightcore.util.CommandUtil;
+import su.nightexpress.nightcore.util.text.NightMessage;
+import su.nightexpress.sunlight.SunLightPlugin;
 import su.nightexpress.sunlight.module.bans.BansModule;
 import su.nightexpress.sunlight.module.bans.config.BansConfig;
 import su.nightexpress.sunlight.module.bans.config.BansLang;
-import su.nightexpress.sunlight.module.bans.punishment.Punishment;
+import su.nightexpress.sunlight.module.bans.punishment.PunishData;
+import su.nightexpress.sunlight.module.bans.punishment.PunishedPlayer;
 import su.nightexpress.sunlight.module.bans.punishment.PunishmentType;
 import su.nightexpress.sunlight.utils.SunUtils;
 
+import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
-public class BansListener extends AbstractListener<SunLight> {
+public class BansListener extends AbstractListener<SunLightPlugin> {
 
-    private final BansModule bansModule;
+    private final BansModule module;
 
-    public BansListener(@NotNull BansModule bansModule) {
-        super(bansModule.plugin());
-        this.bansModule = bansModule;
+    public BansListener(@NotNull SunLightPlugin plugin, @NotNull BansModule module) {
+        super(plugin);
+        this.module = module;
     }
 
-    @EventHandler(priority = EventPriority.LOW)
-    public void onBanLogin(AsyncPlayerPreLoginEvent e) {
-        String name = e.getName();
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onBanLogin(AsyncPlayerPreLoginEvent event) {
+        String address = SunUtils.getRawAddress(event.getAddress());
+        UUID playerId = event.getUniqueId();
 
-        Punishment ban = bansModule.getActivePunishment(name, PunishmentType.BAN);
-        if (ban == null) ban = bansModule.getActivePunishment(SunUtils.getIP(e.getAddress()), PunishmentType.BAN);
-        if (ban == null) return;
+        PunishData punishData = module.getActivePlayerPunishment(playerId, PunishmentType.BAN);
+        if (punishData == null) punishData = module.getActiveIPPunishment(address);
+        if (punishData == null) return;
 
-        String message;
-        if (ban.isPermanent()) {
-            message = String.join("\n", BansConfig.GENERAL_DISCONNECT_INFO_BAN_PERMANENT.get());
+        // Update player name in case it was changed.
+        if (punishData instanceof PunishedPlayer punishedPlayer && punishedPlayer.updateName(event.getName())) {
+            this.plugin.runTaskAsync(task -> this.module.getDataHandler().saveData(punishedPlayer, PunishmentType.BAN));
         }
-        else {
-            message = String.join("\n", BansConfig.GENERAL_DISCONNECT_INFO_BAN_TEMP.get());
-        }
-        e.disallow(AsyncPlayerPreLoginEvent.Result.KICK_BANNED, ban.replacePlaceholders().apply(message));
+
+        List<String> text = punishData.isPermanent() ? BansConfig.GENERAL_DISCONNECT_INFO_BAN_PERMANENT.get() : BansConfig.GENERAL_DISCONNECT_INFO_BAN_TEMP.get();
+        String message = NightMessage.asLegacy(String.join("\n", text));
+
+        event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_BANNED, punishData.replacePlaceholders().apply(message));
     }
 
-    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
-    public void onMuteChat(AsyncPlayerChatEvent e) {
-        Player player = e.getPlayer();
-        String name = player.getName();
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    public void onMuteChat(AsyncPlayerChatEvent event) {
+        Player player = event.getPlayer();
+        PunishedPlayer punishedPlayer = this.module.getActivePlayerPunishment(player.getUniqueId(), PunishmentType.MUTE);
+        if (punishedPlayer == null) return;
 
-        Punishment punishment = this.bansModule.getActivePunishment(player, PunishmentType.MUTE);
-        if (punishment == null) return;
+        event.setCancelled(true);
+        event.getRecipients().clear();
 
-        e.setCancelled(true);
-        e.getRecipients().clear();
-
-        this.plugin.getMessage(BansLang.getPunishNotify(punishment)).replace(punishment.replacePlaceholders()).send(player);
-    }
-
-    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
-    public void onMuteCommand(PlayerCommandPreprocessEvent e) {
-        if (BansConfig.PUNISHMENTS_MUTE_BLOCKED_COMMANDS.get().isEmpty()) return;
-
-        Player player = e.getPlayer();
-        String name = player.getName();
-
-        Punishment punishment = this.bansModule.getActivePunishment(player, PunishmentType.MUTE);
-        if (punishment == null) return;
-
-        String command = StringUtil.extractCommandName(e.getMessage());
-        Set<String> aliases = CommandRegister.getAliases(command, true);
-
-        if (aliases.stream().anyMatch(alias -> BansConfig.PUNISHMENTS_MUTE_BLOCKED_COMMANDS.get().contains(alias))) {
-            e.setCancelled(true);
-            this.plugin.getMessage(BansLang.getPunishNotify(punishment)).replace(punishment.replacePlaceholders()).send(player);
+        LangText lang = BansLang.getPunishNotify(punishedPlayer, PunishmentType.MUTE);
+        if (lang != null) {
+            lang.getMessage().replace(punishedPlayer.replacePlaceholders()).send(player);
         }
     }
 
-    @EventHandler(priority = EventPriority.NORMAL)
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    public void onMuteCommand(PlayerCommandPreprocessEvent event) {
+        Set<String> blockedCommands = BansConfig.PUNISHMENTS_MUTE_BLOCKED_COMMANDS.get();
+        if (blockedCommands.isEmpty()) return;
+
+        Player player = event.getPlayer();
+        PunishedPlayer punishedPlayer = this.module.getActivePlayerPunishment(player.getUniqueId(), PunishmentType.MUTE);
+        if (punishedPlayer == null) return;
+
+        String command = CommandUtil.getCommandName(event.getMessage());
+        Set<String> aliases = CommandUtil.getAliases(command, true);
+
+        if (aliases.stream().anyMatch(blockedCommands::contains)) {
+            event.setCancelled(true);
+
+            LangText lang = BansLang.getPunishNotify(punishedPlayer, PunishmentType.MUTE);
+            if (lang != null) {
+                lang.getMessage().replace(punishedPlayer.replacePlaceholders()).send(player);
+            }
+        }
+    }
+
+    /*@EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
         SunUser user = this.plugin.getUserManager().getUserData(event.getPlayer());
-        user.getSettings().set(DefaultSettings.LAST_RANK, PlayerUtil.getPermissionGroup(player));
-    }
+        user.getSettings().set(SettingRegistry.LAST_RANK, Players.getPermissionGroup(player));
+    }*/
 }

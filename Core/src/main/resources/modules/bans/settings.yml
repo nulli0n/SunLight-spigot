@@ -1,5 +1,0 @@
-Database:
-  Type: SQLITE
-  Table_Prefix: 'sunlight_bans'
-  SQLite:
-    FileName: 'bans.db'

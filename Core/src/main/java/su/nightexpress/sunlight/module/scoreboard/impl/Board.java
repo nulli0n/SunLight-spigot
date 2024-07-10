@@ -3,39 +3,53 @@ package su.nightexpress.sunlight.module.scoreboard.impl;
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.events.InternalStructure;
 import com.comphenix.protocol.events.PacketContainer;
+import com.comphenix.protocol.wrappers.BukkitConverters;
 import com.comphenix.protocol.wrappers.EnumWrappers;
 import com.comphenix.protocol.wrappers.WrappedChatComponent;
+import com.comphenix.protocol.wrappers.WrappedNumberFormat;
 import me.clip.placeholderapi.PlaceholderAPI;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.jetbrains.annotations.NotNull;
-import su.nexmedia.engine.Version;
-import su.nexmedia.engine.utils.Colorizer;
-import su.nexmedia.engine.utils.EngineUtils;
+import su.nightexpress.nightcore.util.Lists;
+import su.nightexpress.nightcore.util.Plugins;
+import su.nightexpress.nightcore.util.Version;
+import su.nightexpress.nightcore.util.text.NightMessage;
+import su.nightexpress.sunlight.Placeholders;
 import su.nightexpress.sunlight.hook.impl.ProtocolLibHook;
 import su.nightexpress.sunlight.module.scoreboard.ScoreboardModule;
-import su.nightexpress.sunlight.utils.SimpleTextAnimator;
+import su.nightexpress.sunlight.utils.DynamicText;
+import su.nightexpress.sunlight.utils.SunUtils;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class Board {
 
+    public static final int OBJECTIVE_ADD    = 0;
+    public static final int OBJECTIVE_REMOVE = 1;
+    public static final int OBJECTIVE_CHANGE = 2;
+
+    public static final int TEAM_CREATE     = 0;
+    public static final int TEAM_REMOVE     = 1;
+    public static final int TEAM_UPDATE     = 2;
+
     private final ScoreboardModule     module;
     private final BoardConfig          boardConfig;
     private final Player               player;
-    private final String               playerId;
+    private final String               identifier;
     private final Map<Integer, String> scores;
 
     private boolean lock;
+    private long nextUpdateTicks;
 
     public Board(@NotNull Player player, @NotNull ScoreboardModule module, @NotNull BoardConfig boardConfig) {
         this.module = module;
         this.boardConfig = boardConfig;
         this.player = player;
-        this.playerId = this.player.getUniqueId().toString().replace("-", "").substring(0, 15);
+        this.identifier = SunUtils.createIdentifier(player).substring(0, 16);
         this.scores = new ConcurrentHashMap<>();
+        this.nextUpdateTicks = 0L;
     }
 
     @NotNull
@@ -43,185 +57,192 @@ public class Board {
         return boardConfig;
     }
 
-    /*public int getScore(@NotNull String str) {
-        return this.scores.entrySet().stream().filter(e -> e.getValue().equals(str))
-            .findFirst().map(Map.Entry::getKey).orElse(0);
-    }*/
-
     @NotNull
     private String getPlayerIdentifier() {
-        return this.playerId;
+        return this.identifier;
     }
 
     @NotNull
     private String getScoreIdentifier(int score) {
-        return ChatColor.COLOR_CHAR + String.join(String.valueOf(ChatColor.COLOR_CHAR), String.valueOf(score).split(""));
+        return "line_" + score;
+        //return ChatColor.COLOR_CHAR + String.join(String.valueOf(ChatColor.COLOR_CHAR), String.valueOf(score).split(""));
+    }
+
+    @NotNull
+    private PacketContainer createObjectivePacket(int mode, @NotNull String displayName) {
+        PacketContainer objectivePacket = new PacketContainer(PacketType.Play.Server.SCOREBOARD_OBJECTIVE);
+        objectivePacket.getModifier().writeDefaults();
+        objectivePacket.getStrings().write(0, this.identifier); // 'objectiveName'
+        objectivePacket.getIntegers().write(0, mode); // 'method'
+        objectivePacket.getChatComponents().write(0, WrappedChatComponent.fromJson(NightMessage.asJson(displayName))); // 'displayName'
+        if (Version.isAtLeast(Version.MC_1_20_6)) {
+            objectivePacket.getOptionals(BukkitConverters.getWrappedNumberFormatConverter()).write(0, Optional.of(WrappedNumberFormat.blank()));
+        }
+        else if (Version.isAtLeast(Version.V1_20_R3)) {
+            objectivePacket.getNumberFormats().write(0, WrappedNumberFormat.blank());
+        }
+        return objectivePacket;
+    }
+
+    @NotNull
+    private PacketContainer createResetScorePacket(@NotNull String scoreId) {
+        PacketContainer scorePacket;
+        if (Version.isAtLeast(Version.V1_20_R3)) {
+            scorePacket = new PacketContainer(PacketType.Play.Server.RESET_SCORE);
+            scorePacket.getModifier().writeDefaults();
+            scorePacket.getStrings().write(0, scoreId);
+            scorePacket.getStrings().write(1, this.identifier);
+        }
+        else {
+            scorePacket = new PacketContainer(PacketType.Play.Server.SCOREBOARD_SCORE);
+            scorePacket.getModifier().writeDefaults();
+            scorePacket.getStrings().write(0, scoreId);
+            scorePacket.getStrings().write(1, this.identifier);
+            scorePacket.getScoreboardActions().write(0, EnumWrappers.ScoreboardAction.REMOVE);
+        }
+        return scorePacket;
     }
 
     public void create() {
+        ProtocolLibHook.sendPacketServer(this.player, this.createObjectivePacket(OBJECTIVE_ADD, ""));
 
-        PacketContainer packet = new PacketContainer(PacketType.Play.Server.SCOREBOARD_OBJECTIVE);
-        packet.getModifier().writeDefaults();
-        packet.getStrings().write(0, this.getPlayerIdentifier()); // Objective Name
-        packet.getIntegers().write(0, 0); // Mode 0: Created Scoreboard
-        packet.getChatComponents().write(0, WrappedChatComponent.fromText(this.getPlayerIdentifier())); // Display Name
-        ProtocolLibHook.sendPacketServer(this.player, packet);
-
-        packet = new PacketContainer(PacketType.Play.Server.SCOREBOARD_DISPLAY_OBJECTIVE);
-        packet.getModifier().writeDefaults();
-        if (Version.isAtLeast(Version.V1_20_R2)) {
-            packet.getEnumModifier(DisplaySlot.class, 0).write(0, DisplaySlot.SIDEBAR);
-            //packet.getEnumModifier(DisplaySlot.class, MinecraftReflection.getMinecraftClass("world.scores.DisplaySlot")).write(0, DisplaySlot.SIDEBAR);
+        PacketContainer displayPacket = new PacketContainer(PacketType.Play.Server.SCOREBOARD_DISPLAY_OBJECTIVE);
+        displayPacket.getModifier().writeDefaults();
+        if (Version.isAtLeast(Version.MC_1_20_6)) {
+            displayPacket.getDisplaySlots().write(0, EnumWrappers.DisplaySlot.SIDEBAR);
+        }
+        else if (Version.isAtLeast(Version.V1_20_R2)) {
+            displayPacket.getEnumModifier(DisplaySlot.class, 0).write(0, DisplaySlot.SIDEBAR);
         }
         else {
-            packet.getIntegers().write(0, 1); // Position 1: Sidebar
+            displayPacket.getIntegers().write(0, 1); // Position 1: Sidebar
         }
-        packet.getStrings().write(0, this.getPlayerIdentifier()); // Objective Name
-        ProtocolLibHook.sendPacketServer(this.player, packet);
+        displayPacket.getStrings().write(0, this.identifier); // Objective Name
+        ProtocolLibHook.sendPacketServer(this.player, displayPacket);
     }
 
     public void remove() {
-        PacketContainer packet = new PacketContainer(PacketType.Play.Server.SCOREBOARD_OBJECTIVE);
-        packet.getModifier().writeDefaults();
-        packet.getStrings().write(0, this.getPlayerIdentifier()); // Objective Name
-        packet.getIntegers().write(0, 1); // Mode 1: Remove Scoreboard
-        ProtocolLibHook.sendPacketServer(this.player, packet);
+        ProtocolLibHook.sendPacketServer(this.player, this.createObjectivePacket(OBJECTIVE_REMOVE, ""));
 
-        this.scores.forEach((score, val) -> {
-            PacketContainer packet2 = new PacketContainer(PacketType.Play.Server.SCOREBOARD_TEAM);
-            packet2.getModifier().writeDefaults();
-            packet2.getStrings().write(0, this.getScoreIdentifier(score)); // Team Name
-            packet2.getIntegers().write(0, 1); // Mode - remove team
-            ProtocolLibHook.sendPacketServer(this.player, packet2);
+        this.scores.forEach((score, text) -> {
+            if (Version.isBehind(Version.V1_20_R3)) {
+                PacketContainer teamPacket = new PacketContainer(PacketType.Play.Server.SCOREBOARD_TEAM);
+                teamPacket.getModifier().writeDefaults();
+                teamPacket.getStrings().write(0, this.getScoreIdentifier(score));
+                teamPacket.getIntegers().write(0, TEAM_REMOVE);
+                ProtocolLibHook.sendPacketServer(this.player, teamPacket);
+            }
+            else {
+                ProtocolLibHook.sendPacketServer(this.player, this.createResetScorePacket(this.getScoreIdentifier(score)));
+            }
         });
+
         this.scores.clear();
         this.lock = false;
     }
 
-    public void clear() {
-        this.scores.forEach((score, val) -> {
-            String scoreId = this.getScoreIdentifier(score);
+    @NotNull
+    private String replacePlaceholders(@NotNull String string) {
+        string = Placeholders.forPlayer(this.player).apply(string);
+        for (DynamicText animation : this.module.getAnimations()) {
+            string = animation.replacePlaceholders().apply(string);
+        }
+        if (Plugins.hasPlaceholderAPI()) {
+            string = PlaceholderAPI.setPlaceholders(this.player, string);
+        }
+        return string;
+    }
 
-            PacketContainer packet = new PacketContainer(PacketType.Play.Server.SCOREBOARD_TEAM);
-            packet.getModifier().writeDefaults();
-            packet.getStrings().write(0, scoreId); // Team Name
-            packet.getIntegers().write(0, 1); // Mode - remove team
-            ProtocolLibHook.sendPacketServer(this.player, packet);
-
-            packet = new PacketContainer(PacketType.Play.Server.SCOREBOARD_SCORE);
-            packet.getModifier().writeDefaults();
-            packet.getStrings().write(0, scoreId); // Score Name
-            packet.getScoreboardActions().write(0, EnumWrappers.ScoreboardAction.REMOVE); // Action
-            packet.getStrings().write(1, this.getPlayerIdentifier()); // Objective Name
-            ProtocolLibHook.sendPacketServer(this.player, packet);
-        });
-        this.scores.clear();
+    public void updateIfReady() {
+        if (--this.nextUpdateTicks <= 0L) {
+            this.update();
+        }
     }
 
     public void update() {
         // Fixes waterfall kick issue where scoreboard tries to be registered twice on login for whatever reason.
-        if (this.lock) {
-            //System.out.println("LOCKED UPDATE PREVENT DESYNC ERROR");
-            return;
-        }
+        if (this.lock) return;
 
         this.lock = true;
-        String title = this.getBoardConfig().getTitle();
-        List<String> lines = this.getBoardConfig().getLines();
+        String title = this.boardConfig.getTitle();
+        List<String> lines = this.boardConfig.getLines();
 
+        Collection<DynamicText> animations = this.module.getAnimations();
         Map<Integer, String> scores = new HashMap<>();
         int index = lines.size();
 
         for (String line : lines) {
-            for (SimpleTextAnimator animation : this.module.animationMap.values()) {
-                line = animation.replace(line);
-            }
-            if (EngineUtils.hasPlaceholderAPI()) {
-                line = PlaceholderAPI.setPlaceholders(this.player, line);
-            }
-            scores.put(index--, Colorizer.apply(line));
+            scores.put(index--, this.replacePlaceholders(line));
         }
-        if (EngineUtils.hasPlaceholderAPI()) {
-            title = PlaceholderAPI.setPlaceholders(this.player, title);
-        }
-        for (SimpleTextAnimator animation : this.module.animationMap.values()) {
-            title = animation.replace(title);
-        }
-        title = Colorizer.apply(title);
+        title = this.replacePlaceholders(title);
 
-        PacketContainer packet2 = new PacketContainer(PacketType.Play.Server.SCOREBOARD_OBJECTIVE);
-        packet2.getModifier().writeDefaults();
-        packet2.getStrings().write(0, this.getPlayerIdentifier()); // Objective Name
-        packet2.getIntegers().write(0, 2); // Mode 2: Update Display Name
-        packet2.getChatComponents().write(0, WrappedChatComponent.fromLegacyText(title)); // Display Name
-        ProtocolLibHook.sendPacketServer(this.player, packet2);
 
-        //System.out.println("update board");
+        ProtocolLibHook.sendPacketServer(this.player, this.createObjectivePacket(OBJECTIVE_CHANGE, title));
 
         scores.forEach((score, text) -> {
             String scoreId = this.getScoreIdentifier(score);
 
-            PacketContainer packet = new PacketContainer(PacketType.Play.Server.SCOREBOARD_TEAM);
-            packet.getModifier().writeDefaults();
-            packet.getStrings().write(0, scoreId); // Team Name
+            if (Version.isBehind(Version.V1_20_R3)) {
+                PacketContainer teamPacket = new PacketContainer(PacketType.Play.Server.SCOREBOARD_TEAM);
+                teamPacket.getModifier().writeDefaults();
+                teamPacket.getStrings().write(0, scoreId); // Team Name
 
-            Optional<InternalStructure> optStruct = packet.getOptionalStructures().read(0);
-            if (optStruct.isPresent()) {
-                InternalStructure structure = optStruct.get();
-                structure.getChatComponents().write(0, WrappedChatComponent.fromText(scoreId)); // Display Name
-                structure.getChatComponents().write(1, WrappedChatComponent.fromLegacyText(text/*.first*/)); // Prefix
-                //struct.getChatComponents().write(2, WrappedChatComponent.fromLegacyText(splitText/*.second*/)); // Suffix
+                Optional<InternalStructure> optStruct = teamPacket.getOptionalStructures().read(0);
+                if (optStruct.isPresent()) {
+                    InternalStructure structure = optStruct.get();
+                    structure.getChatComponents().write(0, WrappedChatComponent.fromText("")); // Display Name
+                    structure.getChatComponents().write(1, WrappedChatComponent.fromJson(NightMessage.asJson(text))); // Prefix
 
-                packet.getOptionalStructures().write(0, Optional.of(structure));
+                    teamPacket.getOptionalStructures().write(0, Optional.of(structure));
+                }
+
+                // there's no need to create the team again if this line already exists
+                if (this.scores.containsKey(score)) {
+                    teamPacket.getIntegers().write(0, TEAM_UPDATE);
+                    ProtocolLibHook.sendPacketServer(this.player, teamPacket);
+                    return;
+                }
+                teamPacket.getIntegers().write(0, TEAM_CREATE);
+                teamPacket.getSpecificModifier(Collection.class).write(0, Lists.newList(scoreId)); // Entities
+                ProtocolLibHook.sendPacketServer(this.player, teamPacket);
             }
 
-            // there's no need to create the team again if this line already exists
-            if (this.scores.containsKey(score)) {
-                //System.out.println("update team for score " + score);
-                packet.getIntegers().write(0, 2); // Mode - update team info
-                ProtocolLibHook.sendPacketServer(this.player, packet);
-                return;
+            PacketContainer scorePacket = new PacketContainer(PacketType.Play.Server.SCOREBOARD_SCORE);
+            scorePacket.getModifier().writeDefaults();
+            scorePacket.getStrings().write(0, scoreId); // 'owner'
+            scorePacket.getStrings().write(1, this.identifier); // 'objectiveName'
+            scorePacket.getIntegers().write(0, score); // 'score'
+            if (Version.isAtLeast(Version.MC_1_20_6)) {
+                scorePacket.getOptionals(BukkitConverters.getWrappedChatComponentConverter()).write(0, Optional.of(WrappedChatComponent.fromJson(NightMessage.asJson(text))));
+                scorePacket.getOptionals(BukkitConverters.getWrappedNumberFormatConverter()).write(1, Optional.of(WrappedNumberFormat.blank()));
             }
-
-            //System.out.println("NEW team for score " + score);
-            packet.getIntegers().write(0, 0); // Mode - create team
-            packet.getSpecificModifier(Collection.class).write(0, Collections.singletonList(scoreId)); // Entities
-            ProtocolLibHook.sendPacketServer(this.player, packet);
-
-            packet = new PacketContainer(PacketType.Play.Server.SCOREBOARD_SCORE);
-            packet.getModifier().writeDefaults();
-            packet.getStrings().write(0, scoreId); // Score Name
-            packet.getScoreboardActions().write(0, EnumWrappers.ScoreboardAction.CHANGE); // Action
-            packet.getStrings().write(1, this.getPlayerIdentifier()); // Objective Name
-            packet.getIntegers().write(0, score); // Score Value
-            ProtocolLibHook.sendPacketServer(this.player, packet);
+            else if (Version.isAtLeast(Version.V1_20_R3)) {
+                scorePacket.getChatComponents().write(0, WrappedChatComponent.fromJson(NightMessage.asJson(text)));
+                scorePacket.getNumberFormats().write(0, WrappedNumberFormat.blank());
+            }
+            else {
+                scorePacket.getScoreboardActions().write(0, EnumWrappers.ScoreboardAction.CHANGE); // Action
+            }
+            ProtocolLibHook.sendPacketServer(this.player, scorePacket);
         });
 
-        this.scores.entrySet().stream().filter(e -> !scores.containsKey(e.getKey())).forEach(e -> {
-            int score = e.getKey();
+        this.scores.entrySet().stream().filter(entry -> !scores.containsKey(entry.getKey())).forEach(entry -> {
+            int score = entry.getKey();
             String scoreId = this.getScoreIdentifier(score);
-            //System.out.println("clear team for score " + score);
 
-            PacketContainer packet = new PacketContainer(PacketType.Play.Server.SCOREBOARD_TEAM);
-            packet.getModifier().writeDefaults();
-            packet.getStrings().write(0, scoreId); // Team Name
-            packet.getIntegers().write(0, 1); // Mode - remove team
-            ProtocolLibHook.sendPacketServer(this.player, packet);
-
-            packet = new PacketContainer(PacketType.Play.Server.SCOREBOARD_SCORE);
-            packet.getModifier().writeDefaults();
-            packet.getStrings().write(0, scoreId); // Score Name
-            packet.getScoreboardActions().write(0, EnumWrappers.ScoreboardAction.REMOVE); // Action
-            packet.getStrings().write(1, this.getPlayerIdentifier()); // Objective Name
-            ProtocolLibHook.sendPacketServer(this.player, packet);
+            if (Version.isBehind(Version.V1_20_R3)) {
+                PacketContainer teamPacket = new PacketContainer(PacketType.Play.Server.SCOREBOARD_TEAM);
+                teamPacket.getModifier().writeDefaults();
+                teamPacket.getStrings().write(0, scoreId);
+                teamPacket.getIntegers().write(0, TEAM_REMOVE);
+                ProtocolLibHook.sendPacketServer(this.player, teamPacket);
+            }
+            ProtocolLibHook.sendPacketServer(this.player, this.createResetScorePacket(scoreId));
         });
 
         this.scores.clear();
         this.scores.putAll(scores);
         this.lock = false;
+        this.nextUpdateTicks = this.boardConfig.getUpdateInterval();
     }
-
-    /*public boolean hasScoreboard(Player player) {
-        return playerBoards.containsKey(player.getUniqueId());
-    }*/
 }

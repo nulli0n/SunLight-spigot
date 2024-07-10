@@ -3,52 +3,109 @@ package su.nightexpress.sunlight.module.kits.menu;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
-import su.nexmedia.engine.api.config.JYML;
-import su.nexmedia.engine.api.menu.MenuItemType;
-import su.nexmedia.engine.api.menu.impl.ConfigMenu;
-import su.nexmedia.engine.api.menu.impl.MenuViewer;
-import su.nightexpress.sunlight.SunLight;
+import su.nightexpress.nightcore.config.ConfigValue;
+import su.nightexpress.nightcore.config.FileConfig;
+import su.nightexpress.nightcore.menu.MenuOptions;
+import su.nightexpress.nightcore.menu.MenuSize;
+import su.nightexpress.nightcore.menu.MenuViewer;
+import su.nightexpress.nightcore.menu.impl.ConfigMenu;
+import su.nightexpress.nightcore.menu.item.ItemHandler;
+import su.nightexpress.nightcore.menu.item.MenuItem;
+import su.nightexpress.nightcore.menu.link.Linked;
+import su.nightexpress.nightcore.menu.link.ViewLink;
+import su.nightexpress.nightcore.util.ItemUtil;
+import su.nightexpress.sunlight.SunLightPlugin;
+import su.nightexpress.sunlight.config.Lang;
 import su.nightexpress.sunlight.module.kits.Kit;
+import su.nightexpress.sunlight.module.kits.KitsModule;
 
-public class KitPreviewMenu extends ConfigMenu<SunLight> {
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.IntStream;
 
-    private static int[] ITEM_SLOTS  = new int[]{};
-    private static int[] ARMOR_SLOTS = new int[4];
-    private static int[] EXTRA_SLOTS = new int[1];
+import static su.nightexpress.nightcore.util.Placeholders.*;
+import static su.nightexpress.nightcore.util.text.tag.Tags.*;
 
-    private final Kit kit;
+public class KitPreviewMenu extends ConfigMenu<SunLightPlugin> implements Linked<Kit> {
 
-    public KitPreviewMenu(@NotNull Kit kit) {
-        super(kit.plugin(), JYML.loadOrExtract(kit.plugin(), kit.getModule().getLocalPath() + "/menu/", "kit_preview.yml"));
+    private static final String FILE_NAME = "kit_preview.yml";
 
-        this.kit = kit;
-        ITEM_SLOTS = cfg.getIntArray("Item_Slots");
-        ARMOR_SLOTS = cfg.getIntArray("Armor_Slots");
-        EXTRA_SLOTS = cfg.getIntArray("Extra_Slots");
+    private int[] itemSlots;
+    private int[] armorSlots;
+    private int[] extraSlots;
 
-        this.registerHandler(MenuItemType.class)
-            .addClick(MenuItemType.RETURN, (viewer, event) -> kit.getModule().getKitsMenu().openNextTick(viewer, 1));
+    private final ViewLink<Kit> link;
+    private final ItemHandler returnHandler;
+
+    public KitPreviewMenu(@NotNull SunLightPlugin plugin, @NotNull KitsModule module) {
+        super(plugin, FileConfig.loadOrExtract(plugin, module.getLocalUIPath(), FILE_NAME));
+        this.link = new ViewLink<>();
+
+        this.addHandler(this.returnHandler = ItemHandler.forReturn(this, (viewer, event) -> {
+            this.runNextTick(() -> module.openKitsMenu(viewer.getPlayer()));
+        }));
 
         this.load();
     }
 
+    @NotNull
+    @Override
+    public ViewLink<Kit> getLink() {
+        return link;
+    }
+
+    @Override
+    protected void onPrepare(@NotNull MenuViewer viewer, @NotNull MenuOptions options) {
+
+    }
+
     @Override
     public void onReady(@NotNull MenuViewer viewer, @NotNull Inventory inventory) {
-        super.onReady(viewer, inventory);
+        Kit kit = this.getLink(viewer);
+
         int count = 0;
-        for (ItemStack item : this.kit.getItems()) {
-            if (count >= ITEM_SLOTS.length || count >= inventory.getSize()) break;
-            inventory.setItem(ITEM_SLOTS[count++], item);
+        for (ItemStack item : kit.getItems()) {
+            if (count >= itemSlots.length || count >= inventory.getSize()) break;
+            inventory.setItem(itemSlots[count++], item);
         }
 
         int armorCount = 0;
-        for (ItemStack armor : this.kit.getArmor()) {
-            if (armorCount >= ARMOR_SLOTS.length || armorCount >= inventory.getSize()) break;
-            inventory.setItem(ARMOR_SLOTS[armorCount++], armor);
+        for (ItemStack armor : kit.getArmor()) {
+            if (armorCount >= armorSlots.length || armorCount >= inventory.getSize()) break;
+            inventory.setItem(armorSlots[armorCount++], armor);
         }
 
-        for (int index = 0; index < EXTRA_SLOTS.length; index++) {
-            inventory.setItem(EXTRA_SLOTS[index], kit.getExtras()[index]);
+        for (int index = 0; index < extraSlots.length; index++) {
+            inventory.setItem(extraSlots[index], kit.getExtras()[index]);
         }
+    }
+
+    @Override
+    @NotNull
+    protected MenuOptions createDefaultOptions() {
+        return new MenuOptions(BLACK.enclose("Kit Preivew"), MenuSize.CHEST_54);
+    }
+
+    @Override
+    @NotNull
+    protected List<MenuItem> createDefaultItems() {
+        List<MenuItem> list = new ArrayList<>();
+
+        ItemStack back = ItemUtil.getSkinHead(SKIN_ARROW_DOWN);
+        ItemUtil.editMeta(back, meta -> {
+            meta.setDisplayName(Lang.EDITOR_ITEM_RETURN.getDefaultName());
+        });
+        list.add(new MenuItem(back).setPriority(10).setSlots(49).setHandler(this.returnHandler));
+
+        return list;
+    }
+
+    @Override
+    protected void loadAdditional() {
+        itemSlots = ConfigValue.create("Item_Slots", IntStream.range(9, 45).toArray()).read(cfg);
+
+        armorSlots = ConfigValue.create("Armor_Slots", new int[] {5,4,3,2}).read(cfg);
+
+        extraSlots = ConfigValue.create("Extra_Slots", new int[] {6}).read(cfg);
     }
 }

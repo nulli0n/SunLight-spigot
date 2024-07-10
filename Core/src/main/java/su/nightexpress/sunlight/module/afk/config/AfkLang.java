@@ -1,23 +1,36 @@
 package su.nightexpress.sunlight.module.afk.config;
 
-import su.nexmedia.engine.api.lang.LangKey;
-import su.nightexpress.sunlight.Placeholders;
+import su.nightexpress.nightcore.language.entry.LangString;
+import su.nightexpress.nightcore.language.entry.LangText;
 
-import static su.nexmedia.engine.utils.Colors.*;
+import static su.nightexpress.nightcore.util.text.tag.Tags.*;
+import static su.nightexpress.sunlight.Placeholders.*;
 
 public class AfkLang {
 
-    public static final LangKey COMMAND_AFK_DESC  = LangKey.of("Afk.Command.Afk.Desc", "Toggle [player's] AFK mode.");
-    public static final LangKey COMMAND_AFK_USAGE = LangKey.of("Afk.Command.Afk.Usage", "[player] [-on] [-off] [-s]");
+    public static final LangString COMMAND_AFK_DESC = LangString.of("Afk.Command.Afk.Desc",
+        "Toggle AFK mode.");
 
-    public static final LangKey AFK_ENTER = LangKey.of("Afk.Mode.Enter",
-        "<! prefix:\"false\" !>" + ORANGE + "[AFK]" + LIGHT_YELLOW + " Player " + ORANGE + Placeholders.PLAYER_DISPLAY_NAME + LIGHT_YELLOW + " is AFK now.");
-    public static final LangKey AFK_EXIT  = LangKey.of("Afk.Mode.Exit",
-        "<! prefix:\"false\" !>" + ORANGE + "[AFK]" + LIGHT_YELLOW + " Player " + ORANGE + Placeholders.PLAYER_DISPLAY_NAME + LIGHT_YELLOW + " returned " + ORANGE + Placeholders.GENERIC_TIME + LIGHT_YELLOW + " later.");
+    public static final LangText COMMAND_AFK_DONE_OTHERS = LangText.of("Afk.Command.Afk.Done.Others",
+        LIGHT_GRAY.enclose("Set " + LIGHT_YELLOW.enclose(PLAYER_DISPLAY_NAME) + " afk mode: " + LIGHT_YELLOW.enclose(GENERIC_STATE) + "."));
 
-    public static final LangKey AFK_NOTIFY_PM       = LangKey.of("Afk.Notify.PrivateMessage",
-        "<! prefix:\"false\" !>" + RED + "[AFK]" + LIGHT_YELLOW + " Player " + ORANGE + Placeholders.PLAYER_DISPLAY_NAME + LIGHT_YELLOW + " is AFK and can miss your message.");
-    public static final LangKey AFK_NOTIFY_TELEPORT = LangKey.of("Afk.Notify.TeleportRequest",
-        "<! prefix:\"false\" !>" + RED + "[AFK]" + LIGHT_YELLOW + " Player " + ORANGE + Placeholders.PLAYER_DISPLAY_NAME + LIGHT_YELLOW + " is AFK and can miss your request.");
+    public static final LangText AFK_ENTER = LangText.of("Afk.Mode.Enter",
+        TAG_NO_PREFIX,
+        LIGHT_GRAY.enclose("Player " + LIGHT_YELLOW.enclose(PLAYER_DISPLAY_NAME) + " is AFK now.")
+    );
 
+    public static final LangText AFK_EXIT = LangText.of("Afk.Mode.Exit",
+        TAG_NO_PREFIX,
+        LIGHT_GRAY.enclose("Player " + LIGHT_YELLOW.enclose(PLAYER_DISPLAY_NAME) + " returned after " + LIGHT_YELLOW.enclose(GENERIC_TIME) + " of afk.")
+    );
+
+    public static final LangText AFK_NOTIFY_PM = LangText.of("Afk.Notify.PrivateMessage",
+        TAG_NO_PREFIX,
+        LIGHT_GRAY.enclose("Player " + LIGHT_RED.enclose(PLAYER_DISPLAY_NAME) + " is AFK and may not respond.")
+    );
+
+    public static final LangText AFK_NOTIFY_TELEPORT = LangText.of("Afk.Notify.TeleportRequest",
+        TAG_NO_PREFIX,
+        LIGHT_GRAY.enclose("Player " + LIGHT_RED.enclose(PLAYER_DISPLAY_NAME) + " is AFK and may not respond.")
+    );
 }

@@ -1,24 +1,41 @@
 package su.nightexpress.sunlight.module.extras.config;
 
-import su.nexmedia.engine.api.lang.LangKey;
-import su.nightexpress.sunlight.Placeholders;
-import static su.nexmedia.engine.utils.Colors.*;
+import su.nightexpress.nightcore.language.entry.LangString;
+import su.nightexpress.nightcore.language.entry.LangText;
+
+import static su.nightexpress.nightcore.util.text.tag.Tags.*;
+import static su.nightexpress.sunlight.Placeholders.*;
 
 public class ExtrasLang {
 
-    public static final LangKey COMMAND_CHAIRS_DESC   = LangKey.of("Extras.Command.Chairs.Desc", "Toggle [player's] chairs feature.");
-    public static final LangKey COMMAND_CHAIRS_USAGE  = LangKey.of("Extras.Command.Chairs.Usage", "[player] [-on] [-off] [-s]");
-    public static final LangKey COMMAND_CHAIRS_NOTIFY = LangKey.of("Extras.Command.Chairs.Notify", LIGHT_YELLOW + "Auto-Chairs " + ORANGE + Placeholders.GENERIC_STATE + LIGHT_YELLOW + ".");
-    public static final LangKey COMMAND_CHAIRS_TARGET = LangKey.of("Extras.Command.Chairs.Target", LIGHT_YELLOW + "Auto-Chairs " + ORANGE + Placeholders.GENERIC_STATE + LIGHT_YELLOW + " for " + ORANGE + Placeholders.PLAYER_NAME + LIGHT_YELLOW + ".");
+    public static final LangString COMMAND_CHAIRS_DESC     = LangString.of("Extras.Command.Chairs.Desc", "Toggle Chairs.");
+    public static final LangString COMMAND_SIT_DESC        = LangString.of("Extras.Command.Sit.Desc", "Sit on a block.");
+    public static final LangString COMMAND_CHEST_SORT_DESC = LangString.of("Extras.Command.ChestSort.Desc", "Toggle ChestSort.");
 
-    public static final LangKey COMMAND_SIT_DESC   = LangKey.of("Extras.Command.Sit.Desc", "Force [player] to sit.");
-    public static final LangKey COMMAND_SIT_USAGE  = LangKey.of("Extras.Command.Sit.Usage", "[player] [-s]");
-    public static final LangKey COMMAND_SIT_NOTIFY = LangKey.of("Extras.Command.Sit.Notify", LIGHT_YELLOW + "You are sitting now.");
-    public static final LangKey COMMAND_SIT_TARGET = LangKey.of("Extras.Command.Sit.Target", LIGHT_YELLOW + "Made " + ORANGE + Placeholders.PLAYER_NAME + LIGHT_YELLOW + " to sit.");
+    public static final LangText COMMAND_CHAIRS_NOTIFY = LangText.of("Extras.Command.Chairs.Notify",
+        LIGHT_GRAY.enclose("Set " + LIGHT_YELLOW.enclose("Chairs") + " on " + LIGHT_YELLOW.enclose(GENERIC_STATE) + ".")
+    );
 
-    public static final LangKey COMMAND_CHEST_SORT_DESC   = LangKey.of("Extras.Command.ChestSort.Desc", "Toggle [player's] chest sort feature.");
-    public static final LangKey COMMAND_CHEST_SORT_USAGE  = LangKey.of("Extras.Command.ChestSort.Usage", "[player] [-on] [-off] [-s]");
-    public static final LangKey COMMAND_CHEST_SORT_NOTIFY = LangKey.of("Extras.Command.ChestSort.Notify", LIGHT_YELLOW + "Chest Sort " + ORANGE + Placeholders.GENERIC_STATE + LIGHT_YELLOW + ".");
-    public static final LangKey COMMAND_CHEST_SORT_TARGET = LangKey.of("Extras.Command.ChestSort.Target", LIGHT_YELLOW + "Chest Sort " + ORANGE + Placeholders.GENERIC_STATE + LIGHT_YELLOW + " for " + ORANGE + Placeholders.PLAYER_NAME + LIGHT_YELLOW + ".");
+    public static final LangText COMMAND_CHAIRS_TARGET = LangText.of("Extras.Command.Chairs.Target",
+        LIGHT_GRAY.enclose("Set " + LIGHT_YELLOW.enclose(PLAYER_DISPLAY_NAME) + "'s " + LIGHT_YELLOW.enclose("Chairs") + " on " + LIGHT_YELLOW.enclose(GENERIC_STATE) + ".")
+    );
+
+
+    public static final LangText COMMAND_SIT_NOTIFY = LangText.of("Extras.Command.Sit.Notify",
+        LIGHT_GRAY.enclose("You are sitting now.")
+    );
+
+    public static final LangText COMMAND_SIT_TARGET = LangText.of("Extras.Command.Sit.Target",
+        LIGHT_GRAY.enclose("Made " + LIGHT_YELLOW.enclose(PLAYER_NAME) + " to sit.")
+    );
+
+
+    public static final LangText COMMAND_CHEST_SORT_NOTIFY = LangText.of("Extras.Command.ChestSort.Notify",
+        LIGHT_GRAY.enclose("Set " + LIGHT_YELLOW.enclose("Chest Sort") + " on " + LIGHT_YELLOW.enclose(GENERIC_STATE) + ".")
+    );
+
+    public static final LangText COMMAND_CHEST_SORT_TARGET = LangText.of("Extras.Command.ChestSort.Target",
+        LIGHT_GRAY.enclose("Set " + LIGHT_YELLOW.enclose(PLAYER_DISPLAY_NAME) + "'s " + LIGHT_YELLOW.enclose("Chest Sort") + " on " + LIGHT_YELLOW.enclose(GENERIC_STATE) + ".")
+    );
 
 }

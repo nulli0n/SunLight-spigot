@@ -3,54 +3,65 @@ package su.nightexpress.sunlight.module.chat;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import su.nexmedia.engine.api.config.JYML;
-import su.nexmedia.engine.api.manager.AbstractManager;
+import su.nightexpress.nightcore.config.FileConfig;
+import su.nightexpress.nightcore.manager.AbstractManager;
 import su.nightexpress.sunlight.Placeholders;
-import su.nightexpress.sunlight.SunLight;
-import su.nightexpress.sunlight.module.chat.command.ShortChannelCommand;
+import su.nightexpress.sunlight.SunLightPlugin;
 import su.nightexpress.sunlight.module.chat.config.ChatConfig;
 import su.nightexpress.sunlight.module.chat.config.ChatLang;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class ChannelManager extends AbstractManager<SunLight> {
+public class ChannelManager extends AbstractManager<SunLightPlugin> {
 
-    public static final String CONFIG_NAME = "channels.yml";
+    public static final String FILE_NAME = "channels.yml";
 
     private final ChatModule module;
+
     private final Map<String, ChatChannel> channelMap;
-    private final Map<UUID, String> activeChannelMap;
+    private final Map<UUID, String>        activeChannelMap;
+
     private ChatChannel defaultChannel;
 
-    public ChannelManager(@NotNull SunLight plugin, @NotNull ChatModule module) {
+    public ChannelManager(@NotNull SunLightPlugin plugin, @NotNull ChatModule module) {
         super(plugin);
         this.module = module;
         this.channelMap = new HashMap<>();
         this.activeChannelMap = new HashMap<>();
     }
 
+    @Override
     protected void onLoad() {
-        JYML cfg = JYML.loadOrExtract(this.plugin, this.module.getLocalPath(), CONFIG_NAME);
-        for (String channelId : cfg.getSection("")) {
-            ChatChannel channel2 = ChatChannel.read(cfg, channelId, channelId);
-            this.getChannelMap().put(channel2.getId(), channel2);
-        }
-
-        cfg.saveChanges();
+        this.loadConfig();
 
         this.defaultChannel = this.getChannels().stream().filter(ChatChannel::isDefault).findFirst().orElse(this.getChannels().stream().findAny().orElse(null));
         if (this.defaultChannel == null) {
             throw new IllegalStateException("Chat module has no channels! You must have at least one channel for the module to work.");
         }
 
-        this.getChannels().forEach(channel -> this.plugin.getCommandManager().registerCommand(new ShortChannelCommand(this.module, channel)));
         this.plugin.getServer().getOnlinePlayers().forEach(this::autoJoinChannels);
     }
 
+    @Override
     protected void onShutdown() {
-        this.getChannelMap().clear();
-        this.getActiveChannelMap().clear();
+        this.channelMap.clear();
+        this.activeChannelMap.clear();
+    }
+
+    private void loadConfig() {
+        FileConfig config = FileConfig.loadOrExtract(this.plugin, this.module.getLocalPath(), FILE_NAME);
+
+        if (config.getSection("").isEmpty()) {
+            ChatChannel.getDefaults().forEach(channel -> channel.write(config, channel.getId()));
+        }
+
+        for (String sId : config.getSection("")) {
+            ChatChannel channel = ChatChannel.read(config, sId, sId);
+            this.channelMap.put(channel.getId(), channel);
+        }
+
+        config.saveChanges();
     }
 
     public void autoJoinChannels(@NotNull Player player) {
@@ -71,7 +82,7 @@ public class ChannelManager extends AbstractManager<SunLight> {
 
     @NotNull
     public Collection<ChatChannel> getChannels() {
-        return this.getChannelMap().values();
+        return this.channelMap.values();
     }
 
     @NotNull
@@ -86,7 +97,7 @@ public class ChannelManager extends AbstractManager<SunLight> {
 
     @Nullable
     public ChatChannel getChannel(@NotNull String id) {
-        return this.getChannelMap().get(id.toLowerCase());
+        return this.channelMap.get(id.toLowerCase());
     }
 
     @Nullable
@@ -101,7 +112,7 @@ public class ChannelManager extends AbstractManager<SunLight> {
 
     @NotNull
     public ChatChannel getActiveChannel(@NotNull Player player) {
-        String id = this.getActiveChannelMap().getOrDefault(player.getUniqueId(), Placeholders.DEFAULT);
+        String id = this.activeChannelMap.getOrDefault(player.getUniqueId(), Placeholders.DEFAULT);
         ChatChannel chatChannel = this.getChannel(id);
         if (chatChannel == null) {
             chatChannel = this.getDefaultChannel();
@@ -113,8 +124,8 @@ public class ChannelManager extends AbstractManager<SunLight> {
         if (!channel.contains(player) && !this.joinChannel(player, channel)) {
             return false;
         }
-        this.getActiveChannelMap().put(player.getUniqueId(), channel.getId());
-        this.plugin.getMessage(ChatLang.CHANNEL_SET_SUCCESS).replace(channel.replacePlaceholders()).send(player);
+        this.activeChannelMap.put(player.getUniqueId(), channel.getId());
+        ChatLang.CHANNEL_SET_SUCCESS.getMessage().replace(channel.replacePlaceholders()).send(player);
         return true;
     }
 
@@ -125,34 +136,38 @@ public class ChannelManager extends AbstractManager<SunLight> {
     public boolean joinChannel(@NotNull Player player, @NotNull ChatChannel channel, boolean isSilent) {
         if (!channel.canJoin(player)) {
             if (!isSilent) {
-                this.plugin.getMessage(ChatLang.CHANNEL_JOIN_ERROR_NO_PERMISSION).replace(channel.replacePlaceholders()).send(player);
+                ChatLang.CHANNEL_JOIN_ERROR_NO_PERMISSION.getMessage().replace(channel.replacePlaceholders()).send(player);
             }
             return false;
         }
+
         if (channel.join(player)) {
             if (!isSilent) {
-                this.plugin.getMessage(ChatLang.CHANNEL_JOIN_SUCCESS).replace(channel.replacePlaceholders()).send(player);
+                ChatLang.CHANNEL_JOIN_SUCCESS.getMessage().replace(channel.replacePlaceholders()).send(player);
             }
             return true;
         }
+
         if (!isSilent) {
-            this.plugin.getMessage(ChatLang.CHANNEL_JOIN_ERROR_ALREADY_IN).replace(channel.replacePlaceholders()).send(player);
+            ChatLang.CHANNEL_JOIN_ERROR_ALREADY_IN.getMessage().replace(channel.replacePlaceholders()).send(player);
         }
+
         return false;
     }
 
     public boolean leaveChannel(@NotNull Player player, @NotNull ChatChannel channel) {
         if (channel.removePlayer(player)) {
-            this.plugin.getMessage(ChatLang.CHANNEL_LEAVE_SUCCESS).replace(channel.replacePlaceholders()).send(player);
+            ChatLang.CHANNEL_LEAVE_SUCCESS.getMessage().replace(channel.replacePlaceholders()).send(player);
             return true;
         }
-        this.plugin.getMessage(ChatLang.CHANNEL_LEAVE_ERROR_NOT_IN).replace(channel.replacePlaceholders()).send(player);
+
+        ChatLang.CHANNEL_LEAVE_ERROR_NOT_IN.getMessage().replace(channel.replacePlaceholders()).send(player);
         return false;
     }
 
     public void leaveAllChannels(@NotNull Player player) {
         this.getChannels().forEach(channel -> channel.removePlayer(player));
-        this.getActiveChannelMap().remove(player.getUniqueId());
+        this.activeChannelMap.remove(player.getUniqueId());
     }
 }
 

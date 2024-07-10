@@ -1,41 +1,52 @@
 package su.nightexpress.sunlight.command.list;
 
 import org.bukkit.Material;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.ShapedRecipe;
 import org.jetbrains.annotations.NotNull;
-import su.nexmedia.engine.api.command.CommandResult;
-import su.nexmedia.engine.api.command.GeneralCommand;
-import su.nexmedia.engine.utils.ItemUtil;
-import su.nexmedia.engine.utils.PlayerUtil;
-import su.nightexpress.sunlight.Perms;
+import su.nightexpress.nightcore.command.experimental.CommandContext;
+import su.nightexpress.nightcore.command.experimental.argument.ParsedArguments;
+import su.nightexpress.nightcore.command.experimental.builder.DirectNodeBuilder;
+import su.nightexpress.nightcore.command.experimental.node.DirectNode;
+import su.nightexpress.nightcore.config.FileConfig;
+import su.nightexpress.nightcore.util.ItemUtil;
+import su.nightexpress.nightcore.util.Players;
 import su.nightexpress.sunlight.Placeholders;
-import su.nightexpress.sunlight.SunLight;
+import su.nightexpress.sunlight.SunLightPlugin;
+import su.nightexpress.sunlight.command.CommandPerms;
+import su.nightexpress.sunlight.command.CommandRegistry;
+import su.nightexpress.sunlight.command.template.CommandTemplate;
 import su.nightexpress.sunlight.config.Lang;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
-public class CondenseCommand extends GeneralCommand<SunLight> {
+public class CondenseCommand {
 
     public static final String NAME = "condense";
 
-    public static final String PLACEHOLDER_SOURCE = "%source%";
-    public static final String PLACEHOLDER_RESULT = "%result%";
-    public static final String PLACEHOLDER_TOTAL = "%total%";
-
-    public CondenseCommand(@NotNull SunLight plugin, @NotNull String[] aliases) {
-        super(plugin, aliases, Perms.COMMAND_CONDENSE);
-        this.setDescription(plugin.getMessage(Lang.COMMAND_CONDENSE_DESC));
-        this.setUsage(plugin.getMessage(Lang.COMMAND_CONDENSE_USAGE));
-        this.setPlayerOnly(true);
+    public static void load(@NotNull SunLightPlugin plugin) {
+        CommandRegistry.registerDirectExecutor(NAME, (template, config) -> builderRoot(plugin, template, config));
+        CommandRegistry.addSimpleTemplate(NAME);
     }
 
-    @Override
-    public void onExecute(@NotNull CommandSender sender, @NotNull CommandResult result) {
-        Player player = (Player) sender;
+    public static DirectNodeBuilder builderRoot(@NotNull SunLightPlugin plugin, @NotNull CommandTemplate template, @NotNull FileConfig config) {
+        return DirectNode.builder(plugin, template.getAliases())
+            .description(Lang.COMMAND_CONDENSE_DESC)
+            .permission(CommandPerms.CONDENSE)
+            .playerOnly()
+            .executes((context, arguments) -> execute(plugin, context, arguments))
+            ;
+    }
+
+    public static boolean execute(@NotNull SunLightPlugin plugin, @NotNull CommandContext context, @NotNull ParsedArguments arguments) {
+        Player player = context.getExecutor();
+        if (player == null) return false;
+
         boolean done = false;
         Set<Material> userItems = new HashSet<>();
 
@@ -88,35 +99,37 @@ public class CondenseCommand extends GeneralCommand<SunLight> {
                 continue;
             }
 
-            int amountUserHas = PlayerUtil.countItem(player, userItem);
+            int amountUserHas = Players.countItem(player, userItem);
             int amountCraftCan = (int) ((double) amountUserHas / (double) amountPerCraft);
             int amountCraftMin = recipeResult.getAmount();
 
             if (amountCraftCan < amountCraftMin) {
-                plugin.getMessage(Lang.COMMAND_CONDENSE_ERROR_NOT_ENOUGH)
+                Lang.COMMAND_CONDENSE_ERROR_NOT_ENOUGH.getMessage()
                     .replace(Placeholders.GENERIC_AMOUNT, String.valueOf(amountPerCraft))
-                    .replace(PLACEHOLDER_SOURCE, ItemUtil.getItemName(userItem))
-                    .replace(PLACEHOLDER_RESULT, ItemUtil.getItemName(recipeResult))
-                    .send(sender);
+                    .replace(Placeholders.GENERIC_SOURCE, ItemUtil.getItemName(userItem))
+                    .replace(Placeholders.GENERIC_RESULT, ItemUtil.getItemName(recipeResult))
+                    .send(context.getSender());
                 continue;
             }
 
             for (int craft = 0; craft < amountCraftCan; craft++) {
-                PlayerUtil.takeItem(player, userItem, amountPerCraft);
-                PlayerUtil.addItem(player, recipeResult);
+                Players.takeItem(player, userItem, amountPerCraft);
+                Players.addItem(player, recipeResult);
             }
 
-            plugin.getMessage(Lang.COMMAND_CONDENSE_DONE)
-                .replace(PLACEHOLDER_SOURCE, ItemUtil.getItemName(userItem))
-                .replace(PLACEHOLDER_RESULT, ItemUtil.getItemName(recipeResult))
-                .replace(PLACEHOLDER_TOTAL, String.valueOf(amountCraftCan * amountPerCraft))
+            Lang.COMMAND_CONDENSE_DONE.getMessage()
+                .replace(Placeholders.GENERIC_SOURCE, ItemUtil.getItemName(userItem))
+                .replace(Placeholders.GENERIC_RESULT, ItemUtil.getItemName(recipeResult))
+                .replace(Placeholders.GENERIC_TOTAL, String.valueOf(amountCraftCan * amountPerCraft))
                 .replace(Placeholders.GENERIC_AMOUNT, String.valueOf(amountCraftMin * amountCraftCan))
-                .send(sender);
+                .send(context.getSender());
             done = true;
         }
 
         if (!done) {
-            plugin.getMessage(Lang.COMMAND_CONDENSE_ERROR_NOTHING).send(sender);
+            Lang.COMMAND_CONDENSE_ERROR_NOTHING.getMessage().send(context.getSender());
         }
+
+        return true;
     }
 }

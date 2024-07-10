@@ -6,25 +6,25 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.jetbrains.annotations.NotNull;
-import su.nexmedia.engine.api.manager.AbstractListener;
-import su.nightexpress.sunlight.SunLight;
-import su.nightexpress.sunlight.module.worlds.impl.WorldInventory;
+import su.nightexpress.nightcore.manager.AbstractListener;
+import su.nightexpress.sunlight.SunLightPlugin;
+import su.nightexpress.sunlight.module.worlds.impl.WorldInventories;
 import su.nightexpress.sunlight.module.worlds.WorldsModule;
 
-public class InventoryListener extends AbstractListener<SunLight> {
+public class InventoryListener extends AbstractListener<SunLightPlugin> {
 
     private final WorldsModule module;
 
-    public InventoryListener(@NotNull WorldsModule module) {
-        super(module.plugin());
+    public InventoryListener(@NotNull SunLightPlugin plugin, @NotNull WorldsModule module) {
+        super(plugin);
         this.module = module;
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
-    public void onWorldInventoryChange(PlayerChangedWorldEvent e) {
-        Player player = e.getPlayer();
+    public void onInventorySplitChange(PlayerChangedWorldEvent event) {
+        Player player = event.getPlayer();
         String groupTo = this.module.getWorldGroup(player.getWorld());
-        String groupFrom = this.module.getWorldGroup(e.getFrom());
+        String groupFrom = this.module.getWorldGroup(event.getFrom());
 
         // Do not affect snapshots for the same group
         if (groupFrom != null && groupTo != null) {
@@ -33,26 +33,26 @@ public class InventoryListener extends AbstractListener<SunLight> {
             }
         }
 
-        WorldInventory worldInventory = this.module.getWorldInventory(player);
+        WorldInventories worldInventories = this.module.getWorldInventory(player);
         // And here do snapshot for current player inv for world he comes from
         if (groupFrom != null) {
-            worldInventory.doSnapshot(player, groupFrom);
+            worldInventories.saveInventory(player, groupFrom);
         }
 
         // And now replace it by the inventory of new world
         if (groupTo != null) {
-            worldInventory.apply(player);
+            worldInventories.loadInventory(player);
         }
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
-    public void onWorldInventoryQuit(PlayerQuitEvent e) {
-        Player player = e.getPlayer();
+    public void onInventorySplitQuit(PlayerQuitEvent event) {
+        Player player = event.getPlayer();
         String playerId = player.getUniqueId().toString();
 
-        WorldInventory worldInventory = this.module.getInventoryMap().remove(playerId);
-        if (worldInventory != null) {
-            worldInventory.save();
+        WorldInventories worldInventories = this.module.getInventoryMap().remove(playerId);
+        if (worldInventories != null) {
+            worldInventories.save();
         }
     }
 }

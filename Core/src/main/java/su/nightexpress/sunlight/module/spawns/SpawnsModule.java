@@ -1,151 +1,162 @@
 package su.nightexpress.sunlight.module.spawns;
 
-import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import su.nexmedia.engine.api.config.JYML;
-import su.nexmedia.engine.utils.StringUtil;
-import su.nightexpress.sunlight.SunLight;
+import org.jetbrains.annotations.Nullable;
+import su.nightexpress.nightcore.util.FileUtil;
+import su.nightexpress.nightcore.util.StringUtil;
+import su.nightexpress.sunlight.SunLightPlugin;
 import su.nightexpress.sunlight.module.Module;
-import su.nightexpress.sunlight.module.spawns.command.SpawnsCommand;
+import su.nightexpress.sunlight.module.ModuleInfo;
+import su.nightexpress.sunlight.module.spawns.command.SpawnCommands;
+import su.nightexpress.sunlight.module.spawns.config.SpawnsConfig;
 import su.nightexpress.sunlight.module.spawns.config.SpawnsLang;
-import su.nightexpress.sunlight.module.spawns.editor.EditorLocales;
-import su.nightexpress.sunlight.module.spawns.editor.SpawnsEditor;
+import su.nightexpress.sunlight.module.spawns.config.SpawnsPerms;
+import su.nightexpress.sunlight.module.spawns.editor.SpawnListEditor;
+import su.nightexpress.sunlight.module.spawns.editor.SpawnSettingsEditor;
 import su.nightexpress.sunlight.module.spawns.impl.Spawn;
 import su.nightexpress.sunlight.module.spawns.listener.SpawnListener;
-import su.nightexpress.sunlight.module.spawns.util.Placeholders;
-import su.nightexpress.sunlight.module.spawns.util.SpawnsPerms;
 
+import java.io.File;
 import java.util.*;
 
 public class SpawnsModule extends Module {
 
     public static final String DIR_SPAWNS = "/spawns/";
 
-    private final Map<String, Spawn> spawns;
+    private final Map<String, Spawn> spawnMap;
 
-    private SpawnsEditor editor;
+    private SpawnListEditor     listEditor;
+    private SpawnSettingsEditor settingsEditor;
 
-    public SpawnsModule(@NotNull SunLight plugin, @NotNull String id) {
+    public SpawnsModule(@NotNull SunLightPlugin plugin, @NotNull String id) {
         super(plugin, id);
-        this.spawns = new HashMap<>();
+        this.spawnMap = new HashMap<>();
     }
 
     @Override
-    protected void onLoad() {
-        this.plugin.registerPermissions(SpawnsPerms.class);
-        this.plugin.getLangManager().loadMissing(SpawnsLang.class);
-        this.plugin.getLangManager().loadEditor(EditorLocales.class);
-        this.plugin.getLang().saveChanges();
-        this.plugin.runTask(task -> this.loadSpawns()); // Do a tick delay for all the worlds to load.
-        this.plugin.getCommandRegulator().register(SpawnsCommand.NAME, (cfg1, aliases) -> new SpawnsCommand(this, aliases));
+    protected void gatherInfo(@NotNull ModuleInfo moduleInfo) {
+        moduleInfo.setConfigClass(SpawnsConfig.class);
+        moduleInfo.setLangClass(SpawnsLang.class);
+        moduleInfo.setPermissionsClass(SpawnsPerms.class);
+    }
 
-        this.addListener(new SpawnListener(this));
+    @Override
+    protected void onModuleLoad() {
+        this.registerCommands();
+        this.loadSpawns();
+
+        this.listEditor = new SpawnListEditor(this.plugin, this);
+        this.settingsEditor = new SpawnSettingsEditor(this.plugin, this);
+
+        this.addListener(new SpawnListener(this.plugin, this));
+    }
+
+    @Override
+    protected void onModuleUnload() {
+        if (this.listEditor != null) this.listEditor.clear();
+        if (this.settingsEditor != null) this.settingsEditor.clear();
+
+        this.spawnMap.clear();
+    }
+
+    private void registerCommands() {
+        SpawnCommands.load(this.plugin, this);
     }
 
     private void loadSpawns() {
-        for (JYML cfg : JYML.loadAll(this.getAbsolutePath() + DIR_SPAWNS, false)) {
-            Spawn spawn = new Spawn(this, cfg);
-            if (spawn.load()) {
-                this.spawns.put(spawn.getId(), spawn);
-            }
-            else this.warn("Spawn not loaded: '" + cfg.getFile().getName() + "'!");
+        for (File file : FileUtil.getFiles(this.getAbsolutePath() + DIR_SPAWNS, false)) {
+            Spawn spawn = new Spawn(this.plugin, this, file);
+            this.loadSpawn(spawn);
         }
-        this.info("Loaded " + this.spawns.size() + " spawns!");
+        this.info("Loaded " + this.spawnMap.size() + " spawns!");
     }
 
-    @Override
-    protected void onShutdown() {
-        if (this.editor != null) {
-            this.editor.clear();
-            this.editor = null;
+    private void loadSpawn(@NotNull Spawn spawn) {
+        if (spawn.load()) {
+            this.spawnMap.put(spawn.getId(), spawn);
         }
-        this.getSpawns().forEach(Spawn::clear);
-        this.getSpawnsMap().clear();
+        else this.warn("Spawn not loaded: '" + spawn.getFile().getName() + "'!");
     }
 
-    @NotNull
-    public SpawnsEditor getEditor() {
-        if (this.editor == null) {
-            this.editor = new SpawnsEditor(this);
-        }
-        return this.editor;
+    public void openEditor(@NotNull Player player) {
+        this.listEditor.open(player, this);
+    }
+
+    public void openSpawnSettings(@NotNull Player player, @NotNull Spawn spawn) {
+        this.settingsEditor.open(player, spawn);
     }
 
     @NotNull
-    public Map<String, Spawn> getSpawnsMap() {
-        return this.spawns;
+    public Map<String, Spawn> getSpawnMap() {
+        return this.spawnMap;
     }
 
     @NotNull
     public Collection<Spawn> getSpawns() {
-        return this.getSpawnsMap().values();
+        return this.spawnMap.values();
     }
 
     @NotNull
     public List<String> getSpawnIds() {
-        return new ArrayList<>(this.getSpawnsMap().keySet());
+        return new ArrayList<>(this.spawnMap.keySet());
     }
 
-    @NotNull
-    public Optional<Spawn> getSpawnById(@NotNull String id) {
-        return Optional.ofNullable(this.getSpawnsMap().get(id.toLowerCase()));
+    @Nullable
+    public Spawn getSpawn(@NotNull String id) {
+        return this.spawnMap.get(id.toLowerCase());
     }
 
-    @NotNull
-    public Optional<Spawn> getSpawnByDefault() {
-        return this.getSpawns().stream().filter(Spawn::isDefault).findFirst();
+    @Nullable
+    public Spawn getDefaultSpawn() {
+        return this.getSpawn(SpawnsConfig.DEFAULT_SPAWN.get());
+        //return this.getSpawns().stream().filter(Spawn::isDefault).findFirst().orElse(null);
     }
 
-    @NotNull
-    public Optional<Spawn> getSpawnByLogin(@NotNull Player player) {
-        boolean hasPlayed = !plugin.getUserManager().getUserData(player).isRecentlyCreated();
-
-        return this.getSpawns().stream()
-            .filter(spawn -> {
-                if (spawn.isFirstLoginTeleportEnabled() && !hasPlayed) return true;
-                if (spawn.isLoginTeleportEnabled(player) && spawn.hasPermission(player)) return true;
-                return false;
-            })
-            .max(Comparator.comparingInt(Spawn::getPriority));
+    @Nullable
+    public Spawn getSpawnOrDefault(@NotNull String id) {
+        return this.spawnMap.getOrDefault(id.toLowerCase(), this.getDefaultSpawn());
     }
 
-    @NotNull
-    public Optional<Spawn> getSpawnByDeath(@NotNull Player player) {
-        return this.getSpawns().stream()
-            .filter(spawn -> spawn.isDeathTeleportEnabled(player) && spawn.hasPermission(player))
-            .max(Comparator.comparingInt(Spawn::getPriority));
+    @Nullable
+    public Spawn getNewbieSpawn(@NotNull Player player) {
+        return this.getSpawn(SpawnsConfig.NEWBIE_TELEPORT_TARGET.get());
+    }
+
+    @Nullable
+    public Spawn getLoginSpawn(@NotNull Player player) {
+        return this.getSpawns().stream().filter(spawn -> spawn.isLoginSpawn(player)).max(Comparator.comparingInt(Spawn::getPriority)).orElse(null);
+    }
+
+    @Nullable
+    public Spawn getDeathSpawn(@NotNull Player player) {
+        return this.getSpawns().stream().filter(spawn -> spawn.isDeathSpawn(player)).max(Comparator.comparingInt(Spawn::getPriority)).orElse(null);
     }
 
     public boolean createSpawn(@NotNull Player player, @NotNull String id) {
         Location location = player.getLocation();
         id = StringUtil.lowerCaseUnderscore(id);
 
-        Spawn spawn = this.getSpawnById(id).orElse(null);
+        Spawn spawn = this.getSpawn(id);
         if (spawn == null) {
-            JYML cfg = new JYML(this.getAbsolutePath() + DIR_SPAWNS, id + ".yml");
-            spawn = new Spawn(this, cfg);
-            spawn.setName(ChatColor.YELLOW + StringUtil.capitalizeUnderscored(id));
-            if (this.getSpawns().isEmpty()) {
-                spawn.setDefault(true);
-                spawn.getLoginTeleportGroups().add(Placeholders.DEFAULT);
-                spawn.setLoginTeleportEnabled(true);
-                spawn.setFirstLoginTeleportEnabled(true);
-            }
+            File file = new File(this.getAbsolutePath() + DIR_SPAWNS, id + ".yml");
+            spawn = new Spawn(this.plugin, this, file);
+            spawn.setName(StringUtil.capitalizeUnderscored(id));
         }
         spawn.setLocation(location);
         spawn.save();
 
-        this.getSpawnsMap().put(spawn.getId(), spawn);
-        this.plugin.getMessage(SpawnsLang.COMMAND_SPAWNS_CREATE_DONE).replace(spawn.replacePlaceholders()).send(player);
+        this.loadSpawn(spawn);
+        SpawnsLang.COMMAND_SET_SPAWN_DONE.getMessage().replace(spawn.replacePlaceholders()).send(player);
         return true;
     }
 
-    public void deleteSpawn(@NotNull Spawn spawn) {
+    public boolean deleteSpawn(@NotNull Spawn spawn) {
         if (spawn.getFile().delete()) {
-            spawn.clear();
-            this.spawns.remove(spawn.getId());
+            this.spawnMap.remove(spawn.getId());
+            return true;
         }
+        return false;
     }
 }

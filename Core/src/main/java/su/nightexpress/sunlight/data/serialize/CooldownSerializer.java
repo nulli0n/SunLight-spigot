@@ -1,9 +1,9 @@
 package su.nightexpress.sunlight.data.serialize;
 
 import com.google.gson.*;
-import su.nexmedia.engine.utils.StringUtil;
-import su.nightexpress.sunlight.data.impl.cooldown.CooldownInfo;
-import su.nightexpress.sunlight.data.impl.cooldown.CooldownType;
+import su.nightexpress.nightcore.util.StringUtil;
+import su.nightexpress.sunlight.core.cooldown.CooldownInfo;
+import su.nightexpress.sunlight.core.cooldown.CooldownType;
 
 import java.lang.reflect.Type;
 

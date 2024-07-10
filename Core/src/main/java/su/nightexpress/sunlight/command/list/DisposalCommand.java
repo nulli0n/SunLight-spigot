@@ -1,52 +1,73 @@
 package su.nightexpress.sunlight.command.list;
 
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.jetbrains.annotations.NotNull;
-import su.nexmedia.engine.api.command.CommandResult;
-import su.nexmedia.engine.api.config.JOption;
-import su.nexmedia.engine.api.config.JYML;
-import su.nexmedia.engine.utils.Colorizer;
-import su.nexmedia.engine.utils.Placeholders;
-import su.nightexpress.sunlight.Perms;
-import su.nightexpress.sunlight.SunLight;
+import su.nightexpress.nightcore.command.experimental.CommandContext;
+import su.nightexpress.nightcore.command.experimental.argument.ArgumentTypes;
+import su.nightexpress.nightcore.command.experimental.argument.ParsedArguments;
+import su.nightexpress.nightcore.command.experimental.builder.DirectNodeBuilder;
+import su.nightexpress.nightcore.command.experimental.node.DirectNode;
+import su.nightexpress.nightcore.config.ConfigValue;
+import su.nightexpress.nightcore.config.FileConfig;
+import su.nightexpress.nightcore.util.text.NightMessage;
+import su.nightexpress.nightcore.util.text.tag.Tags;
+import su.nightexpress.sunlight.Placeholders;
+import su.nightexpress.sunlight.SunLightPlugin;
 import su.nightexpress.sunlight.command.CommandFlags;
-import su.nightexpress.sunlight.command.api.TargetCommand;
+import su.nightexpress.sunlight.command.CommandPerms;
+import su.nightexpress.sunlight.command.CommandArguments;
+import su.nightexpress.sunlight.command.CommandRegistry;
+import su.nightexpress.sunlight.command.template.CommandTemplate;
+import su.nightexpress.sunlight.command.CommandTools;
 import su.nightexpress.sunlight.config.Lang;
 
-public class DisposalCommand extends TargetCommand {
+public class DisposalCommand {
 
     public static final String NAME = "disposal";
 
-    private final String title;
-    private final int size;
+    private static String title;
+    private static int size;
 
-    public DisposalCommand(@NotNull SunLight plugin, @NotNull JYML cfg, @NotNull String[] aliases) {
-        super(plugin, aliases, Perms.COMMAND_DISPOSAL, Perms.COMMAND_DISPOSAL_OTHERS, 0);
-        this.setDescription(plugin.getMessage(Lang.COMMAND_DISPOSAL_DESC));
-        this.setUsage(plugin.getMessage(Lang.COMMAND_DISPOSAL_USAGE));
-        this.addFlag(CommandFlags.SILENT);
-
-        this.title = JOption.create("Disposal.Menu.Title", "Disposal",
-            "Sets the inventory title for disposal GUI.").mapReader(Colorizer::apply).read(cfg);
-        this.size = JOption.create("Disposal.Menu.Size", 36,
-            "Sets the inventory size for disposal GUI. Must be multiply of 9 up to 54.").read(cfg);
+    public static void load(@NotNull SunLightPlugin plugin) {
+        CommandRegistry.registerDirectExecutor(NAME, (template, config) -> builderRoot(plugin, template, config));
+        CommandRegistry.addSimpleTemplate(NAME);
     }
 
-    @Override
-    public void onExecute(@NotNull CommandSender sender, @NotNull CommandResult result) {
-        Player target = this.getCommandTarget(sender, result);
-        if (target == null) return;
+    @NotNull
+    public static DirectNodeBuilder builderRoot(@NotNull SunLightPlugin plugin, @NotNull CommandTemplate template, @NotNull FileConfig config) {
+        title = ConfigValue.create("Settings.Disposal.Menu.Title",
+            Tags.BLACK.enclose("Disposal"),
+            "Sets the inventory title for disposal GUI."
+        ).read(config);
 
-        Inventory inventory = this.plugin.getServer().createInventory(null, this.size, this.title);
+        size = ConfigValue.create("Settings.Disposal.Menu.Size",
+            36,
+            "Sets the inventory size for disposal GUI. Must be multiply of 9 up to 54."
+        ).read(config);
+
+        return DirectNode.builder(plugin, template.getAliases())
+            .description(Lang.COMMAND_DISPOSAL_DESC)
+            .permission(CommandPerms.DISPOSAL)
+            .withArgument(ArgumentTypes.playerName(CommandArguments.PLAYER).permission(CommandPerms.DIMENSION_OTHERS))
+            .withFlag(CommandFlags.silent().permission(CommandPerms.DIMENSION_OTHERS))
+            .executes((context, arguments) -> execute(plugin, context, arguments))
+            ;
+    }
+
+    public static boolean execute(@NotNull SunLightPlugin plugin, @NotNull CommandContext context, @NotNull ParsedArguments arguments) {
+        Player target = CommandTools.getTarget(plugin, context, arguments, CommandArguments.PLAYER, false);
+        if (target == null) return false;
+
+        Inventory inventory = plugin.getServer().createInventory(null, size, NightMessage.asLegacy(title));
         target.openInventory(inventory);
 
-        if (!result.hasFlag(CommandFlags.SILENT)) {
-            plugin.getMessage(Lang.COMMAND_DISPOSAL_NOTIFY).send(target);
+        if (!arguments.hasFlag(CommandFlags.SILENT)) {
+            Lang.COMMAND_DISPOSAL_NOTIFY.getMessage().send(target);
         }
-        if (target != sender) {
-            plugin.getMessage(Lang.COMMAND_DISPOSAL_TARGET).replace(Placeholders.forPlayer(target)).send(sender);
+        if (target != context.getSender()) {
+            Lang.COMMAND_DISPOSAL_TARGET.getMessage().replace(Placeholders.forPlayer(target)).send(context.getSender());
         }
+        return true;
     }
 }

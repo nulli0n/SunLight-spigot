@@ -4,51 +4,54 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import su.nightexpress.sunlight.Placeholders;
-import su.nightexpress.sunlight.SunLight;
+import su.nightexpress.sunlight.SunLightPlugin;
 import su.nightexpress.sunlight.module.Module;
-import su.nightexpress.sunlight.module.rtp.command.RTPCommand;
+import su.nightexpress.sunlight.module.ModuleInfo;
+import su.nightexpress.sunlight.module.rtp.command.RTPCommands;
 import su.nightexpress.sunlight.module.rtp.config.RTPConfig;
 import su.nightexpress.sunlight.module.rtp.config.RTPLang;
 import su.nightexpress.sunlight.module.rtp.config.RTPPerms;
 import su.nightexpress.sunlight.module.rtp.impl.LocationFinder;
 import su.nightexpress.sunlight.module.rtp.listener.RTPListener;
-import su.nightexpress.sunlight.module.rtp.task.FinderTickTask;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Predicate;
 
 public class RTPModule extends Module {
 
     private final Map<Player, LocationFinder> finderMap;
 
-    private FinderTickTask finderTickTask;
-
-    public RTPModule(@NotNull SunLight plugin, @NotNull String id) {
+    public RTPModule(@NotNull SunLightPlugin plugin, @NotNull String id) {
         super(plugin, id);
         this.finderMap = new ConcurrentHashMap<>();
     }
 
     @Override
-    protected void onLoad() {
-        this.plugin.registerPermissions(RTPPerms.class);
-        this.plugin.getLangManager().loadMissing(RTPLang.class);
-        this.plugin.getLang().saveChanges();
-        this.getConfig().initializeOptions(RTPConfig.class);
-
-        this.addListener(new RTPListener(this));
-        this.plugin.getCommandRegulator().register(RTPCommand.NAME, (cfg1, aliases) -> new RTPCommand(this, aliases), "wild");
-
-        this.finderTickTask = new FinderTickTask(this);
-        this.finderTickTask.start();
+    protected void gatherInfo(@NotNull ModuleInfo moduleInfo) {
+        moduleInfo.setConfigClass(RTPConfig.class);
+        moduleInfo.setLangClass(RTPLang.class);
+        moduleInfo.setPermissionsClass(RTPPerms.class);
     }
 
     @Override
-    protected void onShutdown() {
-        if (this.finderTickTask != null) {
-            this.finderTickTask.stop();
-            this.finderTickTask = null;
-        }
+    protected void onModuleLoad() {
+        this.addListener(new RTPListener(this.plugin, this));
+
+        this.addTask(this.plugin.createAsyncTask(this::tickFinders).setSecondsInterval(1));
+    }
+
+    @Override
+    protected void onModuleUnload() {
         this.finderMap.clear();
+    }
+
+    private void loadCommands() {
+        RTPCommands.load(this.plugin, this);
+    }
+
+    private void tickFinders() {
+        this.finderMap.values().stream().filter(Predicate.not(LocationFinder::isFailed)).forEach(LocationFinder::tick);
     }
 
     @NotNull
@@ -59,7 +62,7 @@ public class RTPModule extends Module {
 
     @Nullable
     public LocationFinder getFinder(@NotNull Player player) {
-        return this.getFinderMap().get(player);
+        return this.finderMap.get(player);
     }
 
     public void stopSearch(@NotNull Player player) {
@@ -68,14 +71,14 @@ public class RTPModule extends Module {
 
     public void startSearch(@NotNull Player player) {
         if (this.getFinder(player) != null) {
-            this.plugin.getMessage(RTPLang.TELEPORT_ERROR_ALREADY_IN).send(player);
+            RTPLang.ERROR_ALREADY_IN.getMessage().send(player);
             return;
         }
 
         LocationFinder finder = new LocationFinder(plugin, player, RTPConfig.LOCATION_SEARCH_ATTEMPTS.get());
-        this.getFinderMap().put(player, finder);
+        this.finderMap.put(player, finder);
 
-        this.plugin.getMessage(RTPLang.TELEPORT_NOTIFY_SEARCH)
+        RTPLang.TELEPORT_NOTIFY_SEARCH.getMessage()
             .replace(Placeholders.GENERIC_CURRENT, 0)
             .replace(Placeholders.GENERIC_MAX, RTPConfig.LOCATION_SEARCH_ATTEMPTS.get())
             .send(player);

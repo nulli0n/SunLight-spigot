@@ -1,64 +1,138 @@
 package su.nightexpress.sunlight.utils;
 
-import org.bukkit.GameMode;
+import com.google.common.net.InetAddresses;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Registry;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.Damageable;
+import org.bukkit.inventory.meta.EnchantmentStorageMeta;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
-import su.nexmedia.engine.utils.regex.RegexUtil;
+import org.jetbrains.annotations.Nullable;
+import su.nightexpress.nightcore.util.BukkitThing;
+import su.nightexpress.nightcore.util.ItemUtil;
+import su.nightexpress.nightcore.util.Players;
+import su.nightexpress.nightcore.util.Version;
 import su.nightexpress.sunlight.SunLightAPI;
+import su.nightexpress.sunlight.config.Config;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.regex.Pattern;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 public class SunUtils {
 
-    @Deprecated public static final List<String> ENTITY_TYPES = Stream.of(EntityType.values()).filter(EntityType::isSpawnable).map(Enum::name).toList();
-    public static final List<String> ITEM_TYPES = Stream.of(Material.values()).filter(Material::isItem).map(Enum::name).map(String::toLowerCase).toList();
-    public static final     Pattern      PATTERN_IP = Pattern.compile(
-        "(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)");
+    public static final String CONSOLE_NAME = "CONSOLE";
 
-    @NotNull
-    public static String getIP(@NotNull Player player) {
-        InetSocketAddress inet = player.getAddress();
-        return inet == null ? "null" : getIP(inet.getAddress());
+    @SuppressWarnings("deprecation")
+    public static List<String> getPotionEffects(@NotNull Predicate<PotionEffectType> predicate) {
+        if (Version.isBehind(Version.V1_20_R3)) {
+            return Stream.of(PotionEffectType.values()).map(BukkitThing::toString).toList();
+        }
+        return BukkitThing.allFromRegistry(Registry.EFFECT).stream().filter(predicate).map(BukkitThing::toString).toList();
+    }
+
+    public static List<String> getMaterials(@NotNull Predicate<Material> predicate) {
+        return BukkitThing.getMaterials().stream().filter(predicate).map(BukkitThing::toString).toList();
+    }
+
+    public static List<String> getEntityTypes(@NotNull Predicate<EntityType> predicate) {
+        return Stream.of(EntityType.values()).filter(predicate).map(BukkitThing::toString).toList();
     }
 
     @NotNull
-    public static String getIP(@NotNull InetAddress inet) {
-        return inet.getHostAddress();
+    public static String createIdentifier(@NotNull Player player) {
+        String uuid = player.getUniqueId().toString();
+
+        // Bedrock players have UUIDs leading with zeros.
+        if (Players.isBedrock(player)) {
+            uuid = new StringBuilder(uuid).reverse().toString();
+        }
+
+        return uuid;
     }
 
-    public static boolean isIpAddress(@NotNull String str) {
-        return RegexUtil.matches(PATTERN_IP, str);
+    @NotNull
+    public static String noSpace(@NotNull String str) {
+        return str.trim().replaceAll("\\s+", "");
     }
 
-    public static void teleport(@NotNull Player player, @NotNull Entity to) {
-        teleport(player, to.getLocation());
+    @NotNull
+    public static String oneSpace(@NotNull String str) {
+        return str.trim().replaceAll("\\s+", " ");
     }
 
-    public static void teleport(@NotNull Player player, @NotNull Location location) {
+    @NotNull
+    public static String formatDate(long timestamp) {
+        return Config.GENERAL_DATE_FORMAT.get().format(timestamp);
+    }
+
+    @NotNull
+    public static String formatTime(@NotNull LocalTime localTime) {
+        return localTime.format(Config.GENERAL_TIME_FORMAT.get());
+    }
+
+    @NotNull
+    public static String getSenderName(@NotNull String name) {
+        if (name.equalsIgnoreCase(CONSOLE_NAME)) {
+            return Config.CONSOLE_NAME.get();
+        }
+        Player player = Players.getPlayer(name);
+        if (player != null) {
+            return player.getDisplayName();
+        }
+        return name;
+    }
+
+    @NotNull
+    public static String getSenderName(@NotNull CommandSender sender) {
+        if (sender instanceof ConsoleCommandSender) {
+            return Config.CONSOLE_NAME.get();
+        }
+        if (sender instanceof Player player) {
+            return player.getDisplayName();
+        }
+        return sender.getName();
+    }
+
+    @NotNull
+    public static String getRawAddress(@NotNull Player player) {
+        InetSocketAddress address = player.getAddress();
+        return address == null ? "127.0.0.1" : getRawAddress(address.getAddress());
+    }
+
+    @NotNull
+    public static String getRawAddress(@NotNull InetAddress address) {
+        return address.getHostAddress();
+    }
+
+    public static boolean isInetAddress(@NotNull String address) {
+        return InetAddresses.isInetAddress(address);
+    }
+
+    public static boolean teleport(@NotNull Player player, @NotNull Entity target) {
+        return teleport(player, target.getLocation());
+    }
+
+    public static boolean teleport(@NotNull Player player, @NotNull Location location) {
         if (player.isOnline()) {
-            player.teleport(location);
-            return;
+            return player.teleport(location);
         }
         SunLightAPI.PLUGIN.getSunNMS().teleport(player, location);
-    }
-
-    public static void setGameMode(@NotNull Player player, @NotNull GameMode mode) {
-        if (player.isOnline()) {
-            player.setGameMode(mode);
-            return;
-        }
-        SunLightAPI.PLUGIN.getSunNMS().setGameMode(player, mode);
+        return true;
     }
 
     @NotNull
@@ -85,5 +159,56 @@ public class SunUtils {
         }
 
         return block.getType() != Material.LAVA;
+    }
+
+    public static boolean repairItem(@Nullable ItemStack item) {
+        return damageItem(item, 0);
+    }
+
+    public static boolean damageItem(@Nullable ItemStack item, int damage) {
+        if (item == null) return false;
+
+        ItemMeta meta = item.getItemMeta();
+        if (!(meta instanceof Damageable damageable)) return false;
+
+        damageable.setDamage(Math.min(damageable.getMaxDamage(), Math.abs(damage)));
+        item.setItemMeta(meta);
+        return true;
+    }
+
+    public static boolean enchantItem(@NotNull ItemStack itemStack, @NotNull Enchantment enchantment, int level) {
+        ItemUtil.editMeta(itemStack, meta -> {
+            if (meta instanceof EnchantmentStorageMeta storageMeta) {
+                if (level > 0) {
+                    storageMeta.addStoredEnchant(enchantment, level, true);
+                }
+                else storageMeta.removeStoredEnchant(enchantment);
+            }
+            else {
+                if (level > 0) {
+                    meta.addEnchant(enchantment, level, true);
+                }
+                else meta.removeEnchant(enchantment);
+            }
+        });
+        return true;
+    }
+
+    public static boolean disenchantItem(@NotNull ItemStack itemStack, @Nullable Enchantment enchantment) {
+        ItemUtil.editMeta(itemStack, meta -> {
+            if (meta instanceof EnchantmentStorageMeta storageMeta) {
+                if (enchantment != null) {
+                    storageMeta.removeStoredEnchant(enchantment);
+                }
+                else storageMeta.getStoredEnchants().keySet().forEach(storageMeta::removeStoredEnchant);
+            }
+            else {
+                if (enchantment != null) {
+                    meta.removeEnchant(enchantment);
+                }
+                else meta.getEnchants().keySet().forEach(meta::removeEnchant);
+            }
+        });
+        return true;
     }
 }

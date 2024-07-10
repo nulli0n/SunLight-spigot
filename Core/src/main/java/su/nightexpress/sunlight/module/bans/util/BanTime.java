@@ -1,46 +1,39 @@
 package su.nightexpress.sunlight.module.bans.util;
 
 import org.jetbrains.annotations.NotNull;
-import su.nexmedia.engine.utils.StringUtil;
-import su.nightexpress.sunlight.module.bans.config.BansConfig;
 
-import java.util.Collections;
-import java.util.Set;
+public class BanTime {
 
-public enum BanTime {
+    public static final BanTime PERMANENT = new BanTime(TimeUnit.PERMANENT, 0L);
 
-    SECONDS(1000L),
-    MINUTES(1000L * 60L),
-    HOURS(1000L * 60L * 60L),
-    DAYS(1000L * 60L * 60L * 24L),
-    WEEKS(1000L * 60L * 60L * 24L * 7L),
-    MONTHS(1000L * 60L * 60L * 24L * 30L),
-    YEARS(1000L * 60L * 60L * 24L * 365L),
-    ;
+    private final TimeUnit timeUnit;
+    private final long amount;
 
-    private final long modifier;
-
-    BanTime(long modifier) {
-        this.modifier = modifier;
+    public BanTime(@NotNull TimeUnit timeUnit, long amount) {
+        this.timeUnit = timeUnit;
+        this.amount = Math.abs(amount);
     }
 
-    public static long parse(@NotNull String timeRaw) {
-        long mod = SECONDS.getModifier();
-        long time = 0L;
+    public long toTimestamp() {
+        if (this.timeUnit == TimeUnit.PERMANENT) return -1L;
 
-        for (BanTime banTime : BanTime.values()) {
-            Set<String> aliases = BansConfig.GENERAL_TIME_ALIASES.get().getOrDefault(banTime, Collections.emptySet());
-            String alias = aliases.stream().filter(timeRaw::endsWith).findFirst().orElse(null);
-            if (alias == null || alias.isEmpty()) continue;
-
-            time = StringUtil.getInteger(timeRaw.replace(alias, ""), 0);
-            mod = banTime.getModifier();
-            break;
-        }
-        return time <= 0L ? -1L : /*System.currentTimeMillis() + */time * mod;
+        return System.currentTimeMillis() + this.getInMillis();
     }
 
-    public long getModifier() {
-        return this.modifier;
+    public long getInMillis() {
+        return this.amount * this.timeUnit.getModifier() + 100L; // 100L for better time format.
+    }
+
+    public boolean isPermanent() {
+        return this.timeUnit == TimeUnit.PERMANENT;
+    }
+
+    @NotNull
+    public TimeUnit getTimeUnit() {
+        return timeUnit;
+    }
+
+    public long getAmount() {
+        return amount;
     }
 }

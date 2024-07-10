@@ -1,119 +1,110 @@
 package su.nightexpress.sunlight.module.warps.impl;
 
 import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import su.nexmedia.engine.api.config.JYML;
-import su.nexmedia.engine.api.manager.AbstractConfigHolder;
-import su.nexmedia.engine.api.placeholder.Placeholder;
-import su.nexmedia.engine.api.placeholder.PlaceholderMap;
-import su.nexmedia.engine.command.CommandRegister;
-import su.nexmedia.engine.integration.VaultHook;
-import su.nexmedia.engine.lang.LangManager;
-import su.nexmedia.engine.utils.*;
-import su.nightexpress.sunlight.SunLight;
-import su.nightexpress.sunlight.data.impl.SunUser;
-import su.nightexpress.sunlight.data.impl.cooldown.CooldownInfo;
+import su.nightexpress.nightcore.config.FileConfig;
+import su.nightexpress.nightcore.integration.VaultHook;
+import su.nightexpress.nightcore.manager.AbstractFileData;
+import su.nightexpress.nightcore.util.ItemUtil;
+import su.nightexpress.nightcore.util.Pair;
+import su.nightexpress.nightcore.util.Plugins;
+import su.nightexpress.nightcore.util.TimeUtil;
+import su.nightexpress.nightcore.util.placeholder.Placeholder;
+import su.nightexpress.nightcore.util.placeholder.PlaceholderMap;
+import su.nightexpress.sunlight.SunLightPlugin;
+import su.nightexpress.sunlight.core.cooldown.CooldownInfo;
+import su.nightexpress.sunlight.data.user.SunUser;
 import su.nightexpress.sunlight.module.warps.WarpsModule;
 import su.nightexpress.sunlight.module.warps.command.WarpShortcutCommand;
 import su.nightexpress.sunlight.module.warps.config.WarpsLang;
+import su.nightexpress.sunlight.module.warps.config.WarpsPerms;
 import su.nightexpress.sunlight.module.warps.event.PlayerWarpTeleportEvent;
-import su.nightexpress.sunlight.module.warps.menu.WarpSettingsMenu;
 import su.nightexpress.sunlight.module.warps.type.WarpType;
 import su.nightexpress.sunlight.module.warps.util.Placeholders;
-import su.nightexpress.sunlight.module.warps.config.WarpsPerms;
+import su.nightexpress.sunlight.utils.Teleporter;
 import su.nightexpress.sunlight.utils.UserInfo;
+import su.nightexpress.sunlight.utils.pos.BlockEyedPos;
 
+import java.io.File;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
+import java.util.UUID;
 
-public class Warp extends AbstractConfigHolder<SunLight> implements Placeholder {
+public class Warp extends AbstractFileData<SunLightPlugin> implements Placeholder {
 
     public static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ISO_LOCAL_TIME;
 
-    private final WarpsModule  module;
-    private final PlaceholderMap placeholderMap;
+    private final WarpsModule                     module;
+    private final PlaceholderMap                  placeholderMap;
     private final Set<Pair<LocalTime, LocalTime>> visitTimes;
 
     private UserInfo     owner;
     private WarpType     type;
     private String       name;
     private String       description;
-    private Location     location;
+    private String       worldName;
+    private BlockEyedPos blockPos;
     private ItemStack    icon;
     private boolean      permissionRequired;
     private String       commandShortcut;
     private int          visitCooldown;
     private double       visitCostMoney;
 
-    private WarpSettingsMenu editor;
-
-    public Warp(@NotNull WarpsModule module, @NotNull JYML cfg) {
-        super(module.plugin(), cfg);
+    public Warp(@NotNull SunLightPlugin plugin, @NotNull WarpsModule module, @NotNull File file) {
+        super(plugin, file);
         this.module = module;
         this.visitTimes = new HashSet<>();
-        this.setIcon(new ItemStack(Material.AIR));
 
-        this.placeholderMap = new PlaceholderMap()
-            .add(Placeholders.WARP_ID, this.getId())
-            .add(Placeholders.WARP_NAME, this::getName)
-            .add(Placeholders.WARP_DESCRIPTION, () -> this.getDescription().orElse(""))
-            .add(Placeholders.WARP_TYPE, () -> plugin.getLangManager().getEnum(this.getType()))
-            .add(Placeholders.WARP_PERMISSION_REQUIRED, () -> LangManager.getBoolean(this.isPermissionRequired()))
-            .add(Placeholders.WARP_PERMISSION_NODE, this.getPermission())
-            .add(Placeholders.WARP_VISIT_COST, () -> NumberUtil.format(this.getVisitCostMoney()))
-            .add(Placeholders.WARP_VISIT_COOLDOWN, () -> TimeUtil.formatTime(this.getVisitCooldown() * 1000L))
-            .add(Placeholders.WARP_VISIT_TIMES, () -> {
-                return String.join("\n", this.getVisitTimes().stream().map(pair -> {
-                    return pair.getFirst().format(TIME_FORMATTER) + "-" + pair.getSecond().format(TIME_FORMATTER);
-                }).toList());
-            })
-            .add(Placeholders.WARP_LOCATION_X, () -> NumberUtil.format(this.getLocation().getX()))
-            .add(Placeholders.WARP_LOCATION_Y, () -> NumberUtil.format(this.getLocation().getY()))
-            .add(Placeholders.WARP_LOCATION_Z, () -> NumberUtil.format(this.getLocation().getZ()))
-            .add(Placeholders.WARP_LOCATION_WORLD, () -> {
-                return getLocation().getWorld() == null ? "null" : LangManager.getWorld(getLocation().getWorld());
-            })
-            .add(Placeholders.WARP_OWNER_NAME, () -> this.getOwner().getName())
-            .add(Placeholders.WARP_COMMAND_SHORTCUT, () -> this.getCommandShortcut().orElse("-"))
-            .add(Placeholders.WARP_ICON, () -> plugin.getLangManager().getEnum(this.getIcon().getType()))
-        ;
+        this.placeholderMap = Placeholders.forWarp(this);
     }
 
     @Override
-    public boolean load() {
+    protected boolean onLoad(@NotNull FileConfig config) {
+        String locationStr = config.getString("Location");
+        if (locationStr != null) {
+            String[] split = locationStr.split(",");
+            if (split.length != 6) return false;
+
+            String world = split[5];
+            BlockEyedPos pos = BlockEyedPos.deserialize(locationStr);
+            config.remove("Location");
+            config.set("World", world);
+            pos.write(config, "BlockPos");
+        }
+
+
+
         UUID ownerId;
         try {
-            ownerId = UUID.fromString(cfg.getString("Owner.Id", "null"));
+            ownerId = UUID.fromString(String.valueOf(config.getString("Owner.Id")));
         }
-        catch (IllegalArgumentException e) {
-            e.printStackTrace();
+        catch (IllegalArgumentException exception) {
+            exception.printStackTrace();
             return false;
         }
 
-        String ownerName = cfg.getString("Owner.Name", "null");
+        String ownerName = String.valueOf(config.getString("Owner.Name"));
         this.setOwner(new UserInfo(ownerId, ownerName));
 
-        Location location = cfg.getLocation("Location");
-        if (location == null) {
-            this.module.error("Invalid warp location or world!");
-            return false;
-        }
+        this.blockPos = BlockEyedPos.read(config, "BlockPos");
+        this.worldName = config.getString("World");
 
-        this.setLocation(location);
-        this.setIcon(cfg.getItem("Icon"));
-        this.setType(cfg.getEnum("Type", WarpType.class, WarpType.SERVER));
-        this.setName(cfg.getString("Name", this.getId()));
-        this.setDescription(cfg.getString("Description"));
-        this.setPermissionRequired(cfg.getBoolean("Permission_Required"));
-        this.setVisitCooldown(cfg.getInt("Visit.Cooldown"));
-        this.getVisitTimes().addAll(this.cfg.getStringList("Visit.Times").stream().map(raw -> {
+        this.setIcon(config.getItem("Icon"));
+        this.setType(config.getEnum("Type", WarpType.class, WarpType.SERVER));
+        this.setName(config.getString("Name", this.getId()));
+        this.setDescription(config.getString("Description"));
+        this.setPermissionRequired(config.getBoolean("Permission_Required"));
+        this.setVisitCooldown(config.getInt("Visit.Cooldown"));
+        this.getVisitTimes().addAll(config.getStringList("Visit.Times").stream().map(raw -> {
             String[] split = raw.split("-");
             if (split.length < 2) return null;
 
@@ -126,28 +117,28 @@ public class Warp extends AbstractConfigHolder<SunLight> implements Placeholder 
                 return null;
             }
         }).filter(Objects::nonNull).toList());
-        this.setVisitCostMoney(cfg.getDouble("Visit.Cost.Money"));
-        this.setCommandShortcut(cfg.getString("Command_Shortcut"));
+        this.setVisitCostMoney(config.getDouble("Visit.Cost.Money"));
+        this.setCommandShortcut(config.getString("Command_Shortcut"));
         return true;
     }
 
     @Override
-    public void onSave() {
-        cfg.set("Owner.Id", this.getOwner().getId().toString());
-        cfg.set("Owner.Name", this.getOwner().getName());
-        cfg.set("Type", this.getType().name());
-        cfg.set("Name", this.getName());
-        cfg.set("Description", this.getDescription().orElse(null));
-        cfg.set("Location", this.getLocation());
-        cfg.set("Permission_Required", this.isPermissionRequired());
-        cfg.set("Visit.Cooldown", this.getVisitCooldown());
-        cfg.set("Visit.Times", this.getVisitTimes().stream()
-            .map(pair -> pair.mapFirst(t -> t.format(TIME_FORMATTER)))
-            .map(pair -> pair.mapSecond(t -> t.format(TIME_FORMATTER)))
-            .map(pair -> pair.getFirst() + "-" + pair.getSecond()).toList());
-        cfg.set("Visit.Cost.Money", this.getVisitCostMoney());
-        cfg.setItem("Icon", this.getIcon());
-        cfg.set("Command_Shortcut", this.getCommandShortcut().orElse(null));
+    protected void onSave(@NotNull FileConfig config) {
+        config.set("Owner.Id", this.getOwner().getId().toString());
+        config.set("Owner.Name", this.getOwner().getName());
+        config.set("World", this.worldName);
+        this.blockPos.write(config, "BlockPos");
+        config.set("Type", this.getType().name());
+        config.set("Name", this.getName());
+        config.set("Description", this.getDescription());
+        config.set("Permission_Required", this.isPermissionRequired());
+        config.set("Visit.Cooldown", this.getVisitCooldown());
+        config.set("Visit.Times", this.getVisitTimes().stream()
+            .map(pair -> pair.getFirst().format(TIME_FORMATTER) + "-" + pair.getSecond().format(TIME_FORMATTER))
+            .toList());
+        config.set("Visit.Cost.Money", this.getVisitCostMoney());
+        config.setItem("Icon", this.getIcon());
+        config.set("Command_Shortcut", this.getCommandShortcut());
     }
 
     @Override
@@ -156,37 +147,20 @@ public class Warp extends AbstractConfigHolder<SunLight> implements Placeholder 
         return this.placeholderMap;
     }
 
-    public void clear() {
-        if (this.editor != null) {
-            this.editor.clear();
-            this.editor = null;
-        }
-        this.setCommandShortcut(null);
-    }
-
-    @NotNull
-    public WarpSettingsMenu getEditor() {
-        if (this.editor == null) {
-            this.editor = new WarpSettingsMenu(this);
-        }
-        return this.editor;
-    }
-
-    public void teleport(@NotNull Player player, boolean isForced) {
-        if (!isForced) {
-            PlayerWarpTeleportEvent event = new PlayerWarpTeleportEvent(player, this);
-            this.plugin.getPluginManager().callEvent(event);
-            if (event.isCancelled()) return;
+    public boolean teleport(@NotNull Player player, boolean isForced) {
+        if (!this.isValid()) {
+            WarpsLang.WARP_TELEPORT_ERROR_DISABLED.getMessage().replace(this.replacePlaceholders()).send(player);
+            return false;
         }
 
         if (!isForced && !this.hasPermission(player)) {
-            this.plugin.getMessage(WarpsLang.WARP_TELEPORT_ERROR_NO_PERMISSION).replace(this.replacePlaceholders()).send(player);
-            return;
+            WarpsLang.WARP_TELEPORT_ERROR_NO_PERMISSION.getMessage().replace(this.replacePlaceholders()).send(player);
+            return false;
         }
 
         if (!isForced && !this.isVisitTime(player)) {
-            this.plugin.getMessage(WarpsLang.WARP_TELEPORT_ERROR_TIME).replace(this.replacePlaceholders()).send(player);
-            return;
+            WarpsLang.WARP_TELEPORT_ERROR_TIME.getMessage().replace(this.replacePlaceholders()).send(player);
+            return false;
         }
 
         // Check cooldown.
@@ -194,38 +168,72 @@ public class Warp extends AbstractConfigHolder<SunLight> implements Placeholder 
         CooldownInfo cooldownInfo = user.getCooldown(this).orElse(null);
         if (!isForced && cooldownInfo != null) {
             long expireDate = cooldownInfo.getExpireDate();
-            this.plugin.getMessage(WarpsLang.WARP_TELEPORT_ERROR_COOLDOWN)
-                .replace(Placeholders.GENERIC_COOLDOWN, TimeUtil.formatTimeLeft(expireDate))
+            WarpsLang.WARP_TELEPORT_ERROR_COOLDOWN.getMessage()
+                .replace(Placeholders.GENERIC_COOLDOWN, TimeUtil.formatDuration(expireDate))
                 .replace(this.replacePlaceholders())
                 .send(player);
-            return;
+            return false;
         }
 
         // Check teleportation costs.
         if (this.hasVisitCost()) {
             if (!this.canAffordVisit(player)) {
-                this.plugin.getMessage(WarpsLang.WARP_TELEPORT_ERROR_NOT_ENOUGH_FUNDS).replace(this.replacePlaceholders()).send(player);
-                return;
+                WarpsLang.WARP_TELEPORT_ERROR_NOT_ENOUGH_FUNDS.getMessage().replace(this.replacePlaceholders()).send(player);
+                return false;
             }
-            if (!player.hasPermission(WarpsPerms.BYPASS_VISIT_COST)) {
+            if (!player.hasPermission(WarpsPerms.BYPASS_VISIT_COST) && !this.isOwner(player)) {
                 double visitCost = this.getVisitCostMoney();
                 VaultHook.takeMoney(player, visitCost);
             }
         }
 
-        if (player.teleport(this.getLocation())) {
-            this.plugin.getMessage(WarpsLang.WARP_TELEPORT_DONE).replace(this.replacePlaceholders()).send(player);
+        PlayerWarpTeleportEvent event = new PlayerWarpTeleportEvent(player, this);
+        this.plugin.getPluginManager().callEvent(event);
+        if (event.isCancelled()) return false;
 
-            if (!isForced && this.hasVisitCooldown()) {
-                CooldownInfo info = CooldownInfo.of(this);
-                user.addCooldown(info);
-                this.plugin.getUserManager().saveUser(user);
-            }
+        Teleporter teleporter = new Teleporter(player, this.getLocation()).centered();
+        if (!teleporter.teleport()) return false;
+
+        WarpsLang.WARP_TELEPORT_DONE.getMessage().replace(this.replacePlaceholders()).send(player);
+
+        if (!isForced && this.hasVisitCooldown() && !this.isOwner(player)) {
+            CooldownInfo info = CooldownInfo.of(this);
+            user.addCooldown(info);
+            this.plugin.getUserManager().scheduleSave(user);
         }
+
+        return true;
+    }
+
+    public boolean isValid() {
+        return this.getWorld() != null;
+    }
+
+    public World getWorld() {
+        return this.worldName == null ? null : this.plugin.getServer().getWorld(this.worldName);
+    }
+
+    public Location getLocation() {
+        World world = this.getWorld();
+        if (world == null) return null;
+
+        return this.blockPos.toLocation(world);
+    }
+
+    public void setLocation(@NotNull Location location) {
+        World locWorld = location.getWorld();
+        if (locWorld == null) return;
+
+        this.worldName = locWorld.getName();
+        this.blockPos = BlockEyedPos.from(location);
     }
 
     public boolean isOwner(@NotNull Player player) {
         return this.getOwner().isUser(player);
+    }
+
+    public boolean canEdit(@NotNull Player player) {
+        return this.isOwner(player) || player.hasPermission(WarpsPerms.EDITOR_OTHERS);
     }
 
     public boolean isOnCooldown(@NotNull Player player) {
@@ -251,6 +259,7 @@ public class Warp extends AbstractConfigHolder<SunLight> implements Placeholder 
     }
 
     public boolean isVisitTime(@NotNull Player player) {
+        if (this.isOwner(player)) return true;
         if (player.hasPermission(WarpsPerms.BYPASS_VISIT_TIME)) return true;
         return this.isVisitTime();
     }
@@ -293,11 +302,12 @@ public class Warp extends AbstractConfigHolder<SunLight> implements Placeholder 
     }
 
     public boolean hasVisitCost() {
-        return EngineUtils.hasVault() && VaultHook.hasEconomy() && this.getVisitCostMoney() > 0D;
+        return this.visitCostMoney > 0D && Plugins.hasVault() && VaultHook.hasEconomy();
     }
 
     public boolean canAffordVisit(@NotNull Player player) {
         if (!this.hasVisitCost()) return true;
+        if (this.isOwner(player)) return true;
         if (player.hasPermission(WarpsPerms.BYPASS_VISIT_COST)) return true;
 
         return VaultHook.getBalance(player) >= this.getVisitCostMoney();
@@ -327,21 +337,31 @@ public class Warp extends AbstractConfigHolder<SunLight> implements Placeholder 
     }
 
     @NotNull
+    public String getWorldName() {
+        return worldName;
+    }
+
+    @NotNull
+    public BlockEyedPos getBlockPos() {
+        return blockPos;
+    }
+
+    @NotNull
     public String getName() {
         return this.name;
     }
 
     public void setName(@NotNull String name) {
-        this.name = Colorizer.apply(name);
+        this.name = name;
     }
 
-    @NotNull
-    public Optional<String> getDescription() {
-        return Optional.ofNullable(description);
+    @Nullable
+    public String getDescription() {
+        return this.description;
     }
 
     public void setDescription(@Nullable String description) {
-        this.description = description == null ? null : Colorizer.apply(description);
+        this.description = description;
     }
 
     public boolean isPermissionRequired() {
@@ -380,30 +400,21 @@ public class Warp extends AbstractConfigHolder<SunLight> implements Placeholder 
 
     public void setIcon(@NotNull ItemStack icon) {
         this.icon = new ItemStack(icon);
-        ItemUtil.mapMeta(this.icon, meta -> {
+        ItemUtil.editMeta(this.icon, meta -> {
             meta.setDisplayName(null);
             meta.setLore(null);
             meta.addItemFlags(ItemFlag.values());
         });
     }
 
-    @NotNull
-    public Location getLocation() {
-        return this.location;
-    }
-
-    public void setLocation(@NotNull Location location) {
-        this.location = location;
-    }
-
-    @NotNull
-    public Optional<String> getCommandShortcut() {
-        return Optional.ofNullable(commandShortcut);
+    @Nullable
+    public String getCommandShortcut() {
+        return this.commandShortcut;
     }
 
     public void setCommandShortcut(@Nullable String commandShortcut) {
-        this.getCommandShortcut().ifPresent(CommandRegister::unregister);
+        WarpShortcutCommand.unregister(this.plugin, this);
         this.commandShortcut = commandShortcut;
-        this.getCommandShortcut().ifPresent(has -> CommandRegister.register(this.plugin, new WarpShortcutCommand(this, has)));
+        WarpShortcutCommand.register(this.plugin, this);
     }
 }

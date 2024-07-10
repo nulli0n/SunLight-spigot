@@ -1,180 +1,197 @@
 package su.nightexpress.sunlight.module.spawns.impl;
 
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import su.nexmedia.engine.api.config.JYML;
-import su.nexmedia.engine.api.manager.AbstractConfigHolder;
-import su.nexmedia.engine.api.placeholder.Placeholder;
-import su.nexmedia.engine.api.placeholder.PlaceholderMap;
-import su.nexmedia.engine.lang.LangManager;
-import su.nexmedia.engine.utils.Colorizer;
-import su.nexmedia.engine.utils.NumberUtil;
-import su.nexmedia.engine.utils.PlayerUtil;
-import su.nightexpress.sunlight.SunLight;
-import su.nightexpress.sunlight.config.Lang;
+import su.nightexpress.nightcore.config.FileConfig;
+import su.nightexpress.nightcore.manager.AbstractFileData;
+import su.nightexpress.nightcore.util.Players;
+import su.nightexpress.nightcore.util.placeholder.Placeholder;
+import su.nightexpress.nightcore.util.placeholder.PlaceholderMap;
+import su.nightexpress.sunlight.SunLightPlugin;
 import su.nightexpress.sunlight.module.spawns.SpawnsModule;
 import su.nightexpress.sunlight.module.spawns.config.SpawnsLang;
-import su.nightexpress.sunlight.module.spawns.editor.SpawnSettingsEditor;
+import su.nightexpress.sunlight.module.spawns.config.SpawnsPerms;
 import su.nightexpress.sunlight.module.spawns.event.PlayerSpawnTeleportEvent;
 import su.nightexpress.sunlight.module.spawns.util.Placeholders;
-import su.nightexpress.sunlight.module.spawns.util.SpawnsPerms;
+import su.nightexpress.sunlight.utils.Teleporter;
+import su.nightexpress.sunlight.utils.pos.BlockEyedPos;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
-public class Spawn extends AbstractConfigHolder<SunLight> implements Placeholder {
+public class Spawn extends AbstractFileData<SunLightPlugin> implements Placeholder {
 
-    private final SpawnsModule   spawnsModule;
-    private final PlaceholderMap placeholderMap;
-    private final Set<String> loginTeleportGroups;
-    private final Set<String> respawnTeleportGroups;
+    private final SpawnsModule   module;
+    private final PlaceholderMap placeholders;
+    private final PlaceholderMap editorPlaceholders;
 
-    private String   name;
-    private Location location;
-    private boolean  isPermission;
-    private boolean  isDefault;
-    private int     priority;
-    private boolean loginTeleportEnabled;
-    private boolean firstLoginTeleportEnabled;
-    private boolean respawnTeleportEnabled;
+    private final Set<String>    loginGroups;
+    private final Set<String>    respawnGroups;
 
-    private SpawnSettingsEditor editor;
+    private String       name;
+    private BlockEyedPos blockPos;
+    private String       worldName;
+    private boolean      permissionRequired;
+    private int          priority;
+    private boolean      loginTeleport;
+    private boolean      deathTeleport;
 
-    public Spawn(@NotNull SpawnsModule module, @NotNull JYML cfg) {
-        super(module.plugin(), cfg);
-        this.spawnsModule = module;
-        this.loginTeleportGroups = new HashSet<>();
-        this.respawnTeleportGroups = new HashSet<>();
+    public Spawn(@NotNull SunLightPlugin plugin, @NotNull SpawnsModule module, @NotNull File file) {
+        super(plugin, file);
+        this.module = module;
+        this.loginGroups = new HashSet<>();
+        this.respawnGroups = new HashSet<>();
 
-        this.placeholderMap = new PlaceholderMap()
-            .add(Placeholders.SPAWN_ID, this::getId)
-            .add(Placeholders.SPAWN_NAME, this::getName)
-            .add(Placeholders.SPAWN_LOCATION_WORLD, () -> {
-                Location location = this.getLocation();
-                return location.getWorld() == null ? "null" : LangManager.getWorld(location.getWorld());
-            })
-            .add(Placeholders.SPAWN_LOCATION_X, () -> NumberUtil.format(this.getLocation().getX()))
-            .add(Placeholders.SPAWN_LOCATION_Y, () -> NumberUtil.format(this.getLocation().getY()))
-            .add(Placeholders.SPAWN_LOCATION_Z, () -> NumberUtil.format(this.getLocation().getZ()))
-            .add(Placeholders.SPAWN_PERMISSION_REQUIRED, () -> LangManager.getBoolean(this.isPermission))
-            .add(Placeholders.SPAWN_PERMISSION_NODE, () -> SpawnsPerms.PREFIX_SPAWN + this.getId())
-            .add(Placeholders.SPAWN_PRIORITY, () -> String.valueOf(this.getPriority()))
-            .add(Placeholders.SPAWN_IS_DEFAULT, () -> LangManager.getBoolean(this.isDefault()))
-            .add(Placeholders.SPAWN_LOGIN_TELEPORT_ENABLED, () -> LangManager.getBoolean(this.isLoginTeleportEnabled()))
-            .add(Placeholders.SPAWN_LOGIN_TELEPORT_NEWBIES, () -> LangManager.getBoolean(this.isFirstLoginTeleportEnabled()))
-            .add(Placeholders.SPAWN_RESPAWN_TELEPORT_ENABLED, () -> LangManager.getBoolean(this.isRespawnTeleportEnabled()))
-            .add(Placeholders.SPAWN_LOGIN_TELEPORT_GROUPS, () -> String.join(",", this.getLoginTeleportGroups()))
-            .add(Placeholders.SPAWN_RESPAWN_TELEPORT_GROUPS, () -> String.join(",", this.getRespawnTeleportGroups()))
-        ;
+        this.placeholders = Placeholders.forSpawn(this);
+        this.editorPlaceholders = PlaceholderMap.fusion(this.placeholders, Placeholders.forSpawnEditor(this));
     }
 
     @Override
-    public boolean load() {
-        Location location = cfg.getLocation("Location");
-        if (location == null) {
-            this.spawnsModule.error("Invalid spawn location");
-            return false;
+    protected boolean onLoad(@NotNull FileConfig config) {
+        String locationStr = config.getString("Location");
+        if (locationStr != null) {
+            String[] split = locationStr.split(",");
+            if (split.length != 6) return false;
+
+            String world = split[5];
+            BlockEyedPos pos = BlockEyedPos.deserialize(locationStr);
+            config.remove("Location");
+            config.set("World", world);
+            pos.write(config, "BlockPos");
         }
-        this.setLocation(location);
 
-        this.setName(cfg.getString("Name", this.getId()));
-        this.setPermissionRequired(cfg.getBoolean("Permission_Required"));
-        this.setDefault(cfg.getBoolean("Is_Default"));
-        this.setPriority(cfg.getInt("Priority"));
-        this.setLoginTeleportEnabled(cfg.getBoolean("Teleport_On_Login.Enabled"));
-        this.setFirstLoginTeleportEnabled(cfg.getBoolean("Teleport_On_Login.For_New_Players"));
-        this.setRespawnTeleportEnabled(cfg.getBoolean("Teleport_On_Death.Enabled"));
-        this.loginTeleportGroups.addAll(cfg.getStringSet("Teleport_On_Login.Groups").stream()
-            .map(String::toLowerCase).toList());
-        this.respawnTeleportGroups.addAll(cfg.getStringSet("Teleport_On_Death.Groups").stream()
-            .map(String::toLowerCase).toList());
+        this.blockPos = BlockEyedPos.read(config, "BlockPos");
+        this.worldName = config.getString("World");
 
+        this.setName(config.getString("Name", this.getId()));
+        this.setPermissionRequired(config.getBoolean("Permission_Required"));
+        this.setPriority(config.getInt("Priority"));
+        this.setLoginTeleport(config.getBoolean("Teleport_On_Login.Enabled"));
+        this.setDeathTeleport(config.getBoolean("Teleport_On_Death.Enabled"));
+        this.loginGroups.addAll(config.getStringSet("Teleport_On_Login.Groups").stream()
+            .map(String::toLowerCase).toList());
+        this.respawnGroups.addAll(config.getStringSet("Teleport_On_Death.Groups").stream()
+            .map(String::toLowerCase).toList());
+        
         return true;
+    }
+
+    @Override
+    protected void onSave(@NotNull FileConfig config) {
+        config.set("Name", this.getName());
+        config.set("World", this.worldName);
+        this.blockPos.write(config, "BlockPos");
+        config.set("Permission_Required", this.isPermissionRequired());
+        config.set("Priority", this.getPriority());
+        config.set("Teleport_On_Login.Enabled", this.isLoginTeleport());
+        config.set("Teleport_On_Login.Groups", new ArrayList<>(this.getLoginGroups()));
+        config.set("Teleport_On_Death.Enabled", this.isDeathTeleport());
+        config.set("Teleport_On_Death.Groups", new ArrayList<>(this.getRespawnGroups()));
     }
 
     @Override
     @NotNull
     public PlaceholderMap getPlaceholders() {
-        return this.placeholderMap;
-    }
-
-    @Override
-    public void onSave() {
-        cfg.set("Name", this.getName());
-        cfg.set("Location", this.getLocation());
-        cfg.set("Permission_Required", this.isPermissionRequired());
-        cfg.set("Is_Default", this.isDefault());
-        cfg.set("Priority", this.getPriority());
-        cfg.set("Teleport_On_Login.Enabled", this.isLoginTeleportEnabled());
-        cfg.set("Teleport_On_Login.For_New_Players", this.isFirstLoginTeleportEnabled());
-        cfg.set("Teleport_On_Login.Groups", new ArrayList<>(this.getLoginTeleportGroups()));
-        cfg.set("Teleport_On_Death.Enabled", this.isRespawnTeleportEnabled());
-        cfg.set("Teleport_On_Death.Groups", new ArrayList<>(this.getRespawnTeleportGroups()));
-    }
-
-    public void clear() {
-        if (this.editor != null) {
-            this.editor.clear();
-            this.editor = null;
-        }
-        this.placeholderMap.clear();
+        return this.placeholders;
     }
 
     @NotNull
-    public SpawnSettingsEditor getEditor() {
-        if (this.editor == null) {
-            this.editor = new SpawnSettingsEditor(this);
-        }
-        return this.editor;
+    public PlaceholderMap getEditorPlaceholders() {
+        return this.editorPlaceholders;
     }
 
     public void teleport(@NotNull Player player) {
-        this.teleport(player, true);
+        this.teleport(player, true, false);
     }
 
-    public boolean teleport(@NotNull Player player, boolean isForce) {
-        if (!isForce) {
-            PlayerSpawnTeleportEvent event = new PlayerSpawnTeleportEvent(player, this);
-            plugin.getPluginManager().callEvent(event);
-            if (event.isCancelled()) return false;
-        }
-
-        if (!isForce && !this.hasPermission(player)) {
-            plugin.getMessage(Lang.ERROR_PERMISSION_DENY).send(player);
+    public boolean teleport(@NotNull Player player, boolean isForce, boolean silent) {
+        if (!this.isValid()) {
+            if (!silent) SpawnsLang.SPAWN_TELEPORT_ERROR_WORLD.getMessage().send(player);
             return false;
         }
 
-        if (player.teleport(this.getLocation())) {
-            this.plugin.getMessage(SpawnsLang.SPAWN_TELEPORT_DONE).replace(this.replacePlaceholders()).send(player);
-            return true;
+        if (!isForce) {
+            if (!this.hasPermission(player)) {
+                SpawnsLang.ERROR_NO_PERMISSION.getMessage().send(player);
+                return false;
+            }
         }
-        return false;
+
+        PlayerSpawnTeleportEvent event = new PlayerSpawnTeleportEvent(player, this);
+        plugin.getPluginManager().callEvent(event);
+        if (event.isCancelled()) return false;
+
+        Teleporter teleporter = new Teleporter(player, this.getLocation()).centered();
+        if (!teleporter.teleport()) return false;
+
+        if (!silent) SpawnsLang.SPAWN_TELEPORT_DONE.getMessage().replace(this.replacePlaceholders()).send(player);
+        return true;
     }
 
-    public boolean isDeathTeleportEnabled(@NotNull Player player) {
-        if (!this.isRespawnTeleportEnabled()) return false;
-        if (this.getRespawnTeleportGroups().contains(Placeholders.WILDCARD)) return true;
+    public boolean isDeathSpawn(@NotNull Player player) {
+        if (!this.isDeathTeleport()) return false;
+        if (!this.hasPermission(player)) return false;
 
-        return PlayerUtil.getPermissionGroups(player).stream().anyMatch(this.getRespawnTeleportGroups()::contains);
+        if (this.respawnGroups.contains(Placeholders.WILDCARD)) return true;
+
+        return Players.getPermissionGroups(player).stream().anyMatch(this.respawnGroups::contains);
     }
 
-    public boolean isLoginTeleportEnabled(@NotNull Player player) {
-        if (!this.isLoginTeleportEnabled()) return false;
-        if (this.getLoginTeleportGroups().contains(Placeholders.WILDCARD)) return true;
+    public boolean isLoginSpawn(@NotNull Player player) {
+        if (!this.isLoginTeleport()) return false;
+        if (!this.hasPermission(player)) return false;
 
-        return PlayerUtil.getPermissionGroups(player).stream().anyMatch(this.getLoginTeleportGroups()::contains);
+        if (this.loginGroups.contains(Placeholders.WILDCARD)) return true;
+
+        return Players.getPermissionGroups(player).stream().anyMatch(this.loginGroups::contains);
     }
 
     public boolean hasPermission(@NotNull Player player) {
-        if (!this.isPermissionRequired() || this.isDefault()) return true;
+        if (!this.isPermissionRequired()) return true;
+
         return player.hasPermission(SpawnsPerms.SPAWN) || player.hasPermission(SpawnsPerms.PREFIX_SPAWN + this.getId());
+    }
+
+    public boolean isValid() {
+        return this.getWorld() != null;
+    }
+
+    public World getWorld() {
+        return this.worldName == null ? null : this.plugin.getServer().getWorld(this.worldName);
+    }
+
+    public Location getLocation() {
+        World world = this.getWorld();
+        if (world == null) return null;
+
+        return this.blockPos.toLocation(world);
+    }
+
+    public void setLocation(@NotNull Location location) {
+        World locWorld = location.getWorld();
+        if (locWorld == null) return;
+
+        this.worldName = locWorld.getName();
+        this.blockPos = BlockEyedPos.from(location);
     }
 
     @NotNull
     public SpawnsModule getSpawnManager() {
-        return this.spawnsModule;
+        return this.module;
+    }
+
+    @NotNull
+    public String getWorldName() {
+        return worldName;
+    }
+
+    @NotNull
+    public BlockEyedPos getBlockPos() {
+        return blockPos;
     }
 
     @NotNull
@@ -183,32 +200,15 @@ public class Spawn extends AbstractConfigHolder<SunLight> implements Placeholder
     }
 
     public void setName(@NotNull String name) {
-        this.name = Colorizer.apply(name);
-    }
-
-    @NotNull
-    public Location getLocation() {
-        return this.location;
-    }
-
-    public void setLocation(@NotNull Location location) {
-        this.location = location;
+        this.name = name;
     }
 
     public boolean isPermissionRequired() {
-        return this.isPermission;
+        return this.permissionRequired;
     }
 
     public void setPermissionRequired(boolean isPermission) {
-        this.isPermission = isPermission;
-    }
-
-    public boolean isDefault() {
-        return this.isDefault;
-    }
-
-    public void setDefault(boolean isDefault) {
-        this.isDefault = isDefault;
+        this.permissionRequired = isPermission;
     }
 
     public int getPriority() {
@@ -219,37 +219,29 @@ public class Spawn extends AbstractConfigHolder<SunLight> implements Placeholder
         this.priority = priority;
     }
 
-    public boolean isLoginTeleportEnabled() {
-        return this.loginTeleportEnabled;
+    public boolean isLoginTeleport() {
+        return this.loginTeleport;
     }
 
-    public void setLoginTeleportEnabled(boolean loginTeleportEnabled) {
-        this.loginTeleportEnabled = loginTeleportEnabled;
-    }
-
-    public boolean isFirstLoginTeleportEnabled() {
-        return this.firstLoginTeleportEnabled;
-    }
-
-    public void setFirstLoginTeleportEnabled(boolean firstLoginTeleportEnabled) {
-        this.firstLoginTeleportEnabled = firstLoginTeleportEnabled;
+    public void setLoginTeleport(boolean loginTeleport) {
+        this.loginTeleport = loginTeleport;
     }
 
     @NotNull
-    public Set<String> getLoginTeleportGroups() {
-        return this.loginTeleportGroups;
+    public Set<String> getLoginGroups() {
+        return this.loginGroups;
     }
 
-    public boolean isRespawnTeleportEnabled() {
-        return this.respawnTeleportEnabled;
+    public boolean isDeathTeleport() {
+        return this.deathTeleport;
     }
 
-    public void setRespawnTeleportEnabled(boolean respawnTeleportEnabled) {
-        this.respawnTeleportEnabled = respawnTeleportEnabled;
+    public void setDeathTeleport(boolean deathTeleport) {
+        this.deathTeleport = deathTeleport;
     }
 
     @NotNull
-    public Set<String> getRespawnTeleportGroups() {
-        return this.respawnTeleportGroups;
+    public Set<String> getRespawnGroups() {
+        return this.respawnGroups;
     }
 }

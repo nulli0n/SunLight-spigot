@@ -1,60 +1,80 @@
 package su.nightexpress.sunlight.module.scoreboard.command;
 
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import su.nexmedia.engine.api.command.CommandResult;
+import su.nightexpress.nightcore.command.experimental.CommandContext;
+import su.nightexpress.nightcore.command.experimental.argument.ArgumentTypes;
+import su.nightexpress.nightcore.command.experimental.argument.ParsedArguments;
+import su.nightexpress.nightcore.command.experimental.builder.DirectNodeBuilder;
+import su.nightexpress.nightcore.command.experimental.node.DirectNode;
+import su.nightexpress.nightcore.config.FileConfig;
 import su.nightexpress.sunlight.Placeholders;
+import su.nightexpress.sunlight.SunLightPlugin;
+import su.nightexpress.sunlight.command.CommandArguments;
 import su.nightexpress.sunlight.command.CommandFlags;
-import su.nightexpress.sunlight.command.api.ToggleCommand;
+import su.nightexpress.sunlight.command.CommandRegistry;
+import su.nightexpress.sunlight.command.CommandTools;
+import su.nightexpress.sunlight.command.mode.ToggleMode;
+import su.nightexpress.sunlight.command.template.CommandTemplate;
 import su.nightexpress.sunlight.config.Lang;
-import su.nightexpress.sunlight.data.impl.SunUser;
+import su.nightexpress.sunlight.data.user.SunUser;
 import su.nightexpress.sunlight.module.scoreboard.ScoreboardModule;
 import su.nightexpress.sunlight.module.scoreboard.config.SBLang;
 import su.nightexpress.sunlight.module.scoreboard.config.SBPerms;
 
-public class ScoreboardCommand extends ToggleCommand {
+public class ScoreboardCommand {
 
-    public static final String NAME = "scoreboard";
+    public static final String NODE = "scoreboard_toggle";
 
-    private final ScoreboardModule module;
-
-    public ScoreboardCommand(@NotNull ScoreboardModule module, @NotNull String[] aliases) {
-        super(module.plugin(), aliases, SBPerms.COMMAND_SCOREBOARD, SBPerms.COMMAND_SCOREBOARD_OTHERS, 0);
-        this.module = module;
-        this.setAllowDataLoad();
-        this.setUsage(this.plugin.getMessage(SBLang.COMMAND_SCOREBOARD_USAGE));
-        this.setDescription(this.plugin.getMessage(SBLang.COMMAND_SCOREBOARD_DESC));
+    public static void load(@NotNull SunLightPlugin plugin, @NotNull ScoreboardModule module) {
+        CommandRegistry.registerDirectExecutor(NODE, (template, config) -> builder(plugin, module, template, config));
+        CommandRegistry.addTemplate("scoreboard", CommandTemplate.direct(new String[]{"scoreboard", "board", "sb"}, NODE));
     }
 
-    @Override
-    protected void onExecute(@NotNull CommandSender sender, @NotNull CommandResult result) {
-        Player target = this.getCommandTarget(sender, result);
-        if (target == null) return;
+    @NotNull
+    public static DirectNodeBuilder builder(@NotNull SunLightPlugin plugin, @NotNull ScoreboardModule module, @NotNull CommandTemplate template, @NotNull FileConfig config) {
+        return DirectNode.builder(plugin, template.getAliases())
+            .description(SBLang.COMMAND_SCOREBOARD_DESC)
+            .permission(SBPerms.COMMAND_SCOREBOARD)
+            .withArgument(CommandArguments.toggleMode(CommandArguments.MODE))
+            .withArgument(ArgumentTypes.playerName(CommandArguments.PLAYER).permission(SBPerms.COMMAND_SCOREBOARD_OTHERS))
+            .withFlag(CommandFlags.silent().permission(SBPerms.COMMAND_SCOREBOARD_OTHERS))
+            .executes((context, arguments) -> execute(plugin, module, context, arguments))
+            ;
+    }
+
+    public static boolean execute(@NotNull SunLightPlugin plugin, @NotNull ScoreboardModule module, @NotNull CommandContext context, @NotNull ParsedArguments arguments) {
+        Player target = CommandTools.getTarget(plugin, context, arguments, CommandArguments.PLAYER, true);
+        if (target == null) return false;
+
+        ToggleMode mode = CommandTools.getToggleMode(plugin, context, arguments, CommandArguments.MODE);
 
         SunUser user = plugin.getUserManager().getUserData(target);
-        Mode mode = this.getMode(sender, result);
         boolean state = mode.apply(user.getSettings().get(ScoreboardModule.SETTING_SCOREBOARD));
 
         if (state) {
-            this.module.addBoard(target);
+            module.addBoard(target);
         }
         else {
-            this.module.removeBoard(target);
+            module.removeBoard(target);
         }
-        user.getSettings().set(ScoreboardModule.SETTING_SCOREBOARD, state);
-        this.plugin.getUserManager().saveUser(user);
 
-        if (sender != target) {
-            this.plugin.getMessage(SBLang.COMMAND_SCOREBOARD_TARGET)
+        user.getSettings().set(ScoreboardModule.SETTING_SCOREBOARD, state);
+        plugin.getUserManager().scheduleSave(user);
+
+        if (context.getSender() != target) {
+            SBLang.COMMAND_SCOREBOARD_TARGET.getMessage()
                 .replace(Placeholders.forPlayer(target))
-                .replace(Placeholders.GENERIC_STATE, Lang.getEnable(state))
-                .send(sender);
+                .replace(Placeholders.GENERIC_STATE, Lang.getEnabledOrDisabled(state))
+                .send(context.getSender());
         }
-        if (!result.hasFlag(CommandFlags.SILENT)) {
-            this.plugin.getMessage(SBLang.COMMAND_SCOREBOARD_NOTIFY)
-                .replace(Placeholders.GENERIC_STATE, Lang.getEnable(state))
+
+        if (!arguments.hasFlag(CommandFlags.SILENT)) {
+            SBLang.COMMAND_SCOREBOARD_NOTIFY.getMessage()
+                .replace(Placeholders.GENERIC_STATE, Lang.getEnabledOrDisabled(state))
                 .send(target);
         }
+
+        return true;
     }
 }

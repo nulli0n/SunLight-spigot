@@ -6,141 +6,146 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import su.nexmedia.engine.Version;
-import su.nexmedia.engine.command.CommandRegister;
-import su.nexmedia.engine.utils.*;
-import su.nightexpress.sunlight.SunLight;
-import su.nightexpress.sunlight.api.event.PlayerPrivateMessageEvent;
-import su.nightexpress.sunlight.config.Config;
-import su.nightexpress.sunlight.data.impl.SunUser;
+import su.nightexpress.nightcore.util.*;
+import su.nightexpress.sunlight.SunLightPlugin;
+import su.nightexpress.sunlight.core.user.settings.Setting;
+import su.nightexpress.sunlight.core.user.settings.SettingRegistry;
 import su.nightexpress.sunlight.hook.HookId;
 import su.nightexpress.sunlight.module.Module;
-import su.nightexpress.sunlight.module.chat.command.BroadcastCommand;
-import su.nightexpress.sunlight.module.chat.command.ClearchatCommand;
-import su.nightexpress.sunlight.module.chat.command.MeCommand;
-import su.nightexpress.sunlight.module.chat.command.MentionsCommand;
-import su.nightexpress.sunlight.module.chat.command.channel.ChatChannelCommand;
-import su.nightexpress.sunlight.module.chat.command.pm.ReplyCommand;
-import su.nightexpress.sunlight.module.chat.command.pm.TellCommand;
-import su.nightexpress.sunlight.module.chat.command.pm.TogglePMCommand;
-import su.nightexpress.sunlight.module.chat.command.spy.ChatSpyCommand;
-import su.nightexpress.sunlight.module.chat.config.*;
-import su.nightexpress.sunlight.module.chat.event.AsyncSunlightPlayerChatEvent;
+import su.nightexpress.sunlight.module.ModuleInfo;
+import su.nightexpress.sunlight.module.chat.command.*;
+import su.nightexpress.sunlight.module.chat.command.ChannelCommands;
+import su.nightexpress.sunlight.module.chat.config.ChatConfig;
+import su.nightexpress.sunlight.module.chat.config.ChatLang;
+import su.nightexpress.sunlight.module.chat.config.ChatPerms;
 import su.nightexpress.sunlight.module.chat.event.SunlightPreHandleChatEvent;
+import su.nightexpress.sunlight.module.chat.format.FormatComponent;
+import su.nightexpress.sunlight.module.chat.format.FormatContainer;
 import su.nightexpress.sunlight.module.chat.handler.ChatMessageHandler;
+import su.nightexpress.sunlight.module.chat.handler.CommandHandler;
+import su.nightexpress.sunlight.module.chat.handler.PrivateMessageHandler;
 import su.nightexpress.sunlight.module.chat.listener.ChatListener;
-import su.nightexpress.sunlight.module.chat.module.ChatAnnounceManager;
-import su.nightexpress.sunlight.module.chat.module.ChatDeathManager;
-import su.nightexpress.sunlight.module.chat.module.ChatJoinManager;
-import su.nightexpress.sunlight.module.chat.rule.ChatRuleManager;
-import su.nightexpress.sunlight.module.chat.util.ChatReportDisabler;
-import su.nightexpress.sunlight.module.chat.util.ChatSpyType;
-import su.nightexpress.sunlight.module.chat.util.ChatUtils;
-import su.nightexpress.sunlight.module.chat.util.Placeholders;
+import su.nightexpress.sunlight.module.chat.mention.Mention;
+import su.nightexpress.sunlight.module.chat.mention.PlayerMention;
+import su.nightexpress.sunlight.module.chat.module.announcer.AnnounceManager;
+import su.nightexpress.sunlight.module.chat.module.deathmessage.DeathMessageManager;
+import su.nightexpress.sunlight.module.chat.module.joinquit.JoinMessageManager;
+import su.nightexpress.sunlight.module.chat.module.spy.SpyManager;
+import su.nightexpress.sunlight.module.chat.rule.RuleManager;
+import su.nightexpress.sunlight.module.chat.util.ReportDisabler;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.time.LocalDateTime;
-import java.util.Comparator;
-import java.util.Map;
-import java.util.Set;
-import java.util.function.Predicate;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
+import java.util.*;
 
 public class ChatModule extends Module {
 
-    public static Pattern mentionsPattern;
+    public static final Setting<Boolean> MENTIONS_SETTING = SettingRegistry.register(Setting.create("mentions", true, true));
 
-    private ChannelManager channelManager;
-    private ChatDeathManager deathManager;
-    private ChatJoinManager joinManager;
-    private ChatRuleManager ruleManager;
-    private ChatAnnounceManager announceManager;
+    private final Map<UUID, PlayerChatData> chatDataMap;
 
-    public ChatModule(@NotNull SunLight plugin, @NotNull String id) {
+    private ChannelManager      channelManager;
+    private DeathMessageManager deathManager;
+    private JoinMessageManager  joinManager;
+    private RuleManager        ruleManager;
+    private AnnounceManager announceManager;
+    private SpyManager      spyManager;
+    private ReportDisabler reportDisabler;
+
+    public ChatModule(@NotNull SunLightPlugin plugin, @NotNull String id) {
         super(plugin, id);
+        this.chatDataMap = new HashMap<>();
     }
 
-    protected void onLoad() {
-        this.plugin.registerPermissions(ChatPerms.class);
-        this.plugin.getLangManager().loadMissing(ChatLang.class);
-        this.plugin.getLangManager().loadEnum(ChatSpyType.class);
-        this.plugin.getLang().saveChanges();
-        this.getConfig().initializeOptions(ChatConfig.class);
+    @Override
+    protected void gatherInfo(@NotNull ModuleInfo moduleInfo) {
+        moduleInfo.setConfigClass(ChatConfig.class);
+        moduleInfo.setLangClass(ChatLang.class);
+        moduleInfo.setPermissionsClass(ChatPerms.class);
+    }
 
+    @Override
+    protected void onModuleLoad() {
+        this.loadManagers();
+        this.loadCommands();
+        this.loadModules();
+
+        this.addListener(new ChatListener(this.plugin, this));
+    }
+
+    @Override
+    protected void onModuleUnload() {
+        ChannelCommands.unload(this.plugin, this);
+
+        if (this.reportDisabler != null) this.reportDisabler.shutdown();
+        if (this.spyManager != null) this.spyManager.shutdown();
+        if (this.announceManager != null) this.announceManager.shutdown();
+        if (this.deathManager != null) this.deathManager.shutdown();
+        if (this.joinManager != null) this.joinManager.shutdown();
+        if (this.ruleManager != null) this.ruleManager.shutdown();
+        if (this.channelManager != null) this.channelManager.shutdown();
+    }
+
+    private void loadCommands() {
+        ChannelCommands.load(this.plugin, this);
+        ClearChatCommand.load(this.plugin);
+
+        if (ChatConfig.PM_ENABLED.get()) {
+            PrivateMessageCommands.load(this.plugin, this);
+        }
+        if (ChatConfig.MENTIONS_ENABLED.get()) {
+            MentionsCommand.load(this.plugin);
+        }
+        if (ChatConfig.ROLEPLAY_COMMANDS_ENABLED.get()) {
+            RoleplayCommands.load(this.plugin);
+        }
+    }
+
+    private void loadManagers() {
         this.channelManager = new ChannelManager(this.plugin, this);
         this.channelManager.setup();
 
-        if (ChatConfig.MENTIONS_ENABLED.get()) {
-            mentionsPattern = Pattern.compile(ChatConfig.MENTIONS_PREFIX.get() + "+.*?\\S+");
+        this.ruleManager = new RuleManager(this.plugin, this);
+        this.ruleManager.setup();
+    }
+
+    private void loadModules() {
+        if (ChatConfig.SPY_ENABLED.get()) {
+            this.spyManager = new SpyManager(this.plugin, this);
+            this.spyManager.setup();
         }
 
         if (ChatConfig.MODULE_JOIN_QUIT_MESSAGES.get()) {
-            this.joinManager = new ChatJoinManager(this);
+            this.joinManager = new JoinMessageManager(this.plugin, this);
             this.joinManager.setup();
         }
 
         if (ChatConfig.MODULE_DEATH_MESSAGES.get()) {
-            this.deathManager = new ChatDeathManager(this);
-            this.deathManager.setup();
+            if (Version.isAtLeast(Version.V1_20_R3)) {
+                this.deathManager = new DeathMessageManager(this.plugin, this);
+                this.deathManager.setup();
+            }
+            else {
+                this.error("Death Messages feature is available only for " + Version.V1_20_R3.getLocalized() + " and above!");
+            }
         }
 
         if (ChatConfig.MODULE_ANNOUNCER.get()) {
-            this.announceManager = new ChatAnnounceManager(this);
+            this.announceManager = new AnnounceManager(this.plugin, this);
             this.announceManager.setup();
         }
 
-        this.ruleManager = new ChatRuleManager(this);
-        this.ruleManager.setup();
-
-        this.plugin.getCommandRegulator().register("clearchat", (cfg, aliases) -> new ClearchatCommand(this.plugin, aliases));
-        this.plugin.getCommandRegulator().register("chatchannel", (cfg, aliases) -> new ChatChannelCommand(this, aliases));
-        this.plugin.getCommandRegulator().register("me", (cfg, aliases) -> new MeCommand(this, cfg, aliases));
-        this.plugin.getCommandRegulator().register("broadcast", (cfg, aliases) -> new BroadcastCommand(this.plugin, aliases), "bc");
-        if (ChatConfig.PM_ENABLED.get()) {
-            this.plugin.getCommandRegulator().register("tell", (cfg, aliases) -> new TellCommand(this.plugin, aliases), "t", "pm", "whisper", "w", "dm", "msg");
-            this.plugin.getCommandRegulator().register("reply", (cfg, aliases) -> new ReplyCommand(this.plugin, aliases), "r");
-            this.plugin.getCommandRegulator().register("togglepm", (cfg, aliases) -> new TogglePMCommand(this.plugin, aliases));
+        if (ChatConfig.DISABLE_REPORTS.get() && Plugins.isLoaded(HookId.PROTOCOL_LIB) && Version.isAbove(Version.V1_18_R2)) {
+            this.reportDisabler = new ReportDisabler(this.plugin);
+            this.reportDisabler.setup();
         }
-        if (ChatConfig.SPY_ENABLED.get()) {
-            this.plugin.getCommandRegulator().register("chatspy", (cfg, aliases) -> new ChatSpyCommand(this.plugin, aliases), "spy");
-        }
-        if (ChatConfig.MENTIONS_ENABLED.get()) {
-            this.plugin.getCommandRegulator().register("mentions", (cfg, aliases) -> new MentionsCommand(this.plugin, aliases));
-        }
-        if (ChatConfig.DISABLE_CHAT_REPORTS.get() && EngineUtils.hasPlugin("ProtocolLib") && Version.isAbove(Version.V1_18_R2)) {
-            ChatReportDisabler.setup(this.plugin);
-        }
-
-        this.addListener(new ChatListener(this));
     }
 
-    protected void onShutdown() {
-        if (ChatConfig.DISABLE_CHAT_REPORTS.get() && EngineUtils.hasPlugin(HookId.PROTOCOL_LIB)) {
-            ChatReportDisabler.shutdown(this.plugin);
-        }
-        if (this.announceManager != null) {
-            this.announceManager.shutdown();
-            this.announceManager = null;
-        }
-        if (this.deathManager != null) {
-            this.deathManager.shutdown();
-            this.deathManager = null;
-        }
-        if (this.joinManager != null) {
-            this.joinManager.shutdown();
-            this.joinManager = null;
-        }
-        if (this.ruleManager != null) {
-            this.ruleManager.shutdown();
-            this.ruleManager = null;
-        }
-        if (this.channelManager != null) {
-            this.channelManager.shutdown();
-        }
+    @NotNull
+    public PlayerChatData getChatData(@NotNull Player player) {
+        return this.chatDataMap.computeIfAbsent(player.getUniqueId(), k -> new PlayerChatData(player));
+    }
+
+    public void clearChatData(@NotNull UUID playerId) {
+        this.chatDataMap.remove(playerId);
     }
 
     @NotNull
@@ -149,24 +154,44 @@ public class ChatModule extends Module {
     }
 
     @NotNull
-    public ChatRuleManager getRuleManager() {
+    public RuleManager getRuleManager() {
         return this.ruleManager;
     }
 
     @Nullable
-    public static ChatPlayerFormat getPlayerFormat(@NotNull Player player) {
-        Set<String> ranks = PlayerUtil.getPermissionGroups(player);
-        var map = ChatConfig.FORMAT_PLAYER.get();
-        return map.entrySet().stream().filter(entry -> ranks.contains(entry.getKey()) || entry.getKey().equalsIgnoreCase("default")).map(Map.Entry::getValue).max(Comparator.comparingInt(ChatPlayerFormat::getPriority)).orElse(null);
+    public AnnounceManager getAnnounceManager() {
+        return this.announceManager;
     }
 
     @Nullable
-    public static ChatMention getMentionSpecial(@NotNull String id) {
-        return ChatConfig.MENTIONS_SPECIAL.get().get(id.toLowerCase());
+    public SpyManager getSpyManager() {
+        return this.spyManager;
+    }
+
+    @NotNull
+    public Set<FormatComponent> getFormatComponents() {
+        return new HashSet<>(ChatConfig.FORMAT_COMPONENTS.get().values());
+    }
+
+    @Nullable
+    public FormatContainer getFormatContainer(@NotNull Player player) {
+        var map = ChatConfig.FORMAT_LIST.get();
+        return map.values().stream().filter(container -> container.isApplicable(player)).max(Comparator.comparingInt(FormatContainer::getPriority)).orElse(null);
+    }
+
+    @Nullable
+    public Mention getMention(@NotNull String name) {
+        Mention mention = ChatConfig.getSpecialMention(name);
+        if (mention != null) return mention;
+
+        Player player = this.plugin.getServer().getPlayerExact(name);
+        if (player == null) return null;
+
+        return new PlayerMention(player);
     }
 
     public void handleChatEvent(@NotNull AsyncPlayerChatEvent event) {
-        ChatMessageHandler handler = new ChatMessageHandler(this, event);
+        ChatMessageHandler handler = new ChatMessageHandler(this.plugin, this, event);
         SunlightPreHandleChatEvent handleChatEvent = new SunlightPreHandleChatEvent(this, handler);
         this.plugin.getPluginManager().callEvent(handleChatEvent);
 
@@ -176,120 +201,15 @@ public class ChatModule extends Module {
     }
 
     public void handleCommandEvent(@NotNull PlayerCommandPreprocessEvent event) {
-        Player player = event.getPlayer();
-        if (!player.hasPermission(ChatPerms.BYPASS_COOLDOWN_COMMAND) && !ChatUtils.isNextCommandAvailable(player)) {
-            String time = TimeUtil.formatTimeLeft(ChatUtils.getNextCommandTime(player));
-            this.plugin.getMessage(ChatLang.ANTI_SPAM_DELAY_CMD).replace(Placeholders.GENERIC_TIME, time).send(player);
+        CommandHandler handler = new CommandHandler(this.plugin, this, event);
+        if (!handler.handle()) {
             event.setCancelled(true);
-            return;
-        }
-
-        String msgRaw = Colorizer.strip(event.getMessage());
-        String msgCmd = StringUtil.extractCommandName(msgRaw);
-        String msgReal = msgRaw;
-        Set<String> aliases = CommandRegister.getAliases(msgCmd, true);
-
-        Set<String> colorCommands = ChatConfig.CHAT_COLOR_COMMANDS.get();
-        if (!colorCommands.isEmpty()) {
-            if (aliases.stream().anyMatch(colorCommands::contains)) {
-                msgReal = player.hasPermission(ChatPerms.COLOR) ? Colorizer.apply(event.getMessage()) : msgRaw;
-            }
-        }
-
-        boolean doCheckSimilar = ChatConfig.ANTI_SPAM_ENABLED.get() && aliases.stream().noneMatch(cmd -> ChatConfig.ANTI_SPAM_COMMAND_WHITELIST.get().contains(cmd));
-        if (!player.hasPermission(ChatPerms.BYPASS_ANTISPAM) && doCheckSimilar && !ChatUtils.checkSpamSimilarCommand(player, msgRaw)) {
-            this.plugin.getMessage(ChatLang.ANTI_SPAM_SIMILAR_CMD).send(player);
-            event.setCancelled(true);
-            return;
-        }
-
-        boolean doCheckCaps = ChatConfig.ANTI_CAPS_ENABLED.get() && CommandRegister.getAliases(msgCmd, true).stream().anyMatch(cmd -> ChatConfig.ANTI_CAPS_AFFECTED_COMMANDS.get().contains(cmd));
-        if (!player.hasPermission(ChatPerms.BYPASS_ANTICAPS) && doCheckCaps) {
-            msgReal = ChatUtils.doAntiCaps(msgReal);
-        }
-
-        if (!player.hasPermission(ChatPerms.BYPASS_RULES)) {
-            String msgRawNoCmd = msgRaw.replace(msgCmd, "");
-            String msgRealNoCmd = msgReal.replace(msgCmd, "");
-            String msgRealNoCmdRuled = this.ruleManager.checkRules(player, msgRealNoCmd, msgRawNoCmd);
-            if (msgRealNoCmdRuled == null) {
-                event.setCancelled(true);
-                return;
-            }
-            msgReal = msgReal.replace(msgRealNoCmd, msgRealNoCmdRuled);
-        }
-
-        event.setMessage(msgReal);
-
-        if (!player.hasPermission(ChatPerms.BYPASS_ANTISPAM)) {
-            ChatUtils.setLastCommand(player, msgRaw);
-        }
-        if (!player.hasPermission(ChatPerms.BYPASS_COOLDOWN_COMMAND)) {
-            ChatUtils.setNextCommandTime(player);
         }
     }
 
-    @NotNull
-    public Set<Player> getSpies(@NotNull ChatSpyType spyType) {
-        return this.plugin.getServer().getOnlinePlayers().stream().filter(player -> this.plugin.getUserManager().getUserData(player).getSettings().get(spyType.getSettingChat())).collect(Collectors.toSet());
-    }
-
-    @NotNull
-    private String getSpyFormat(@NotNull ChatSpyType spyType, @NotNull CommandSender player, @NotNull String message) {
-        String format = ChatConfig.SPY_FORMAT.get().getOrDefault(spyType, "")
-            .replace(Placeholders.GENERIC_MESSAGE, message);
-        format = Placeholders.forSender(player).apply(format);
-        return format;
-    }
-
-    public void handleSpyMode(@NotNull AsyncSunlightPlayerChatEvent event) {
-        String format = this.getSpyFormat(ChatSpyType.CHAT, event.getPlayer(), event.getMessage());
-        format = event.getChannel().replacePlaceholders().apply(format);
-        this.handleSpyMode(event.getPlayer(), format, ChatSpyType.CHAT, spy -> !event.getChannel().isInRadius(event.getPlayer(), spy));
-        this.handleSpyLog(event.getPlayer(), format, ChatSpyType.CHAT);
-    }
-
-    public void handleSpyMode(@NotNull PlayerCommandPreprocessEvent event) {
-        String format = this.getSpyFormat(ChatSpyType.COMMAND, event.getPlayer(), event.getMessage());
-        this.handleSpyMode(event.getPlayer(), format, ChatSpyType.COMMAND, null);
-        this.handleSpyLog(event.getPlayer(), format, ChatSpyType.COMMAND);
-    }
-
-    public void handleSpyMode(@NotNull PlayerPrivateMessageEvent event) {
-        String format = this.getSpyFormat(ChatSpyType.SOCIAL, event.getSender(), event.getMessage())
-            .replace("%player_target%", event.getTarget().getName());
-        this.handleSpyMode(event.getSender(), format, ChatSpyType.SOCIAL, null);
-        this.handleSpyLog(event.getSender(), format, ChatSpyType.SOCIAL);
-    }
-
-    private void handleSpyMode(@NotNull CommandSender sender, @NotNull String format, @NotNull ChatSpyType spyType, @Nullable Predicate<Player> spyFilter) {
-        this.getSpies(spyType).stream().filter(spy -> spy != sender && (spyFilter == null || spyFilter.test(spy))).forEach(spy -> PlayerUtil.sendRichMessage(spy, format));
-    }
-
-    public void handleSpyLog(@NotNull CommandSender sender, @NotNull String format, @NotNull ChatSpyType spyType) {
-        if (!(sender instanceof Player player)) {
-            return;
-        }
-        SunUser user = this.plugin.getUserManager().getUserData(player);
-        if (!user.getSettings().get(spyType.getSettingLog())) {
-            return;
-        }
-        this.plugin.info(format);
-        String date = Config.GENERAL_DATE_FORMAT.get().format(TimeUtil.toEpochMillis(LocalDateTime.now()));
-        String outFile = "[" + date + "] " + Colorizer.strip(format);
-        String filePath = this.getAbsolutePath() + "/spy_logs/" + player.getName() + "_" + spyType.name().toLowerCase() + ".log";
-        FileUtil.create(new File(filePath));
-        this.plugin.runTaskAsync(c -> {
-            try {
-                BufferedWriter output = new BufferedWriter(new FileWriter(filePath, true));
-                output.append(outFile);
-                output.newLine();
-                output.close();
-            }
-            catch (IOException e) {
-                e.printStackTrace();
-            }
-        });
+    public boolean handlePrivateMessage(@NotNull CommandSender sender, @NotNull CommandSender receiver, @NotNull String message) {
+        PrivateMessageHandler handler = new PrivateMessageHandler(this.plugin, this, sender, receiver, message);
+        return handler.handle();
     }
 }
 

@@ -16,16 +16,16 @@ import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
-import su.nexmedia.engine.api.manager.AbstractListener;
-import su.nexmedia.engine.utils.LocationUtil;
-import su.nexmedia.engine.utils.PDCUtil;
-import su.nexmedia.engine.utils.random.Rnd;
-import su.nightexpress.sunlight.SunLight;
+import su.nightexpress.nightcore.manager.AbstractListener;
+import su.nightexpress.nightcore.util.LocationUtil;
+import su.nightexpress.nightcore.util.PDCUtil;
+import su.nightexpress.nightcore.util.random.Rnd;
+import su.nightexpress.sunlight.SunLightPlugin;
 
 import java.util.List;
 import java.util.Set;
 
-public class PhysicsExplosionListener extends AbstractListener<SunLight> {
+public class PhysicsExplosionListener extends AbstractListener<SunLightPlugin> {
 
     private static final Set<Material> ILLEGAL_ITEMS = Sets.newHashSet(
         Material.AIR, Material.TNT, Material.SPAWNER,
@@ -34,7 +34,7 @@ public class PhysicsExplosionListener extends AbstractListener<SunLight> {
 
     private final NamespacedKey physx;
 
-    public PhysicsExplosionListener(@NotNull SunLight plugin) {
+    public PhysicsExplosionListener(@NotNull SunLightPlugin plugin) {
         super(plugin);
         this.physx = new NamespacedKey(plugin, "physical_block");
     }

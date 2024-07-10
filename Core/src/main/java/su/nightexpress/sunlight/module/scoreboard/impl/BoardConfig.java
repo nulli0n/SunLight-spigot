@@ -1,7 +1,9 @@
 package su.nightexpress.sunlight.module.scoreboard.impl;
 
+import org.bukkit.World;
 import org.jetbrains.annotations.NotNull;
-import su.nexmedia.engine.api.config.JYML;
+import su.nightexpress.nightcore.config.FileConfig;
+import su.nightexpress.sunlight.Placeholders;
 
 import java.util.List;
 import java.util.Set;
@@ -13,41 +15,62 @@ public class BoardConfig {
     private final int          updateInterval;
     private final int          priority;
     private final Set<String>  worlds;
-    private final Set<String>  groups;
+    private final Set<String>  ranks;
     private final String       title;
     private final List<String> lines;
 
-    public BoardConfig(@NotNull String id, int updateInterval, int priority,
-                       @NotNull Set<String> worlds, @NotNull Set<String> groups,
-                       @NotNull String title, @NotNull List<String> lines) {
+    public BoardConfig(@NotNull String id,
+                       int updateInterval,
+                       int priority,
+                       @NotNull Set<String> worlds,
+                       @NotNull Set<String> ranks,
+                       @NotNull String title,
+                       @NotNull List<String> lines
+    ) {
         this.id = id.toLowerCase();
         this.updateInterval = Math.max(1, updateInterval);
         this.priority = priority;
-        this.worlds = worlds;
-        this.groups = groups.stream().map(String::toLowerCase).collect(Collectors.toSet());
+        this.worlds = worlds.stream().map(String::toLowerCase).collect(Collectors.toSet());
+        this.ranks = ranks.stream().map(String::toLowerCase).collect(Collectors.toSet());
         this.title = title;
         this.lines = lines;
     }
 
     @NotNull
-    public static BoardConfig read(@NotNull JYML cfg, @NotNull String path, @NotNull String id) {
-        int updateInterval = cfg.getInt(path + ".Update_Interval", 20);
-        int priority = cfg.getInt(path + ".Priority");
-        Set<String> worlds = cfg.getStringSet(path + ".Worlds");
-        Set<String> groups = cfg.getStringSet(path + ".Groups");
-        String title = cfg.getString(path + ".Title", "");
-        List<String> lines = cfg.getStringList(path + ".Lines");
+    public static BoardConfig read(@NotNull FileConfig config, @NotNull String path, @NotNull String id) {
+        int updateInterval = config.getInt(path + ".Update_Interval", 20);
+        int priority = config.getInt(path + ".Priority");
+        Set<String> worlds = config.getStringSet(path + ".Worlds");
+        Set<String> groups = config.getStringSet(path + ".Groups");
+        String title = config.getString(path + ".Title", "");
+        List<String> lines = config.getStringList(path + ".Lines");
 
         return new BoardConfig(id, updateInterval, priority, worlds, groups, title, lines);
     }
 
-    public void write(@NotNull JYML cfg, @NotNull String path) {
-        cfg.set(path + ".Update_Interval", this.getUpdateInterval());
-        cfg.set(path + ".Priority", this.getPriority());
-        cfg.set(path + ".Worlds", this.getWorlds());
-        cfg.set(path + ".Groups", this.getGroups());
-        cfg.set(path + ".Title", this.getTitle());
-        cfg.set(path + ".Lines", this.getLines());
+    public void write(@NotNull FileConfig config, @NotNull String path) {
+        config.set(path + ".Update_Interval", this.getUpdateInterval());
+        config.set(path + ".Priority", this.getPriority());
+        config.set(path + ".Worlds", this.getWorlds());
+        config.set(path + ".Groups", this.getRanks());
+        config.set(path + ".Title", this.getTitle());
+        config.set(path + ".Lines", this.getLines());
+    }
+
+    public boolean isGoodWorld(@NotNull World world) {
+        return this.isGoodWorld(world.getName());
+    }
+
+    public boolean isGoodWorld(@NotNull String name) {
+        return this.worlds.contains(Placeholders.WILDCARD) || this.worlds.contains(name.toLowerCase());
+    }
+
+    public boolean isGoodRank(@NotNull String rank) {
+        return this.ranks.contains(Placeholders.WILDCARD) || this.ranks.contains(rank.toLowerCase());
+    }
+
+    public boolean isGoodRank(@NotNull Set<String> playerRanks) {
+        return playerRanks.stream().anyMatch(this::isGoodRank);
     }
 
     @NotNull
@@ -69,8 +92,8 @@ public class BoardConfig {
     }
 
     @NotNull
-    public Set<String> getGroups() {
-        return groups;
+    public Set<String> getRanks() {
+        return ranks;
     }
 
     @NotNull

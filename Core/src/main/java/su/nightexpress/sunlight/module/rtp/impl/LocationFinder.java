@@ -4,10 +4,10 @@ import org.bukkit.*;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import su.nexmedia.engine.Version;
-import su.nexmedia.engine.utils.random.Rnd;
+import su.nightexpress.nightcore.util.Version;
+import su.nightexpress.nightcore.util.random.Rnd;
 import su.nightexpress.sunlight.Placeholders;
-import su.nightexpress.sunlight.SunLight;
+import su.nightexpress.sunlight.SunLightPlugin;
 import su.nightexpress.sunlight.module.rtp.config.RTPConfig;
 import su.nightexpress.sunlight.module.rtp.config.RTPLang;
 
@@ -15,14 +15,14 @@ import java.util.*;
 
 public class LocationFinder {
 
-    private final SunLight plugin;
-    private final Player player;
+    private final SunLightPlugin plugin;
+    private final Player         player;
 
     private World  world;
     private int attempts;
     private long timeout;
 
-    public LocationFinder(@NotNull SunLight plugin, @NotNull Player player, int attempts) {
+    public LocationFinder(@NotNull SunLightPlugin plugin, @NotNull Player player, int attempts) {
         this.plugin = plugin;
         this.player = player;
         this.world = player.getWorld();
@@ -102,9 +102,7 @@ public class LocationFinder {
         Location location = new Location(this.world, locX + 0.5D, bY + 1, locZ + 0.5D);
         this.plugin.runTaskLater(task -> {
             this.player.teleport(location);
-            this.plugin.getMessage(RTPLang.TELEPORT_NOTIFY_DONE)
-                .replace(Placeholders.forLocation(location))
-                .send(this.player);
+            RTPLang.TELEPORT_NOTIFY_DONE.getMessage().replace(Placeholders.forLocation(location)).send(this.player);
         }, 5L);
         this.attempts = 0;
     }
@@ -112,11 +110,11 @@ public class LocationFinder {
     public void takeAttempt() {
         this.attempts = Math.max(this.attempts - 1, 0);
         if (this.attempts == 0) {
-            this.plugin.getMessage(RTPLang.TELEPORT_NOTIFY_FAILURE).send(this.player);
+            RTPLang.TELEPORT_NOTIFY_FAILURE.getMessage().send(this.player);
         }
         else {
             this.timeout = 2;
-            this.plugin.getMessage(RTPLang.TELEPORT_NOTIFY_SEARCH)
+            RTPLang.TELEPORT_NOTIFY_SEARCH.getMessage()
                 .replace(Placeholders.GENERIC_CURRENT, RTPConfig.LOCATION_SEARCH_ATTEMPTS.get() - this.attempts)
                 .replace(Placeholders.GENERIC_MAX, RTPConfig.LOCATION_SEARCH_ATTEMPTS.get())
                 .send(this.player);

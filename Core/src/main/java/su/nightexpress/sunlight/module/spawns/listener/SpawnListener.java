@@ -6,31 +6,47 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.jetbrains.annotations.NotNull;
-import su.nexmedia.engine.api.manager.AbstractListener;
-import su.nightexpress.sunlight.SunLight;
+import su.nightexpress.nightcore.manager.AbstractListener;
+import su.nightexpress.sunlight.SunLightPlugin;
+import su.nightexpress.sunlight.data.user.SunUser;
 import su.nightexpress.sunlight.module.spawns.SpawnsModule;
 import su.nightexpress.sunlight.module.spawns.config.SpawnsConfig;
+import su.nightexpress.sunlight.module.spawns.impl.Spawn;
 
-public class SpawnListener extends AbstractListener<SunLight> {
+public class SpawnListener extends AbstractListener<SunLightPlugin> {
 
-    private final SpawnsModule spawnsModule;
+    private final SpawnsModule module;
 
-    public SpawnListener(@NotNull SpawnsModule spawnsModule) {
-        super(spawnsModule.plugin());
-        this.spawnsModule = spawnsModule;
+    public SpawnListener(@NotNull SunLightPlugin plugin, @NotNull SpawnsModule module) {
+        super(plugin);
+        this.module = module;
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onSpawnJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        this.spawnsModule.getSpawnByLogin(player).ifPresent(spawn -> player.teleport(spawn.getLocation()));
+        SunUser user = this.plugin.getUserManager().getUserData(player);
+        Spawn spawn;
+        if (!user.hasPlayedBefore()) {
+            if (!SpawnsConfig.NEWBIE_TELEPORT_ENABLED.get()) return;
+
+            spawn = this.module.getNewbieSpawn(player);
+        }
+        else spawn = this.module.getLoginSpawn(player);
+
+        if (spawn == null || !spawn.isValid()) return;
+
+        spawn.teleport(player, true, true);
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onSpawnRespawn(PlayerRespawnEvent event) {
         Player player = event.getPlayer();
-        if (player.getBedSpawnLocation() != null && SpawnsConfig.RESPECT_PLAYER_BED_HOME.get()) return;
+        if (player.getBedSpawnLocation() != null && SpawnsConfig.RESPECT_PLAYER_RESPAWN_LOCATION.get()) return;
 
-        this.spawnsModule.getSpawnByDeath(player).ifPresent(spawn -> event.setRespawnLocation(spawn.getLocation()));
+        Spawn spawn = this.module.getDeathSpawn(player);
+        if (spawn == null || !spawn.isValid()) return;
+
+        event.setRespawnLocation(spawn.getLocation());
     }
 }

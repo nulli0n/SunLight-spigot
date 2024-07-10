@@ -1,69 +1,60 @@
 package su.nightexpress.sunlight.command.list;
 
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import su.nexmedia.engine.api.command.CommandResult;
-import su.nightexpress.sunlight.Perms;
+import su.nightexpress.nightcore.command.experimental.CommandContext;
+import su.nightexpress.nightcore.command.experimental.argument.ArgumentTypes;
+import su.nightexpress.nightcore.command.experimental.argument.ParsedArguments;
+import su.nightexpress.nightcore.command.experimental.builder.DirectNodeBuilder;
+import su.nightexpress.nightcore.command.experimental.node.DirectNode;
+import su.nightexpress.nightcore.config.FileConfig;
 import su.nightexpress.sunlight.Placeholders;
-import su.nightexpress.sunlight.SunLight;
-import su.nightexpress.sunlight.command.CommandFlags;
-import su.nightexpress.sunlight.command.api.ToggleCommand;
+import su.nightexpress.sunlight.SunLightPlugin;
+import su.nightexpress.sunlight.command.*;
+import su.nightexpress.sunlight.command.mode.ToggleMode;
+import su.nightexpress.sunlight.command.template.CommandTemplate;
 import su.nightexpress.sunlight.config.Lang;
 
-public class FlyCommand extends ToggleCommand {
+public class FlyCommand {
 
     public static final String NAME = "fly";
 
-    public FlyCommand(@NotNull SunLight plugin, @NotNull String[] aliases) {
-        super(plugin, aliases, Perms.COMMAND_FLY, Perms.COMMAND_FLY_OTHERS);
-        this.setDescription(plugin.getMessage(Lang.COMMAND_FLY_DESC));
-        this.setUsage(plugin.getMessage(Lang.COMMAND_FLY_USAGE));
+    public static void load(@NotNull SunLightPlugin plugin) {
+        CommandRegistry.registerDirectExecutor(NAME, (template, config) -> builder(plugin, template, config));
+        CommandRegistry.addSimpleTemplate(NAME);
     }
 
-    @Override
-    protected void onExecute(@NotNull CommandSender sender, @NotNull CommandResult result) {
-        Player target = this.getCommandTarget(sender, result);
-        if (target == null) return;
+    // TODO Explicit nodes fly_on, fly_off, fly_toggle
 
-        Mode mode = this.getMode(sender, result);
+    public static DirectNodeBuilder builder(@NotNull SunLightPlugin plugin, @NotNull CommandTemplate template, @NotNull FileConfig config) {
+        return DirectNode.builder(plugin, template.getAliases())
+            .description(Lang.COMMAND_FLY_DESC)
+            .permission(CommandPerms.FLY)
+            .withArgument(CommandArguments.toggleMode(CommandArguments.MODE))
+            .withArgument(ArgumentTypes.playerName(CommandArguments.PLAYER).permission(CommandPerms.FLY_OTHERS))
+            .withFlag(CommandFlags.silent().permission(CommandPerms.FLY_OTHERS))
+            .executes((context, arguments) -> execute(plugin, context, arguments))
+            ;
+    }
+
+    public static boolean execute(@NotNull SunLightPlugin plugin, @NotNull CommandContext context, @NotNull ParsedArguments arguments) {
+        Player target = CommandTools.getTarget(plugin, context, arguments, CommandArguments.PLAYER, true);
+        if (target == null) return false;
+
+        ToggleMode mode = arguments.getArgument(CommandArguments.MODE, ToggleMode.class, ToggleMode.TOGGLE);
         target.setAllowFlight(mode.apply(target.getAllowFlight()));
 
-        if (!result.hasFlag(CommandFlags.SILENT)) {
-            plugin.getMessage(Lang.COMMAND_FLY_NOTIFY)
-                .replace(Placeholders.GENERIC_STATE, Lang.getEnable(target.getAllowFlight())).send(target);
-        }
-        if (sender != target) {
-            plugin.getMessage(Lang.COMMAND_FLY_TARGET)
+        if (context.getSender() != target) {
+            Lang.COMMAND_FLY_TARGET.getMessage()
                 .replace(Placeholders.forPlayer(target))
-                .replace(Placeholders.GENERIC_STATE, Lang.getEnable(target.getAllowFlight())).send(sender);
+                .replace(Placeholders.GENERIC_STATE, Lang.getEnabledOrDisabled(target.getAllowFlight())).send(context.getSender());
         }
+
+        if (!arguments.hasFlag(CommandFlags.SILENT)) {
+            Lang.COMMAND_FLY_NOTIFY.getMessage()
+                .replace(Placeholders.GENERIC_STATE, Lang.getEnabledOrDisabled(target.getAllowFlight())).send(target);
+        }
+
+        return true;
     }
-
-    /*class Listener extends AbstractListener<SunLight> {
-
-        Listener(@NotNull SunLight plugin) {
-            super(plugin);
-        }
-
-        @EventHandler(priority = EventPriority.NORMAL)
-        public void onCommandFlyFlight(PlayerToggleFlightEvent e) {
-            FlyCommand.this.checkWorld(e.getPlayer());
-        }
-
-        @EventHandler(priority = EventPriority.NORMAL)
-        public void onCommandFlyGlide(EntityToggleGlideEvent e) {
-            if (e.getEntity() instanceof Player player) {
-                FlyCommand.this.checkWorld(player);
-            }
-        }
-
-        @EventHandler(priority = EventPriority.NORMAL)
-        public void onCommandFlyWorldChange(PlayerChangedWorldEvent e) {
-            Player player = e.getPlayer();
-            if (player.isFlying() || player.getAllowFlight() || player.isGliding()) {
-                FlyCommand.this.checkWorld(player);
-            }
-        }
-    }*/
 }

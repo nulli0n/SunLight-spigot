@@ -1,28 +1,49 @@
 package su.nightexpress.sunlight.module.warps.command;
 
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import su.nexmedia.engine.api.command.CommandResult;
-import su.nexmedia.engine.api.command.GeneralCommand;
-import su.nightexpress.sunlight.SunLight;
+import su.nightexpress.nightcore.command.experimental.CommandContext;
+import su.nightexpress.nightcore.command.experimental.RootCommand;
+import su.nightexpress.nightcore.command.experimental.ServerCommand;
+import su.nightexpress.nightcore.command.experimental.argument.ParsedArguments;
+import su.nightexpress.sunlight.SunLightPlugin;
+import su.nightexpress.sunlight.module.warps.WarpsModule;
 import su.nightexpress.sunlight.module.warps.config.WarpsLang;
 import su.nightexpress.sunlight.module.warps.impl.Warp;
 
-public class WarpShortcutCommand extends GeneralCommand<SunLight> {
+public class WarpShortcutCommand {
 
-    private final Warp warp;
+    public static void register(@NotNull SunLightPlugin plugin, @NotNull Warp warp) {
+        //module.getWarps().forEach(warp -> {
+            String shortcut = warp.getCommandShortcut();
+            if (shortcut == null) return;
 
-    public WarpShortcutCommand(@NotNull Warp warp, @NotNull String alias) {
-        super(warp.plugin(), new String[]{alias}, warp.getPermission());
-        this.setDescription(plugin.getMessage(WarpsLang.COMMAND_WARPS_TELEPORT_DESC));
-        this.setPlayerOnly(true);
-        this.warp = warp;
+            ServerCommand command = RootCommand.direct(plugin, warp.getCommandShortcut(), builder -> builder
+                .playerOnly()
+                .description(warp.replacePlaceholders().apply(WarpsLang.COMMAND_DIRECT_WARP_DESC.getString()))
+                .permission(warp.getPermission())
+                .executes((context, arguments) -> execute(plugin, warp.getModule(), context, arguments, warp.getId()))
+            );
+            plugin.getCommandManager().registerCommand(command);
+        //});
     }
 
-    @Override
-    public void onExecute(@NotNull CommandSender sender, @NotNull CommandResult result) {
-        Player player = (Player) sender;
-        this.warp.teleport(player, false);
+    public static void unregister(@NotNull SunLightPlugin plugin, @NotNull Warp warp) {
+        String shortcut = warp.getCommandShortcut();
+        if (shortcut == null) return;
+
+        plugin.getCommandManager().unregisterServerCommand(shortcut);
+    }
+
+    public static boolean execute(@NotNull SunLightPlugin plugin, @NotNull WarpsModule module, @NotNull CommandContext context, @NotNull ParsedArguments arguments,
+                                  @NotNull String id) {
+        Player player = context.getExecutor();
+        if (player == null) return false;
+
+        Warp warp = module.getWarp(id);
+        if (warp == null) return false;
+
+        warp.teleport(player, false);
+        return true;
     }
 }

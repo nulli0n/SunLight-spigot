@@ -2,7 +2,7 @@ package su.nightexpress.sunlight.utils;
 
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import su.nightexpress.sunlight.data.impl.SunUser;
+import su.nightexpress.sunlight.data.user.SunUser;
 
 import java.util.Objects;
 import java.util.UUID;

@@ -4,40 +4,37 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import su.nexmedia.engine.api.data.config.DataConfig;
-import su.nexmedia.engine.api.lang.LangMessage;
-import su.nexmedia.engine.utils.PlayerUtil;
-import su.nexmedia.engine.utils.TimeUtil;
-import su.nightexpress.sunlight.SunLight;
+import su.nightexpress.nightcore.config.ConfigValue;
+import su.nightexpress.nightcore.database.DatabaseConfig;
+import su.nightexpress.nightcore.language.entry.LangText;
+import su.nightexpress.nightcore.language.message.LangMessage;
+import su.nightexpress.nightcore.util.NumberUtil;
+import su.nightexpress.nightcore.util.Players;
+import su.nightexpress.nightcore.util.RankMap;
+import su.nightexpress.nightcore.util.TimeUtil;
+import su.nightexpress.nightcore.util.text.NightMessage;
+import su.nightexpress.sunlight.SunLightPlugin;
 import su.nightexpress.sunlight.config.Lang;
-import su.nightexpress.sunlight.data.impl.SunUser;
 import su.nightexpress.sunlight.module.Module;
-import su.nightexpress.sunlight.module.bans.command.base.KickCommand;
-import su.nightexpress.sunlight.module.bans.command.ban.BanCommand;
-import su.nightexpress.sunlight.module.bans.command.ban.BanipCommand;
-import su.nightexpress.sunlight.module.bans.command.ban.UnbanCommand;
-import su.nightexpress.sunlight.module.bans.command.history.BanHistoryCommand;
-import su.nightexpress.sunlight.module.bans.command.history.MuteHistoryCommand;
-import su.nightexpress.sunlight.module.bans.command.history.WarnHistoryCommand;
-import su.nightexpress.sunlight.module.bans.command.list.BanListCommand;
-import su.nightexpress.sunlight.module.bans.command.list.MuteListCommand;
-import su.nightexpress.sunlight.module.bans.command.list.WarnListCommand;
-import su.nightexpress.sunlight.module.bans.command.mute.MuteCommand;
-import su.nightexpress.sunlight.module.bans.command.mute.UnmuteCommand;
-import su.nightexpress.sunlight.module.bans.command.warn.UnwarnCommand;
-import su.nightexpress.sunlight.module.bans.command.warn.WarnCommand;
+import su.nightexpress.sunlight.module.ModuleInfo;
+import su.nightexpress.sunlight.module.bans.command.HistoryCommands;
+import su.nightexpress.sunlight.module.bans.command.ListCommands;
+import su.nightexpress.sunlight.module.bans.command.PunishCommands;
+import su.nightexpress.sunlight.module.bans.command.UnPunishCommands;
 import su.nightexpress.sunlight.module.bans.config.BansConfig;
 import su.nightexpress.sunlight.module.bans.config.BansLang;
+import su.nightexpress.sunlight.module.bans.config.BansPerms;
 import su.nightexpress.sunlight.module.bans.data.BansDataHandler;
 import su.nightexpress.sunlight.module.bans.listener.BansListener;
-import su.nightexpress.sunlight.module.bans.menu.PunishmentListMenu;
-import su.nightexpress.sunlight.module.bans.punishment.Punishment;
-import su.nightexpress.sunlight.module.bans.punishment.PunishmentReason;
-import su.nightexpress.sunlight.module.bans.punishment.PunishmentType;
-import su.nightexpress.sunlight.module.bans.punishment.RankDuration;
-import su.nightexpress.sunlight.module.bans.config.BansPerms;
+import su.nightexpress.sunlight.module.bans.menu.HistoryMenu;
+import su.nightexpress.sunlight.module.bans.menu.PunishmentsMenu;
+import su.nightexpress.sunlight.module.bans.punishment.*;
+import su.nightexpress.sunlight.module.bans.util.BanTime;
 import su.nightexpress.sunlight.module.bans.util.Placeholders;
+import su.nightexpress.sunlight.module.bans.util.RankDuration;
+import su.nightexpress.sunlight.module.bans.util.TimeUnit;
 import su.nightexpress.sunlight.utils.SunUtils;
+import su.nightexpress.sunlight.utils.UserInfo;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -46,54 +43,67 @@ import java.util.stream.Collectors;
 
 public class BansModule extends Module {
 
-    private final Map<String, Map<PunishmentType, Set<Punishment>>> punishmentMap;
-
-    private PunishmentListMenu listMenu;
+    private final Map<UUID, Map<PunishmentType, Set<PunishedPlayer>>> punishedPlayerMap;
+    private final Map<String, Set<PunishedIP>>                        punishedIPMap;
 
     private BansDataHandler dataHandler;
+    private HistoryMenu historyMenu;
+    private PunishmentsMenu punishmentsMenu;
 
-    public BansModule(@NotNull SunLight plugin, @NotNull String id) {
+    public BansModule(@NotNull SunLightPlugin plugin, @NotNull String id) {
         super(plugin, id);
-        this.punishmentMap = new ConcurrentHashMap<>();
+        this.punishedPlayerMap = new ConcurrentHashMap<>();
+        this.punishedIPMap = new ConcurrentHashMap<>();
     }
 
     @Override
-    public void onLoad() {
-        this.getConfig().initializeOptions(BansConfig.class);
-        this.plugin.getLangManager().loadMissing(BansLang.class);
-        this.plugin.getLangManager().loadEnum(PunishmentType.class);
-        this.plugin.getLang().saveChanges();
-        this.plugin.registerPermissions(BansPerms.class);
+    protected void gatherInfo(@NotNull ModuleInfo moduleInfo) {
+        moduleInfo.setConfigClass(BansConfig.class);
+        moduleInfo.setLangClass(BansLang.class);
+        moduleInfo.setPermissionsClass(BansPerms.class);
+    }
 
-        this.dataHandler = new BansDataHandler(this, new DataConfig(this.getConfig()));
+    @Override
+    protected void onModuleLoad() {
+        this.dataHandler = new BansDataHandler(this.plugin, this, DatabaseConfig.read(this.getConfig(), "sunlight_bans", "bans.db"));
         this.dataHandler.setup();
-        this.getDataHandler().onSynchronize();
+        this.dataHandler.onSynchronize();
 
-        this.listMenu = new PunishmentListMenu(this);
+        this.loadMenu();
+        this.loadSettings();
+        this.loadCommands();
 
-        this.plugin.getCommandRegulator().register(KickCommand.NAME, (cfg1, aliases) -> new KickCommand(this, aliases));
-        this.plugin.getCommandRegulator().register(BanCommand.NAME, (cfg1, aliases) -> new BanCommand(this, aliases));
-        this.plugin.getCommandRegulator().register(BanipCommand.NAME, (cfg1, aliases) -> new BanipCommand(this, aliases));
-        this.plugin.getCommandRegulator().register(BanHistoryCommand.NAME, (cfg1, aliases) -> new BanHistoryCommand(this, aliases));
-        this.plugin.getCommandRegulator().register(BanListCommand.NAME, (cfg1, aliases) -> new BanListCommand(this, aliases));
-        this.plugin.getCommandRegulator().register(UnbanCommand.NAME, (cfg1, aliases) -> new UnbanCommand(this, aliases));
-        this.plugin.getCommandRegulator().register(MuteCommand.NAME, (cfg1, aliases) -> new MuteCommand(this, aliases));
-        this.plugin.getCommandRegulator().register(MuteHistoryCommand.NAME, (cfg1, aliases) -> new MuteHistoryCommand(this, aliases));
-        this.plugin.getCommandRegulator().register(MuteListCommand.NAME, (cfg1, aliases) -> new MuteListCommand(this, aliases));
-        this.plugin.getCommandRegulator().register(UnmuteCommand.NAME, (cfg1, aliases) -> new UnmuteCommand(this, aliases));
-        this.plugin.getCommandRegulator().register(WarnCommand.NAME, (cfg1, aliases) -> new WarnCommand(this, aliases));
-        this.plugin.getCommandRegulator().register(WarnHistoryCommand.NAME, (cfg1, aliases) -> new WarnHistoryCommand(this, aliases));
-        this.plugin.getCommandRegulator().register(WarnListCommand.NAME, (cfg1, aliases) -> new WarnListCommand(this, aliases));
-        this.plugin.getCommandRegulator().register(UnwarnCommand.NAME, (cfg1, aliases) -> new UnwarnCommand(this, aliases));
-
-        this.addListener(new BansListener(this));
+        this.addListener(new BansListener(this.plugin, this));
     }
 
     @Override
-    public void onShutdown() {
+    protected void onModuleUnload() {
+        this.historyMenu.clear();
+        this.punishmentsMenu.clear();
+
         this.dataHandler.shutdown();
-        this.punishmentMap.clear();
-        this.listMenu.clear();
+
+        this.punishedPlayerMap.clear();
+        this.punishedIPMap.clear();
+    }
+
+    private void loadMenu() {
+        this.historyMenu = new HistoryMenu(this.plugin, this);
+        this.punishmentsMenu = new PunishmentsMenu(this.plugin, this);
+    }
+
+    private void loadSettings() {
+        for (TimeUnit timeUnit : TimeUnit.values()) {
+            String[] aliases = ConfigValue.create("General.Time_Aliases." + timeUnit.name(), timeUnit.getAliases()).read(this.getConfig());
+            timeUnit.setAliases(aliases);
+        }
+    }
+
+    private void loadCommands() {
+        PunishCommands.load(this.plugin, this);
+        UnPunishCommands.load(this.plugin, this);
+        HistoryCommands.load(this.plugin, this);
+        ListCommands.load(this.plugin, this);
     }
 
     @NotNull
@@ -101,266 +111,426 @@ public class BansModule extends Module {
         return dataHandler;
     }
 
+    @NotNull
+    public static Map<String, PunishmentReason> getReasonMap() {
+        return BansConfig.REASONS.get();
+    }
+
     @Nullable
-    public PunishmentReason getReason(@NotNull String id) {
-        return BansConfig.GENERAL_REASONS.get().get(id.toLowerCase());
+    public static PunishmentReason getReason(@NotNull String id) {
+        return getReasonMap().get(id.toLowerCase());
     }
 
     @NotNull
-    public PunishmentListMenu getListMenu() {
-        return this.listMenu;
+    public static PunishmentReason getDefaultReason() {
+        PunishmentReason reason = getReason(BansConfig.DEFAULT_REASON.get());
+        return reason == null ? new PunishmentReason(BansLang.OTHER_NO_REASON.getString()) : reason;
     }
 
     @NotNull
-    public Map<String, Map<PunishmentType, Set<Punishment>>> getPunishmentMap() {
-        return punishmentMap;
+    public static Collection<PunishmentReason> getReasons() {
+        return getReasonMap().values();
     }
 
     @NotNull
-    public List<Punishment> getPunishments(@NotNull PunishmentType type) {
-        List<Punishment> list = new ArrayList<>();
-        this.punishmentMap.forEach((userName, mapType) -> {
+    public Map<UUID, Map<PunishmentType, Set<PunishedPlayer>>> getPunishedPlayerMap() {
+        return punishedPlayerMap;
+    }
+
+    @NotNull
+    public Map<String, Set<PunishedIP>> getPunishedIPMap() {
+        return punishedIPMap;
+    }
+
+    @NotNull
+    public List<PunishedPlayer> getPunishedPlayers(@NotNull PunishmentType type) {
+        List<PunishedPlayer> list = new ArrayList<>();
+        this.punishedPlayerMap.forEach((userName, mapType) -> {
             list.addAll(mapType.getOrDefault(type, Collections.emptySet()));
         });
         return list;
     }
 
     @NotNull
-    public Map<PunishmentType, Set<Punishment>> getPunishments(@NotNull String user) {
-        return this.punishmentMap.computeIfAbsent(user.toLowerCase(), k -> new ConcurrentHashMap<>());
+    public List<PunishedIP> getPunishedIPs() {
+        List<PunishedIP> list = new ArrayList<>();
+        this.punishedIPMap.values().forEach(list::addAll);
+        return list;
     }
 
     @NotNull
-    public Set<Punishment> getPunishments(@NotNull String user, @NotNull PunishmentType type) {
-        return this.getPunishments(user.toLowerCase()).computeIfAbsent(type, k -> ConcurrentHashMap.newKeySet());
+    public Map<PunishmentType, Set<PunishedPlayer>> getPlayerPunishments(@NotNull UUID playerId) {
+        return this.punishedPlayerMap.computeIfAbsent(playerId, k -> new ConcurrentHashMap<>());
     }
 
     @NotNull
-    public List<Punishment> getActivePunishments(@NotNull String user, @NotNull PunishmentType type) {
-        return this.getPunishments(user.toLowerCase(), type).stream()
-            .filter(Predicate.not(Punishment::isExpired))
-            .sorted((p1, p2) -> (int) (p2.getCreatedDate() - p1.getCreatedDate()))
+    public Set<PunishedPlayer> getPlayerPunishments(@NotNull UUID playerId, @NotNull PunishmentType type) {
+        return this.getPlayerPunishments(playerId).computeIfAbsent(type, k -> new HashSet<>());
+    }
+
+    @NotNull
+    public Set<PunishedIP> getIPPunishments(@NotNull String address) {
+        return this.punishedIPMap.computeIfAbsent(address, k -> new HashSet<>());
+    }
+
+    @NotNull
+    public List<PunishedPlayer> getActivePlayerPunishments(@NotNull UUID playerId, @NotNull PunishmentType type) {
+        return this.getPlayerPunishments(playerId, type).stream()
+            .filter(Predicate.not(PunishData::isExpired))
+            //.sorted(Comparator.comparingLong(PunishData::getCreateDate).reversed())
+            .toList();
+    }
+
+    @NotNull
+    public List<PunishedIP> getActiveIPPunishments(@NotNull String address) {
+        return this.getIPPunishments(address).stream()
+            .filter(Predicate.not(PunishData::isExpired))
+            //.sorted(Comparator.comparingLong(PunishData::getCreateDate).reversed())
             .toList();
     }
 
     @Nullable
-    public Punishment getActivePunishment(@NotNull Player player, @NotNull PunishmentType type) {
-        Punishment punishment = this.getActivePunishment(player.getName(), type);
-        return punishment == null ? this.getActivePunishment(SunUtils.getIP(player), type) : punishment;
+    public PunishedPlayer getActivePlayerPunishment(@NotNull UUID playerId, @NotNull PunishmentType type) {
+        return this.getActivePlayerPunishments(playerId, type).stream().findFirst().orElse(null);
     }
 
     @Nullable
-    public Punishment getActivePunishment(@NotNull String user, @NotNull PunishmentType type) {
-        return this.getActivePunishments(user, type).stream().findFirst().orElse(null);
+    public PunishedIP getActiveIPPunishment(@NotNull String address) {
+        return this.getActiveIPPunishments(address).stream().findFirst().orElse(null);
     }
 
-    public void deletePunishment(@NotNull Punishment punishment) {
-        this.getPunishments(punishment.getUser(), punishment.getType()).remove(punishment);
-        this.plugin.runTaskAsync(task -> this.dataHandler.deletePunishment(punishment));
+    public boolean openPunishments(@NotNull Player player, @NotNull PunishmentType type) {
+        return this.punishmentsMenu.open(player, new PunishmentsMenu.Source(type));
     }
 
-    public boolean isMuted(@NotNull String user) {
-        return this.getActivePunishment(user, PunishmentType.MUTE) != null;
+    public boolean openHistory(@NotNull Player player, @NotNull UserInfo userInfo, @NotNull PunishmentType type) {
+        return this.historyMenu.open(player, new HistoryMenu.PlayerSource(userInfo, type));
     }
 
-    public boolean isBanned(@NotNull String user) {
-        return this.getActivePunishment(user, PunishmentType.BAN) != null;
+    public boolean openHistory(@NotNull Player player, @NotNull String address) {
+        return this.historyMenu.open(player, new HistoryMenu.AddressSource(address, PunishmentType.BAN));
     }
 
-    public boolean canBePunished(@NotNull String user) {
-        return !BansConfig.GENERAL_IMMUNIES.get().contains(user.toLowerCase());
+    public void cachePunishmentData(@NotNull PunishData punishData, @NotNull PunishmentType type) {
+        if (punishData instanceof PunishedIP punishedIP) {
+            this.getIPPunishments(punishedIP.getAddress()).add(punishedIP);
+        }
+        else if (punishData instanceof PunishedPlayer punishedPlayer) {
+            this.getPlayerPunishments(punishedPlayer.getPlayerId(), type).add(punishedPlayer);
+        }
     }
 
-    private boolean canBePunished(@NotNull CommandSender admin, @NotNull String user) {
-        if (!this.canBePunished(user)) {
-            this.plugin.getMessage(BansLang.PUNISHMENT_ERROR_IMMUNE).replace(Placeholders.GENERIC_USER, user).send(admin);
+    public void deletePunishment(@NotNull PunishData punishData, @NotNull PunishmentType type) {
+        if (punishData instanceof PunishedIP punishedIP) {
+            this.getIPPunishments(punishedIP.getAddress()).remove(punishedIP);
+        }
+        else if (punishData instanceof PunishedPlayer punishedPlayer) {
+            this.getPlayerPunishments(punishedPlayer.getPlayerId(), type).remove(punishedPlayer);
+        }
+        this.plugin.runTaskAsync(task -> this.dataHandler.deleteData(punishData, type));
+    }
+
+    public boolean isMuted(@NotNull Player player) {
+        return this.isMuted(player.getUniqueId());
+    }
+
+    public boolean isMuted(@NotNull UUID playerId) {
+        return this.getActivePlayerPunishment(playerId, PunishmentType.MUTE) != null;
+    }
+
+    public boolean isBanned(@NotNull UUID playerId) {
+        return this.getActivePlayerPunishment(playerId, PunishmentType.BAN) != null;
+    }
+
+    public boolean hasImmunity(@NotNull String target) {
+        return BansConfig.IMMUNE_LIST.get().contains(target.toLowerCase());
+    }
+
+    private boolean canBePunished(@NotNull CommandSender executor, @NotNull String target) {
+        if (this.hasImmunity(target)) {
+            BansLang.PUNISHMENT_ERROR_IMMUNE.getMessage().replace(Placeholders.PUNISHMENT_TARGET, target).send(executor);
             return false;
         }
-        if (user.equalsIgnoreCase(admin.getName())) {
-            this.plugin.getMessage(Lang.ERROR_COMMAND_SELF).send(admin);
+
+        if (target.equalsIgnoreCase(executor.getName())) {
+            Lang.ERROR_COMMAND_NOT_YOURSELF.getMessage().send(executor);
             return false;
         }
+
         return true;
     }
 
     @NotNull
-    private Set<Player> getPlayersToPunish(@NotNull String user) {
-        return this.plugin.getServer().getOnlinePlayers().stream().filter(player -> {
-            return player.getName().equalsIgnoreCase(user) || SunUtils.getIP(player).equalsIgnoreCase(user);
-        }).collect(Collectors.toSet());
+    private Set<Player> getPlayersToPunish(@NotNull PunishData punishData) {
+        return this.plugin.getServer().getOnlinePlayers().stream().filter(punishData::isApplicable).collect(Collectors.toSet());
     }
 
     public static int getRankPriority(@NotNull Player player) {
-        var map = BansConfig.PUNISHMENTS_RANK_PRIORITY.get();
-        String rank = PlayerUtil.getPermissionGroup(player);
-        return map.getOrDefault(rank, map.getOrDefault(Placeholders.DEFAULT, 0));
+        RankMap<Integer> map = BansConfig.PUNISHMENTS_RANK_PRIORITY.get();
+        return map.getGreatest(player);
     }
 
-    public void punish(
-        @NotNull String user, @NotNull CommandSender punisher,
-        @NotNull String reason, long banTime,
-        @NotNull PunishmentType type) {
+    @Nullable
+    public static BanTime parseBanTime(@NotNull String str) {
+        TimeUnit timeUnit = null;
+        for (TimeUnit unit : TimeUnit.values()) {
+            for (String alias : unit.getAliases()) {
+                if (!str.endsWith(alias)) continue;
 
-        if (!this.canBePunished(punisher, user)) return;
-
-        // Fine user name if present.
-        Player pTarget = plugin.getServer().getPlayer(user);
-        if (pTarget != null) user = pTarget.getName();
-
-        // Finalize
-        String userName = user;
-
-        Set<Player> targets = this.getPlayersToPunish(userName);
-
-        if (punisher instanceof Player admin) {
-            // TODO Need to get full user of possible SunUsers in async thread to ensure we can punish them
-            int punisherPriority = getRankPriority(admin);
-            if (targets.stream().anyMatch(target -> getRankPriority(target) > punisherPriority)) {
-                this.plugin.getMessage(BansLang.PUNISHMENT_ERROR_RANK_PRIORITY)
-                    .replace(Placeholders.GENERIC_USER, userName)
-                    .send(punisher);
-                return;
-            }
-
-            if (!punisher.hasPermission(BansPerms.BYPASS_DURATION_LIMIT)) {
-                Map<String, Map<PunishmentType, RankDuration>> durationMap = BansConfig.PUNISHMENTS_RANK_MAX_TIMES.get();
-                Set<RankDuration> durations = new HashSet<>();
-                for (String rank : PlayerUtil.getPermissionGroups(admin)) {
-                    RankDuration duration = durationMap.getOrDefault(rank, Collections.emptyMap()).get(type);
-                    if (duration != null) {
-                        durations.add(duration);
-                    }
-                }
-
-                // TODO Need to use PlayerRankMap
-                RankDuration highest = durations.stream().max(Comparator.comparingLong(RankDuration::getMillis)).orElse(null);
-                RankDuration lowest = durations.stream().min(Comparator.comparingLong(RankDuration::getMillis)).orElse(null);
-
-                if ((highest != null && banTime > highest.getMillis()) || (banTime <= 0L && lowest != null && lowest.getMillis() > 0L)) {
-                    this.plugin.getMessage(BansLang.PUNISHMENT_ERROR_RANK_DURATION)
-                        .replace(Placeholders.GENERIC_TIME, TimeUtil.formatTime(highest.getMillis()))
-                        .send(punisher);
-                    return;
-                }
+                timeUnit = unit;
+                str = str.substring(0, str.length() - alias.length());
+                break;
             }
         }
 
-        // Mutes and Bans can only have one active punishment instance, so we need to overwrite (expire) all others.
-        // For warns we do the same, if max. warns amount is reached, and punish at the end of method.
-        int punishmentsAmount = type == PunishmentType.WARN ? this.getActivePunishments(userName, type).size() + 1 : 1;
-        int warnsMax = BansConfig.PUNISHMENTS_WARN_MAX_AMOUNT.get();
-        if (type != PunishmentType.WARN || (warnsMax >= 1 && punishmentsAmount >= warnsMax)) {
-            this.getActivePunishments(userName, type).forEach(punishment -> {
-                punishment.expire();
-                this.plugin.runTaskAsync(task -> this.dataHandler.savePunishment(punishment));
+        if (timeUnit == null) return null;
+        if (timeUnit == TimeUnit.PERMANENT) return BanTime.PERMANENT;
+
+        long amount = NumberUtil.getInteger(str, 0);
+        if (amount == 0) return null;
+
+        return new BanTime(timeUnit, amount);
+    }
+
+    @Nullable
+    public RankDuration getGreatestDuration(@NotNull Player player, @NotNull PunishmentType type) {
+        Map<String, Map<PunishmentType, RankDuration>> durationMap = BansConfig.PUNISHMENTS_RANK_MAX_TIMES.get();
+        Set<RankDuration> durations = new HashSet<>();
+        for (String rank : Players.getPermissionGroups(player)) {
+            RankDuration duration = durationMap.getOrDefault(rank, Collections.emptyMap()).get(type);
+            if (duration != null) {
+                durations.add(duration);
+            }
+        }
+
+        RankDuration permanent = durations.stream().filter(rankDuration -> rankDuration.getTimeUnit() == TimeUnit.PERMANENT).findFirst().orElse(null);
+        if (permanent != null) return permanent;
+
+        return durations.stream().max(Comparator.comparingLong(RankDuration::getInMillis)).orElse(null);
+    }
+
+    public boolean checkRankPriority(@NotNull CommandSender executor, @NotNull UserInfo targetInfo) {
+        if (!(executor instanceof Player player)) return true;
+
+        int punisherPriority = getRankPriority(player);
+        Player target = this.plugin.getServer().getPlayer(targetInfo.getId());
+        if (target == null) target = this.plugin.getSunNMS().loadPlayerData(targetInfo.getId(), targetInfo.getName());
+
+        if (getRankPriority(target) > punisherPriority) {
+            BansLang.PUNISHMENT_ERROR_RANK_PRIORITY.getMessage()
+                .replace(Placeholders.PUNISHMENT_TARGET, target.getDisplayName())
+                .send(player);
+            return false;
+        }
+
+        return true;
+    }
+
+    public boolean checkDuration(@NotNull CommandSender executor, @NotNull BanTime banTime, @NotNull PunishmentType type) {
+        if (executor.hasPermission(BansPerms.BYPASS_DURATION_LIMIT)) return true;
+        if (!(executor instanceof Player player)) return true;
+
+        RankDuration highest = this.getGreatestDuration(player, type);
+        // If there is allowed permanent punishment duration, then player can use any other duration.
+        if (highest == null || highest.getTimeUnit() == TimeUnit.PERMANENT) return true;
+
+        // Now make sure that specified duration is not permanent or under the limit, prevent otherwise.
+        if (banTime.isPermanent() || banTime.getInMillis() > highest.getInMillis()) {
+            BansLang.PUNISHMENT_ERROR_PUNISH_DURATION.getMessage()
+                .replace(Placeholders.GENERIC_TIME, TimeUtil.formatTime(highest.getInMillis()))
+                .send(executor);
+            return false;
+        }
+
+        return true;
+    }
+
+    public boolean checkUnpunishDuration(@NotNull CommandSender executor, @NotNull PunishData punishData, @NotNull PunishmentType type) {
+        if (!BansConfig.PUNISHMENTS_DURATION_LIMIT_TO_UNPUNISH.get()) return true;
+        if (executor.hasPermission(BansPerms.BYPASS_DURATION_LIMIT)) return true;
+        if (!(executor instanceof Player player)) return true;
+
+        RankDuration highest = this.getGreatestDuration(player, type);
+        // If there is allowed permanent punishment duration, then player can use any other duration.
+        if (highest == null || highest.getTimeUnit() == TimeUnit.PERMANENT) return true;
+
+        BanTime banTime = punishData.isPermanent() ? BanTime.PERMANENT : new BanTime(TimeUnit.SECONDS, TimeUnit.SECONDS.getAbsolute(punishData.getExpireDate() - punishData.getCreateDate()));
+
+        // Now make sure that specified duration is not permanent or under the limit, prevent otherwise.
+        if (banTime.isPermanent() || banTime.getInMillis() > highest.getInMillis()) {
+            BansLang.PUNISHMENT_ERROR_UNPUNISH_DURATION.getMessage()
+                .replace(Placeholders.GENERIC_TIME, TimeUtil.formatTime(highest.getInMillis()))
+                .send(executor);
+            return false;
+        }
+
+        return true;
+    }
+
+    public boolean kick(@NotNull Player player, @NotNull CommandSender executor, @NotNull PunishmentReason reason, boolean silent) {
+        if (!this.canBePunished(executor, player.getName())) return false;
+        if (!this.checkRankPriority(executor, new UserInfo(player))) return false;
+
+        player.kickPlayer(NightMessage.asLegacy(String.join("\n", BansConfig.GENERAL_DISCONNECT_INFO_KICK.get())
+            .replace(Placeholders.PUNISHMENT_REASON, reason.getText())
+            .replace(Placeholders.PUNISHMENT_PUNISHER, SunUtils.getSenderName(executor))
+        ));
+
+        BansLang.KICK_DONE.getMessage()
+            .replace(Placeholders.PUNISHMENT_TARGET, player.getDisplayName())
+            .replace(Placeholders.PUNISHMENT_REASON, reason.getText())
+            .send(executor);
+
+        if (!silent) {
+            BansLang.KICK_BROADCAST.getMessage()
+                .replace(Placeholders.PUNISHMENT_TARGET, player.getDisplayName())
+                .replace(Placeholders.PUNISHMENT_REASON, reason.getText())
+                .replace(Placeholders.PUNISHMENT_PUNISHER, SunUtils.getSenderName(executor))
+                .broadcast();
+        }
+
+        return true;
+    }
+
+    public boolean punishPlayer(@NotNull UserInfo userInfo, @NotNull CommandSender executor, @NotNull PunishmentReason reason, @NotNull BanTime banTime,
+                             @NotNull PunishmentType type,
+                             boolean silent) {
+        String playerName = userInfo.getName();
+        UUID playerId = userInfo.getId();
+
+        if (!this.canBePunished(executor, playerName)) return false;
+        if (!this.checkRankPriority(executor, userInfo)) return false;
+        if (!this.checkDuration(executor, banTime, type)) return false;
+
+        // Override all previous bans/mutes/warns by making them expired when a fresh one is added.
+        // For warns, do that only if reached max. warns value to apply custom commands.
+        List<PunishedPlayer> activePunishments = this.getActivePlayerPunishments(playerId, type);
+        int punishAmount = activePunishments.size() + 1; // Count also this one.
+        int maxWarns = BansConfig.PUNISHMENTS_WARN_MAX_AMOUNT.get();
+
+        if (type != PunishmentType.WARN || (maxWarns > 0 && punishAmount >= maxWarns)) {
+            activePunishments.forEach(PunishData::expire);
+            this.plugin.runTaskAsync(task -> {
+                activePunishments.forEach(data -> this.dataHandler.saveData(data, type));
             });
         }
 
-        // Create new punishment object and add it to the database.
-        if (banTime > 0) banTime = System.currentTimeMillis() + banTime + 100L;
-        Punishment punishment = new Punishment(type, userName, reason, punisher.getName(), banTime);
-        this.getPunishments(userName, type).add(punishment);
-        this.plugin.runTaskAsync(task -> {
-            SunUser sunUser = plugin.getUserManager().getUserData(userName);
-            if (sunUser != null) punishment.setUserId(sunUser.getId());
+        UUID banId = UUID.randomUUID();
+        String admin = executor.getName();
+        long createDate = System.currentTimeMillis();
+        long expireDate = banTime.toTimestamp();
+        String textReason = reason.getText();
 
-            this.dataHandler.addPunishment(punishment);
-        });
-
-        // Send messages.
-        LangMessage msgUser = plugin.getMessage(BansLang.getPunishNotify(punishment)).replace(punishment.replacePlaceholders());
-        LangMessage msgAdmin = plugin.getMessage(BansLang.getPunishSender(punishment)).replace(punishment.replacePlaceholders());
-        LangMessage msgBroadcast = plugin.getMessage(BansLang.getPunishBroadcast(punishment)).replace(punishment.replacePlaceholders());
-
-        msgAdmin.send(punisher);
-        msgBroadcast.broadcast();
-
-        // Notify players about their punishment.
-        targets.forEach(player -> {
-            if (type == PunishmentType.BAN) {
-                player.kickPlayer(this.getDisconnectMessage(punishment));
-            }
-            else msgUser.send(player);
-        });
+        PunishedPlayer punishedPlayer = new PunishedPlayer(banId, playerId, playerName, textReason, admin, createDate, expireDate);
+        this.punish(punishedPlayer, type, executor, silent);
 
         // Execute warn actions at the end to keep punishment messages order.
         if (type == PunishmentType.WARN) {
-            List<String> commands = BansConfig.PUNISHMENTS_WARN_AUTO_COMMANDS.get().getOrDefault(punishmentsAmount, Collections.emptyList());
+            List<String> commands = BansConfig.PUNISHMENTS_WARN_AUTO_COMMANDS.get().getOrDefault(punishAmount, Collections.emptyList());
             commands.forEach(command -> {
-                plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), command.replace(Placeholders.PLAYER_NAME, userName));
+                plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), command.replace(Placeholders.PLAYER_NAME, playerName));
             });
         }
+
+        return true;
     }
 
-    public void kick(@NotNull String user, @NotNull CommandSender admin, @NotNull String reason) {
-        if (!this.canBePunished(admin, user)) return;
+    public boolean banIP(@NotNull String address, @NotNull CommandSender executor, @NotNull PunishmentReason reason, @NotNull BanTime banTime, boolean silent) {
+        if (!this.canBePunished(executor, address)) return false;
+        if (!this.checkDuration(executor, banTime, PunishmentType.BAN)) return false;
 
-        LangMessage banAdmin = plugin.getMessage(BansLang.KICK_DONE)
-            .replace(Placeholders.PUNISHMENT_USER, user)
-            .replace(Placeholders.PUNISHMENT_REASON, reason)
-            .replace(Placeholders.PUNISHMENT_PUNISHER, admin.getName());
+        // Override all previous bans of that IP by making them expired when a fresh one is added.
+        List<PunishedIP> activePunishments = this.getActiveIPPunishments(address);
+        activePunishments.forEach(PunishData::expire);
+        this.plugin.runTaskAsync(task -> {
+            activePunishments.forEach(data -> this.dataHandler.saveData(data, PunishmentType.BAN));
+        });
 
-        LangMessage banBroadcast = plugin.getMessage(BansLang.KICK_BROADCAST)
-            .replace(Placeholders.PUNISHMENT_USER, user)
-            .replace(Placeholders.PUNISHMENT_REASON, reason)
-            .replace(Placeholders.PUNISHMENT_PUNISHER, admin.getName());
+        UUID banId = UUID.randomUUID();
+        String admin = executor.getName();
+        long createDate = System.currentTimeMillis();
+        long expireDate = banTime.toTimestamp();
+        String textReason = reason.getText();
 
-        String banMsg = String.join("\n", BansConfig.GENERAL_DISCONNECT_INFO_KICK.get())
-            .replace(Placeholders.PUNISHMENT_USER, user)
-            .replace(Placeholders.PUNISHMENT_REASON, reason)
-            .replace(Placeholders.PUNISHMENT_PUNISHER, admin.getName());
+        PunishedIP punishedIP = new PunishedIP(banId, address, textReason, admin, createDate, expireDate);
+        this.punish(punishedIP, PunishmentType.BAN, executor, silent);
 
-        // Kick all users with the same IP as banned user
-        this.getPlayersToPunish(user).forEach(player -> player.kickPlayer(banMsg));
-
-        banAdmin.send(admin);
-        banBroadcast.broadcast();
+        return true;
     }
 
-    public void unpunish(@NotNull String userName, @NotNull CommandSender admin, @NotNull PunishmentType type) {
-        boolean isIP = SunUtils.isIpAddress(userName);
-        boolean hasPunishment = false;
+    private void punish(@NotNull PunishData punishData, @NotNull PunishmentType type, @NotNull CommandSender executor, boolean silent) {
+        this.cachePunishmentData(punishData, type);
+        this.plugin.runTaskAsync(task -> this.dataHandler.addData(punishData, type));
 
-        // When unpunishing by username, also check if the user has punishments by his IP,
-        // so we can unpunish them too.
-        if (type != PunishmentType.WARN && !isIP) {
-            SunUser user = plugin.getUserManager().getUserData(userName);
-            if (user != null && this.getActivePunishment(user.getIp(), type) != null) {
-                this.unpunish(user.getIp(), admin, type);
-                hasPunishment = true;
-            }
+        BansLang.getPunishOutput(punishData, type).getMessage().replace(punishData.replacePlaceholders()).send(executor);
+
+        if (!silent) {
+            BansLang.getPunishBroadcast(punishData, type).getMessage()
+                    .replace(Placeholders.PUNISHMENT_PUNISHER, SunUtils.getSenderName(executor))
+                    .replace(punishData.replacePlaceholders())
+                    .broadcast();
         }
 
-        // If used not banned by name or IP at all, then print error message.
-        Punishment punishment = this.getActivePunishment(userName, type);
-        if (punishment == null) {
-            if (!hasPunishment) this.plugin.getMessage(BansLang.getNotPunished(type)).replace(Placeholders.GENERIC_USER, userName).send(admin);
-            return;
-        }
+        // Notify players about their punishment.
+        Set<Player> targets = this.getPlayersToPunish(punishData);
+        if (type == PunishmentType.BAN) {
+            List<String> list = punishData.isPermanent() ? BansConfig.GENERAL_DISCONNECT_INFO_BAN_PERMANENT.get() : BansConfig.GENERAL_DISCONNECT_INFO_BAN_TEMP.get();
+            String info = NightMessage.asLegacy(punishData.replacePlaceholders().apply(String.join("\n", list)));
 
-        LangMessage banAdmin = this.plugin.getMessage(BansLang.getForgiveSender(punishment)).replace(punishment.replacePlaceholders());
-        LangMessage banBroadcast = this.plugin.getMessage(BansLang.getForgiveBroadcast(punishment))
-            .replace(Placeholders.GENERIC_ADMIN, admin.getName()).replace(punishment.replacePlaceholders());
-
-        punishment.expire();
-        this.plugin.runTaskAsync(task -> this.dataHandler.savePunishment(punishment));
-
-        banAdmin.send(admin);
-        banBroadcast.broadcast();
-    }
-
-    @NotNull
-    private String getDisconnectMessage(@NotNull Punishment punishment) {
-        if (punishment.getType() == PunishmentType.BAN) {
-            if (punishment.isPermanent()) {
-                return punishment.replacePlaceholders().apply(String.join("\n", BansConfig.GENERAL_DISCONNECT_INFO_BAN_PERMANENT.get()));
-            }
-            else {
-                return punishment.replacePlaceholders().apply(String.join("\n", BansConfig.GENERAL_DISCONNECT_INFO_BAN_TEMP.get()));
-            }
+            targets.forEach(target -> target.kickPlayer(info));
         }
         else {
-            return punishment.replacePlaceholders().apply(String.join("\n", BansConfig.GENERAL_DISCONNECT_INFO_KICK.get()));
+            LangText notifyMessage = BansLang.getPunishNotify(punishData, type);
+            if (notifyMessage != null) {
+                LangMessage message = notifyMessage.getMessage().replace(punishData.replacePlaceholders());
+
+                targets.forEach(message::send);
+            }
+        }
+    }
+
+    public boolean unpunishPlayer(@NotNull UserInfo userInfo, @NotNull CommandSender executor, @NotNull PunishmentType type, boolean silent) {
+        String playerName = userInfo.getName();
+        UUID playerId = userInfo.getId();
+
+        PunishedPlayer punishedPlayer = this.getActivePlayerPunishment(playerId, type);
+        if (punishedPlayer == null) {
+            BansLang.getNotPunished(type).getMessage().replace(Placeholders.PUNISHMENT_TARGET, playerName).send(executor);
+            return false;
+        }
+
+        if (!this.checkUnpunishDuration(executor, punishedPlayer, type)) return false;
+
+        this.unpunish(punishedPlayer, type, executor, silent);
+        return true;
+    }
+
+    public boolean unbanIP(@NotNull String address, @NotNull CommandSender executor, boolean silent) {
+        PunishedIP punishedIP = this.getActiveIPPunishment(address);
+        if (punishedIP == null) {
+            BansLang.PUNISHMENT_ERROR_IP_NOT_BANNED.getMessage().replace(Placeholders.PUNISHMENT_TARGET, address).send(executor);
+            return false;
+        }
+
+        if (!this.checkUnpunishDuration(executor, punishedIP, PunishmentType.BAN)) return false;
+
+        this.unpunish(punishedIP, PunishmentType.BAN, executor, silent);
+        return true;
+    }
+
+    private void unpunish(@NotNull PunishData punishData, @NotNull PunishmentType type, @NotNull CommandSender executor, boolean silent) {
+        punishData.expire();
+        this.plugin.runTaskAsync(task -> this.dataHandler.saveData(punishData, type));
+
+        BansLang.getUnPunishOutput(punishData, type).getMessage()
+            .replace(punishData.replacePlaceholders())
+            .send(executor);
+
+        if (!silent) {
+            BansLang.getUnPunishBroadcast(punishData, type).getMessage()
+                .replace(Placeholders.PUNISHMENT_PUNISHER, SunUtils.getSenderName(executor))
+                .replace(punishData.replacePlaceholders())
+                .broadcast();
         }
     }
 }

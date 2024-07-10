@@ -1,21 +1,22 @@
 package su.nightexpress.sunlight.module.warps.config;
 
-import su.nexmedia.engine.api.config.JOption;
-import su.nexmedia.engine.utils.PlayerRankMap;
+import su.nightexpress.nightcore.config.ConfigValue;
+import su.nightexpress.nightcore.util.RankMap;
 
 import java.util.Map;
 import java.util.Set;
 
 public class WarpsConfig {
 
-    public static final JOption<Set<String>> WARP_SET_WORLD_BLACKLIST = JOption.create("Warp.Creation.World_Blacklist",
+    public static final ConfigValue<Set<String>> WARP_SET_WORLD_BLACKLIST = ConfigValue.create("Warp.Creation.World_Blacklist",
         Set.of("special_world", "other_world_123"),
         "A list of worlds, where players can't create warps.",
         "This setting can be bypassed with the '" + WarpsPerms.BYPASS_CREATION_WORLD + "' permission.");
 
-    public static final JOption<PlayerRankMap<Integer>> WARP_SET_AMOUNT_PER_GROUP = new JOption<>("Warp.Creation.Amount_Per_Rank",
-        (cfg, path, def) -> PlayerRankMap.read(cfg, path, Integer.class),
-        new PlayerRankMap<>(Map.of("moderator", 3, "admin", -1)),
+    public static final ConfigValue<RankMap<Integer>> WARP_SET_AMOUNT_PER_GROUP = ConfigValue.create("Warp.Creation.Amount_Per_Rank",
+        (cfg, path, def) -> RankMap.readInt(cfg, path, 0),
+        (cfg, path, map) -> map.write(cfg, path),
+        () -> new RankMap<>(RankMap.Mode.RANK, "warps.amount.", 0, Map.of("moderator", 3, "admin", -1)),
         "Amount of possible warps to create for certain permission groups.",
         "If player is in multiple groups listed here, the greater value will be used.",
         "If player is not in any group listed here, the 'default' value will be used if present.",
@@ -26,9 +27,9 @@ public class WarpsConfig {
         "-*-",
         "Use '-1' for unlimited warps amount.",
         "You must have Vault installed for this feature to work. No extra permissions required."
-    ).mapReader(map -> map.setNegativeBetter(true)).setWriter((cfg, path, map) -> map.write(cfg, path));
+    );
 
-    public static final JOption<Integer> WARP_DESCRIPTION_MAX_SIZE = JOption.create("Warp.Description.MaxSize",
+    public static final ConfigValue<Integer> WARP_DESCRIPTION_MAX_SIZE = ConfigValue.create("Warp.Description.MaxSize",
         40,
         "Sets the maximal text length for a warp description.",
         "This setting can be bypassed with the '" + WarpsPerms.BYPASS_DESCRIPTION_SIZE.getName() + "' permission.");

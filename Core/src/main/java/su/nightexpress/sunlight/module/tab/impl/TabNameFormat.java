@@ -1,9 +1,8 @@
 package su.nightexpress.sunlight.module.tab.impl;
 
 import org.jetbrains.annotations.NotNull;
-import su.nexmedia.engine.api.config.JYML;
-import su.nexmedia.engine.utils.Colorizer;
-import su.nexmedia.engine.utils.Placeholders;
+import su.nightexpress.nightcore.config.FileConfig;
+import su.nightexpress.sunlight.Placeholders;
 
 public class TabNameFormat {
 
@@ -12,19 +11,20 @@ public class TabNameFormat {
 
     public TabNameFormat(int priority, @NotNull String format) {
         this.priority = priority;
-        this.format = Colorizer.apply(format);
+        this.format = format;
     }
 
-    public static TabNameFormat read(@NotNull JYML cfg, @NotNull String path) {
-        int priority = cfg.getInt(path + ".Priority");
-        String format = cfg.getString(path + ".Format", Placeholders.PLAYER_DISPLAY_NAME);
+    @NotNull
+    public static TabNameFormat read(@NotNull FileConfig config, @NotNull String path) {
+        int priority = config.getInt(path + ".Priority");
+        String format = config.getString(path + ".Format", Placeholders.PLAYER_DISPLAY_NAME);
 
         return new TabNameFormat(priority, format);
     }
 
-    public void write (@NotNull JYML cfg, @NotNull String path) {
-        cfg.set(path + ".Priority", this.getPriority());
-        cfg.set(path + ".Format", this.getFormat());
+    public void write (@NotNull FileConfig config, @NotNull String path) {
+        config.set(path + ".Priority", this.getPriority());
+        config.set(path + ".Format", this.getFormat());
     }
 
     public int getPriority() {

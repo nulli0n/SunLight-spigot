@@ -5,73 +5,79 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.inventory.EquipmentSlot;
 import org.jetbrains.annotations.NotNull;
-import su.nexmedia.engine.api.manager.AbstractListener;
+import su.nightexpress.nightcore.manager.AbstractListener;
 import su.nightexpress.sunlight.Placeholders;
-import su.nightexpress.sunlight.SunLight;
+import su.nightexpress.sunlight.SunLightPlugin;
 import su.nightexpress.sunlight.api.event.PlayerPrivateMessageEvent;
 import su.nightexpress.sunlight.api.event.PlayerTeleportRequestEvent;
-import su.nightexpress.sunlight.command.teleport.impl.TeleportRequest;
+import su.nightexpress.sunlight.module.ptp.TeleportRequest;
 import su.nightexpress.sunlight.module.afk.AfkModule;
+import su.nightexpress.sunlight.module.afk.config.AfkConfig;
 import su.nightexpress.sunlight.module.afk.config.AfkLang;
 
-public class AfkListener extends AbstractListener<SunLight> {
+public class AfkListener extends AbstractListener<SunLightPlugin> {
 
     private final AfkModule module;
 
-    public AfkListener(@NotNull AfkModule module) {
-        super(module.plugin());
+    public AfkListener(@NotNull SunLightPlugin plugin, @NotNull AfkModule module) {
+        super(plugin);
         this.module = module;
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void onAfkNotifyPM(PlayerPrivateMessageEvent e) {
-        if (!(e.getTarget() instanceof Player target)) return;
+    public void onAfkNotifyPM(PlayerPrivateMessageEvent event) {
+        if (!(event.getTarget() instanceof Player target)) return;
 
         if (this.module.isAfk(target)) {
-            CommandSender from = e.getSender();
-            this.plugin.getMessage(AfkLang.AFK_NOTIFY_PM).replace(Placeholders.forPlayer(target)).send(from);
+            CommandSender from = event.getSender();
+            AfkLang.AFK_NOTIFY_PM.getMessage().replace(Placeholders.forPlayer(target)).send(from);
         }
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void onAfkNotifyTeleport(PlayerTeleportRequestEvent e) {
-        TeleportRequest request = e.getRequest();
-        Player from = plugin.getServer().getPlayer(request.getSender());
-        Player target = plugin.getServer().getPlayer(request.getTarget());
-        if (from == null || target == null) return;
+    public void onAfkNotifyTeleport(PlayerTeleportRequestEvent event) {
+        TeleportRequest request = event.getRequest();
+        Player sender = request.getSender();
+        Player target = request.getTarget();
+        if (sender == null || target == null) return;
 
         if (this.module.isAfk(target)) {
-            this.plugin.getMessage(AfkLang.AFK_NOTIFY_TELEPORT).replace(Placeholders.forPlayer(target)).send(from);
+            AfkLang.AFK_NOTIFY_TELEPORT.getMessage().replace(Placeholders.forPlayer(target)).send(sender);
         }
-    }
-
-    @EventHandler(priority = EventPriority.LOWEST)
-    public void onAfkQuit(PlayerQuitEvent e) {
-        this.module.exitAfk(e.getPlayer());
-        this.module.untrack(e.getPlayer());
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
-    public void onAfkQuit(PlayerDeathEvent e) {
-        this.module.exitAfk(e.getEntity());
+    public void onStateJoin(PlayerJoinEvent event) {
+        this.module.track(event.getPlayer());
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onStateQuit(PlayerQuitEvent event) {
+        this.module.untrack(event.getPlayer());
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onStateDeath(PlayerDeathEvent event) {
+        this.module.exitAfk(event.getEntity());
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void onAfkInteract(PlayerInteractEvent e) {
-        if (e.getHand() != EquipmentSlot.HAND) return;
+    public void onActivityInteract(PlayerInteractEvent event) {
+        if (event.getHand() != EquipmentSlot.HAND) return;
 
-        Player player = e.getPlayer();
-        this.module.getTrack(player).onInteract();
+        this.module.trackActivity(event.getPlayer(), AfkConfig.WAKE_UP_ACTIVITY_POINTS_INTERACTION.get());
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void onAfkChat(AsyncPlayerChatEvent e) {
-        Player player = e.getPlayer();
-        this.module.getTrack(player).onInteract();
+    public void onActivityChat(AsyncPlayerChatEvent event) {
+        this.module.trackActivity(event.getPlayer(), AfkConfig.WAKE_UP_ACTIVITY_POINTS_CHAT.get());
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onActivityCommand(PlayerCommandPreprocessEvent event) {
+        this.module.trackActivity(event.getPlayer(), AfkConfig.WAKE_UP_ACTIVITY_POINTS_COMMAND.get());
     }
 }

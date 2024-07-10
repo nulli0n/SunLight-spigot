@@ -1,38 +1,55 @@
 package su.nightexpress.sunlight.command.list;
 
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import su.nexmedia.engine.api.command.CommandResult;
-import su.nexmedia.engine.utils.Placeholders;
-import su.nightexpress.sunlight.Perms;
-import su.nightexpress.sunlight.SunLight;
+import su.nightexpress.nightcore.command.experimental.CommandContext;
+import su.nightexpress.nightcore.command.experimental.argument.ArgumentTypes;
+import su.nightexpress.nightcore.command.experimental.argument.ParsedArguments;
+import su.nightexpress.nightcore.command.experimental.builder.DirectNodeBuilder;
+import su.nightexpress.nightcore.command.experimental.node.DirectNode;
+import su.nightexpress.nightcore.config.FileConfig;
+import su.nightexpress.sunlight.Placeholders;
+import su.nightexpress.sunlight.SunLightPlugin;
 import su.nightexpress.sunlight.command.CommandFlags;
-import su.nightexpress.sunlight.command.api.TargetCommand;
+import su.nightexpress.sunlight.command.CommandPerms;
+import su.nightexpress.sunlight.command.CommandArguments;
+import su.nightexpress.sunlight.command.CommandRegistry;
+import su.nightexpress.sunlight.command.template.CommandTemplate;
+import su.nightexpress.sunlight.command.CommandTools;
 import su.nightexpress.sunlight.config.Lang;
 
-public class AnvilCommand extends TargetCommand {
+public class AnvilCommand {
 
     public static final String NAME = "anvil";
 
-    public AnvilCommand(@NotNull SunLight plugin, @NotNull String[] aliases) {
-        super(plugin, aliases, Perms.COMMAND_ANVIL, Perms.COMMAND_ANVIL_OTHERS, 0);
-        this.setUsage(plugin.getMessage(Lang.COMMAND_ANVIL_USAGE));
-        this.setDescription(plugin.getMessage(Lang.COMMAND_ANVIL_DESC));
-        this.addFlag(CommandFlags.SILENT);
+    public static void load(@NotNull SunLightPlugin plugin) {
+        CommandRegistry.registerDirectExecutor(NAME, (template, config) -> builderRoot(plugin, template, config));
+        CommandRegistry.addSimpleTemplate(NAME);
     }
 
-    @Override
-    protected void onExecute(@NotNull CommandSender sender, @NotNull CommandResult result) {
-        Player target = this.getCommandTarget(sender, result);
-        if (target == null) return;
+    @NotNull
+    public static DirectNodeBuilder builderRoot(@NotNull SunLightPlugin plugin, @NotNull CommandTemplate template, @NotNull FileConfig config) {
+        return DirectNode.builder(plugin, template.getAliases())
+            .description(Lang.COMMAND_ANVIL_DESC)
+            .permission(CommandPerms.ANVIL)
+            .withArgument(ArgumentTypes.playerName(CommandArguments.PLAYER).permission(CommandPerms.ANVIL_OTHERS))
+            .withFlag(CommandFlags.silent().permission(CommandPerms.ANVIL_OTHERS))
+            .executes((context, arguments) -> execute(plugin, context, arguments));
+    }
+
+    public static boolean execute(@NotNull SunLightPlugin plugin, @NotNull CommandContext context, @NotNull ParsedArguments arguments) {
+        Player target = CommandTools.getTarget(plugin, context, arguments, CommandArguments.PLAYER, false);
+        if (target == null) return false;
 
         plugin.getSunNMS().openAnvil(target);
-        if (target != sender) {
-            plugin.getMessage(Lang.COMMAND_ANVIL_TARGET).replace(Placeholders.forPlayer(target)).send(sender);
+
+        if (target != context.getSender()) {
+            Lang.COMMAND_ANVIL_TARGET.getMessage().replace(Placeholders.forPlayer(target)).send(context.getSender());
         }
-        if (!result.hasFlag(CommandFlags.SILENT)) {
-            plugin.getMessage(Lang.COMMAND_ANVIL_NOTIFY).send(target);
+        if (!arguments.hasFlag(CommandFlags.SILENT)) {
+            Lang.COMMAND_ANVIL_NOTIFY.getMessage().send(target);
         }
+
+        return true;
     }
 }

@@ -5,7 +5,6 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
-import su.nightexpress.sunlight.module.homes.impl.Home;
 import su.nightexpress.sunlight.module.warps.impl.Warp;
 
 public class PlayerWarpTeleportEvent extends Event implements Cancellable {
