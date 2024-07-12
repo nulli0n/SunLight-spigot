@@ -43,6 +43,8 @@ public class AfkModule extends Module {
         this.addListener(new AfkListener(this.plugin, this));
 
         this.addTask(this.plugin.createAsyncTask(this::tickAfkStates).setSecondsInterval(1));
+
+        this.plugin.getServer().getOnlinePlayers().forEach(this::track);
     }
 
     @Override

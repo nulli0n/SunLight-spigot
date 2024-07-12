@@ -48,7 +48,7 @@ public class AcceptCommands {
                                             boolean accept) {
         return DirectNode.builder(plugin, template.getAliases())
             .playerOnly()
-            .withArgument(ArgumentTypes.player(CommandArguments.PLAYER)
+            .withArgument(ArgumentTypes.playerName(CommandArguments.PLAYER)
                 .withSamples(context -> {
                     if (context.getPlayer() == null) return Collections.emptyList();
 

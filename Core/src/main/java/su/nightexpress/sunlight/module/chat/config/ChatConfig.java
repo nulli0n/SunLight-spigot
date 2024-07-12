@@ -32,15 +32,16 @@ public class ChatConfig {
     public static final ConfigValue<EventPriority> EVENT_PRIORITY = ConfigValue.create("Settings.Event_Priority",
         EventPriority.class,
         EventPriority.HIGH,
-        "Sets priority for the AsyncPlayerChatEvent to handle it by the Chat module.",
+        "Sets priority for the AsyncPlayerChatEvent handled by the Chat module.",
         "https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/event/EventPriority.html",
         "Change this only if you're experiencing compatibility issues with other plugins."
     );
 
     public static final ConfigValue<Boolean> USE_COMPONENTS = ConfigValue.create("Settings.Use_Components",
         true,
-        "When enabled, sends chat messages as Text (JSON) Components instead of legacy strings.",
-        "This allows you to use hover and click events in chat format."
+        "When enabled, sends chat messages as components instead of plain text.",
+        "This allows you to use hover and click events in chat format.",
+        "See also: " + WIKI_TEXT_URL
     );
 
     public static final ConfigValue<Boolean> DISABLE_REPORTS = ConfigValue.create("Settings.Disable_Reports",
@@ -74,7 +75,7 @@ public class ChatConfig {
         "Sets whether or not roleplay commands are enabled."
     );
 
-    public static final ConfigValue<String> ROLEPLAY_COMMANDS_ME_FORMAT = ConfigValue.create("Roleplay_Commands.Format",
+    public static final ConfigValue<String> ROLEPLAY_COMMANDS_ME_FORMAT = ConfigValue.create("Roleplay_Commands.Format.Me",
         ITALIC.enclose(LIGHT_CYAN.enclose(PLAYER_DISPLAY_NAME) + " " + LIGHT_GRAY.enclose(GENERIC_MESSAGE)),
         "Sets format for the '" + RoleplayCommands.NODE_ME + "' command."
     );
@@ -117,8 +118,17 @@ public class ChatConfig {
 
             return map;
         },
-        "Create here custom format components to insert them in chat format below!",
-        "Every component has its own placeholder like '%component_name%'."
+        "Create here custom components to insert them in chat format below!",
+        "Every component has its own placeholder like '%component_name%'.",
+        "Text Formations: " + WIKI_TEXT_URL,
+        Plugins.PLACEHOLDER_API + " placeholders are supported here.",
+        "Built-in Placeholders:",
+        "- " + GENERIC_MESSAGE + " - Original message text sent by a player.",
+        "- " + PLAYER_NAME + " - Player real name.",
+        "- " + PLAYER_DISPLAY_NAME + " - Player display (custom) name.",
+        "- " + PLAYER_PREFIX + " - Player prefix (from Permissions plugin)",
+        "- " + PLAYER_SUFFIX + " - Player suffix (from Permissions plugin)",
+        "- " + PLAYER_WORLD + " - Player's world name."
     );
 
     public static final ConfigValue<Map<String, FormatContainer>> FORMAT_LIST = ConfigValue.forMap("Format.List",
@@ -144,18 +154,19 @@ public class ChatConfig {
             return map;
         },
         "In this section you can set custom format for each Permision Group",
-        "If player has multiple permission groups, format with the highest priority will be used.",
+        "If multiple formats are available for a player, the one with the greatest priority will be used.",
         "Text Formations: " + WIKI_TEXT_URL,
-        Plugins.PLACEHOLDER_API + " is supported here.",
-        "Internal Placeholders:",
+        Plugins.PLACEHOLDER_API + " placeholders are supported here.",
+        "Built-in Placeholders:",
+        "- " + GENERIC_MESSAGE + " - Original message text sent by a player.",
         "- " + PLAYER_NAME + " - Player real name.",
         "- " + PLAYER_DISPLAY_NAME + " - Player display (custom) name.",
         "- " + PLAYER_PREFIX + " - Player prefix (from Permissions plugin)",
         "- " + PLAYER_SUFFIX + " - Player suffix (from Permissions plugin)",
-        "- " + PLAYER_WORLD + " - Player world name.",
+        "- " + PLAYER_WORLD + " - Player's world name.",
         "Placeholders to use in Channel Format:",
-        "- " + GENERIC_FORMAT + " - This 'Name' format.",
-        "- " + GENERIC_MESSAGE + " - This 'Message' format."
+        "- " + GENERIC_FORMAT + " - Everything from the 'Name' field.",
+        "- " + GENERIC_MESSAGE + " - Everything from the 'Message' field."
     );
 
     public static final ConfigValue<Boolean> PM_ENABLED = ConfigValue.create("Private_Messages.Enabled",
@@ -198,8 +209,10 @@ public class ChatConfig {
         true,
         "When 'true', enables the Mentions feature.",
         "Mentions allows you to attract attention of certain players or players with certain ranks when typing their name/rank in chat.",
-        "(!) IMPORTANT: You players must have " + ChatPerms.MENTION.getName() + " permission or " + ChatPerms.MENTION_PLAYER + "[playerName] or " + ChatPerms.MENTION_SPECIAL + "[mentionName] permissions."
+        "Player must have " + ChatPerms.MENTION.getName() + " permission or " + ChatPerms.MENTION_PLAYER + "[playerName] or " + ChatPerms.MENTION_SPECIAL + "[mentionName] permissions to be able to use all or certain mentions."
     );
+
+    // TODO List of players with permission requirement to mention them
 
     public static final ConfigValue<Integer> MENTIONS_MAXIMUM = ConfigValue.create("Mentions.Max_Per_Message",
         3,

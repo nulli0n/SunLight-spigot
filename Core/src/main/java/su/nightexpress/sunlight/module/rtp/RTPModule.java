@@ -36,6 +36,8 @@ public class RTPModule extends Module {
 
     @Override
     protected void onModuleLoad() {
+        this.loadCommands();
+
         this.addListener(new RTPListener(this.plugin, this));
 
         this.addTask(this.plugin.createAsyncTask(this::tickFinders).setSecondsInterval(1));

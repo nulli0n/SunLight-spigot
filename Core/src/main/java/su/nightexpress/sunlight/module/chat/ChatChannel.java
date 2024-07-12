@@ -5,11 +5,11 @@ import org.jetbrains.annotations.NotNull;
 import su.nightexpress.nightcore.config.ConfigValue;
 import su.nightexpress.nightcore.config.FileConfig;
 import su.nightexpress.nightcore.util.Lists;
+import su.nightexpress.nightcore.util.Plugins;
 import su.nightexpress.nightcore.util.StringUtil;
 import su.nightexpress.nightcore.util.placeholder.Placeholder;
 import su.nightexpress.nightcore.util.placeholder.PlaceholderMap;
 import su.nightexpress.sunlight.module.chat.config.ChatPerms;
-import su.nightexpress.sunlight.module.chat.util.Placeholders;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -122,13 +122,16 @@ public class ChatChannel implements Placeholder {
 
         String format = ConfigValue.create(path + ".Format",
             GRAY.enclose("[" + CHANNEL_NAME + "]") + " " + GENERIC_FORMAT + GENERIC_MESSAGE,
-            "Sets the chat format for the channel.",
-            "PlaceholderAPI is supported here.",
-            "Text Formations: " + Placeholders.WIKI_TEXT_URL,
+            "Sets channel message format.",
+            Plugins.PLACEHOLDER_API + " placeholders are supported here.",
+            "Text Formations: " + WIKI_TEXT_URL,
+            "Format Placeholders:",
+            "- " + GENERIC_FORMAT + " - Everything from the 'Name' field of the chat settings.yml",
+            "- " + GENERIC_MESSAGE + " - Everything from the 'Message' field of the chat settings.yml",
             "Channel Placeholders:",
-            CHANNEL_ID + " - Channel unique identifier.",
-            CHANNEL_NAME + " - Channel display name.",
-            CHANNEL_RADIUS + " - Channel message radius."
+            "- " + CHANNEL_ID + " - Channel unique identifier.",
+            "- " + CHANNEL_NAME + " - Channel display name.",
+            "- " + CHANNEL_RADIUS + " - Channel message radius."
         ).read(cfg);
 
         return new ChatChannel(

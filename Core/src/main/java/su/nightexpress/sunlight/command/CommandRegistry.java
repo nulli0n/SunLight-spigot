@@ -111,7 +111,7 @@ public class CommandRegistry {
         HealthCommand.load(plugin);
         IgnoreCommands.load(plugin);
         InventoryCommand.load(plugin);
-        ItemCommand.load(plugin);
+        ItemCommands.load(plugin);
         LoomCommand.load(plugin);
         MobCommand.load(plugin);
         NearCommand.load(plugin);

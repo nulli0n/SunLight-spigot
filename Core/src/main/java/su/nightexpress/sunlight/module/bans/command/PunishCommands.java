@@ -67,7 +67,7 @@ public class PunishCommands {
 
     @NotNull
     private static ArgumentBuilder<BanTime> timeArgument() {
-        return CommandArgument.builder(CommandArguments.TIME, BansModule::parseBanTime)
+        return CommandArgument.builder(CommandArguments.TIME, (str, context) -> BansModule.parseBanTime(str))
             .localized(BansLang.COMMAND_ARGUMENT_NAME_TIME)
             .customFailure(BansLang.ERROR_COMMAND_INVALID_TIME_ARGUMENT)
             .withSamples(tabContext -> Lists.newList(
@@ -85,7 +85,7 @@ public class PunishCommands {
 
     @NotNull
     private static ArgumentBuilder<PunishmentReason> reasonArgument() {
-        return CommandArgument.builder(ARG_REASON, BansModule::getReason)
+        return CommandArgument.builder(ARG_REASON, (str, context) -> BansModule.getReason(str))
             .localized(BansLang.COMMAND_ARGUMENT_NAME_REASON)
             .customFailure(BansLang.ERROR_COMMAND_INVALID_REASON_ARGUMENT)
             .withSamples(tabContext -> new ArrayList<>(BansModule.getReasonMap().keySet()))
@@ -132,7 +132,7 @@ public class PunishCommands {
     public static boolean executeType(@NotNull SunLightPlugin plugin, @NotNull BansModule module, @NotNull CommandContext context, @NotNull ParsedArguments arguments,
                                       @NotNull PunishmentType type) {
 
-        plugin.getUserManager().getUserDataAndPerformAsync(arguments.getStringArgument(CommandArguments.PLAYER), user -> {
+        plugin.getUserManager().manageUser(arguments.getStringArgument(CommandArguments.PLAYER), user -> {
             if (user == null) {
                 context.errorBadPlayer();
                 return;
@@ -160,7 +160,7 @@ public class PunishCommands {
             return module.banIP(address, context.getSender(), reason, banTime, silent);
         }
         else {
-            plugin.getUserManager().getUserDataAndPerformAsync(address, user -> {
+            plugin.getUserManager().manageUser(address, user -> {
                 if (user == null) {
                     context.errorBadPlayer();
                     return;

@@ -41,7 +41,7 @@ public class CommandArguments {
     public static ArgumentBuilder<EquipmentSlot> slot(@NotNull String name) {
         return CommandArgument.builder(name, (str, context) -> {
                 EquipmentSlot slot = StringUtil.getEnum(str, EquipmentSlot.class).orElse(null);
-                if (Version.isAtLeast(Version.MC_1_20_6) && slot == EquipmentSlot.BODY) return null;
+                if (Version.isAtLeast(Version.MC_1_20_6) && slot.name().equalsIgnoreCase("BODY")) return null; //slot == EquipmentSlot.BODY
 
                 return slot;
             })

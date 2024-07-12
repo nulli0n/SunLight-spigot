@@ -141,6 +141,7 @@ public class BansConfig {
         "'Amount' = amount of units for specified time unit. Example: 'TimeUnit' = '" + TimeUnit.DAYS.name() + "' and 'Amount' = '3' equals to 3 days.",
         "For the '" + TimeUnit.PERMANENT.name() + "' time unit, amount value does not matter.",
         "Available Time Units: " + StringUtil.inlineEnum(TimeUnit.class, ", "),
+        "Available Punishment Types: " + StringUtil.inlineEnum(PunishmentType.class, ", "),
         "The greatest duration limit will be used if player has multiple ranks with duration limits.",
         "To remove limit for certain punishment type, set 'Amount' to -1.",
         "To remove all limits, give '" + BansPerms.BYPASS_DURATION_LIMIT.getName() + "' permission."

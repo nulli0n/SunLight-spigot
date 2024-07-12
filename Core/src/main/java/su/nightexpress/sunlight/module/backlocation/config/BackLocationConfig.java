@@ -27,8 +27,8 @@ public class BackLocationConfig {
 
     public static final ConfigValue<Set<String>> PREVIOUS_DISABLED_WORLDS = ConfigValue.create("Location.Previous.Disabled_Worlds",
         Lists.newSet("my_custom_world"),
-        "List of worlds, where Previous Location feature is disabled.",
-        "This setting can be bypassed with '" + BackLocationPerms.BYPASS_PREVIOUS_WORLDS.getName() + "' permission");
+        "When Previous Location stored in any of the worlds listed below, players won't be able to use it without the '" + BackLocationPerms.BYPASS_PREVIOUS_WORLDS.getName() + "' permission."
+    );
 
     public static final ConfigValue<Set<PlayerTeleportEvent.TeleportCause>> PREVIOUS_DISABLED_CAUSES = ConfigValue.forSet("Location.Previous.Ignored_Causes",
         str -> StringUtil.getEnum(str, PlayerTeleportEvent.TeleportCause.class).orElse(null),
@@ -46,7 +46,8 @@ public class BackLocationConfig {
         true,
         "Sets whether or not Death Location feature is enabled.",
         "It will track player deaths to store death locations.",
-        "Players can teleport to death locations using the '" + DeathBackCommand.NODE + "' command.");
+        "Players can teleport to death locations using the '" + DeathBackCommand.NODE + "' command."
+    );
 
     public static final ConfigValue<Boolean> DEATH_RESET_ON_USE = ConfigValue.create("Location.Death.ResetOnUse",
         true,
@@ -58,6 +59,6 @@ public class BackLocationConfig {
 
     public static final ConfigValue<Set<String>> DEATH_DISABLED_WORLDS = ConfigValue.create("Location.Death.Disabled_Worlds",
         Lists.newSet("my_custom_world"),
-        "List of worlds, where Death Location feature is disabled.",
-        "This setting can be bypassed with '" + BackLocationPerms.BYPASS_DEATH_WORLDS.getName() + "' permission");
+        "When Death Location stored in any of the worlds listed below, players won't be able to use it without the '" + BackLocationPerms.BYPASS_DEATH_WORLDS.getName() + "' permission."
+    );
 }

@@ -43,7 +43,7 @@ import java.util.function.Predicate;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-public class ItemCommand {
+public class ItemCommands {
 
     public static final String NAME = "item";
 
@@ -176,9 +176,11 @@ public class ItemCommand {
         ItemStack item = getItem(context, arguments);
         if (item == null) return false;
 
-        boolean result = SunUtils.damageItem(item, arguments.getIntArgument(CommandArguments.AMOUNT));
+        int amount = arguments.getIntArgument(CommandArguments.AMOUNT);
+        boolean result = SunUtils.damageItem(item, amount);
         context.send((result ? Lang.COMMAND_ITEM_DAMAGE_DONE : Lang.ERROR_ITEM_NOT_DAMAGEABLE).getMessage()
             .replace(Placeholders.GENERIC_ITEM, ItemUtil.getItemName(item))
+            .replace(Placeholders.GENERIC_AMOUNT, amount)
         );
         return result;
     }

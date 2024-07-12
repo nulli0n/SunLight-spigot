@@ -171,7 +171,7 @@ public class SunUtils {
         ItemMeta meta = item.getItemMeta();
         if (!(meta instanceof Damageable damageable)) return false;
 
-        damageable.setDamage(Math.min(damageable.getMaxDamage(), Math.abs(damage)));
+        damageable.setDamage(Math.max(0, Math.abs(damage)));
         item.setItemMeta(meta);
         return true;
     }

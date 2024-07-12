@@ -1,6 +1,7 @@
 package su.nightexpress.sunlight.module.afk.config;
 
 import su.nightexpress.nightcore.config.ConfigValue;
+import su.nightexpress.nightcore.util.Lists;
 import su.nightexpress.nightcore.util.Plugins;
 import su.nightexpress.nightcore.util.RankMap;
 
@@ -11,24 +12,18 @@ import static su.nightexpress.sunlight.Placeholders.*;
 
 public class AfkConfig {
 
-    /*public static final ConfigValue<Long> AFK_INSPECTION_INTERVAL = ConfigValue.create("AFK.Inspection_Interval",
-        20L,
-        "Sets how often (in ticks, 20 ticks = 1 second) plugin will inspect players for afk state.",
-        "Setting this to high values (100+) may result in inaccurate afk state transition.",
-        "[Asynchronous]",
-        "[Default is 20]"
-    );*/
-
     public static final ConfigValue<Integer> WAKE_UP_THRESHOLD = ConfigValue.create("WakeUp.Threshold",
         3,
-        "Sets how many activities player have to do in order to leave AFK mode.",
+        "Sets max. amount of player's activity points to leave AFK mode.",
         "You can configure how much points every activity produces below."
     );
 
     public static final ConfigValue<Integer> WAKE_UP_TIMEOUT = ConfigValue.create("WakeUp.Timeout",
         5,
-        "Sets period of time (in seconds) for player interactions (see above).",
-        "Example: By default player have to do 3 interactions in 5 seconds to reset their AFK mode."
+        "Sets the time interval during which activity points are accumulated.",
+        "If player got enough activity points (see 'Threshold' value) during that time, they will leave AFK mode.",
+        "Otherwise activity points will reset back to zero and player will stay in AFK mode.",
+        "Example: By default player have to do 3 interactions in 5 seconds to leave AFK mode."
     );
 
     public static final ConfigValue<Integer> WAKE_UP_ACTIVITY_POINTS_MOVEMENT = ConfigValue.create("WakeUp.ActivityPoints.Movement",
@@ -52,10 +47,10 @@ public class AfkConfig {
     );
 
     public static final ConfigValue<List<String>> WAKE_UP_COMMANDS = ConfigValue.create("WakeUp.Commands",
-        Collections.emptyList(),
-        "A list of commands to execute when player leaves AFK mode.",
+        Lists.newList(),
+        "List of commands to execute when player leaves AFK mode.",
         "Use '" + PLAYER_NAME + "' for player name.",
-        Plugins.PLACEHOLDER_API + " is also supported."
+        Plugins.PLACEHOLDER_API + " placeholders are supported here."
     );
 
     public static final ConfigValue<Integer> AFK_COOLDOWN = ConfigValue.create("AFK.Cooldown",
@@ -109,7 +104,7 @@ public class AfkConfig {
     );
 
     public static final ConfigValue<List<String>> AFK_KICK_MESSAGE = ConfigValue.create("AFK.Kick_Message",
-        Arrays.asList(
+        Lists.newList(
             LIGHT_RED.enclose("You have been kicked for being AFK too long: " + LIGHT_ORANGE.enclose(GENERIC_TIME)),
             "",
             LIGHT_GREEN.enclose(UNDERLINED.enclose("You can join back now."))
@@ -119,9 +114,9 @@ public class AfkConfig {
     );
 
     public static final ConfigValue<List<String>> AFK_COMMANDS = ConfigValue.create("AFK.Commands",
-        Collections.emptyList(),
-        "A list of commands to execute when player enters AFK mode.",
+        Lists.newList(),
+        "List of commands to execute when player enters AFK mode.",
         "Use '" + PLAYER_NAME + "' for player name.",
-        Plugins.PLACEHOLDER_API + " is also supported."
+        Plugins.PLACEHOLDER_API + " placeholders are supported here."
     );
 }

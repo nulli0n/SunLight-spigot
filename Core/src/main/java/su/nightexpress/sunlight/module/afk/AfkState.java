@@ -20,7 +20,7 @@ public class AfkState {
 
     private BlockPos latestPosition;
 
-    private int  wakeUpAttempts;
+    private int  activityPoints;
     private long wakeUpTimeout;
 
     private boolean afk;
@@ -51,7 +51,7 @@ public class AfkState {
         this.afk = false;
         this.afkSince = 0L;
         this.idleTime = 0;
-        this.wakeUpAttempts = 0;
+        this.activityPoints = 0;
         this.wakeUpTimeout = 0;
         this.idleCooldown = 0;
     }
@@ -124,13 +124,13 @@ public class AfkState {
     public void onActivity(int amount) {
         if (this.isAfk()) {
             if (System.currentTimeMillis() >= this.wakeUpTimeout && this.wakeUpTimeout != 0L) {
-                this.wakeUpAttempts = 0;
+                this.activityPoints = 0;
                 this.wakeUpTimeout = System.currentTimeMillis() + AfkConfig.WAKE_UP_TIMEOUT.get() * 1000L;
             }
-            this.wakeUpAttempts += amount;
+            this.activityPoints += amount;
 
-            if (this.wakeUpAttempts >= AfkConfig.WAKE_UP_THRESHOLD.get()) {
-                this.wakeUpAttempts = 0;
+            if (this.activityPoints >= AfkConfig.WAKE_UP_THRESHOLD.get()) {
+                this.activityPoints = 0;
                 this.wakeUpTimeout = 0L;
                 this.plugin.runTask(task -> this.exitAfk()); // Sync to the main thread.
             }

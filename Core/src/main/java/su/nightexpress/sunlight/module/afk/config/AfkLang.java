@@ -8,8 +8,7 @@ import static su.nightexpress.sunlight.Placeholders.*;
 
 public class AfkLang {
 
-    public static final LangString COMMAND_AFK_DESC = LangString.of("Afk.Command.Afk.Desc",
-        "Toggle AFK mode.");
+    public static final LangString COMMAND_AFK_DESC = LangString.of("Afk.Command.Afk.Desc", "Toggle AFK mode.");
 
     public static final LangText COMMAND_AFK_DONE_OTHERS = LangText.of("Afk.Command.Afk.Done.Others",
         LIGHT_GRAY.enclose("Set " + LIGHT_YELLOW.enclose(PLAYER_DISPLAY_NAME) + " afk mode: " + LIGHT_YELLOW.enclose(GENERIC_STATE) + "."));
