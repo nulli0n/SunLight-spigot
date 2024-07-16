@@ -41,7 +41,7 @@ public class IgnoreSettingsMenu extends ConfigMenu<SunLightPlugin> implements Li
         this.link = new ViewLink<>();
 
         this.addHandler(this.returnHandler = ItemHandler.forReturn(this, (viewer, event) -> {
-            plugin.getUserManager().getIgnoreListMenu().open(viewer.getPlayer(), 1);
+            plugin.getUserManager().getIgnoreListMenu().open(viewer.getPlayer(), this.getLink(viewer).getUserInfo().getId());
         }));
 
         this.addHandler(this.hideChatHandler = new ItemHandler("hide_chat", (viewer, event) -> {

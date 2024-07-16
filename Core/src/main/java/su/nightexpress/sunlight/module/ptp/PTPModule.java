@@ -82,13 +82,13 @@ public class PTPModule extends Module {
     }
 
     @Nullable
-    public TeleportRequest getPlayerRequest(@NotNull Player player, @NotNull String sender) {
-        return this.getPlayerRequest(player.getUniqueId(), sender);
+    public TeleportRequest getPlayerRequest(@NotNull Player player, @NotNull String name) {
+        return this.getPlayerRequest(player.getUniqueId(), name);
     }
 
     @Nullable
-    public TeleportRequest getPlayerRequest(@NotNull UUID playerId, @NotNull String sender) {
-        return this.getRequests(playerId).stream().filter(request -> request.isSender(sender)).findFirst().orElse(null);
+    public TeleportRequest getPlayerRequest(@NotNull UUID playerId, @NotNull String name) {
+        return this.getRequests(playerId).stream().filter(request -> request.isSender(name)).findFirst().orElse(null);
     }
 
     @Nullable

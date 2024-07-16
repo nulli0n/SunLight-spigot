@@ -25,7 +25,7 @@ public class ChatChannel implements Placeholder {
     private final boolean        isAutoJoin;
     private final boolean        isPermissionRequiredHear;
     private final boolean        isPermissionRequiredSpeak;
-    private final int            distance;
+    private final int            distance; // TODO -1 for server-wide, -2 for world-wide
     private final int            messageCooldown;
     private final String         commandAlias;
     private final String         messagePrefix;

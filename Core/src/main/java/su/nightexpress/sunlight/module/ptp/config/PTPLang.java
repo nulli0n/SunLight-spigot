@@ -39,7 +39,7 @@ public class PTPLang extends CoreLang {
 
     public static final LangText REQUEST_ACCEPT_NOTHING = LangText.of("PTP.Request.Accept.Nothing",
         SOUND.enclose(Sound.ENTITY_VILLAGER_NO),
-        LIGHT_YELLOW + "You don't have any active requests."
+        LIGHT_GRAY.enclose("You don't have any active requests.")
     );
 
 

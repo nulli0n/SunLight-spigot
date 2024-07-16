@@ -24,7 +24,7 @@ public class RTPListener extends AbstractListener<SunLightPlugin> {
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
-    public void onPlayerQuit(@NotNull PlayerDeathEvent event) {
+    public void onPlayerDeath(@NotNull PlayerDeathEvent event) {
         this.module.stopSearch(event.getEntity());
     }
 }

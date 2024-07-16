@@ -16,6 +16,10 @@ public class RTPLang {
         LIGHT_RED.enclose("You're already in RTP!")
     );
 
+    public static final LangText TELEPORT_ERROR_INVALID_RANGE = LangText.of("RTP.Teleport.Error.InvalidRange",
+        LIGHT_RED.enclose("Random teleport is not supported for this world or have invalid range settings.")
+    );
+
     public static final LangText TELEPORT_NOTIFY_DONE = LangText.of("RTP.Teleport.Notify.Done",
         OUTPUT.enclose(20, 80) + SOUND.enclose(Sound.ENTITY_ENDERMAN_TELEPORT),
         LIGHT_GREEN.enclose(BOLD.enclose("Successful Teleport!")),

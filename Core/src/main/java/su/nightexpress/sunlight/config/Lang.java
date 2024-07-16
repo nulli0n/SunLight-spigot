@@ -799,7 +799,7 @@ public class Lang extends CoreLang {
 
     public static final LangText COMMAND_SUICIDE_DONE = LangText.of("Command.Suicide.Done",
         TAG_NO_PREFIX,
-        LIGHT_GRAY.enclose(LIGHT_YELLOW.enclose(PLAYER_DISPLAY_NAME) + LIGHT_YELLOW + " commited suicide.")
+        LIGHT_GRAY.enclose(LIGHT_YELLOW.enclose(PLAYER_DISPLAY_NAME) + " commited suicide.")
     );
 
 

@@ -138,7 +138,9 @@ public class Spawn extends AbstractFileData<SunLightPlugin> implements Placehold
 
         if (this.respawnGroups.contains(Placeholders.WILDCARD)) return true;
 
-        return Players.getPermissionGroups(player).stream().anyMatch(this.respawnGroups::contains);
+        Set<String> groups = Players.getPermissionGroups(player);
+
+        return this.respawnGroups.stream().anyMatch(groups::contains);
     }
 
     public boolean isLoginSpawn(@NotNull Player player) {

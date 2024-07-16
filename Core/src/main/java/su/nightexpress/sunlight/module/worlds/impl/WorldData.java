@@ -119,7 +119,7 @@ public class WorldData extends AbstractFileData<SunLightPlugin> {
 
     public boolean delete(@NotNull DeletionType type) {
         if (this.isLoaded()) {
-            if (!this.unloadWorld()) return false;
+            if (!this.unloadWorld(true)) return false;
         }
 
         if (type == DeletionType.DATA || type == DeletionType.FULL) {
@@ -139,10 +139,16 @@ public class WorldData extends AbstractFileData<SunLightPlugin> {
     }
 
     public boolean unloadWorld() {
+        return this.unloadWorld(true);
+    }
+
+    public boolean unloadWorld(boolean movePlayers) {
         World world = this.getWorld();
         if (world == null) return false;
 
-        this.movePlayersOut();
+        if (movePlayers) {
+            this.movePlayersOut();
+        }
 
         return this.plugin.getServer().unloadWorld(world, true);
     }
@@ -153,7 +159,7 @@ public class WorldData extends AbstractFileData<SunLightPlugin> {
 
         this.module.info("Start Auto-Reset for world '" + this.getId() + "'...");
 
-        if (!this.unloadWorld()) {
+        if (!this.unloadWorld(true)) {
             this.module.warn("Auto-Reset for world '" + this.getId() + "' failed: Unable to unload the world.");
             return false;
         }

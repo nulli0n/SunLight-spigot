@@ -98,12 +98,12 @@ public class IgnoreCommands {
         Player target = CommandTools.getTarget(plugin, context, arguments, CommandArguments.PLAYER, true);
         if (target == null) return false;
 
-        if (player != target) {
-            plugin.getUserManager().getIgnoreListMenu().open(player, target.getUniqueId());
-        }
-        else {
-            plugin.getUserManager().getIgnoreListMenu().open(player);
-        }
+//        if (player != target) {
+        plugin.getUserManager().getIgnoreListMenu().open(player, target.getUniqueId());
+//        }
+//        else {
+//            plugin.getUserManager().getIgnoreListMenu().open(player);
+//        }
         return true;
     }
 

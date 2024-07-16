@@ -83,7 +83,7 @@ public class WorldsModule extends Module {
         if (this.rulesEditor != null) this.rulesEditor.clear();
         if (this.generationEditor != null) this.generationEditor.clear();
 
-        this.getDatas().forEach(WorldData::unloadWorld);
+        this.getDatas().forEach(data -> data.unloadWorld(false));
 
         this.inventoryMap.values().forEach(WorldInventories::save);
         this.inventoryMap.clear();

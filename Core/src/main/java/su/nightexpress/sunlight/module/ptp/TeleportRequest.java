@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import su.nightexpress.nightcore.util.Players;
 import su.nightexpress.sunlight.utils.UserInfo;
 
 import java.util.concurrent.TimeUnit;
@@ -36,11 +37,13 @@ public class TeleportRequest {
     }
 
     public boolean isSender(@NotNull String name) {
-        return this.senderInfo.getName().equalsIgnoreCase(name);
+        return Players.getPlayer(name) == this.getSender();
+        //return this.senderInfo.getName().equalsIgnoreCase(name);
     }
 
     public boolean isTarget(@NotNull String name) {
-        return this.targetInfo.getName().equalsIgnoreCase(name);
+        return Players.getPlayer(name) == this.getTarget();
+        //return this.targetInfo.getName().equalsIgnoreCase(name);
     }
 
     @Nullable

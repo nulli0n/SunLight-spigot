@@ -3,7 +3,6 @@ package su.nightexpress.sunlight.module.rtp;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import su.nightexpress.sunlight.Placeholders;
 import su.nightexpress.sunlight.SunLightPlugin;
 import su.nightexpress.sunlight.module.Module;
 import su.nightexpress.sunlight.module.ModuleInfo;
@@ -15,12 +14,12 @@ import su.nightexpress.sunlight.module.rtp.impl.LocationFinder;
 import su.nightexpress.sunlight.module.rtp.listener.RTPListener;
 
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Predicate;
 
 public class RTPModule extends Module {
 
-    private final Map<Player, LocationFinder> finderMap;
+    private final Map<UUID, LocationFinder> finderMap;
 
     public RTPModule(@NotNull SunLightPlugin plugin, @NotNull String id) {
         super(plugin, id);
@@ -53,22 +52,22 @@ public class RTPModule extends Module {
     }
 
     private void tickFinders() {
-        this.finderMap.values().stream().filter(Predicate.not(LocationFinder::isFailed)).forEach(LocationFinder::tick);
+        this.finderMap.values().removeIf(LocationFinder::isCompleted);
+        this.finderMap.values().forEach(LocationFinder::tick);
     }
 
     @NotNull
-    public Map<Player, LocationFinder> getFinderMap() {
-        this.finderMap.values().removeIf(LocationFinder::isFailed);
-        return finderMap;
+    public Map<UUID, LocationFinder> getFinderMap() {
+        return this.finderMap;
     }
 
     @Nullable
     public LocationFinder getFinder(@NotNull Player player) {
-        return this.finderMap.get(player);
+        return this.finderMap.get(player.getUniqueId());
     }
 
     public void stopSearch(@NotNull Player player) {
-        this.finderMap.remove(player);
+        this.finderMap.remove(player.getUniqueId());
     }
 
     public void startSearch(@NotNull Player player) {
@@ -77,12 +76,14 @@ public class RTPModule extends Module {
             return;
         }
 
-        LocationFinder finder = new LocationFinder(plugin, player, RTPConfig.LOCATION_SEARCH_ATTEMPTS.get());
-        this.finderMap.put(player, finder);
+        LocationFinder finder = LocationFinder.create(this.plugin, player);
+        if (finder == null) {
+            RTPLang.TELEPORT_ERROR_INVALID_RANGE.getMessage().send(player);
+            return;
+        }
 
-        RTPLang.TELEPORT_NOTIFY_SEARCH.getMessage()
-            .replace(Placeholders.GENERIC_CURRENT, 0)
-            .replace(Placeholders.GENERIC_MAX, RTPConfig.LOCATION_SEARCH_ATTEMPTS.get())
-            .send(player);
+        finder.timeout();
+
+        this.finderMap.put(player.getUniqueId(), finder);
     }
 }
