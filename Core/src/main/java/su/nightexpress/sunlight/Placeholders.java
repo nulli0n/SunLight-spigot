@@ -5,13 +5,7 @@ import su.nightexpress.nightcore.util.text.tag.Tags;
 
 public class Placeholders extends su.nightexpress.nightcore.util.Placeholders {
 
-    @Deprecated public static final String ENGINE_URL                 = "https://github.com/nulli0n/NexEngine-spigot/wiki/";
-    @Deprecated public static final String ENGINE_URL_CONFIG_COMMANDS = ENGINE_URL + "Configuration-Tips#command-sections";
-    @Deprecated public static final String ENGINE_URL_PLACEHOLDERS    = ENGINE_URL + "Internal-Placeholders";
-    @Deprecated public static final String ENGINE_URL_LANG            = ENGINE_URL + "Language-Config";
-    @Deprecated public static final String ENGINE_URL_LANG_JSON       = ENGINE_URL + "Language-Config#json-formatting";
-
-    @Deprecated public static final String GENERIC_CONSOLE   = "CONSOLE";
+    public static final String PAPI_AFK_MODE = "%sunlight_afk_mode%";
 
     @NotNull
     public static String listEntry(@NotNull String str) {

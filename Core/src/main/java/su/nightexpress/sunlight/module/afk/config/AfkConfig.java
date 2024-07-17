@@ -61,7 +61,7 @@ public class AfkConfig {
     );
 
     public static final ConfigValue<String> AFK_PLACEHOLDER_IN = ConfigValue.create("AFK.Placeholder.In",
-        LIGHT_GRAY.enclose(" AFK " + GENERIC_TIME),
+        DARK_GRAY.enclose(" [AFK]"),
         "Custom placeholder text for afk players.",
         "Used by %sunlight_afk_mode% and %sunlight_afk_since% placeholders.",
         "Use '" + GENERIC_TIME + "' to display AFK time."

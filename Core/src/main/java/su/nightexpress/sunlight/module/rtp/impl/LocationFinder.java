@@ -105,6 +105,8 @@ public class LocationFinder {
         int chunkX = locX >> 4;
         int chunkZ = locZ >> 4;
 
+        // TODO Select randomly chunks from loaded/generated ones if enabled only.
+
         Chunk chunk = this.world.getChunkAt(chunkX, chunkZ, false);
         if (Version.isAtLeast(Version.V1_19_R3)) {
             if (!chunk.isGenerated() && RTPConfig.LOCATION_SEARCH_GENERATED_CHUNKS_ONLY.get()) {

@@ -316,7 +316,7 @@ public class BansModule extends Module {
         Player target = this.plugin.getServer().getPlayer(targetInfo.getId());
         if (target == null) target = this.plugin.getSunNMS().loadPlayerData(targetInfo.getId(), targetInfo.getName());
 
-        if (getRankPriority(target) > punisherPriority) {
+        if (getRankPriority(target) >= punisherPriority) {
             BansLang.PUNISHMENT_ERROR_RANK_PRIORITY.getMessage()
                 .replace(Placeholders.PUNISHMENT_TARGET, target.getDisplayName())
                 .send(player);

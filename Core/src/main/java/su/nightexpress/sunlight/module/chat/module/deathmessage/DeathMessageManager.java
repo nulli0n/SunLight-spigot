@@ -152,8 +152,8 @@ public class DeathMessageManager extends AbstractManager<SunLightPlugin> {
 
     @NotNull
     private static String getName(@NotNull Entity entity) {
-        if (entity instanceof Player) {
-            return entity.getName();
+        if (entity instanceof Player player) {
+            return player.getDisplayName();
         }
         if (entity instanceof LivingEntity) {
             String customName = entity.getCustomName();

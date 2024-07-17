@@ -4,6 +4,7 @@ import me.clip.placeholderapi.PlaceholderAPI;
 import org.jetbrains.annotations.NotNull;
 import su.nightexpress.nightcore.config.FileConfig;
 import su.nightexpress.nightcore.manager.AbstractManager;
+import su.nightexpress.nightcore.util.Lists;
 import su.nightexpress.nightcore.util.Players;
 import su.nightexpress.nightcore.util.Plugins;
 import su.nightexpress.sunlight.SunLightPlugin;
@@ -13,6 +14,11 @@ import su.nightexpress.sunlight.module.chat.util.Placeholders;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+
+import static su.nightexpress.nightcore.util.Placeholders.WIKI_TEXT_URL;
+import static su.nightexpress.nightcore.util.Placeholders.WILDCARD;
+import static su.nightexpress.sunlight.module.chat.util.Placeholders.PLAYER_DISPLAY_NAME;
+import static su.nightexpress.sunlight.module.chat.util.Placeholders.PLAYER_NAME;
 
 public class AnnounceManager extends AbstractManager<SunLightPlugin> {
 
@@ -45,6 +51,21 @@ public class AnnounceManager extends AbstractManager<SunLightPlugin> {
 
     private void loadConfig() {
         FileConfig config = FileConfig.loadOrExtract(this.plugin, this.module.getLocalPath(), FILE_NAME);
+
+        config.options().setHeader(Lists.newList(
+            "Here you can create your own custom announcers.",
+            "Announcers must have unqiue names.",
+            "Announcer options:",
+            "-- Interval: Sets how often (in seconds) announcer will broadcast messages.",
+            "-- RandomOrder: Sets whether or not announcer messages will have random order insteaod sequental one.",
+            "-- Ranks: List of permission groups, that can see announcer messages. Add '" + WILDCARD + "' to include all groups.",
+            "-- Text: Announcer messages.",
+            "Placeholders:",
+            "-- " + PLAYER_DISPLAY_NAME + ": Player display (custom) name.",
+            "-- " + PLAYER_NAME + ": Player name.",
+            "-- " + Plugins.PLACEHOLDER_API,
+            "Text Formations: " + WIKI_TEXT_URL
+        ));
 
         if (config.getSection("Announcers").isEmpty()) {
             Announcer.getDefaults().forEach(announcer -> announcer.write(config, "Announcers." + announcer.getId()));

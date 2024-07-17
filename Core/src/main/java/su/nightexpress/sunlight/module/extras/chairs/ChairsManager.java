@@ -69,8 +69,8 @@ public class ChairsManager extends AbstractManager<SunLightPlugin> {
 
     @NotNull
     private ArmorStand createChairHolder(@NotNull Player player, @NotNull Block chair) {
-        Location playerLoc = player.getEyeLocation();
-        playerLoc.setPitch(0F);
+        //Location playerLoc = player.getEyeLocation();
+        //playerLoc.setPitch(0F);
 
         Vector vector;
         BlockData blockData = chair.getBlockData();
@@ -81,7 +81,7 @@ public class ChairsManager extends AbstractManager<SunLightPlugin> {
             vector = faceLoc.clone().subtract(blockLoc.toVector()).toVector();
         }
         else {
-            vector = playerLoc.getBlock().getLocation().toVector().subtract(chair.getLocation().toVector());
+            vector = player.getLocation().getDirection();//playerLoc.getBlock().getLocation().toVector().subtract(chair.getLocation().toVector());
         }
 
         Location holderLoc = this.getHolderLocation(chair).setDirection(vector);

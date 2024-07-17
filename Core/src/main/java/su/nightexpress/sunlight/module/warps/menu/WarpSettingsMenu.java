@@ -328,7 +328,7 @@ public class WarpSettingsMenu extends ConfigMenu<SunLightPlugin> implements Link
         ItemUtil.editMeta(visitCostItem, meta -> {
             meta.setDisplayName(LIGHT_YELLOW.enclose(BOLD.enclose("Visit Cost")));
             meta.setLore(Lists.newList(
-                LIGHT_YELLOW.enclose("▪ " + LIGHT_GRAY.enclose("Current:") + " $" + WARP_VISIT_COST),
+                LIGHT_YELLOW.enclose("▪ " + LIGHT_GRAY.enclose("Current:") + " " + WARP_VISIT_COST),
                 "",
                 LIGHT_GRAY.enclose("Sets how much money player will have to pay"),
                 LIGHT_GRAY.enclose("in order to use this warp."),

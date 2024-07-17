@@ -46,7 +46,7 @@ public class ChannelCommands {
 
         // Direct register for channel commands.
         for (ChatChannel channel : module.getChannelManager().getChannels()) {
-            ServerCommand command = RootCommand.direct(plugin, channel.getId(), builder -> builder
+            ServerCommand command = RootCommand.direct(plugin, channel.getCommandAlias(), builder -> builder
                 .playerOnly()
                 .description(ChatLang.COMMAND_SHORT_CHANNEL_DESC)
                 .permission(ChatPerms.COMMAND_CHANNEL_SET)

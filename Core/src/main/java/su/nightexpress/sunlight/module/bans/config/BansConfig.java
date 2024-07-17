@@ -16,7 +16,7 @@ public class BansConfig {
 
     public static final ConfigValue<Set<String>> IMMUNE_LIST = ConfigValue.create("General.Immunies",
         Lists.newSet("put_here_your_staff_names", "127.0.0.1"),
-        "A list of player names/IP addresses that are immune to all punishments. Case insensetive."
+        "A list of player names/IP addresses that are immune to all punishments. Lower case only."
     );
 
     public static final ConfigValue<String> DEFAULT_REASON = ConfigValue.create("General.Default_Reason",

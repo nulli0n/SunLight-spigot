@@ -4,6 +4,7 @@ import net.md_5.bungee.api.chat.ClickEvent;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import su.nightexpress.nightcore.config.ConfigValue;
 import su.nightexpress.nightcore.config.FileConfig;
 import su.nightexpress.nightcore.util.Lists;
 import su.nightexpress.nightcore.util.Players;
@@ -14,7 +15,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static su.nightexpress.nightcore.util.text.tag.Tags.*;
-import static su.nightexpress.sunlight.module.chat.util.Placeholders.*;
+import static su.nightexpress.sunlight.module.chat.util.Placeholders.TAG_LINE_BREAK;
 
 public class Announcer {
 
@@ -85,9 +86,12 @@ public class Announcer {
 
     @NotNull
     public static Announcer read(@NotNull FileConfig config, @NotNull String path, @NotNull String id) {
-        int interval = config.getInt(path + ".Interval", 0);
-        boolean randomOrder = config.getBoolean(path + ".RandomOrder");
-        Set<String> ranks = config.getStringSet(path + ".Ranks");
+        int interval = ConfigValue.create(path + ".Interval", 0).read(config);
+
+        boolean randomOrder = ConfigValue.create(path + ".RandomOrder", false).read(config);
+
+        Set<String> ranks = ConfigValue.create(path + ".Ranks", Lists.newSet()).read(config);
+
         List<String> text = new ArrayList<>();
 
         config.getSection(path + ".Text").forEach(index -> {

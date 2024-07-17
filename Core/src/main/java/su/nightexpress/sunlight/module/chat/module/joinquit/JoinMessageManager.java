@@ -49,7 +49,7 @@ public class JoinMessageManager extends AbstractManager<SunLightPlugin> {
             JoinMessage.getDefaultJoins().write(config, "Join_Messages.default");
         }
         if (config.getSection("Quit_Messages").isEmpty()) {
-            JoinMessage.getDefaultJoins().write(config, "Quit_Messages.default");
+            JoinMessage.getDefaultQuits().write(config, "Quit_Messages.default");
         }
 
         for (String sId : config.getSection("Join_Messages")) {

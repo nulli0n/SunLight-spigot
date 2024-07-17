@@ -329,7 +329,7 @@ public class ChatChannel implements Placeholder {
                 true,
                 -1,
                 0,
-                "staff",
+                "staffchat",
                 "",
                 GRAY.enclose("[" + CHANNEL_NAME + "]") + " " + GENERIC_FORMAT + GENERIC_MESSAGE
             )

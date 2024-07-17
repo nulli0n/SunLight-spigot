@@ -38,6 +38,8 @@ public class ScoreboardModule extends Module {
         this.boardMap = new ConcurrentHashMap<>();
     }
 
+    // TODO Auto update scoreboard if player rank/perm changed
+
     @Override
     public boolean canLoad() {
         if (!Plugins.isLoaded(HookId.PROTOCOL_LIB)) {

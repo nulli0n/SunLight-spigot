@@ -22,7 +22,7 @@ public class TabConfig {
     private static final String DEF_ANIMATION_2 = "foot_2";
     private static final String DEF_ANIMATION_3 = "foot_3";
 
-    private static final String PLACEHOLDER_BALANCE = "%vault_eco_balance_formatted%";
+    private static final String PLACEHOLDER_BALANCE = "$%vault_eco_balance_formatted%";
 
     public static final String FILE_ANIMATIONS = "animations.yml";
 
@@ -73,9 +73,9 @@ public class TabConfig {
         (cfg, path, rank) -> TabNameFormat.read(cfg, path + "." + rank),
         (cfg, path, map) -> map.forEach((id, name) -> name.write(cfg, path + "." + id)),
         () -> Map.of(
-            "admin", new TabNameFormat(100, LIGHT_RED.enclose("[Admin]") + " " + LIGHT_GRAY.enclose(PLAYER_DISPLAY_NAME)),
-            "vip", new TabNameFormat(10, LIGHT_GREEN.enclose("[VIP]") + " " + LIGHT_GRAY.enclose(PLAYER_DISPLAY_NAME)),
-            DEFAULT, new TabNameFormat(1, LIGHT_CYAN.enclose("[Member]") + " " + LIGHT_GRAY.enclose(PLAYER_DISPLAY_NAME))
+            "admin", new TabNameFormat(100, LIGHT_RED.enclose("[Admin]") + " " + LIGHT_GRAY.enclose(PLAYER_DISPLAY_NAME) + PAPI_AFK_MODE),
+            "vip", new TabNameFormat(10, LIGHT_GREEN.enclose("[VIP]") + " " + LIGHT_GRAY.enclose(PLAYER_DISPLAY_NAME) + PAPI_AFK_MODE),
+            DEFAULT, new TabNameFormat(1, LIGHT_CYAN.enclose("[Member]") + " " + LIGHT_GRAY.enclose(PLAYER_DISPLAY_NAME) + PAPI_AFK_MODE)
         ),
         "Tablist name format based on player's rank.",
         "[You must have " + Plugins.VAULT + " with compatible Permissions plugins installed for this feature to work properly]",
