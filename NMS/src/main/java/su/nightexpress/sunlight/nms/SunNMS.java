@@ -4,12 +4,22 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.Player;
+import org.bukkit.event.block.BlockExplodeEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.inventory.Inventory;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
 public interface SunNMS {
+
+    default boolean canDestroyBlocks(@NotNull EntityExplodeEvent event) {
+        return true;
+    }
+
+    default boolean canDestroyBlocks(@NotNull BlockExplodeEvent event) {
+        return true;
+    }
 
     @NotNull Object fineChatPacket(@NotNull Object packet);
 

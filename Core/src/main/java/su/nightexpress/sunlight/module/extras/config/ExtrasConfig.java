@@ -88,7 +88,7 @@ public class ExtrasConfig {
         (cfg, path, list) -> cfg.set(path, list.stream().map(Enum::name).toList()),
         () -> Lists.newList(SortRule.values()),
         "List of sorting order & rules.",
-        "Available values: " + String.join(", ", Lists.getEnums(SortRule.class))
+        "Available values: " + StringUtil.inlineEnum(SortRule.class, ", ")
     );
 
     public static final ConfigValue<Boolean> ANTI_FARM_ENDERMITE_MINECART = ConfigValue.create("AntiFarm.Endermite_Minecart",

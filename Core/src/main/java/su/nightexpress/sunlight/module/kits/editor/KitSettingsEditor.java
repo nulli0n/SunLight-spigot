@@ -98,7 +98,7 @@ public class KitSettingsEditor extends EditorMenu<SunLightPlugin, Kit> {
         });
 
         this.addItem(Material.CLOCK, KitsLang.EDITOR_KIT_SET_COOLDOWN, 21, (viewer, event, kit) -> {
-            if (event.isRightClick()) {
+            if (event.getClick() == ClickType.SWAP_OFFHAND) {
                 kit.setCooldown(-1);
                 this.save(viewer);
                 return;
@@ -189,7 +189,11 @@ public class KitSettingsEditor extends EditorMenu<SunLightPlugin, Kit> {
 
         @Override
         public void onReady(@NotNull MenuViewer viewer, @NotNull Inventory inventory) {
-            inventory.setContents(this.isArmor ? this.kit.getArmor() : this.kit.getItems());
+            if (this.isArmor) {
+                inventory.setContents(this.kit.getArmor());
+                inventory.setItem(4, this.kit.getExtras()[0]);
+            }
+            else inventory.setContents(this.kit.getItems());
         }
 
         @Override

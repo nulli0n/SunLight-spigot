@@ -65,7 +65,7 @@ public class KitCommands {
 
     @NotNull
     private static ArgumentBuilder<Kit> kitArgument(@NotNull KitsModule module) {
-        return CommandArgument.builder(CommandArguments.NAME, module::getKitById)
+        return CommandArgument.builder(CommandArguments.NAME, (str, context) -> module.getKitById(str))
             .required()
             .withSamples(context -> context.getPlayer() != null ? module.getKitIds(context.getPlayer()) : module.getKitIds())
             .localized(KitsLang.COMMAND_ARGUMENT_NAME_NAME)
@@ -113,7 +113,9 @@ public class KitCommands {
         if (target == null) return false;
 
         boolean force = context.getSender() != target;
-        kit.give(target, force);
+        boolean silent = arguments.hasFlag(CommandFlags.SILENT);
+
+        kit.give(target, force, silent);
 
         if (force) {
             KitsLang.COMMAND_KIT_OTHERS.getMessage()
@@ -122,11 +124,11 @@ public class KitCommands {
                 .send(context.getSender());
         }
 
-        if (!arguments.hasFlag(CommandFlags.SILENT)) {
-            KitsLang.COMMAND_KIT_DONE.getMessage()
-                .replace(kit.replacePlaceholders())
-                .send(target);
-        }
+//        if (!arguments.hasFlag(CommandFlags.SILENT) && result) {
+//            KitsLang.COMMAND_KIT_DONE.getMessage()
+//                .replace(kit.replacePlaceholders())
+//                .send(target);
+//        }
 
         return true;
     }

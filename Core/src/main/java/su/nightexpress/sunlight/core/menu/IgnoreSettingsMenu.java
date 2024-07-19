@@ -41,7 +41,7 @@ public class IgnoreSettingsMenu extends ConfigMenu<SunLightPlugin> implements Li
         this.link = new ViewLink<>();
 
         this.addHandler(this.returnHandler = ItemHandler.forReturn(this, (viewer, event) -> {
-            plugin.getUserManager().getIgnoreListMenu().open(viewer.getPlayer(), this.getLink(viewer).getUserInfo().getId());
+            plugin.getUserManager().getIgnoreListMenu().open(viewer.getPlayer(), viewer.getPlayer().getUniqueId()); // TODO Actually need also store an ID of IgnoreList holder
         }));
 
         this.addHandler(this.hideChatHandler = new ItemHandler("hide_chat", (viewer, event) -> {
@@ -146,7 +146,7 @@ public class IgnoreSettingsMenu extends ConfigMenu<SunLightPlugin> implements Li
                 LIGHT_GRAY.enclose(LIGHT_YELLOW.enclose("[▶]") + " Click to " + LIGHT_YELLOW.enclose("toggle") + ".")
             ));
         });
-        list.add(new MenuItem(denyTP).setPriority(10).setSlots(13).setHandler(this.denyTeleportsHandler));
+        list.add(new MenuItem(denyTP).setPriority(10).setSlots(15).setHandler(this.denyTeleportsHandler));
 
         return list;
     }

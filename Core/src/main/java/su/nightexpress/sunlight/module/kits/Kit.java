@@ -86,10 +86,10 @@ public class Kit extends AbstractFileData<SunLightPlugin> implements Placeholder
         config.setItemsEncoded("Extras", Arrays.asList(this.getExtras()));
     }
 
-    public boolean give(@NotNull Player player, boolean force) {
+    public boolean give(@NotNull Player player, boolean force, boolean silent) {
         // Check kit permission.
         if (!force && !this.hasPermission(player)) {
-            KitsLang.KIT_ERROR_NO_PERMISSION.getMessage().replace(this.replacePlaceholders()).send(player);
+            if (!silent) KitsLang.KIT_ERROR_NO_PERMISSION.getMessage().replace(this.replacePlaceholders()).send(player);
             return false;
         }
 
@@ -98,7 +98,7 @@ public class Kit extends AbstractFileData<SunLightPlugin> implements Placeholder
         CooldownInfo cooldownInfo = user.getCooldown(this).orElse(null);
         if (!force && cooldownInfo != null) {
             long expireDate = cooldownInfo.getExpireDate();
-            (cooldownInfo.isPermanent() ? KitsLang.KIT_ERROR_COOLDOWN_ONE_TIMED : KitsLang.KIT_ERROR_COOLDOWN_EXPIRABLE).getMessage()
+            if (!silent) (cooldownInfo.isPermanent() ? KitsLang.KIT_ERROR_COOLDOWN_ONE_TIMED : KitsLang.KIT_ERROR_COOLDOWN_EXPIRABLE).getMessage()
                 .replace(Placeholders.GENERIC_COOLDOWN, TimeUtil.formatDuration(expireDate))
                 .send(player);
             return false;
@@ -109,7 +109,7 @@ public class Kit extends AbstractFileData<SunLightPlugin> implements Placeholder
             double cost = this.getCost();
             double balance = VaultHook.getBalance(player);
             if (balance < cost) {
-                KitsLang.KIT_ERROR_NOT_ENOUGH_FUNDS.getMessage().replace(this.replacePlaceholders()).send(player);
+                if (!silent) KitsLang.KIT_ERROR_NOT_ENOUGH_FUNDS.getMessage().replace(this.replacePlaceholders()).send(player);
                 return false;
             }
             VaultHook.takeMoney(player, cost);
@@ -130,7 +130,8 @@ public class Kit extends AbstractFileData<SunLightPlugin> implements Placeholder
             this.plugin.getUserManager().scheduleSave(user);
         }
 
-        KitsLang.KIT_GET.getMessage().replace(this.replacePlaceholders()).send(player);
+        if (!silent) KitsLang.KIT_GET.getMessage().replace(this.replacePlaceholders()).send(player);
+
         return true;
     }
 
@@ -292,6 +293,4 @@ public class Kit extends AbstractFileData<SunLightPlugin> implements Placeholder
     public void setExtras(ItemStack[] extras) {
         this.extras = KitsUtils.filterNulls(Arrays.copyOf(extras, 1));
     }
-
-
 }

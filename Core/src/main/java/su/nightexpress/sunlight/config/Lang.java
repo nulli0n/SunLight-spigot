@@ -474,6 +474,7 @@ public class Lang extends CoreLang {
     public static final LangString COMMAND_IGNORE_REMOVE_DESC = LangString.of("Command.Ignore.Remove.Desc", "Remove player from the blacklist.");
 
     public static final LangText COMMAND_IGNORE_ADD_DONE = LangText.of("Command.Ignore.Add.Done",
+        TAG_NO_PREFIX,
         LIGHT_YELLOW.enclose(BOLD.enclose("Player Blocked!")),
         LIGHT_GRAY.enclose("Player " + LIGHT_YELLOW.enclose(PLAYER_DISPLAY_NAME) + " added to the blacklist."),
         LIGHT_GRAY.enclose("You can change settings or unblock them using " + LIGHT_YELLOW.enclose("/" + IgnoreCommands.DEF_LIST_ALIAS))

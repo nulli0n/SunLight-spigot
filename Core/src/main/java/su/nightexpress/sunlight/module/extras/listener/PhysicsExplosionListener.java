@@ -40,13 +40,15 @@ public class PhysicsExplosionListener extends AbstractListener<SunLightPlugin> {
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-    public void onEntityExplode(EntityExplodeEvent e) {
-        this.create(e.blockList(), e.getLocation());
+    public void onEntityExplode(EntityExplodeEvent event) {
+        if (!this.plugin.getSunNMS().canDestroyBlocks(event)) return;
+
+        this.create(event.blockList(), event.getLocation());
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-    public void onBlockExplode(BlockExplodeEvent e) {
-        this.create(e.blockList(), e.getBlock().getLocation());
+    public void onBlockExplode(BlockExplodeEvent event) {
+        this.create(event.blockList(), event.getBlock().getLocation());
     }
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)

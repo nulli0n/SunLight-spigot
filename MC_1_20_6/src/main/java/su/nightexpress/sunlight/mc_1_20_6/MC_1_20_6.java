@@ -27,6 +27,8 @@ import org.bukkit.craftbukkit.v1_20_R4.entity.CraftFallingBlock;
 import org.bukkit.craftbukkit.v1_20_R4.entity.CraftPlayer;
 import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.WindCharge;
+import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.inventory.Inventory;
 import org.jetbrains.annotations.NotNull;
 import su.nightexpress.nightcore.util.Reflex;
@@ -40,6 +42,12 @@ import java.util.UUID;
 public class MC_1_20_6 implements SunNMS {
 
     private static final Method SET_GAME_MODE = Reflex.getMethod(ServerPlayerGameMode.class, "a", GameType.class, GameType.class);
+
+    @Override
+    @SuppressWarnings("UnstableApiUsage")
+    public boolean canDestroyBlocks(@NotNull EntityExplodeEvent event) {
+        return !(event.getEntity() instanceof WindCharge);
+    }
 
     @Override
     public void dropFallingContent(@NotNull FallingBlock fallingBlock) {

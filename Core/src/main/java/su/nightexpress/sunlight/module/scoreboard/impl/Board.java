@@ -76,6 +76,7 @@ public class Board {
     private PacketContainer createObjectivePacket(int mode, @NotNull String displayName) {
         PacketContainer objectivePacket = new PacketContainer(PacketType.Play.Server.SCOREBOARD_OBJECTIVE);
         objectivePacket.getModifier().writeDefaults();
+        objectivePacket.getRenderTypes().write(0, EnumWrappers.RenderType.INTEGER);
         objectivePacket.getStrings().write(0, this.identifier); // 'objectiveName'
         objectivePacket.getIntegers().write(0, mode); // 'method'
         objectivePacket.getChatComponents().write(0, WrappedChatComponent.fromJson(NightMessage.asJson(displayName))); // 'displayName'

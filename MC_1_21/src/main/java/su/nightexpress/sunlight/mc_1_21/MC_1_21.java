@@ -19,6 +19,7 @@ import net.minecraft.world.inventory.*;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.Level;
 import org.bukkit.Bukkit;
+import org.bukkit.ExplosionResult;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_21_R1.CraftServer;
@@ -27,6 +28,8 @@ import org.bukkit.craftbukkit.v1_21_R1.entity.CraftFallingBlock;
 import org.bukkit.craftbukkit.v1_21_R1.entity.CraftPlayer;
 import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.Player;
+import org.bukkit.event.block.BlockExplodeEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.inventory.Inventory;
 import org.jetbrains.annotations.NotNull;
 import su.nightexpress.nightcore.util.Reflex;
@@ -42,26 +45,27 @@ public class MC_1_21 implements SunNMS {
     private static final Method SET_GAME_MODE = Reflex.getMethod(ServerPlayerGameMode.class, "a", GameType.class, GameType.class);
 
     @Override
+    @SuppressWarnings("UnstableApiUsage")
+    public boolean canDestroyBlocks(@NotNull EntityExplodeEvent event) {
+        return this.canDestroyBlocks(event.getExplosionResult());
+    }
+
+    @Override
+    @SuppressWarnings("UnstableApiUsage")
+    public boolean canDestroyBlocks(@NotNull BlockExplodeEvent event) {
+        return this.canDestroyBlocks(event.getExplosionResult());
+    }
+
+    @SuppressWarnings("UnstableApiUsage")
+    private boolean canDestroyBlocks(@NotNull ExplosionResult result) {
+        return result == ExplosionResult.DESTROY || result == ExplosionResult.DESTROY_WITH_DECAY;
+    }
+
+    @Override
     public void dropFallingContent(@NotNull FallingBlock fallingBlock) {
         CraftFallingBlock craft = (CraftFallingBlock) fallingBlock;
         craft.getHandle().spawnAtLocation(craft.getHandle().getBlockState().getBlock());
     }
-
-    /*public static void register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext buildContext) {
-        dispatcher.register(Commands.literal("give").requires((stack) -> stack.hasPermission(2))
-            .then(Commands.argument("targets", EntityArgument.players())
-                .then(Commands.argument("item", ItemArgument.item(buildContext))
-                    .executes(context -> {
-                        return giveItem(context.getSource(), ItemArgument.getItem(context, "item"), EntityArgument.getPlayers(context, "targets"), 1);
-                    })
-                    .then(Commands.argument("count", IntegerArgumentType.integer(1)).executes(context -> {
-                        return giveItem(context.getSource(), ItemArgument.getItem(context, "item"), EntityArgument.getPlayers(context, "targets"), IntegerArgumentType.getInteger(context, "count"));
-                    })))));
-    }
-
-    private static int giveItem(CommandSourceStack commandlistenerwrapper, ItemInput argumentpredicateitemstack, Collection<ServerPlayer> collection, int i) {
-        return 1;
-    }*/
 
     @NotNull
     public Object fineChatPacket(@NotNull Object packet) {
@@ -112,6 +116,7 @@ public class MC_1_21 implements SunNMS {
         craftPlayer.saveData();
     }
 
+    @Override
     public void teleport(@NotNull Player player, @NotNull Location location) {
         CraftPlayer craftPlayer = (CraftPlayer) player;
         ServerPlayer serverPlayer = craftPlayer.getHandle();

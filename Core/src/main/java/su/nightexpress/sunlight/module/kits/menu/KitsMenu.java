@@ -126,13 +126,13 @@ public class KitsMenu extends ConfigMenu<SunLightPlugin> implements AutoFilled<K
             ItemReplacer.create(item).hideFlags().trimmed()
                 .setDisplayName(this.kitName)
                 .setLore(this.kitLore)
-                .injectLore(INFO_COOLDOWN, infoCooldownLore)
-                .injectLore(INFO_COST, infoCostLore)
-                .injectLore(NO_PERMISSION, noPermLore)
-                .injectLore(NO_MONEY, noMoneyLore)
-                .injectLore(COOLDOWN, cooldownLore)
-                .injectLore(ACTION_GET, getLore)
-                .injectLore(ACTION_PREVIEW, previewLore)
+                .replace(INFO_COOLDOWN, infoCooldownLore)
+                .replace(INFO_COST, infoCostLore)
+                .replace(NO_PERMISSION, noPermLore)
+                .replace(NO_MONEY, noMoneyLore)
+                .replace(COOLDOWN, cooldownLore)
+                .replace(ACTION_GET, getLore)
+                .replace(ACTION_PREVIEW, previewLore)
                 .replace(placeholders)
                 .replace(kit.getPlaceholders())
                 .writeMeta();
@@ -141,7 +141,7 @@ public class KitsMenu extends ConfigMenu<SunLightPlugin> implements AutoFilled<K
         });
         autoFill.setClickAction(kit -> (viewer1, event) -> {
             if (event.isLeftClick()) {
-                kit.give(player, false);
+                kit.give(player, false, false);
                 this.runNextTick(player::closeInventory);
             }
             else if (event.isRightClick()) {

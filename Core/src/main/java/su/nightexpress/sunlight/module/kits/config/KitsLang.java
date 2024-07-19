@@ -29,9 +29,9 @@ public class KitsLang extends Lang {
         LIGHT_GRAY.enclose("Given " + LIGHT_YELLOW.enclose(KIT_NAME) + " kit to " + LIGHT_YELLOW.enclose(PLAYER_DISPLAY_NAME) + "!")
     );
 
-    public static final LangText COMMAND_KIT_DONE = LangText.of("Kits.Command.Kits.Give.Notify",
-        LIGHT_GRAY.enclose("You got " + LIGHT_YELLOW.enclose(KIT_NAME) + "kit.")
-    );
+//    public static final LangText COMMAND_KIT_DONE = LangText.of("Kits.Command.Kits.Give.Notify",
+//        LIGHT_GRAY.enclose("You got " + LIGHT_YELLOW.enclose(KIT_NAME) + " kit.")
+//    );
 
     public static final LangText COMMAND_KIT_LIST_OTHERS = LangText.of("Kits.Command.Kits.List.Others",
         LIGHT_GRAY.enclose("Opened Kits GUI for " + LIGHT_YELLOW.enclose(PLAYER_DISPLAY_NAME) + ".")
