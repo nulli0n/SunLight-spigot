@@ -66,11 +66,11 @@ public class BoardConfig {
     }
 
     public boolean isGoodRank(@NotNull String rank) {
-        return this.ranks.contains(Placeholders.WILDCARD) || this.ranks.contains(rank.toLowerCase());
+        return this.ranks.contains(rank.toLowerCase());
     }
 
     public boolean isGoodRank(@NotNull Set<String> playerRanks) {
-        return playerRanks.stream().anyMatch(this::isGoodRank);
+        return this.ranks.contains(Placeholders.WILDCARD) || playerRanks.stream().anyMatch(this::isGoodRank);
     }
 
     @NotNull

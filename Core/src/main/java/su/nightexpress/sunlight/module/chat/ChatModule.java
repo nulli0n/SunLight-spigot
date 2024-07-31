@@ -119,12 +119,12 @@ public class ChatModule extends Module {
         }
 
         if (ChatConfig.MODULE_DEATH_MESSAGES.get()) {
-            if (Version.isAtLeast(Version.V1_20_R3)) {
+            if (Version.isAtLeast(Version.MC_1_20_6)) {
                 this.deathManager = new DeathMessageManager(this.plugin, this);
                 this.deathManager.setup();
             }
             else {
-                this.error("Death Messages feature is available only for " + Version.V1_20_R3.getLocalized() + " and above!");
+                this.error("Death Messages feature is available only for " + Version.MC_1_20_6.getLocalized() + " and above!");
             }
         }
 

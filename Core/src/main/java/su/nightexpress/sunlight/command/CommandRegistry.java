@@ -183,7 +183,7 @@ public class CommandRegistry {
             template.getCommands().forEach(child -> {
                 DirectNodeBuilder directBuilder = getDirectBuilder(child, config);
                 if (directBuilder == null) {
-                    plugin.error("Could not find child executor '" + child + "'!");
+                    plugin.error("Could not find child executor '" + child.getNodeId() + "'!");
                     return;
                 }
 

@@ -39,14 +39,14 @@ public class PhysicsExplosionListener extends AbstractListener<SunLightPlugin> {
         this.physx = new NamespacedKey(plugin, "physical_block");
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onEntityExplode(EntityExplodeEvent event) {
         if (!this.plugin.getSunNMS().canDestroyBlocks(event)) return;
 
         this.create(event.blockList(), event.getLocation());
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onBlockExplode(BlockExplodeEvent event) {
         this.create(event.blockList(), event.getBlock().getLocation());
     }
@@ -88,7 +88,7 @@ public class PhysicsExplosionListener extends AbstractListener<SunLightPlugin> {
             fall.setVelocity(vector);
 
             block.setType(Material.AIR);
-            return true;
+            return false;
         });
     }
 }
