@@ -1,7 +1,7 @@
 package su.nightexpress.sunlight.core.cooldown;
 
 import org.jetbrains.annotations.NotNull;
-import su.nightexpress.sunlight.command.CommandCooldown;
+import su.nightexpress.sunlight.command.cooldown.CommandCooldown;
 import su.nightexpress.sunlight.module.kits.Kit;
 import su.nightexpress.sunlight.module.warps.impl.Warp;
 

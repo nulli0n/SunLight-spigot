@@ -33,7 +33,7 @@ public interface WorldPos {
     WorldPos copy();
 
     default boolean isEmpty() {
-        return this.getX() == 0D && this.getY() == 0D && this.getZ() == 0D;
+        return this.getX() == 0 && this.getY() == 0 && this.getZ() == 0;
     }
 
     int getX();

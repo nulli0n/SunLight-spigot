@@ -1,372 +1,1875 @@
+Command:
+  Argument:
+    Name:
+      Slot: Ranura
+      Enchant: Encantamiento
+      Level: Nivel
+      Target: Objetivo
+      Type: Tipo
+      Time: Tiempo
+      Mode: Modo
+      IPAddress: Dirección
+      Radius: Radio
+      Text: Texto
+      Position: Posición
+      X: x
+      Y: y
+      Z: z
+      Reason: Razón
+      IPorName: Nombre | Dirección
+      #Por Jose :3
+  Air:
+    Add:
+      Desc: Añadir ticks de aire.
+    Set:
+      Desc: Establecer ticks de aire.
+      Target: '<lgray>Se establecieron <lyellow>%amount%</lyellow> ticks de aire para <lyellow>%player_display_name%</lyellow>. Nuevos ticks de aire: <lyellow>%current%</lyellow>/<lyellow>%max%</lyellow>.</lgray>'
+      Notify:
+        - <output:"action_bar">
+        - '<lgray>Tus ticks de aire se establecieron en <lyellow>%amount%</lyellow>: <lyellow>%current%</lyellow>/<lyellow>%max%</lyellow>.</lgray>'
+    Remove:
+      Desc: Quitar ticks de aire.
+    Give:
+      Target: '<lgray>Se agregaron <lyellow>%amount%</lyellow> ticks de aire a <lyellow>%player_display_name%</lyellow>. Nuevos ticks de aire: <lyellow>%current%</lyellow>/<lyellow>%max%</lyellow>.</lgray>'
+      Notify:
+        - <output:"action_bar">
+        - '<lgray>Obtuviste <lyellow>%amount%</lyellow> ticks de aire: <lyellow>%current%</lyellow>/<lyellow>%max%</lyellow>.</lgray>'
+    Take:
+      Target: '<lgray>Se quitaron <lyellow>%amount%</lyellow> ticks de aire de <lyellow>%player_display_name%</lyellow>. Nuevos ticks de aire: <lyellow>%current%</lyellow>/<lyellow>%max%</lyellow>.</lgray>'
+      Notify:
+        - <output:"action_bar">
+        - '<lgray>Perdiste <lyellow>%amount%</lyellow> ticks de aire: <lyellow>%current%</lyellow>/<lyellow>%max%</lyellow>.</lgray>'
+  Anvil:
+    Desc: Abrir yunque portátil.
+    Target: <lgray>Se abrió el yunque portátil para <lyellow>%player_display_name%</lyellow>.</lgray>
+    Notify:
+      - <output:"action_bar">
+      - <lgray>Abriste un yunque portátil.</lgray>
+  Broadcast:
+    Desc: Transmitir un mensaje.
+  Condense:
+    Desc: Condensar objetos en bloques.
+    Error:
+      Nothing:
+        - <sound:"entity_villager_no">
+        - <lgray>Nada que condensar.</lgray>
+      NotEnough: <lgray>No hay suficientes objetos para convertir <lred>%source%</lred> en <lred>%result%</lred>. Se necesitan al menos <lred>%amount%</lred>.</lgray>
+    Done: <lgray>Se convirtieron <lyellow>x%total% %source%</lyellow> en <lyellow>x%amount% %result%</lyellow>.</lgray>
+  Disposal:
+    Desc: Abrir un menú de eliminación.
+    Target: <lgray>Se abrió la eliminación para <lyellow>%player_display_name%</lyellow>.</lgray>
+    Notify:
+      - <output:"action_bar"><sound:"block_chest_open">
+      - <lgray>Abriste la eliminación.</lgray>
+  Dimension:
+    Desc: Teletransportarse a un mundo.
+    Target: <lgray>Se teletransportó a <lyellow>%player_display_name%</lyellow> al <lyellow>%world%</lyellow>.</lgray>
+    Notify:
+      - <output:"action_bar"><sound:"entity_enderman_teleport">
+      - <lgray>Viajaste al <lyellow>%world%</lyellow>.</lgray>
+  Enchant:
+    Desc: (Des)encantar objeto en una ranura.
+    Error:
+      NoItem: <lred>¡No hay ningún objeto para encantar!</lred>
+    Enchanted:
+      Target:
+        - <sound:"block_enchantment_table_use">
+        - <lgray>¡Se encantó <lyellow>%item%</lyellow> con <lyellow>%name% %amount%</lyellow> en la ranura <lyellow>%type%</lyellow> de <lyellow>%player_display_name%</lyellow>!</lgray>
+      Notify:
+        - <sound:"block_enchantment_table_use">
+        - <lgray>¡Tu <lyellow>%item%</lyellow> se ha encantado con <lyellow>%name% %amount%</lyellow>!</lgray>
+    Disenchanted:
+      Target:
+        - <sound:"block_grindstone_use">
+        - <lgray>El encantamiento <lyellow>%name%</lyellow> se ha eliminado de <lyellow>%item%</lyellow> en la ranura <lyellow>%type%</lyellow> de <lyellow>%player_display_name%</lyellow>.</lgray>
+      Notify:
+        - <sound:"block_grindstone_use">
+        - <lgray>¡Tu <lyellow>%item%</lyellow> se ha desencantado de <lyellow>%name%</lyellow>!</lgray>
+  Enchanting:
+    Desc: Abrir mesa de encantamiento portátil.
+    Notify:
+      - <output:"action_bar">
+      - <lgray>Abriste la mesa de encantamiento.</lgray>
+    Target: <lgray>Se abrió la mesa de encantamiento para <lyellow>%player_display_name%</lyellow>.</lgray>
+  Experience:
+    Add:
+      Desc: Añadir puntos o niveles de experiencia.
+      Info:
+        - <noprefix>
+        - ' '
+        - <lgray>Se agregaron <lyellow>%amount%</lyellow> %type% a <lyellow>%player_display_name%</lyellow>.</lgray>
+        - '<lgray>Nuevo nivel: <lyellow>%level%</lyellow></lgray>'
+        - '<lgray>Experiencia total: <lyellow>%total%</lyellow></lgray>'
+        - ' '
+      Notify:
+        - <noprefix>
+        - ' '
+        - <lgray>¡Se han añadido <lyellow>%amount%</lyellow> %type% a tu experiencia!</lgray>
+        - '<lgray>Nuevo nivel: <lyellow>%level%</lyellow></lgray>'
+        - '<lgray>Experiencia total: <lyellow>%total%</lyellow></lgray>'
+        - ' '
+    Remove:
+      Desc: Quitar puntos o niveles de experiencia.
+      Info:
+        - <noprefix>
+        - ' '
+        - <lgray>Se quitaron <lyellow>%amount%</lyellow> %type% de <lyellow>%player_display_name%</lyellow>.</lgray>
+        - '<lgray>Nuevo nivel: <lyellow>%level%</lyellow></lgray>'
+        - '<lgray>Experiencia total: <lyellow>%total%</lyellow></lgray>'
+        - ' '
+      Notify:
+        - <noprefix>
+        - ' '
+        - <lgray>¡Se han eliminado <lyellow>%amount%</lyellow> %type% de tu experiencia!</lgray>
+        - '<lgray>Nuevo nivel: <lyellow>%level%</lyellow></lgray>'
+        - '<lgray>Experiencia total: <lyellow>%total%</lyellow></lgray>'
+        - ' '
+    Set:
+      Desc: Establecer puntos o niveles de experiencia.
+      Info:
+        - <noprefix>
+        - ' '
+        - <lgray>Se establecieron <lyellow>%amount%</lyellow> %type% para <lyellow>%player_display_name%</lyellow>.</lgray>
+        - '<lgray>Nuevo nivel: <lyellow>%level%</lyellow></lgray>'
+        - '<lgray>Experiencia total: <lyellow>%total%</lyellow></lgray>'
+        - ' '
+      Notify:
+        - <noprefix>
+        - ' '
+        - <lgray>¡Se han establecido <lyellow>%amount%</lyellow> %type% como tu experiencia!</lgray>
+        - '<lgray>Nuevo nivel: <lyellow>%level%</lyellow></lgray>'
+        - '<lgray>Experiencia total: <lyellow>%total%</lyellow></lgray>'
+        - ' '
+    View:
+      Desc: Ver estado de experiencia.
+      Info:
+        Info:
+          - <noprefix>
+          - ' '
+          - <lyellow><b>Experiencia de %player_display_name%:</b></lyellow>
+          - '<lgray>Nivel: <lyellow>%level%</lyellow></lgray>'
+          - '<lgray>Experiencia total: <lyellow>%total%</lyellow></lgray>'
+          - '<lgray>Para el siguiente nivel: <lyellow>%max%</lyellow></lgray>'
+          - ' '
+  Enderchest:
+    Clear:
+      Desc: Limpiar cofre ender.
+      Done:
+        Target:
+          - <sound:"block_fire_extinguish">
+          - <lgray>¡Se limpió el cofre ender de <lyellow>%player_display_name%</lyellow>!</lgray>
+        Notify:
+          - <sound:"block_fire_extinguish">
+          - <lgray>¡Tu cofre ender se ha limpiado!</lgray>
+    Copy:
+      Desc: Copiar cofre ender de un jugador.
+      Done:
+        Executor:
+          - <sound:"item_armor_equip_leather">
+          - <lgray>Se copió el cofre ender de <lyellow>%player_display_name%</lyellow>.</lgray>
+        Others:
+          - <sound:"item_armor_equip_leather">
+          - <lgray>Se copió el contenido del cofre ender de <lyellow>%source%</lyellow> al cofre ender de <lyellow>%target%</lyellow>.</lgray>
+    Fill:
+      Desc: Llenar el cofre ender con el objeto especificado.
+      Done:
+        Executor:
+          - <sound:"entity_item_pickup">
+          - <lgray>Se llenó el cofre ender de <lyellow>%player_display_name%</lyellow> con <lyellow>%item%</lyellow>.</lgray>
+    Open:
+      Desc: Abrir cofre ender.
+      Done:
+        Executor:
+          - <sound:"block_ender_chest_open">
+          - <lgray>Se abrió el cofre ender de <lyellow>%player_display_name%</lyellow>.</lgray>
+    Repair:
+      Desc: Reparar todos los objetos del cofre ender.
+      Notify:
+        - <sound:"block_anvil_use">
+        - <lgray>¡Se repararon todos los objetos del cofre ender!</lgray>
+      Target:
+        - <sound:"block_anvil_use">
+        - <lgray>¡Se repararon todos los objetos del cofre ender de <lyellow>%player_display_name%</lyellow>!</lgray>
+  Hat:
+    Desc: Poner un objeto en la cabeza.
+    Done:
+      - <sound:"item_armor_equip_leather">
+      - <lgray>¡Disfruta de tu nuevo sombrero!</lgray>
+  Fly:
+    Desc: Activar/desactivar vuelo.
+    Target: <lgray>Se configuró el vuelo para <lyellow>%player_display_name%</lyellow> en <lyellow>%state%</lyellow>.</lgray>
+    Notify: <lgray>Vuelo <lyellow>%state%</lyellow>.</lgray>
+  FlySpeed:
+    Desc: Cambiar la velocidad de vuelo.
+    Done:
+      Notify: <lgray>Tu velocidad de vuelo se ha establecido en <lyellow>%amount%</lyellow>.</lgray>
+      Target: <lgray>Se estableció la velocidad de vuelo en <lyellow>%amount%</lyellow> para <lyellow>%player_display_name%</lyellow>.</lgray>
+  Fire:
+    Set:
+      Desc: Establecer ticks de fuego.
+      Info: '<lgray>Se establecieron los ticks de fuego de <lyellow>%player_display_name%</lyellow> en <lyellow>%amount%</lyellow>, es decir, se incendió durante: <lyellow>%time%</lyellow>s.</lgray>'
+      Target: <lgray>Has sido incendiado durante <lyellow>%time%</lyellow>s.</lgray>
+    Reset:
+      Desc: Restablecer ticks de fuego.
+      Info:
+        - <sound:"block_fire_extinguish">
+        - <lgray>Se restableció el valor de los ticks de fuego de <lyellow>%player_display_name%</lyellow>, es decir, se extinguió.</lgray>
+      Target:
+        - <sound:"block_fire_extinguish">
+        - <lgray>Has sido extinguido.</lgray>
+  Food:
+    Add:
+      Desc: Añadir puntos de comida.
+    Set:
+      Desc: Establecer el nivel de comida.
+      Target: <lgray>Se estableció el nivel de comida de <lyellow>%player_display_name%</lyellow> en <lyellow>%amount%</lyellow>.</lgray>
+      Notify: <lgray>Tu nivel de comida se ha establecido en <lyellow>%amount%</lyellow>.</lgray>
+    Remove:
+      Desc: Quitar puntos de comida.
+    Restore:
+      Desc: Restaurar el nivel de comida.
+      Notify:
+        - <sound:"entity_generic_eat">
+        - <lgray>¡Se ha restaurado tu nivel de comida!</lgray>
+      Info:
+        - <sound:"entity_generic_eat">
+        - <lgray>¡Se restauró el nivel de comida de <lyellow>%player_display_name%</lyellow>!</lgray>
+    Give:
+      Target: '<lgray>Se agregaron <lyellow>%amount%</lyellow> puntos de comida a <lyellow>%player_display_name%</lyellow>. Nuevo nivel de comida: <lyellow>%current%</lyellow>.</lgray>'
+      Notify: <lgray>Tu nivel de comida ha aumentado en <lyellow>%amount%</lyellow>.</lgray>
+    Take:
+      Target: '<lgray>Se quitaron <lyellow>%amount%</lyellow> puntos de comida a <lyellow>%player_display_name%</lyellow>. Nuevo nivel de comida: <lyellow>%current%</lyellow>.</lgray>'
+      Notify: <lgray>Tu nivel de comida ha disminuido en <lyellow>%amount%</lyellow>.</lgray>
+  Grindstone:
+    Desc: Abrir piedra de afilar portátil.
+    Notify:
+      - <output:"action_bar">
+      - <lgray>Abriste la piedra de afilar.</lgray>
+    Target: <lgray>Se abrió la piedra de afilar para <lyellow>%player_display_name%</lyellow>.</lgray>
+  GameMode:
+    Type:
+      Desc: Establecer modo de juego en %type%.
+    Notify: <lgray>Tu modo de juego se ha establecido en <lyellow>%type%</lyellow>.</lgray>
+    Target: <lgray>Se estableció el modo de juego <lyellow>%type%</lyellow> para <lyellow>%player_display_name%</lyellow>.</lgray>
+  Health:
+    Add:
+      Desc: Añadir puntos de salud.
+      Target: '<lgray>Se agregaron <lyellow>%amount%</lyellow> puntos de salud a <lyellow>%player_display_name%</lyellow>. Nueva salud: <lyellow>%current%</lyellow>/<lyellow>%max%</lyellow>.</lgray>'
+      Notify:
+        - <output:"action_bar">
+        - '<lgray>Obtuviste <lyellow>%amount%</lyellow> puntos de salud: <lyellow>%current%</lyellow>/<lyellow>%max%</lyellow>.</lgray>'
+    Set:
+      Desc: Establecer puntos de salud.
+      Target: '<lgray>Se establecieron <lyellow>%amount%</lyellow> puntos de salud para <lyellow>%player_display_name%</lyellow>. Nueva salud: <lyellow>%current%</lyellow>/<lyellow>%max%</lyellow>.</lgray>'
+      Notify:
+        - <output:"action_bar">
+        - <lgray>Tu salud se ha establecido en <lyellow>%amount%</lyellow>/<lyellow>%max%</lyellow>.</lgray>'
+    Remove:
+      Desc: Quitar puntos de salud.
+      Target: '<lgray>Se quitaron <lyellow>%amount%</lyellow> puntos de salud a <lyellow>%player_display_name%</lyellow>. Nueva salud: <lyellow>%current%</lyellow>/<lyellow>%max%</lyellow>.</lgray>'
+      Notify:
+        - <output:"action_bar">
+        - '<lgray>Perdiste <lyellow>%amount%</lyellow> puntos de salud: <lyellow>%current%</lyellow>/<lyellow>%max%</lyellow>.</lgray>'
+    Restore:
+      Desc: Restaurar salud.
+      Notfiy: <lgray>¡Has sido curado!</lgray>
+      Info: <lgray>El jugador <lyellow>%player_display_name%</lyellow> ha sido curado.</lgray>
+  Ignore:
+    Add:
+      Desc: Añadir jugador a la lista negra.
+      Done:
+        - <noprefix>
+        - <lyellow><b>¡Jugador bloqueado!</b></lyellow>
+        - <lgray>Se agregó el jugador <lyellow>%player_display_name%</lyellow> a la lista negra.</lgray>
+        - <lgray>Puedes cambiar la configuración o desbloquearlos usando <lyellow>/ignorelist</lyellow></lgray>
+      Error:
+        AlreadyIn: <lgray>El jugador ya está bloqueado.</lgray>
+    List:
+      Desc: Abrir la lista negra de jugadores.
+    Remove:
+      Desc: Eliminar jugador de la lista negra.
+      Done: <lgray>El jugador <lyellow>%player_name%</lyellow> ha sido desbloqueado.</lgray>
+      Error:
+        NotIn: <lgray>El jugador no está bloqueado.</lgray>
+  Inventory:
+    Clear:
+      Desc: Limpiar inventario.
+      Done:
+        Target:
+          - <sound:"block_fire_extinguish">
+          - <lgray>¡Se limpió el inventario de <lyellow>%player_display_name%</lyellow>!</lgray>
+        Notify:
+          - <sound:"block_fire_extinguish">
+          - <lgray>¡Tu inventario se ha limpiado!</lgray>
+    Copy:
+      Desc: Copiar inventario de un jugador.
+      Done:
+        Notify:
+          - <sound:"item_armor_equip_leather">
+          - <lgray>Se copió el inventario de <lyellow>%player_display_name%</lyellow>.</lgray>
+        Target:
+          - <sound:"item_armor_equip_leather">
+          - <lgray>Se copió el inventario de <lyellow>%source%</lyellow> al inventario de <lyellow>%target%</lyellow>.</lgray>
+    Fill:
+      Desc: Llenar el inventario con objetos específicos.
+      Done:
+        - <sound:"entity_item_pickup">
+        - <lgray>Se llenó el inventario de <lyellow>%player_display_name%</lyellow> con <lyellow>%item%</lyellow>.</lgray>
+    Open:
+      Desc: Abrir el inventario de un jugador.
+      Done:
+        - <sound:"block_chest_open">
+        - <lgray>Se abrió el inventario de <lyellow>%player_display_name%</lyellow>.</lgray>
+    Repair:
+      Desc: Reparar todos los objetos del inventario.
+      Notify:
+        - <sound:"block_anvil_use">
+        - <lgray>¡Se repararon todos los objetos del inventario!</lgray>
+      Target:
+        - <sound:"block_anvil_use">
+        - <lgray>¡Se repararon todos los objetos del inventario de <lyellow>%player_display_name%</lyellow>!</lgray>
+  Item:
+    Amount:
+      Desc: Cambiar la cantidad de objetos.
+      Done:
+        - <sound:"entity_item_pickup">
+        - <lgray>Se estableció la cantidad de la pila de <lyellow>%item%</lyellow> en x<lyellow>%amount%</lyellow>.</lgray>
+    Damage:
+      Desc: Cambiar el daño del objeto.
+      Done:
+        - <sound:"block_anvil_use">
+        - <lgray>Se estableció el daño de <lyellow>%item%</lyellow> en <lyellow>%amount%</lyellow>.</lgray>
+    Enchant:
+      Desc: (Des)encantar un objeto en la mano.
+      Done:
+        Enchanted:
+          - <sound:"block_enchantment_table_use">
+          - <lgray>¡<lyellow>%item%</lyellow> encantado con <lyellow>%name% %level%</lyellow>!</lgray>
+        Disenchanted:
+          - <sound:"block_enchantment_table_use">
+          - <lgray>¡Se ha eliminado el encantamiento <lyellow>%name%</lyellow> de <lyellow>%item%</lyellow>!</lgray>
+    Get:
+      Desc: Obtener la pila de objetos especificada.
+      Done:
+        - <sound:"entity_item_pickup">
+        - <lgray>¡Obtuviste <lyellow>x%amount% %type%</lyellow>!</lgray>
+    Give:
+      Desc: Dar la pila de objetos especificada a un jugador.
+      Done:
+        - <sound:"entity_item_pickup">
+        - <lgray>¡Se agregaron <lyellow>x%amount% %type%</lyellow> a <lyellow>%player_display_name%</lyellow>!</lgray>
+      Notify:
+        - <sound:"entity_item_pickup">
+        - <lgray>¡Se han agregado <lyellow>x%amount% %type%</lyellow> a tu inventario!</lgray>
+    Take:
+      Desc: Quitar objeto a un jugador.
+      Done:
+        - <sound:"entity_glow_item_frame_remove_item">
+        - <lgray>¡Se quitaron <lyellow>x%amount%</lyellow> de <lyellow>%type%</lyellow> a <lyellow>%player_display_name%</lyellow>!</lgray>
+      Error:
+        NotEnough:
+          - <sound:"entity_villager_no">
+          - <lgray>No se pudo quitar el objeto(s). El jugador no tiene suficientes <lred>%type%</lred> (<white>%amount%</white>/<white>%total%</white>)!</lgray>
+      Notify:
+        - <sound:"entity_glow_item_frame_remove_item">
+        - <lgray>¡Se han quitado <lyellow>x%amount%</lyellow> de <lyellow>%type%</lyellow> de tu inventario!</lgray>
+    Lore:
+      Add:
+        Desc: Añadir un lore.
+        Done:
+          - <sound:"block_anvil_use">
+          - <lgray>¡Lore agregado!</lgray>
+      Remove:
+        Desc: Eliminar un lore.
+        Done:
+          - <sound:"block_anvil_use">
+          - <lgray>¡Lore eliminado!</lgray>
+      Clear:
+        Desc: Limpiar lore.
+        Done:
+          - <sound:"block_anvil_use">
+          - <lgray>¡Lore limpiado!</lgray>
+    Model:
+      Desc: Cambiar los datos del modelo del objeto.
+      Done:
+        - <sound:"block_anvil_use">
+        - <lgray>¡Se establecieron <lyellow>%amount%</lyellow> como datos del modelo de <lyellow>%item%</lyellow>!</lgray>
+    Name:
+      Desc: Cambiar el nombre de visualización del objeto.
+      Done:
+        Changed:
+          - <sound:"block_anvil_use">
+          - <lgray>¡El objeto se ha renombrado!</lgray>
+    Potion:
+      Add:
+        Desc: Añadir efecto a una poción.
+        Done: <lgray>¡Efecto de poción agregado!</lgray>
+    Repair:
+      Desc: Reparar objeto.
+      Done:
+        - <sound:"block_anvil_use">
+        - <lgray>¡El objeto <lyellow>%item%</lyellow> se ha reparado!</lgray>
+    Spawn:
+      Desc: Generar objeto en el mundo.
+      Done:
+        - <sound:"entity_item_pickup">
+        - <lgray>¡Se generaron <lyellow>x%amount%</lyellow> <lyellow>%type%</lyellow> en <lyellow>%location_x%, %location_y%, %location_z%</lyellow> en <lyellow>%location_world%</lyellow>!</lgray>
+    Unbreakable:
+      Desc: Activar/desactivar estado irrompible.
+      Done:
+        - <sound:"block_anvil_use">
+        - '<lgray>Se estableció el objeto <lyellow>%item%</lyellow> como irrompible: <lyellow>%state%</lyellow>.</lgray>'
+  Loom:
+    Desc: Abrir telar portátil.
+    Notify:
+      - <output:"action_bar">
+      - <lgray>Abriste el telar.</lgray>
+    Target: <lgray>Se abrió el telar para <lyellow>%player_display_name%</lyellow>.</lgray>
+  Mob:
+    Kill:
+      Desc: Matar una mafia específica.
+      Done:
+        - <sound:"entity_zombie_death">
+        - <lgray>Se mataron <lyellow>x%amount% %type%</lyellow> en <lyellow>%world%</lyellow> dentro de <lyellow>%radius%</lyellow> bloques.</lgray>
+    Clear:
+      Desc: Matar todas las mafias.
+      Done:
+        - <sound:"entity_zombie_death">
+        - <lgray>Se mataron <lyellow>%amount%</lyellow> mafias en <lyellow>%world%</lyellow> dentro de <lyellow>%radius%</lyellow> bloques.</lgray>
+    Spawn:
+      Desc: Generar una mafia.
+      Done: <lgray>Se creó <lyellow>x%amount% %type%</lyellow>.</lgray>
+  Near:
+    Desc: Mostrar jugadores cercanos.
+    Error:
+      Nothing: <lgray>No hay jugadores en un radio de <lyellow>%radius%</lyellow> bloques.</lgray>
+  Nick:
+    Clear:
+      Desc: Eliminar nombre personalizado.
+      Target: <lgray>Se eliminó el nombre personalizado de <lyellow>%player_display_name%</lyellow>.</lgray>
+      Notify: <lgray>Se ha eliminado tu nombre personalizado.</lgray>
+    Set:
+      Desc: Establecer el nombre personalizado del jugador.
+      Target: <lgray>Se estableció el nombre personalizado de <lyellow>%player_name%</lyellow> en <lyellow>%name%</lyellow>.</lgray>
+      Notify: '<lgray>Obtuviste un nuevo nombre personalizado: <lyellow>%name%</lyellow>.</lgray>'
+    Change:
+      Desc: Establecer nombre personalizado.
+      Done: <lgray>Cambiaste tu nombre personalizado a <lyellow>%name%</lyellow>.</lgray>
+    Error:
+      BadWords: <lred>Este nombre no está permitido.</lred>
+      Regex: <lred>El nombre contiene caracteres prohibidos.</lred>
+      TooLong: <lgray>El nombre no puede tener más de <lred>%amount%</lred> caracteres.</lgray>
+      TooShort: <lred>El nombre no puede tener menos de <lred>%amount%</lred> caracteres.</lred>
+  PlayerInfo:
+    Desc: Mostrar información del jugador.
+  Skull:
+    Custom:
+      Desc: Crear cabeza personalizada.
+      Done: <lgray>Se creó una cabeza personalizada.</lgray>
+    Player:
+      Desc: Obtener cabeza del jugador.
+      Done: <lgray>Obtuviste la cabeza de <lyellow>%player_name%</lyellow>.</lgray>
+  Staff:
+    Desc: Mostrar personal en línea.
+    Empty: <lgray>No hay personal en línea.</lgray>
+  Spawner:
+    Desc: Cambiar el tipo de generador.
+    Done: <lgray>El tipo de generador se cambió a <lyellow>%type%</lyellow>.</lgray>
+    Error:
+      Type: <lred>Este tipo no se puede establecer para el generador.</lred>
+      Block: <lred>¡Debes mirar al bloque del generador!</lred>
+  Speed:
+    Desc: Cambiar la velocidad de movimiento.
+    Done:
+      Notify: <lgray>Tu velocidad de movimiento se ha establecido en <lyellow>%amount%</lyellow>.</lgray>
+      Target: <lgray>Se estableció la velocidad de movimiento en <lyellow>%amount%</lyellow> para <lyellow>%player_display_name%</lyellow>.</lgray>
+  Sudo:
+    Command:
+      Desc: Forzar al jugador a ejecutar un comando.
+    Chat:
+      Desc: Forzar al jugador a enviar un mensaje de chat.
+    Done:
+      Command: '<lgray>Se obligó a <lyellow>%player_display_name%</lyellow> a realizar: <lyellow>/%command%</lyellow></lgray>'
+      Chat: '<lgray>Se obligó a <lyellow>%player_display_name%</lyellow> a decir: <lyellow>%command%</lyellow></lgray>'
+  Suicide:
+    Desc: Suicidarse.
+    Done:
+      - <noprefix>
+      - <lgray><lyellow>%player_display_name%</lyellow> se suicidó.</lgray>
+  Teleport:
+    Location:
+      Desc: Teletransportarse a coordenadas.
+      Done:
+        Target:
+          - <sound:"entity_enderman_teleport">
+          - <lgray>El jugador <lyellow>%player_display_name%</lyellow> se teletransportó a <lyellow>%location_x%, %location_y%, %location_z%</lyellow> en <lyellow>%location_world%</lyellow>.</lgray>
+        Notify:
+          - <sound:"entity_enderman_teleport">
+          - <lgray>Teletransportarse a <lyellow>%location_x%, %location_y%, %location_z%</lyellow> en <lyellow>%location_world%</lyellow>.</lgray>
+    Summon:
+      Desc: Invocar jugador hacia ti.
+      Target:
+        - <sound:"entity_enderman_teleport">
+        - <lgray>Invocaste a <lyellow>%player_display_name%</lyellow>.</lgray>
+      Notify:
+        - <sound:"entity_enderman_teleport">
+        - <lgray>Fuiste invocado por <lyellow>%player_display_name%</lyellow>.</lgray>
+    To:
+      Desc: Teletransportarse a un jugador.
+      Done:
+        - <sound:"entity_enderman_teleport">
+        - <lgray>Teletransportarse a <lyellow>%player_display_name%</lyellow>...</lgray>
+    Send:
+      Desc: Teletransportar un jugador a otro.
+      Target:
+        - <sound:"entity_enderman_teleport">
+        - <lgray>Se teletransportó a <lyellow>%source%</lyellow> a <lyellow>%target%</lyellow>.</lgray>
+      Notify:
+        - <sound:"entity_enderman_teleport">
+        - <lgray>Has sido teletransportado a <lyellow>%player_display_name%</lyellow>.</lgray>
+    Top:
+      Desc: Teletransportarse al bloque más alto.
+      Target:
+        - <sound:"entity_enderman_teleport">
+        - <lgray>Se teletransportó a <lyellow>%player_display_name%</lyellow> al bloque más alto.</lgray>
+      Notify:
+        - <sound:"entity_enderman_teleport">
+        - <lgray>Teletransportarse al bloque más alto...</lgray>
+  Time:
+    Show:
+      Desc: Mostrar la hora actual del mundo.
+      Print:
+        - <noprefix>
+        - ' '
+        - <lyellow><b>Información del tiempo:</b></lyellow>
+        - '<lgray><lyellow>▪ </lyellow>Hora de %world%: <lyellow>%time%</lyellow> (<white>%ticks% ticks</white>)</lgray>'
+        - '<lgray><lyellow>▪ </lyellow>Hora del servidor: <lyellow>%global%</lyellow></lgray>'
+        - ' '
+    Set:
+      Desc: Establecer la hora del mundo.
+      Done: <lgray>La hora se estableció en <lyellow>%time%</lyellow> (<white>%total% ticks</white>) en el mundo <lyellow>%world%</lyellow>.</lgray>
+    Personal:
+      Set:
+        Desc: Establecer hora personal.
+        Target: <lgray>Se estableció la hora de <lyellow>%player_display_name%</lyellow> en <lyellow>%time%</lyellow> (<white>%total% ticks</white>).</lgray>
+        Notify: <lgray>Tu hora personal se ha establecido en <lyellow>%time%</lyellow> (<white>%total% ticks</white>).</lgray>
+      Reset:
+        Desc: Restablecer hora personal.
+        Target: <lgray>Se restableció la hora de <lyellow>%player_display_name%</lyellow>.</lgray>
+        Notify: <lgray>Tu hora personal se ha restablecido.</lgray>
+  Smite:
+    Desc: Golpear a un jugador con un rayo.
+    Target: <lgray>¡Se golpeó a <lyellow>%player_name%</lyellow> con un rayo!</lgray>
+    Notify: <lgray>¡Has sido golpeado por un rayo!</lgray>
+  Weather:
+    Type:
+      Desc: Establecer el clima en %type%.
+    Set: <lgray>Se estableció el clima en <lyellow>%type%</lyellow> en <lyellow>%world%</lyellow>.</lgray>
+  Workbench:
+    Desc: Abrir banco de trabajo portátil.
+    Target: <lgray>Se abrió el banco de trabajo portátil para <lyellow>%player_display_name%</lyellow>.</lgray>
+    Notify:
+      - <output:"action_bar">
+      - <lgray>Abriste un banco de trabajo portátil.</lgray>
+  FoodGod:
+    Desc: Activar/desactivar Dios de la Comida.
+  Vanish:
+    Desc: Activar/desactivar Invisibilidad.
+    Notify: <lgray>La invisibilidad se ha establecido en <lyellow>%state%</lyellow>.</lgray>
+    Target: <lgray>Se estableció la invisibilidad en <lyellow>%state%</lyellow> para <lyellow>%player_display_name%</lyellow>.</lgray>
 Generic:
   Command:
     Cooldown:
-      Default: '{message: ~prefix: false;}&cTienes que esperar &c%time% &cantes de poder usar &e%cmd% &cde nuevo.'
-      Onetime: '{message: ~prefix: false;}&cEste comando es único y ya lo has utilizado.'
-Command:
-  Air:
-    Desc: Cambiar el nivel de aire.
-    Usage: <amount> [player]
-    Done:
-      Others: '{message: ~prefix: false;}&7¡El nivel de aire de &a%player% &7cambió!'
-      Self: '{message: ~prefix: false;}&7¡El nivel del aire cambió!'
-  Anvil:
-    Desc: Abrir yunque portátil.
-    Usage: '[player]'
-    Done:
-      Others: '{message: ~prefix: false;}&7Yunque abierto para &a%player%&7.'
-  Armor:
-    Desc: Mostrar equipamiento del jugador
-    Usage: <player>
-  Back:
-    Desc: Volver a la ubicación anterior
-    Usage: '[player]'
-    Error:
-      Empty: '{message: ~prefix: false;}&7No hay ubicación previa.'
-      BadWorld: '{message: ~prefix: false;}&cNo puedes teletransportarte de vuelta a ese mundo.'
-    Done: '{message: ~prefix: false;}&7Volver a la ubicación anterior.'
-  Broadcast:
-    Desc: Mensaje de Broadcast.
-    Usage: <message>
-    Format: '{message: ~prefix: false;}&6[&eBroadcast&6] &c%msg%'
-  Burn:
-    Desc: Incinerar un jugador
-    Usage: <player> <time>
-    Done: '{message: ~prefix: false;}&7El jugador &a%player% &7se incinero por &a%time% &7segundos.'
-  ClearChat:
-    Desc: Borrar chat.
-    Done: '{message: ~prefix: false;}&7El chat ha sido borrado por &a%player%&7.'
-  ClearInv:
-    Desc: Borrar inventario.
-    Usage: '[player]'
-    Done:
-      Others: '{message: ~prefix: false;}&7¡Inventario de &a%player% &7borrado!'
-      Self: '{message: ~prefix: false;}&7¡Inventario borrado!'
-  CText:
-    Invalid: '{message: ~prefix: false;}&7¡Archivo TXT &c%file% &7no encontrado!'
-  Condense:
-    Desc: Condensar items en bloques.
-    Error:
-      Nothing: '{message: ~prefix: false;}&7Nada que condensar.'
-      NotEnought: '{message: ~prefix: false;}&7No hay suficientes items para convertir &c%item-from% &7en &c%item-result%&7. Necesita al menos &c%amount%&7.'
-    Done: '{message: ~prefix: false;}&7Convertido &ax%amount-from% %item-from% &7a &ax%amount-result% %item-result%'
-  DeathBack:
-    Desc: Volver a la ubicación de muerte
-    Usage: '[player]'
-    Error:
-      Empty: '{message: ~prefix: false;}&7No hay ubicación de muerte.'
-      BadWorld: '{message: ~prefix: false;}&cNo puedes teletransportarte de vuelta a ese mundo.'
-    Done: '{message: ~prefix: false;}&7Volver a la ubicación de muerte...'
-  Disposal:
-    Desc: Abrir basurero virtual.
-  Enchant:
-    Desc: Encantar un item.
-    Usage: <enchantment> <level>
-    Done: '{message: ~prefix: false;}&7¡Encantado!'
-  Enchanting:
-    Desc: Abrir mesa de encantamientos portátil.
-  Enderchest:
-    Desc: Abrir cofre de ender portátil.
-    Usage: '[player]'
-  Exp:
-    Desc: Ver o gestionar los puntos de exp de los jugadores.
-    Usage: <show/give/take/set> <player> <amount>
-    Show:
-      Done:
-      - '{message: ~prefix: false;}'
-      - '&6&m            &6&l[ &eExp de &a%player_name% &6&l]&6&m            &7'
-      - '&7'
-      - '&e    Nivel: &6%exp_level% &7(&f%exp_progress%% del siguiente nivel)'
-      - '&e    Exp para el Siguiente Nivel: &6%exp_required%'
-      - '&e    Experiencia Total: &6%exp_total%'
-      - '&7'
-      - '&7  {json: ~showText: &7Añadir exp a un jugador.; ~suggestCommand: /exp give %player_name% ;}&a&l[Dar]{end-json}   {json: ~showText: &7Tomar exp de un jugador.; ~suggestCommand: /exp take %player_name% ;}&c&l[Tomar]{end-json}   {json: ~showText: &7Establecer exp para un jugador.; ~suggestCommand: /exp set %player_name% ;}&e&l[Establecer]{end-json}   {json: ~showText: &7Restablecer la exp de un jugador.; ~runCommand: /exp set %player_name% 0;}&d&l[Restablecer]{end-json}&7'
-      - '&7'
-      - '&6&m                                              &7'
-    Give:
-      Done: '{message: ~prefix: false;}&eDar &a%amount% &eexp/niveles a &6%player_name%&e.
-        Level: &6%exp_level%&e, Exp: &6%exp_total%&e.'
-    Take:
-      Done: '{message: ~prefix: false;}&eTomar &c%amount% &eexp/niveles de &6%player_name%&e.
-        Level: &6%exp_level%&e, Exp: &6%exp_total%&e.'
-    Set:
-      Done: '{message: ~prefix: false;}&eEstablecer &6%amount% &eexp/niveles para &6%player_name%&e.
-        Level: &6%exp_level%&e, Exp: &6%exp_total%&e.'
-  Ext:
-    Desc: Extinguir al jugador.
-    Usage: '[player]'
-    Done:
-      Self: '{message: ~prefix: false;}&7Has sido extinguido.'
-      Others: '{message: ~prefix: false;}&7El jugador &e%player% &7ha sido extinguido.'
-  Feed:
-    Desc: Restaurar el hambre.
-    Usage: '[player]'
-    Done:
-      Self: '{message: ~prefix: false;}&7¡Alimentado!'
-      Others: '{message: ~prefix: false;}&7¡&e%player%&7 alimentado!'
-  Fly:
-    Desc: Alternar modo de vuelo.
-    Usage: <0/1> [player]
-    Done:
-      Others: '{message: ~prefix: false;}&7Modo de vuelo para &e%player%&7: &e%state%'
-      Self: '{message: ~prefix: false;}&7Modo de vuelo: &e%state%'
-    Error:
-      BadWorld: '{message: ~prefix: false;}&c¡Aquí no está permitido volar!'
-  GameMode:
-    Desc: Cambiar modo de juego.
-    Usage: <0/1/2/3> [player]
-    Done:
-      Self: '{message: ~prefix: false;}&7Modo de juego: &e%gm%&7.'
-      Others: '{message: ~prefix: false;}&7Modo de juego para &e%player%&7: &e%gm%&7.'
-  Give:
-    Desc: Dar un item específico a un jugador.
-    Usage: <item> [amount] [player]
-    Done:
-      Others: '{message: ~prefix: false;}&7Dar &ex%amount% %item% &7a &e%player%&7.'
-      Self: '{message: ~prefix: false;}&7Has recibido &ex%amount% %item%&7.'
-  God:
-    Desc: Alternar modo dios.
-    Usage: '[1/0] [player]'
-    Toggle:
-      Self: '{message: ~prefix: false;}&7Modo dios: &e%state%'
-      Others: '{message: ~prefix: false;}&7Modo dios para &e%player%&7: &e%state%'
-    Error:
-      World: '{message: ~prefix: false;}&c¡Aquí no está permitido el modo dios!'
-  Hat:
-    Desc: Colocarse el item a mano.
-    Done: '{message: ~prefix: false;}&7Disfruta de tu nuevo sombrero :)'
-  Heal:
-    Desc: Restaurar la salud.
-    Usage: '[player]'
-    Done:
-      Self: '{message: ~prefix: false;}&7¡Has sido curado!'
-      Others: '{message: ~prefix: false;}&7¡&e%player% &7curado!'
-  Ignore:
-    Desc: Ignorar al jugador especificado.
-    Usage: '[player]'
-    Done: '{message: ~prefix: false;}&7Jugador &e%player% &7añadido en la lista negra. Puedes cambiar la configuración o desbloquearlo en &e/ignore'
-    Error:
-      Already: '{message: ~prefix: false;}&cYa estás ignorando a &e%player%&c.'
-      Bypass: '{message: ~prefix: false;}&cNo puedes ignorar a &e%player%&c!'
-  Inv:
-    Desc: Ver el inventario del jugador.
-    Usage: <player>
-  Item:
-    Desc: Obtener el item especificado.
-    Usage: <item> [amount]
-    Done: '{message: ~prefix: false;}&7Has recibido &ex%amount% %item%&7.'
-  Itemname:
-    Desc: Modificar el nombre del item.
-    Usage: <name>
-    Done: '{message: ~prefix: false;}&7¡Item renombrado!'
-  ItemLore:
-    Desc: Modificar el lore del item.
-    Usage: add|del|clear
-    Done: '{message: ~prefix: false;}&7¡Lore del Item cambiado!'
-  List:
-    Desc: Mostrar jugadores y rangos conectados.
-  Me:
-    Desc: Mostrar acción en el chat.
-    Usage: <action>
-  Mobkill:
-    Desc: Matar a los mobs especificados.
-    Usage: <type>
-    Done:
-      Type: '{message: ~prefix: false;}&7¡Has matado &a%amount% %type%&7!'
-      All: '{message: ~prefix: false;}&7¡Has matado &a%amount% &7mobs!'
-  More:
-    Desc: Aumentar la cantidad del item de mano.
-  Near:
-    Desc: Mostrar los jugadores más cercanos.
-    Error:
-      None: '{message: ~prefix: false;}&7No hay jugadores en un radio de &e%radius% bloques&7.'
-  Nick:
-    Desc: Cambiar el nombre mostrado.
-    Usage: '[nick]'
-    Done:
-      Others: '{message: ~prefix: false;}&7El nick de &e%player% &7cambió a &e%nick%&7.'
-      Self: '{message: ~prefix: false;}&7Tu nick cambió a &e%nick%&7.'
-    Error:
-      Blacklisted: '{message: ~prefix: false;}&cEl nick contiene palabras prohibidas.'
-      Long: '{message: ~prefix: false;}&cEl nick no puede tener más de &e20 caracteres&c.'
-      Short: '{message: ~prefix: false;}&cEl nick no puede tener menos de &e3 caracteres&c.'
-  NoPhantom:
-    Desc: Alternar ataques de phantoms.
-    Usage: '[0/1] [player]'
-    Toggle:
-      Self: '{message: ~prefix: false;}&7Anti-Phantom: &e%state%'
-      Others: '{message: ~prefix: false;}&7Anti-Phantom para &e%player%&7: &e%state%'
-  PlayerInfo:
-    Desc: Mostrar información del jugador.
-    Usage: <player>
-  Potion:
-    Desc: Modificar items de poción.
-    Usage: <effect> <amplifier> <duration>
-    Error:
-      NotAPotion: '{message: ~prefix: false;}&c¡Debes sostener una poción!'
-      InvalidEffect: '{message: ~prefix: false;}&c¡Efecto inválido!'
-    Done: '{message: ~prefix: false;}&7¡Poción creada!'
-  Repair:
-    Desc: Reparar item(s) en el inventario.
-    Usage: '[all]'
-    Done:
-      Hand: '{message: ~prefix: false;}&7¡Item reparado!'
-      All: '{message: ~prefix: false;}&7¡Reparados todos los items del inventario!'
-  Reply:
-    Desc: Respuesta rápida a un mensaje privado anterior.
-    Usage: <text>
-    Error:
-      Empty: '{message: ~prefix: false;}&7No hay nadie que responda.'
-  Skull:
-    Desc: Obtener la cabeza del jugador por su nombre.
-    Usage: <name>
-    Done: '{message: ~prefix: false;}&Tienes la cabeza de &e%player%&7.'
-  SocialSpy:
-    Desc: Espiar MPs del jugador.
-    Usage: '[1/0] [player]'
-    Toggle:
-      Self: '{message: ~prefix: false;}&7Socialspy: &e%state%'
-      Others: '{message: ~prefix: false;}&7Socialspy para &e%player%&7: &e%state%'
-  Spawner:
-    Desc: Cambiar tipo de spawner.
-    Usage: <type>
-    Done: '{message: ~prefix: false;}&7Tipo de spawnear cambiado a &e%type%&7.'
-    Error:
-      Type: '{message: ~prefix: false;}&7Este tipo no puede ser generado.'
-      Block: '{message: ~prefix: false;}&cDebes mirar al &espawner'
-  SpawnMob:
-    Desc: Generar mob(s) especificado(s).
-    Usage: <type> [amount]
-    Done: '{message: ~prefix: false;}&7Creó &ex%amount% %type%&7.'
-  Speed:
-    Desc: Cambiar velocidad de vuelo/caminata.
-    Usage: <speed> [player]
-    Done:
-      Self:
-        Walk: '{message: ~prefix: false;}&7Establecer velocidad de caminata: &e%speed%'
-        Fly: '{message: ~prefix: false;}&7Establecer velocidad de vuelo: &e%speed%'
-      Others:
-        Walk: '{message: ~prefix: false;}&7Establecer velocidad de caminata: &e%speed% &7para &e%player%'
-        Fly: '{message: ~prefix: false;}&7Establecer velocidad de vuelo: &e%speed% &7para &e%player%'
-  Sudo:
-    Desc: Forzar al jugador a ejecutar un comando o mensaje de chat.
-    Usage: <player> <type> <message>
-    Done: '{message: ~prefix: false;}&7Obligó a &e%player% &7a realizar: &e%message%'
-  Suicide:
-    Desc: Suicidarse.
-    Done: '{message: ~prefix: false;}&4%player%&c se suicidó.'
-  Summon:
-    Desc: Invocar a un jugador en tu ubicación.
-    Usage: <player>
-  System:
-    Desc: Información del sistema del servidor.
-  Tell:
-    Desc: Enviar un mensaje privado.
-    Usage: <player> <message>
-  Time:
-    Desc: Establecer o ver la hora del mundo.
-    Done: '{message: ~prefix: false;}&7Hora establecida: &e%time%&7 en el mundo &e%world%&7.'
-    Info: '{message: ~prefix: false;}&7Hora en el mundo &e%world%&7: &6%ticks% ticks&7, &6%time%'
-  Thunder:
-    Desc: Invocar un rayo.
-    Usage: '[player]'
-    Done:
-      Player: '{message: ~prefix: false;}&7¡Invocó un rayo en &e%player%&7!'
-      Block: '{message: ~prefix: false;}&7¡Rayo invocado!'
-  TeleportRequest:
-    Error:
-      Cooldown: Puede volver a enviar la solicitud en &e%time%
-      Disabled: '&e%player% &crechaza la solicitud de teletransporte.'
-    Call:
-      Desc: Send teleport request.
-      Usage: <player>
-      Notify:
-        From: '{message: ~prefix: false;}&7Enviado solicitud de teletransporte a &e%player%&7.'
-        To:
-        - '{message: ~prefix: false;}&6&m                 &6&l[ &e&lSolicitud de Teletransporte &6&l]&6&m                 &7'
-        - '&6El jugador &e%player%&6 quiere teletransportarse a ti.'
-        - '&6Escribe &a/tpaccept %player% &6para aceptar'
-        - '&6o &c/tpdeny %player% &6para rechazar.'
-        - '&7'
-        - '&7             {json: ~hint: &a%player% &7Será teletransportado a usted.; ~chat-type: /tpaccept %player%;}&a&l[Aceptar]{end-json}         {json: ~hint:&c%player% &7no será teletransportado a ti.; ~chat-type: /tpdeny %player%;}&c&l[Rechazar]{end-json}'
-        - '&7'
-    Summon:
-      Desc: Ask player to teleport to you.
-      Usage: <player>
-      Notify:
-        From: '{message: ~prefix: false;}&7Sent teleport request to &e%player%&7.'
-        To:
-        - '{message: ~prefix: false;}&6&m                 &6&l[ &e&lSolicitud de Teletransporte &6&l]&6&m                 &7'
-        - '&6El jugador &e%player%&6 quiere que te teletransportes a él.'
-        - '&6Escribe &a/tpaccept %player% &6para aceptar y teletransportarse.'
-        - '&6o &c/tpdeny %player% &6para rechazar.'
-        - '&7'
-        - '&7             {json: ~hint: &7Serás teletransportado a &a%player%&7.; ~chat-type: /tpaccept %player%;}&a&l[Aceptar]{end-json}         {json: ~hint:&7No serás teletransportado a &c%player%&7.; ~chat-type: /tpdeny %player%;}&c&l[Rechazar]{end-json}'
-        - '&7'
-  TpAccept:
-    Desc: Aceptar la solicitud de teletransporte.
-    Usage: '[player]'
-    Done: '{message: ~prefix: false;}&7¡Solicitud de teletransporte aceptada!'
-    Error:
-      Empty: '{message: ~prefix: false;}&7No hay nada que aceptar (o el tiempo de teletransporte ha expirado).'
-  TpDeny:
-    Desc: Rechazar la solicitud de teletransporte.
-    Usage: '[player]'
-    Done:
-      In: '{message: ~prefix: false;}&7Solicitud de teletransporte rechazada.'
-      Out: '{message: ~prefix: false;}&e%player% &crechazo la solicitud de teletransporte.'
-    Error:
-      Empty: '{message: ~prefix: false;}&7No hay nada que rechazar (o el tiempo de teletransporte ha expirado).'
-  TpToggle:
-    Desc: Alternar las solicitudes de teletransporte.
-    Usage: '[0/1] [player]'
-    Toggle:
-      Self: '{message: ~prefix: false;}&7Solicitudes de Teletransporte: &e%state%'
-      Others: '{message: ~prefix: false;}&7Solicitudes de Teletransporte para &e%player%&7: &e%state%'
-  Tp:
-    Desc: Teletransportarse al jugador especificado.
-    Usage: <player> &7or &f/%cmd% <who> <to>
-    Done:
-      Self: '{message: ~prefix: false;}&7Teletransportarse a &e%player%&7...'
-      Others: '{message: ~prefix: false;}&7¡El jugador &e%who% &7se ha teletransportado a &e%to%&7!'
-  Tppos:
-    Desc: Teletransportarte a las coordenadas especificadas.
-    Usage: <x> <y> <z> [player]
-    Done:
-      Self: '{message: ~prefix: false;}&7Teletransportándose...'
-      Others: '{message: ~prefix: false;}&7El jugador &e%player% &7se ha teletransportado a: &e%w%&7, &e%x%&7, &e%y%&7, &e%z%&7!'
-  Top:
-    Desc: Teletransportarte al bloque más alto.
-    Usage: '[player]'
-    Done:
-      Self: '{message: ~prefix: false;}&7Teleporting on the highest block...'
-      Others: '{message: ~prefix: false;}&7El jugador &e%player% &7se ha teletransportado al bloque más alto.'
-  UnIgnore:
-    Desc: Desbloquear jugador(es).
-    Usage: '[player]'
-    Done: '{message: ~prefix: false;}&7El jugador &e%player% &7fue eliminado de la lista de ignorados.'
-    Error:
-      Already: '{message: ~prefix: false;}&cEl jugador &e%player% &cno está en la lista de ignorados.'
-  Vanish:
-    Desc: Alternar vanish.
-    Toggle: '{message: ~prefix: false;}&7Vanish: &e%state%'
-  Weather:
-    Desc: Cambiar el clima del mundo.
-    Usage: <sun/storm> [world]
-    Done: '{message: ~prefix: false;}&7Establecer el clima &e%weather%&7 en el mundo &e%world%&7.'
-  Workbench:
-    Desc: Abrir mesa de trabajo portátil.
-User:
-  Ignore:
-    PrivateMessage: '{message: ~prefix: false;}&cEste jugador te prohíbe enviarle mensajes privados.'
-    TeleportRequest: '{message: ~prefix: false;}&cEste jugador te prohíbe enviarle solicitudes de teletransporte.'
-Other:
-  Free: '&aFree'
-  'On': '&aON'
-  'Off': '&cOFF'
-  Eternity: Eternity
+      Default:
+        - <noprefix>
+        - <lred>Tienes que esperar <lorange>%time%</lorange> antes de poder usar <lorange>%command%</lorange> de nuevo.</lred>
+      OneTime:
+        - <noprefix>
+        - <lred>Este comando es de un solo uso y ya lo has usado.</lred>
 Error:
-  InvalidName: '{message: ~prefix: false;}&cNombre inválido: &e%name%&c. Contiene caracteres prohibidos.'
-  Material: '{message: ~prefix: false;}&c¡Material inválido!'
-  Enchant: '{message: ~prefix: false;}&c¡Encantamiento inválido!'
-  Self: '{message: ~prefix: false;}&c¡No se puede aplicar en uno mismo!'
+  ItemNotAPotion: <lred>¡Debes sostener una poción!</lred>
+  EmptyHand:
+    - <sound:"block_anvil_place">
+    - <lred>¡Debes sostener un objeto!</lred>
+  ItemNotDamageable:
+    - <sound:"block_anvil_place">
+    - <lgray>El objeto <lred>%item%</lred> no tiene durabilidad.</lgray>
+  Command:
+    Argument:
+      InvalidSlot: <lgray><lred>%value%</lred> no es una ranura de equipo válida.</lgray>
+      InvalidType: <lgray><lred>%value%</lred> no es un tipo válido.</lgray>
+      InvalidTime: <lgray><lred>%value%</lred> no es un tiempo válido.</lgray>
+      InvalidMode: <lgray><lred>%value%</lred> no es un modo válido.</lgray>
+      InvalidIPAddress: <lgray><lred>%value%</lred> no es una dirección IP.</lgray>
+      InvalidReason: <lgray><lred>%value%</lred> no es una razón válida.</lgray>
+Editor:
+  Input:
+    Generic:
+      Value: <lgray>Introduce <lgreen>[Valor]</lgreen></lgray>
+      Seconds: <lgray>Introduce <lgreen>[Cantidad de segundos]</lgreen></lgray>
+      Name: <lgray>Introduce <lgreen>[Nombre]</lgreen></lgray>
+  SpawnsEditorType:
+    DeathTeleport:
+      Ranks:
+        Name: <lyellow><b>Grupos de muerte</b></lyellow>
+        Lore:
+          - '%spawn_respawn_teleport_groups%'
+          - ''
+          - <lgray>Lista de grupos de permisos afectados</lgray>
+          - <lgray>por la configuración de teletransporte en caso de muerte.</lgray>
+          - ''
+          - <lyellow>[▶]</lyellow> <lgray>Mayús-Clic izquierdo para <lyellow>añadir grupo</lyellow>.</lgray>
+          - <lyellow>[▶]</lyellow> <lgray>Mayús-Clic derecho para <lyellow>borrar grupos</lyellow>.</lgray>
+      Toggle:
+        Name: <lyellow><b>Teletransporte en caso de muerte</b></lyellow>
+        Lore:
+          - '<lyellow>● <lgray>Habilitado: </lgray>%spawn_respawn_teleport_enabled%</lyellow>'
+          - ''
+          - <lgray>Teletransporta a los jugadores de los grupos enumerados</lgray>
+          - <lgray>a este punto de reaparición tras la muerte.</lgray>
+          - ''
+          - <lyellow>[▶]</lyellow> <lgray>Clic izquierdo para <lyellow>alternar</lyellow>.</lgray>
+    LoginTeleport:
+      Ranks:
+        Name: <lyellow><b>Grupos de inicio de sesión</b></lyellow>
+        Lore:
+          - '%spawn_login_teleport_groups%'
+          - ''
+          - <lgray>Lista de grupos de permisos afectados</lgray>
+          - <lgray>por la configuración de teletransporte al iniciar sesión.</lgray>
+          - ''
+          - <lyellow>[▶]</lyellow> <lgray>Mayús-Clic izquierdo para <lyellow>añadir grupo</lyellow>.</lgray>
+          - <lyellow>[▶]</lyellow> <lgray>Mayús-Clic derecho para <lyellow>borrar grupos</lyellow>.</lgray>
+      Toggle:
+        Name: <lyellow><b>Teletransporte al iniciar sesión</b></lyellow>
+        Lore:
+          - '<lyellow>● <lgray>Habilitado: </lgray>%spawn_login_teleport_enabled%</lyellow>'
+          - ''
+          - <lgray>Teletransporta a los jugadores de los grupos enumerados</lgray>
+          - <lgray>a este punto de reaparición al iniciar sesión.</lgray>
+          - ''
+          - <lyellow>[▶]</lyellow> <lgray>Clic izquierdo para <lyellow>alternar</lyellow>.</lgray>
+    SPAWN_CHANGE_PRIORITY:
+      Name: <lyellow><b>Prioridad</b></lyellow>
+      Lore:
+        - '<lyellow>● <lgray>Actual: </lgray>%spawn_priority%</lyellow>'
+        - ''
+        - <lgray>Si hay varios puntos de reaparición disponibles</lgray>
+        - <lgray>para un jugador al morir/iniciar sesión,</lgray>
+        - <lgray>se utilizará el que tenga la mayor</lgray>
+        - <lgray>prioridad.</lgray>
+        - ''
+        - <lyellow>[▶]</lyellow> <lgray>Clic izquierdo para <lyellow>cambiar</lyellow>.</lgray>
+    SPAWN_CHANGE_PERMISSION:
+      Name: <lyellow><b>Requisito de permiso</b></lyellow>
+      Lore:
+        - '<lyellow>● <lgray>Habilitado: </lgray>%spawn_permission_required%</lyellow>'
+        - '<lyellow>● <lgray>Nodo de permiso: </lgray>%spawn_permission_node%</lyellow>'
+        - ''
+        - <lgray>Establece si los jugadores</lgray>
+        - <lgray>deben tener permiso para</lgray>
+        - <lgray>usar este punto de reaparición.</lgray>
+        - ''
+        - <lyellow>[▶]</lyellow> <lgray>Clic izquierdo para <lyellow>alternar</lyellow>.</lgray>
+    SPAWN_CHANGE_LOCATION:
+      Name: <lyellow><b>Ubicación</b></lyellow>
+      Lore:
+        - '<lyellow>● <lgray>Actual: </lgray>%spawn_location_x%, %spawn_location_y%, %spawn_location_z% en %spawn_location_world%</lyellow>'
+        - ''
+        - <lyellow>[▶]</lyellow> <lgray>Clic izquierdo para <lyellow>establecer en tu posición</lyellow>.</lgray>
+        - <lyellow>[▶]</lyellow> <lgray>Clic derecho para <lyellow>establecer como punto de reaparición del mundo</lyellow>.</lgray>
+    SPAWN_CHANGE_NAME:
+      Name: <lyellow><b>Nombre de visualización</b></lyellow>
+      Lore:
+        - '<lyellow>● <lgray>Actual: </lgray>%spawn_name%</lyellow>'
+        - ''
+        - <lgray>Establece el nombre de visualización del punto de reaparición.</lgray>
+        - ''
+        - <lyellow>[▶]</lyellow> <lgray>Clic izquierdo para <lyellow>cambiar</lyellow>.</lgray>
+    SPAWN_OBJECT:
+      Name: '<lyellow><b>%spawn_name%<reset><lgray> (ID: <white>%spawn_id%</white>)</lgray></b></lyellow>'
+      Lore:
+        - '<lyellow>● <lgray>Prioridad: </lgray>%spawn_priority%</lyellow>'
+        - '<lyellow>● <lgray>Permiso: </lgray>%spawn_permission_required%</lyellow>'
+        - ''
+        - <lyellow>[▶]</lyellow> <lgray>Clic izquierdo para <lyellow>editar</lyellow>.</lgray>
+        - <lyellow>[▶]</lyellow> <lgray>Mayús-Clic derecho para <lyellow>eliminar <lred>(sin deshacer)</lred></lyellow>.</lgray>
+  KitsEditorType:
+    KIT_CHANGE_ARMOR:
+      Name: <lyellow><b>Contenido de la armadura</b></lyellow>
+      Lore:
+        - ''
+        - '<lgray><lyellow>Ranura #1: <lgray>Botas</lgray></lyellow></lgray>'
+        - '<lgray><lyellow>Ranura #2: <lgray>Pantalones</lgray></lyellow></lgray>'
+        - '<lgray><lyellow>Ranura #3: <lgray>Pechera</lgray></lyellow></lgray>'
+        - '<lgray><lyellow>Ranura #4: <lgray>Casco</lgray></lyellow></lgray>'
+        - '<lgray><lyellow>Ranura #5: <lgray>Mano secundaria</lgray></lyellow></lgray>'
+        - ''
+        - <lyellow>[▶]</lyellow> <lgray>Haz clic para <lyellow>navegar</lyellow>.</lgray>
+    KIT_CHANGE_INVENTORY:
+      Name: <lyellow><b>Contenido del inventario</b></lyellow>
+      Lore:
+        - ''
+        - '<lgray><lyellow>Fila #1: <lgray>Barra de acceso rápido</lgray></lyellow></lgray>'
+        - '<lgray><lyellow>Fila #2+: <lgray>Inventario</lgray></lyellow></lgray>'
+        - ''
+        - <lyellow>[▶]</lyellow> <lgray>Haz clic para <lyellow>navegar</lyellow>.</lgray>
+    KIT_CHANGE_COMMANDS:
+      Name: <lyellow><b>Comandos</b></lyellow>
+      Lore:
+        - '%kit_commands%'
+        - ''
+        - <lgray>Los comandos enumerados se ejecutarán cuando</lgray>
+        - <lgray>el jugador reciba el kit.</lgray>
+        - ''
+        - <lyellow>[▶]</lyellow> <lgray>Clic izquierdo para <lyellow>añadir comando</lyellow>.</lgray>
+        - <lyellow>[▶]</lyellow> <lgray>Clic derecho para <lyellow>borrar</lyellow>.</lgray>
+    KIT_CHANGE_ICON:
+      Name: <lyellow><b>Icono</b></lyellow>
+      Lore:
+        - <lyellow>[▶]</lyellow> <lgray>Arrastrar y soltar para <lyellow>cambiar</lyellow>.</lgray>
+    KIT_CHANGE_PRIORITY:
+      Name: <lyellow><b>Prioridad</b></lyellow>
+      Lore:
+        - '<lyellow>● <lgray>Actual: </lgray>%kit_priority%</lyellow>'
+        - ''
+        - <lgray>Los kits con mayor prioridad</lgray>
+        - <lgray>aparecerán primero en la interfaz gráfica de usuario.</lgray>
+        - ''
+        - <lyellow>[▶]</lyellow> <lgray>Haz clic para <lyellow>cambiar</lyellow>.</lgray>
+    KIT_CHANGE_COST:
+      Name: <lyellow><b>Coste</b></lyellow>
+      Lore:
+        - '<lyellow>● <lgray>Actual: </lgray>%kit_cost_money%</lyellow>'
+        - ''
+        - <lgray>Establece cuánto debe pagar el jugador</lgray>
+        - <lgray>para usar este kit.</lgray>
+        - ''
+        - <lyellow>[▶]</lyellow> <lgray>Clic izquierdo para <lyellow>cambiar</lyellow>.</lgray>
+        - <lyellow>[▶]</lyellow> <lgray>Clic derecho para <lyellow>deshabilitar</lyellow>.</lgray>
+    KIT_CHANGE_PERMISSION:
+      Name: <lyellow><b>Requisito de permiso</b></lyellow>
+      Lore:
+        - '<lyellow>● <lgray>Requerido: </lgray>%kit_permission_required%</lyellow>'
+        - '<lyellow>● <lgray>Nodo: </lgray>%kit_permission_node%</lyellow>'
+        - ''
+        - <lgray>Establece si el jugador debe</lgray>
+        - <lgray>tener permiso para</lgray>
+        - <lgray>usar este kit.</lgray>
+        - ''
+        - <lyellow>[▶]</lyellow> <lgray>Haz clic para <lyellow>alternar</lyellow>.</lgray>
+    KIT_CHANGE_COOLDOWN:
+      Name: <lyellow><b>Tiempo de espera</b></lyellow>
+      Lore:
+        - '<lyellow>● <lgray>Actual: </lgray>%kit_cooldown%</lyellow>'
+        - ''
+        - <lgray>Establece el tiempo de espera para volver a usar el kit.</lgray>
+        - ''
+        - <lyellow>[▶]</lyellow> <lgray>Haz clic para <lyellow>cambiar</lyellow>.</lgray>
+        - <lyellow>[▶]</lyellow> <lgray>Tecla [F / Intercambiar] para <lyellow>convertir en un solo uso</lyellow>.</lgray>
+        - <lyellow>[▶]</lyellow> <lgray>Tecla [Q / Soltar] para <lyellow>deshabilitar</lyellow>.</lgray>
+    KIT_CHANGE_DESCRIPTION:
+      Name: <lyellow><b>Descripción</b></lyellow>
+      Lore:
+        - '%kit_description%'
+        - ''
+        - <lyellow>[▶]</lyellow> <lgray>Clic izquierdo para <lyellow>añadir línea</lyellow>.</lgray>
+        - <lyellow>[▶]</lyellow> <lgray>Clic derecho para <lyellow>borrar</lyellow>.</lgray>
+    KIT_CHANGE_NAME:
+      Name: <lyellow><b>Nombre de visualización</b></lyellow>
+      Lore:
+        - '<lyellow>● <lgray>Actual: </lgray>%kit_name%</lyellow>'
+        - ''
+        - <lyellow>[▶]</lyellow> <lgray>Haz clic para <lyellow>cambiar</lyellow>.</lgray>
+    KIT_OBJECT:
+      Name: <lyellow><b>%kit_name%<reset> <gray>(<white>%kit_id%</white>)</gray></b></lyellow>
+      Lore:
+        - '<lyellow>● <lgray>Prioridad: </lgray>%kit_priority%</lyellow>'
+        - '<lyellow>● <lgray>Permiso: </lgray>%kit_permission_required%</lyellow>'
+        - ''
+        - <lyellow>[▶]</lyellow> <lgray>Clic izquierdo para <lyellow>editar</lyellow>.</lgray>
+        - <lyellow>[▶]</lyellow> <lgray>Mayús-Clic derecho para <lyellow>eliminar <lred>(sin deshacer)</lred></lyellow>.</lgray>
+EquipmentSlot:
+  HAND: Mano
+  OFF_HAND: Mano secundaria
+  FEET: Pies
+  LEGS: Piernas
+  CHEST: Pecho
+  HEAD: Cabeza
+GameMode:
+  CREATIVE: Creativo
+  SURVIVAL: Supervivencia
+  ADVENTURE: Aventura
+  SPECTATOR: Espectador
+ExperienceType:
+  POINTS: Puntos
+  LEVELS: Niveles
+WeatherType:
+  CLEAR: Despejado
+  STORM: Tormenta
+  THUNDER: Truenos
+Bans:
+  Command:
+    History:
+      Ban:
+        Desc: Ver historial de baneos de un jugador o IP.
+      Mute:
+        Desc: Ver historial de silenciamientos de un jugador o IP.
+      Warn:
+        Desc: Ver historial de advertencias de un jugador o IP.
+    BanList:
+      Desc: Lista de jugadores e IPs baneados.
+    MuteList:
+      Desc: Lista de jugadores silenciados.
+    WarnList:
+      Desc: Lista de jugadores advertidos.
+    Ban:
+      Desc: Bannear jugador.
+      Done:
+        Permanent:
+          - <noprefix>
+          - ' '
+          - <lred>🛈 <b>Información de baneo</b></lred>
+          - <lgray><lred>»</lred> Has baneado permanentemente a <lred>%punishment_user%</lred>.</lgray>
+          - '<lgray><lred>»</lred> Razón: <lred>%punishment_reason%</lred></lgray>'
+          - ' '
+        Temporary:
+          - <noprefix>
+          - ' '
+          - <lred>🛈 <b>Información de baneo</b></lred>
+          - <lgray><lred>»</lred> Has baneado a <lred>%punishment_user%</lred>.</lgray>
+          - '<lgray><lred>»</lred> Razón: <lred>%punishment_reason%</lred></lgray>'
+          - '<lgray><lred>»</lred> Duración: <lred>%punishment_expires_in%</lred></lgray>'
+          - ' '
+    Banip:
+      Desc: Bannear dirección IP.
+    Mute:
+      Desc: Silenciar jugador.
+      Done:
+        Permanent:
+          - <noprefix>
+          - ' '
+          - <lred>🛈 <b>Información de silenciamiento</b></lred>
+          - <lgray><lred>»</lred> Has silenciado permanentemente a <lred>%punishment_user%</lred>.</lgray>
+          - '<lgray><lred>»</lred> Razón: <lred>%punishment_reason%</lred></lgray>'
+          - ' '
+        Temporary:
+          - <noprefix>
+          - ' '
+          - <lred>🛈 <b>Información de silenciamiento</b></lred>
+          - <lgray><lred>»</lred> Has silenciado a <lred>%punishment_user%</lred>.</lgray>
+          - '<lgray><lred>»</lred> Razón: <lred>%punishment_reason%</lred></lgray>'
+          - '<lgray><lred>»</lred> Duración: <lred>%punishment_expires_in%</lred></lgray>'
+          - ' '
+    Kick:
+      Desc: Expulsar jugador.
+    Unmute:
+      Desc: Desilenciar jugador.
+    Unban:
+      Desc: Desbanear jugador o dirección IP.
+    Warn:
+      Desc: Advertir jugador.
+      Done:
+        Permanent:
+          - <noprefix>
+          - ' '
+          - <lred>🛈 <b>Información de advertencia</b></lred>
+          - <lgray><lred>»</lred> Has advertido permanentemente a <lred>%punishment_user%</lred>.</lgray>
+          - '<lgray><lred>»</lred> Razón: <lred>%punishment_reason%</lred></lgray>'
+          - ' '
+        Temporary:
+          - <noprefix>
+          - ' '
+          - <lred>🛈 <b>Información de advertencia</b></lred>
+          - <lgray><lred>»</lred> Has advertido a <lred>%punishment_user%</lred>.</lgray>
+          - '<lgray><lred>»</lred> Razón: <lred>%punishment_reason%</lred></lgray>'
+          - '<lgray><lred>»</lred> Duración: <lred>%punishment_expires_in%</lred></lgray>'
+          - ' '
+    Unwarn:
+      Desc: Eliminar la advertencia más reciente del jugador.
+    BanIP:
+      Done:
+        Permanent:
+          - <noprefix>
+          - ' '
+          - <lred>🛈 <b>Información de baneo</b></lred>
+          - '<lgray><lred>»</lred> Has baneado permanentemente la IP: <lred>%punishment_user%</lred>.</lgray>'
+          - '<lgray><lred>»</lred> Razón: <lred>%punishment_reason%</lred></lgray>'
+          - ' '
+        Temporary:
+          - <noprefix>
+          - ' '
+          - <lred>🛈 <b>Información de baneo</b></lred>
+          - '<lgray><lred>»</lred> Has baneado la IP: <lred>%punishment_user%</lred>.</lgray>'
+          - '<lgray><lred>»</lred> Razón: <lred>%punishment_reason%</lred></lgray>'
+          - '<lgray><lred>»</lred> Duración: <lred>%punishment_expires_in%</lred></lgray>'
+          - ' '
+  Punishment:
+    Error:
+      RankPriority:
+        - <noprefix>
+        - ' '
+        - <lred>🛈 <b>¡Error!</b></lred>
+        - <lgray><lred>»</lred> ¡No puedes sancionar a <lred>%punishment_user%</lred>!</lgray>
+        - ' '
+      PunishDuration:
+        - <noprefix>
+        - ' '
+        - <lred>🛈 <b>¡Error!</b></lred>
+        - <lgray><lred>»</lred> ¡No puedes sancionar por más de <lred>%time%</lred>!</lgray>
+        - ' '
+      UnPunishDuration:
+        - <noprefix>
+        - ' '
+        - <lred>🛈 <b>¡Error!</b></lred>
+        - <lgray><lred>»</lred> ¡No puedes eliminar sanciones con una duración mayor que <lred>%time%</lred>!</lgray>
+        - ' '
+      Immune:
+        - <noprefix>
+        - ' '
+        - <lred>🛈 <b>¡Error!</b></lred>
+        - <lgray><lred>»</lred> ¡El jugador <lred>%punishment_user%</lred> no puede ser sancionado!</lgray>
+        - ' '
+      PlayerNotBanned:
+        - <noprefix>
+        - ' '
+        - <lred>🛈 <b>¡Error!</b></lred>
+        - <lgray><lred>»</lred> ¡El jugador <lred>%punishment_user%</lred> no está baneado!</lgray>
+        - ' '
+      IPNotBanned:
+        - <noprefix>
+        - ' '
+        - <lred>🛈 <b>¡Error!</b></lred>
+        - <lgray><lred>»</lred> ¡La dirección IP <lred>%punishment_user%</lred> no está baneada!</lgray>
+        - ' '
+      NotMuted:
+        - <noprefix>
+        - ' '
+        - <lred>🛈 <b>¡Error!</b></lred>
+        - <lgray><lred>»</lred> ¡El jugador <lred>%punishment_user%</lred> no está silenciado!</lgray>
+        - ' '
+      NotWarned:
+        - <noprefix>
+        - ' '
+        - <lred>🛈 <b>¡Error!</b></lred>
+        - <lgray><lred>»</lred> ¡El jugador <lred>%punishment_user%</lred> no tiene advertencias!</lgray>
+        - ' '
+  Kick:
+    Done:
+      - <noprefix>
+      - <lgray><lred>🛈</lred> Se expulsó a <lred>%punishment_user%</lred> por <lred>%punishment_reason%</lred>.</lgray>
+    Broadcast:
+      - <noprefix>
+      - ' '
+      - <lred>🛈 <b>Notificación de expulsión</b></lred>
+      - <lgray><lred>»</lred> ¡El jugador <lred>%punishment_user%</lred> ha sido expulsado!</lgray>
+      - '<lgray><lred>»</lred> Por: <lred>%punishment_punisher%</lred></lgray>'
+      - '<lgray><lred>»</lred> Razón: <lred>%punishment_reason%</lred></lgray>'
+      - ' '
+  Ban:
+    Permanent:
+      Broadcast:
+        - <noprefix>
+        - ' '
+        - <lred>🛈 <b>Notificación de baneo</b></lred>
+        - <lgray><lred>»</lred> ¡El jugador <lred>%punishment_user%</lred> ha sido baneado permanentemente!</lgray>
+        - '<lgray><lred>»</lred> Por: <lred>%punishment_punisher%</lred></lgray>'
+        - '<lgray><lred>»</lred> Razón: <lred>%punishment_reason%</lred></lgray>'
+        - ' '
+    Temporary:
+      Broadcast:
+        - <noprefix>
+        - ' '
+        - <lred>🛈 <b>Notificación de baneo</b></lred>
+        - <lgray><lred>»</lred> ¡El jugador <lred>%punishment_user%</lred> ha sido baneado!</lgray>
+        - '<lgray><lred>»</lred> Por: <lred>%punishment_punisher%</lred></lgray>'
+        - '<lgray><lred>»</lred> Razón: <lred>%punishment_reason%</lred></lgray>'
+        - '<lgray><lred>»</lred> Duración: <lred>%punishment_expires_in%</lred></lgray>'
+        - ' '
+  BanIP:
+    Permanent:
+      Broadcast:
+        - <noprefix>
+        - ' '
+        - <lred>🛈 <b>Notificación de baneo</b></lred>
+        - <lgray><lred>»</lred> ¡La dirección IP <lred>%punishment_user%</lred> ha sido baneada permanentemente!</lgray>
+        - '<lgray><lred>»</lred> Por: <lred>%punishment_punisher%</lred></lgray>'
+        - '<lgray><lred>»</lred> Razón: <lred>%punishment_reason%</lred></lgray>'
+        - ' '
+    Temporary:
+      Broadcast:
+        - <noprefix>
+        - ' '
+        - <lred>🛈 <b>Notificación de baneo</b></lred>
+        - <lgray><lred>»</lred> ¡La dirección IP <lred>%punishment_user%</lred> ha sido baneada!</lgray>
+        - '<lgray><lred>»</lred> Por: <lred>%punishment_punisher%</lred></lgray>'
+        - '<lgray><lred>»</lred> Razón: <lred>%punishment_reason%</lred></lgray>'
+        - '<lgray><lred>»</lred> Duración: <lred>%punishment_expires_in%</lred></lgray>'
+        - ' '
+  UnBan:
+    Done:
+      - <noprefix>
+      - ' '
+      - <lgreen>🛈 <b>Información de baneo</b></lgreen>
+      - <lgray><lgreen>»</lgreen> Has desbaneado a <lgreen>%punishment_user%</lgreen>.</lgray>
+      - ' '
+    Broadcast:
+      - <noprefix>
+      - ' '
+      - <lgreen>🛈 <b>Información de baneo</b></lgreen>
+      - <lgray><lgreen>»</lgreen> El jugador <lgreen>%punishment_user%</lgreen> ha sido desbaneado.</lgray>
+      - '<lgray><lgreen>»</lgreen> Por: <lgreen>%punishment_punisher%</lgreen></lgray>'
+      - ' '
+  UnBanIP:
+    Done:
+      - <noprefix>
+      - ' '
+      - <lgreen>🛈 <b>Información de baneo</b></lgreen>
+      - <lgray><lgreen>»</lgreen> Has desbaneado la IP <lgreen>%punishment_user%</lgreen>.</lgray>
+      - ' '
+    Broadcast:
+      - <noprefix>
+      - ' '
+      - <lgreen>🛈 <b>Información de baneo</b></lgreen>
+      - <lgray><lgreen>»</lgreen> La dirección IP <lgreen>%punishment_user%</lgreen> ha sido desbaneada.</lgray>
+      - '<lgray><lgreen>»</lgreen> Por: <lgreen>%punishment_punisher%</lgreen></lgray>'
+      - ' '
+  Mute:
+    Permanent:
+      Notify:
+        - <noprefix>
+        - ' '
+        - <lred>🛈 <b>Notificación de silenciamiento</b></lred>
+        - <lgray><lred>»</lred> ¡Has sido silenciado permanentemente!</lgray>
+        - '<lgray><lred>»</lred> Por: <lred>%punishment_punisher%</lred></lgray>'
+        - '<lgray><lred>»</lred> Razón: <lred>%punishment_reason%</lred></lgray>'
+        - ' '
+      Broadcast:
+        - <noprefix>
+        - ' '
+        - <lred>🛈 <b>Notificación de silenciamiento</b></lred>
+        - <lgray><lred>»</lred> ¡El jugador <lred>%punishment_user%</lred> ha sido silenciado permanentemente!</lgray>
+        - '<lgray><lred>»</lred> Por: <lred>%punishment_punisher%</lred></lgray>'
+        - '<lgray><lred>»</lred> Razón: <lred>%punishment_reason%</lred></lgray>'
+        - ' '
+    Temporary:
+      Notify:
+        - <noprefix>
+        - ' '
+        - <lred>🛈 <b>Notificación de silenciamiento</b></lred>
+        - <lgray><lred>»</lred> ¡Has sido silenciado!</lgray>
+        - '<lgray><lred>»</lred> Por: <lred>%punishment_punisher%</lred></lgray>'
+        - '<lgray><lred>»</lred> Razón: <lred>%punishment_reason%</lred></lgray>'
+        - '<lgray><lred>»</lred> Duración: <lred>%punishment_expires_in%</lred></lgray>'
+        - ' '
+      Broadcast:
+        - <noprefix>
+        - ' '
+        - <lred>🛈 <b>Notificación de silenciamiento</b></lred>
+        - <lgray><lred>»</lred> ¡El jugador <lred>%punishment_user%</lred> ha sido silenciado!</lgray>
+        - '<lgray><lred>»</lred> Por: <lred>%punishment_punisher%</lred></lgray>'
+        - '<lgray><lred>»</lred> Razón: <lred>%punishment_reason%</lred></lgray>'
+        - '<lgray><lred>»</lred> Duración: <lred>%punishment_expires_in%</lred></lgray>'
+        - ' '
+  Unmute:
+    Done:
+      - <noprefix>
+      - ' '
+      - <lgreen>🛈 <b>Información de silenciamiento</b></lgreen>
+      - <lgray><lgreen>»</lgreen> Has desilenciado a <lgreen>%punishment_user%</lgreen>.</lgray>
+      - ' '
+    Notify:
+      - <noprefix>
+      - ' '
+      - <lgreen>🛈 <b>Información de silenciamiento</b></lgreen>
+      - <lgray><lgreen>»</lgreen> Has sido desilenciado.</lgray>
+      - '<lgray><lgreen>»</lgreen> Por: <lgreen>%punishment_punisher%</lgreen></lgray>'
+      - ' '
+    Broadcast:
+      - <noprefix>
+      - ' '
+      - <lgreen>🛈 <b>Información de silenciamiento</b></lgreen>
+      - <lgray><lgreen>»</lgreen> El jugador <lgreen>%punishment_user%</lgreen> ha sido desilenciado.</lgray>
+      - '<lgray><lgreen>»</lgreen> Por: <lgreen>%punishment_punisher%</lgreen></lgray>'
+      - ' '
+  Warn:
+    Permanent:
+      Notify:
+        - <noprefix>
+        - ' '
+        - <lred>🛈 <b>Notificación de advertencia</b></lred>
+        - <lgray><lred>»</lred> ¡Has sido advertido permanentemente!</lgray>
+        - '<lgray><lred>»</lred> Por: <lred>%punishment_punisher%</lred></lgray>'
+        - '<lgray><lred>»</lred> Razón: <lred>%punishment_reason%</lred></lgray>'
+        - ' '
+      Broadcast:
+        - <noprefix>
+        - ' '
+        - <lred>🛈 <b>Notificación de advertencia</b></lred>
+        - <lgray><lred>»</lred> ¡El jugador <lred>%punishment_user%</lred> ha sido advertido permanentemente!</lgray>
+        - '<lgray><lred>»</lred> Por: <lred>%punishment_punisher%</lred></lgray>'
+        - '<lgray><lred>»</lred> Razón: <lred>%punishment_reason%</lred></lgray>'
+        - ' '
+    Temporary:
+      Notify:
+        - <noprefix>
+        - ' '
+        - <lred>🛈 <b>Notificación de advertencia</b></lred>
+        - <lgray><lred>»</lred> ¡Has sido advertido!</lgray>
+        - '<lgray><lred>»</lred> Por: <lred>%punishment_punisher%</lred></lgray>'
+        - '<lgray><lred>»</lred> Razón: <lred>%punishment_reason%</lred></lgray>'
+        - '<lgray><lred>»</lred> Duración: <lred>%punishment_expires_in%</lred></lgray>'
+        - ' '
+      Broadcast:
+        - <noprefix>
+        - ' '
+        - <lred>🛈 <b>Notificación de advertencia</b></lred>
+        - <lgray><lred>»</lred> ¡El jugador <lred>%punishment_user%</lred> ha sido advertido!</lgray>
+        - '<lgray><lred>»</lred> Por: <lred>%punishment_punisher%</lred></lgray>'
+        - '<lgray><lred>»</lred> Razón: <lred>%punishment_reason%</lred></lgray>'
+        - '<lgray><lred>»</lred> Duración: <lred>%punishment_expires_in%</lred></lgray>'
+        - ' '
+  Unwarn:
+    Done:
+      - <noprefix>
+      - ' '
+      - <lgreen>🛈 <b>Información de advertencia</b></lgreen>
+      - <lgray><lgreen>»</lgreen> Has eliminado una advertencia de <lgreen>%punishment_user%</lgreen>.</lgray>
+      - ' '
+    Notify:
+      - <noprefix>
+      - ' '
+      - <lgreen>🛈 <b>Información de advertencia</b></lgreen>
+      - <lgray><lgreen>»</lgreen> Tu última advertencia ha sido eliminada.</lgray>
+      - '<lgray><lgreen>»</lgreen> Por: <lgreen>%punishment_punisher%</lgreen></lgray>'
+      - ' '
+    Broadcast:
+      - <noprefix>
+      - ' '
+      - <lgreen>🛈 <b>Información de advertencia</b></lgreen>
+      - <lgray><lgreen>»</lgreen> La última advertencia de <lgreen>%punishment_user%</lgreen> ha sido eliminada.</lgray>
+      - '<lgray><lgreen>»</lgreen> Por: <lgreen>%punishment_punisher%</lgreen></lgray>'
+      - ' '
+  Other:
+    NoReason: <sin razón>
+  SortMode:
+    NAME: Nombre
+    DATE: Fecha
+    PUNISHER: Sancionador
+    REASON: Razón
+Worlds:
+  Command:
+    Worlds:
+      Create:
+        Desc: Crear un nuevo mundo.
+        Error: <lred>¡Ya existe un mundo con ese nombre!</lred>
+        Done: '<lgray>Datos del mundo creados: <lyellow>%world_id%</lyellow>!</lgray>'
+      Delete:
+        Desc: Eliminar un mundo personalizado.
+        Error: '<lgray>No se pudo eliminar el mundo: <lred>%world_id%</lred>!</lgray>'
+        Done: '<lgray>Mundo eliminado: <lyellow>%world_id%</lyellow>!</lgray>'
+      Editor:
+        Desc: Abrir editor de mundos.
+      Load:
+        Desc: Cargar un mundo personalizado.
+        Error: '<lgray>No se pudo cargar el mundo: <lred>%world_id%</lred>!</lgray>'
+        Done: '<lgray>Mundo cargado: <lyellow>%world_id%</lyellow>!</lgray>'
+      Unload:
+        Desc: Descargar un mundo personalizado.
+        Error: '<lgray>No se pudo descargar el mundo: <lred>%world_id%</lred>!</lgray>'
+        Done: '<lgray>Mundo descargado: <lyellow>%world_id%</lyellow>!</lgray>'
+  AutoWipe:
+    MoveOut: <lgray>Has sido teletransportado debido a la descarga del mundo.</lgray>
+    Notify:
+      - <noprefix>
+      - ''
+      - <lred><b>Advertencia de reinicio automático:</b></lred>
+      - <lgray>El mundo se reiniciará automáticamente en <lred>%time%</lred></lgray>
+  Error:
+    CommandBlocked: <lred>¡No puedes usar ese comando en este mundo!</lred>
+    FlyDisabled: <lred>¡Volar no está permitido en este mundo!</lred>
+    Command:
+      Argument:
+        InvalidWorldData: <lgray><lred>%value%</lred> no es un mundo válido.</lgray>
+  Editor:
+    Title:
+      List: <black>Lista de mundos</black>
+      Settings: <black>Ajustes del mundo</black>
+      Generation: <black>Carga/generación del mundo</black>
+      GameRules: <black>Reglas del juego del mundo</black>
+    World:
+      Rule:
+        Object:
+          Name: '<lyellow><b>Regla: <reset><white>%name%</white></b></lyellow>'
+          Lore:
+            - '<lyellow>● <lgray>Valor: </lgray>%value%</lyellow>'
+            - ''
+            - <lyellow>[▶]</lyellow> <lgray>Haz clic para <lyellow>cambiar</lyellow>.</lgray>
+      Difficulty:
+        Name: <lyellow><b>Dificultad</b></lyellow>
+        Lore:
+          - '<lyellow>● <lgray>Actual: </lgray>%world_difficulty%</lyellow>'
+          - ''
+          - <lgray>Establece la dificultad del mundo.</lgray>
+          - ''
+          - <lyellow>[▶]</lyellow> <lgray>Haz clic para <lyellow>alternar</lyellow>.</lgray>
+      AutoWipe:
+        Name: <lyellow><b>Reinicio automático</b></lyellow>
+        Lore:
+          - <lgray>Establece si este mundo</lgray>
+          - <lgray>debe reiniciarse automáticamente con</lgray>
+          - <lgray>cierto intervalo.</lgray>
+          - ''
+          - '<lyellow>● <lgray>Habilitado: </lgray>%world_auto_wipe_enabled%</lyellow>'
+          - '<lyellow>● <lgray>Intervalo: </lgray>%world_auto_wipe_interval%</lyellow>'
+          - '<lyellow>● <lgray>Último reinicio: </lgray>%world_auto_wipe_last_wipe%</lyellow>'
+          - '<lyellow>● <lgray>Siguiente reinicio: </lgray>%world_auto_wipe_next_wipe%</lyellow>'
+          - ''
+          - <lyellow>[▶]</lyellow> <lgray>Clic izquierdo para <lyellow>alternar</lyellow>.</lgray>
+          - <lyellow>[▶]</lyellow> <lgray>Clic derecho para <lyellow>cambiar intervalo</lyellow>.</lgray>
+          - <lyellow>[▶]</lyellow> <lgray>Tecla [Q / Soltar] para <lyellow>establecer la última vez</lyellow>.</lgray>
+      GameRules:
+        Name: <lyellow><b>Reglas del juego</b></lyellow>
+        Lore:
+          - ''
+          - <lyellow>[▶]</lyellow> <lgray>Haz clic para <lyellow>navegar</lyellow>.</lgray>
+      Structures:
+        Name: <lyellow><b>Generación de estructuras</b></lyellow>
+        Lore:
+          - '<lyellow>● <lgray>Habilitado: </lgray>%world_structures%</lyellow>'
+          - ''
+          - <lyellow>[▶]</lyellow> <lgray>Haz clic para <lyellow>alternar</lyellow>.</lgray>
+      Environment:
+        Name: <lyellow><b>Entorno</b></lyellow>
+        Lore:
+          - '<lyellow>● <lgray>Actual: </lgray>%world_environment%</lyellow>'
+          - ''
+          - <lyellow>[▶]</lyellow> <lgray>Haz clic para <lyellow>alternar</lyellow>.</lgray>
+      Generator:
+        Name: <lyellow><b>Generador de chunks</b></lyellow>
+        Lore:
+          - '<lyellow>● <lgray>Actual: </lgray>%world_generator%</lyellow>'
+          - ''
+          - <lyellow>[▶]</lyellow> <lgray>Haz clic para <lyellow>cambiar</lyellow>.</lgray>
+      Delete:
+        Name: <lyellow><b>Eliminar datos</b></lyellow>
+        Lore:
+          - <lgray><lred>(Sin deshacer)</lred></lgray>
+          - ''
+          - <lyellow>[▶]</lyellow> <lgray>Tecla [Q / Soltar] para <lyellow>eliminar archivos del mundo</lyellow>.</lgray>
+          - <lyellow>[▶]</lyellow> <lgray>Clic derecho para <lyellow>eliminar configuración</lyellow>.</lgray>
+          - <lyellow>[▶]</lyellow> <lgray>Mayús-Clic derecho para <lyellow>eliminar ambos</lyellow>.</lgray>
+      Unload:
+        Name: <lyellow><b>Descargar mundo</b></lyellow>
+        Lore: []
+      Load:
+        Name: <lyellow><b>Cargar mundo</b></lyellow>
+        Lore: []
+      AutoLoad:
+        Name: <lyellow><b>Carga automática</b></lyellow>
+        Lore:
+          - '<lyellow>● <lgray>Habilitado: </lgray>%world_auto_load%</lyellow>'
+          - ''
+          - <lgray>Carga el mundo al iniciar el servidor.</lgray>
+          - ''
+          - <lyellow>[▶]</lyellow> <lgray>Haz clic para <lyellow>alternar</lyellow>.</lgray>
+      Object:
+        Name: '<lyellow><b>Mundo: <reset><white>%world_id%</white></b></lyellow>'
+        Lore:
+          - '<lyellow>● <lgray>Creado: </lgray>%world_is_created%</lyellow>'
+          - '<lyellow>● <lgray>Cargado: </lgray>%world_is_loaded%</lyellow>'
+          - '<lyellow>● <lgray>Carga automática: </lgray>%world_auto_load%</lyellow>'
+          - ''
+          - <lyellow>[▶]</lyellow> <lgray>Haz clic para <lyellow>editar</lyellow>.</lgray>
+  Difficulty:
+    PEACEFUL: Pacífico
+    EASY: Fácil
+    NORMAL: Normal
+    HARD: Difícil
+Spawns:
+  Command:
+    Spawns:
+      Delete:
+        Desc: Eliminar un punto de reaparición.
+        Done:
+          - <output:"titles:20:60:20">
+          - <lyellow><b>¡Punto de reaparición eliminado!</b></lyellow>
+          - <lgray>Has eliminado el punto de reaparición <lyellow>%spawn_name%</lyellow>!</lgray>
+      Create:
+        Desc: Establecer punto de reaparición.
+        Done:
+          - <output:"titles:20:60:20">
+          - '<lgreen><b>Punto de reaparición establecido: </b><white>%spawn_name%</white></lgreen>'
+          - <lgray>Utiliza <lgreen>/editspawn</lgreen> para configurarlo.</lgray>
+      Teleport:
+        Desc: Teletransportarse a un punto de reaparición.
+        Notify: <lgray>Teletransportando a <lyellow>%player_display_name%</lyellow> al punto de reaparición <lyellow>%spawn_name%</lyellow>.</lgray>
+        Done:
+          - <output:"titles:20:60:20">
+          - <lyellow><b>Punto de reaparición</b></lyellow>
+          - <lgray>Te has teletransportado al punto de reaparición <lyellow>%spawn_name%</lyellow>.</lgray>
+      Editor:
+        Desc: Abrir editor de puntos de reaparición.
+    Spawn:
+      Error:
+        NoDefault: <lred>Debes especificar el nombre del punto de reaparición.</lred>
+  Spawn:
+    Teleport:
+      Error:
+        World: <lred>Este punto de reaparición se encuentra en un mundo que no está disponible actualmente.</lred>
+    Error:
+      Invalid: <lgray><lred>%value%</lred> no es un punto de reaparición válido.</lgray>
+  Editor:
+    Title:
+      List: <black>Editor de puntos de reaparición</black>
+      Settings: <black>Ajustes del punto de reaparición</black>
+    Enter:
+      Name: <lgray>Introduce <lgreen>[Nombre del punto de reaparición]</lgreen></lgray>
+      Priority: <lgray>Introduce <lgreen>[Prioridad]</lgreen></lgray>
+      Group: <lgray>Introduce <lgreen>[Nombre del grupo]</lgreen></lgray>
+      #Traduccion por Jose1acf :3 Gracias!!!!!!!
+Homes:
+  Command:
+    Argument:
+      Name:
+        Home: hogar
+    Homes:
+      Delete:
+        Desc: Eliminar un hogar.
+      Teleport:
+        Desc: Teletransportarse a un hogar.
+      Set:
+        Desc: Establecer punto de hogar.
+      Visit:
+        Desc: Visitar un hogar.
+      Invite:
+        Desc: Invitar a un jugador a un hogar.
+      List:
+        Desc: Lista de hogares.
+      Invute:
+        Usage: <lgray>¡Has invitado a <lyellow>%player_name%</lyellow> a tu hogar <lyellow>%home_name%</lyellow>!</lgray>
+    HomesAdmin:
+      Delete:
+        Desc: Eliminar el hogar de un jugador.
+        Done:
+          Single: <lgray>Has eliminado el hogar <lyellow>%home_id%</lyellow> de <lyellow>%player_name%</lyellow>.</lgray>
+          All: <lgray>Has eliminado todos los hogares de <lyellow>%player_name%</lyellow>.</lgray>
+      Create:
+        Desc: Crear un hogar para el jugador.
+        Done:
+          Fresh: <lgray>Se estableció el hogar <lyellow>%home_id%</lyellow> para <lyellow>%player_name%</lyellow>.</lgray>
+          Edited: <lgray>Se actualizó el hogar <lyellow>%home_id%</lyellow> de <lyellow>%player_name%</lyellow>.</lgray>
+    Error:
+      Argument:
+        InvalidHome: <lgray><lred>%value%</lred> no es un hogar válido.</lgray>
+  Home:
+    Teleport:
+      - <output:"titles:20:60:20"><sound:"entity_enderman_teleport">
+      - <lyellow><b>Hogar</b></lyellow>
+      - <lgray>Te has teletransportado al hogar <lyellow>%home_name%</lyellow>.</lgray>
+    Visit:
+      Success:
+        - <output:"titles:20:60:20"><sound:"entity_enderman_teleport">
+        - <lyellow><b>Visita al hogar</b></lyellow>
+        - <lgray>Has visitado el hogar <lyellow>%home_name%</lyellow> de <lyellow>%home_owner%</lyellow>.</lgray>
+      Error:
+        NotPermitted:
+          - <sound:"entity_villager_no">
+          - <lred>¡No tienes una invitación para este hogar!</lred>
+        UnsafeLocation:
+          - <output:"titles:20:60:20"><sound:"entity_villager_no">
+          - <lred><b>¡Ubicación insegura!</b></lred>
+          - <lred>La visita ha sido cancelada.</lred>
+    Set:
+      Error:
+        Limit:
+          - <output:"titles:20:60:20"><sound:"entity_villager_no">
+          - <lred><b>¡Límite alcanzado!</b></lred>
+          - <lred>No puedes crear más hogares.</lred>
+        World:
+          - <output:"titles:20:60:20"><sound:"entity_villager_no">
+          - <lred><b>¡Error de mundo!</b></lred>
+          - <lred>No puedes crear hogares en este mundo.</lred>
+        UnsafeLocation:
+          - <output:"titles:20:60:20"><sound:"entity_villager_no">
+          - <lred><b>¡Ubicación insegura!</b></lred>
+          - <lred>No puedes crear hogares aquí.</lred>
+        Protection:
+          - <output:"titles:20:60:20"><sound:"entity_villager_no">
+          - <lred><b>¡Zona protegida!</b></lred>
+          - <lred>No puedes crear hogares aquí.</lred>
+      Success:
+        - <output:"titles:20:60:20"><sound:"block_wooden_door_open">
+        - <lyellow><b>¡Hogar establecido!</b></lyellow>
+        - '<lgray>Uso: <lyellow>/home %home_id%</lyellow> | Ver hogares: <lyellow>/homelist</lyellow></lgray>'
+      Edited:
+        - <output:"titles:20:60:20"><sound:"block_wooden_door_close">
+        - <lyellow><b>¡Hogar actualizado!</b></lyellow>
+        - <lgray>La ubicación del hogar se ha actualizado.</lgray>
+    Delete:
+      Done:
+        - <output:"titles:20:60:20"><sound:"entity_zombie_break_wooden_door">
+        - <lyellow><b>¡Hogar eliminado!</b></lyellow>
+        - <lgray>Has eliminado el hogar <lyellow>%home_name%</lyellow>.</lgray>
+  Error:
+    NoHomes: <lred>¡No tienes hogares establecidos!</lred>
+  Editor:
+    Enter:
+      PlayerName: <lgray>Introduce <lgreen>[Nombre del jugador]</lgreen></lgray>
+      HomeName: <lgray>Introduce <lgreen>[Nombre del hogar]</lgreen></lgray>
+  HomeType:
+    PUBLIC: Público
+    PRIVATE: Privado
+Kits:
+  Command:
+    Kits:
+      Editor:
+        Desc: Abrir editor de kits.
+      Preview:
+        Desc: Previsualizar un kit.
+        Others: <lgray>Se abrió la vista previa del kit <lyellow>%kit_name%</lyellow> para <lyellow>%player_display_name%</lyellow>.</lgray>
+      Give:
+        Desc: Dar un kit.
+        Done: <lgray>¡Se entregó el kit <lyellow>%kit_name%</lyellow> a <lyellow>%player_display_name%</lyellow>!</lgray>
+      List:
+        Desc: Abrir la interfaz gráfica de usuario de kits.
+        Others: <lgray>Se abrió la interfaz gráfica de usuario de kits para <lyellow>%player_display_name%</lyellow>.</lgray>
+      ResetCooldown:
+        Desc: Restablecer el tiempo de espera del kit del jugador.
+        Done: <lgray>Se restableció el tiempo de espera del kit <lyellow>%kit_name%</lyellow> para <lyellow>%player_name%</lyellow>.</lgray>
+        Notify: <lgray>¡Se ha restablecido el tiempo de espera de tu kit <lyellow>%kit_name%</lyellow>!</lgray>
+      SetCooldown:
+        Desc: Establecer el tiempo de espera del kit del jugador.
+        Done: <lgray>Se estableció el tiempo de espera del kit <lyellow>%kit_name%</lyellow> en <lyellow>%amount%</lyellow> para <lyellow>%player_name%</lyellow>.</lgray>
+        Notify: <lgray>¡El tiempo de espera de tu kit <lyellow>%kit_name%</lyellow> se ha establecido en <lyellow>%amount%</lyellow>!</lgray>
+    Error:
+      Argument:
+        InvalidKit: <lgray><lred>%value%</lred> no es un kit válido.</lgray>
+  Kit:
+    Get:
+      - <output:"titles:20:60:20"><sound:"item_armor_equip_leather">
+      - <lyellow><b>¡Kit recibido!</b></lyellow>
+      - <lgray>¡Obtuviste el kit <lyellow>%kit_name%</lyellow>!</lgray>
+    Error:
+      NoPermission: <lred>¡No tienes permisos para usar este kit!</lred>
+      NotEnoughFunds: <lred>¡No puedes permitirte este kit! Necesitas <lred>$%kit_cost_money%</lred>.</lred>
+      Cooldown:
+        Expirable: <lred>Puedes usar este kit de nuevo en <lred>%cooldown%</lred>.</lred>
+        OneTimed: <lred>Ya has usado este kit. No puedes usarlo más.</lred>
+  Editor:
+    Title:
+      List: <black>Editor de kits</black>
+      Settings: <black>Ajustes del kit</black>
+      Content: <black>Contenido del kit</black>
+    Enter:
+      Id: <lgray>Introduce <lgreen>[Identificador del kit]</lgreen></lgray>
+      Command: <lgray>Introduce <lgreen>[Comando]</lgreen></lgray>
+      Cost: <lgray>Introduce <lgreen>[Coste en dinero]</lgreen></lgray>
+      Description: <lgray>Introduce <lgreen>[Descripción]</lgreen></lgray>
+      Priority: <lgray>Introduce <lgreen>[Prioridad]</lgreen></lgray>
+    Error:
+      AlreadyExists: <lgray>¡El kit ya existe!</lgray>
+Warps:
+  Command:
+    Warps:
+      Delete:
+        Desc: Eliminar un warp.
+      Create:
+        Desc: Crear un nuevo warp.
+      Teleport:
+        Desc: Teletransportarse a un warp.
+        Others: <lgray>Se teletransportó a <lyellow>%player_display_name%</lyellow> al warp <lyellow>%warp_name%</lyellow>.</lgray>
+      ResetCooldown:
+        Desc: Restablecer el tiempo de espera del warp.
+        Done: <lgray>Se restableció el tiempo de espera del warp <lyellow>%warp_name%</lyellow> para <lyellow>%player_name%</lyellow>.</lgray>
+        Notify: <lgray>¡Se ha restablecido el tiempo de espera de tu warp <lyellow>%warp_name%</lyellow>!</lgray>
+      SetCooldown:
+        Desc: Establecer el tiempo de espera del warp.
+        Done: <lgray>Se estableció el tiempo de espera del warp <lyellow>%warp_name%</lyellow> en <lyellow>%amount%</lyellow> para <lyellow>%player_name%</lyellow>.</lgray>
+        Notify: <lgray>¡El tiempo de espera de tu warp <lyellow>%warp_name%</lyellow> se ha establecido en <lyellow>%amount%</lyellow>!</lgray>
+      List:
+        Desc: Abrir la interfaz gráfica de usuario de warps.
+        Others: <lgray>Se abrió la interfaz gráfica de usuario de warps para <lyellow>%player_display_name%</lyellow>.</lgray>
+  Delete:
+    Done:
+      - <output:"titles:20:60:20"><sound:"block_glass_break">
+      - <lyellow><b>¡Warp eliminado!</b></lyellow>
+      - <lgray>Has eliminado el warp <lyellow>%warp_name%</lyellow>.</lgray>
+  Warp:
+    Creation:
+      New:
+        - <output:"titles:20:60:20"><sound:"block_anvil_place">
+        - <lgreen><b>¡Warp creado!</b></lgreen>
+        - '<lgray>Teletransporte: <lgreen>/warp %warp_id%</lgreen> | Editar en: <lgreen>/warplist</lgreen></lgray>'
+      Relocate:
+        - <output:"titles:20:60:20"><sound:"block_anvil_place">
+        - <lgreen><b>¡Warp reubicado!</b></lgreen>
+        - <lgray>Has movido el warp <lgreen>%warp_name%</lgreen>.</lgray>
+      Error:
+        Limit:
+          - <output:"titles:20:60:20"><sound:"entity_villager_no">
+          - <lred><b>¡Límite alcanzado!</b></lred>
+          - <lgray>¡No puedes crear más warps!</lgray>
+        World:
+          - <output:"titles:20:60:20"><sound:"entity_villager_no">
+          - <lred><b>¡Mundo prohibido!</b></lred>
+          - <lgray>¡No puedes crear warps en este mundo!</lgray>
+        Exists:
+          - <output:"titles:20:60:20"><sound:"entity_villager_no">
+          - <lred><b>¡Ya existe!</b></lred>
+          - <lgray>Ya existe un warp con ese nombre.</lgray>
+        Unsafe:
+          - <output:"titles:20:60:20"><sound:"entity_villager_no">
+          - <lred><b>¡Ubicación insegura!</b></lred>
+          - <lgray>Por favor, elige otro lugar.</lgray>
+    Teleport:
+      Done:
+        - <output:"titles:20:60:20"><sound:"entity_enderman_teleport">
+        - <lyellow><b>%warp_name%</b></lyellow>
+        - <lgray>%warp_description%</lgray>
+      Error:
+        NotEnoughFunds:
+          - <output:"titles:20:60:20"><sound:"entity_villager_no">
+          - <lred><b>¡Fondos insuficientes!</b></lred>
+          - <lgray>¡Necesitas <lred>$%warp_visit_cost%</lred> para visitar este warp!</lgray>
+        NoPermission:
+          - <output:"titles:20:60:20"><sound:"entity_villager_no">
+          - <lred><b>¡Sin permiso!</b></lred>
+          - <lgray>¡No tienes permiso para el warp <lred>%warp_name%</lred>!</lgray>
+        Cooldown:
+          - <output:"titles:20:60:20"><sound:"entity_villager_no">
+          - <lred><b>¡Tiempo de espera!</b></lred>
+          - <lgray>Puedes visitar <lred>%warp_name%</lred> de nuevo en <lred>%cooldown%</lred>.</lgray>
+        Unreachable:
+          - <output:"titles:20:60:20"><sound:"entity_villager_no">
+          - <lred><b>¡Warp inalcanzable!</b></lred>
+          - <lgray><lred>%warp_name%</lred> se encuentra en un mundo no disponible.</lgray>
+        Time:
+          - <output:"titles:20:60:20"><sound:"entity_villager_no">
+          - <lred><b>¡Hora incorrecta!</b></lred>
+          - <lgray><lred>%warp_name%</lred> no está disponible para visitas ahora.</lgray>
+  Error:
+    Command:
+      Argument:
+        InvalidWarp: <lgray><lred>%value%</lred> no es un warp válido.</lgray>
+  Editor:
+    Enter:
+      CostMoney: <lgray>Introduce <lgreen>[Coste]</lgreen></lgray>
+      Command: <lgray>Introduce <lgreen>[Nombre del comando]</lgreen></lgray>
+      Times: <lgray>Introduce <lgreen>[Horas] <lgray>></lgray> 10:00 14:00</lgreen></lgray>
+      Cooldown: <lgray>Introduce <lgreen>[Tiempo de espera]</lgreen></lgray>
+      Name: <lgray>Introduce <lgreen>[Nombre de visualización]</lgreen></lgray>
+      Description: <lgray>Introduce <lgreen>[Descripción]</lgreen></lgray>
+  WarpType:
+    SERVER: Servidor
+    PLAYER: Jugador
+  SortType:
+    WARP_NAME: Nombre del warp
+    WARP_ID: ID del warp
+    WARP_TYPE: Tipo de warp
+    VISIT_COST: Coste de visita
+Chat:
+  Commant:
+    Argument:
+      Name:
+        Channel: canal
+  Command:
+    ShortChannel:
+      Desc: Cambiar de canal o enviar un mensaje.
+    Channel:
+      Join:
+        Desc: Unirse a un canal.
+      Leave:
+        Desc: Abandonar un canal.
+      Set:
+        Desc: Establecer canal activo.
+    Mentions:
+      Desc: Activar/desactivar menciones.
+      Toggle:
+        Notify: '<lgray>Notificaciones de menciones: <lyellow>%state%</lyellow>.</lgray>'
+        Target: <lgray>Se establecieron las notificaciones de menciones en <lyellow>%state%</lyellow> para <lyellow>%player_name%</lyellow>.</lgray>
+    TogglePM:
+      Desc: Activar/desactivar mensajes privados.
+      Toggle:
+        Notify: '<lgray>Mensajes privados: <lyellow>%state%</lyellow>.</lgray>'
+        Target: <lgray>Se establecieron los mensajes privados en <lyellow>%state%</lyellow> para <lyellow>%player_name%</lyellow>.</lgray>
+    ClearChat:
+      Desc: Limpiar el chat.
+      Done:
+        - <noprefix>
+        - <lgray>El chat ha sido limpiado por <lyellow>%name%</lyellow>.</lgray>
+    Me:
+      Desc: Mostrar acción en el chat.
+    Tell:
+      Desc: Enviar mensaje privado.
+    Spy:
+      Mode:
+        Desc: Activar/desactivar espía de %type%.
+        Done:
+          Others: <lgray>Se estableció el espía de <lyellow>%type%</lyellow> para <lyellow>%player_display_name%</lyellow> en <lyellow>%state%</lyellow>.</lgray>
+          Notify: '<lgray>Espía de <lyellow>%type%</lyellow>: <lyellow>%state%</lyellow>.</lgray>'
+      Logger:
+        Desc: Activar/desactivar registro de espionaje.
+        Done: <lgray>Se estableció el registro de <lyellow>%type%</lyellow> para <lyellow>%player_display_name%</lyellow> en <lyellow>%state%</lyellow>.</lgray>
+    Reply:
+      Desc: Respuesta rápida al último mensaje privado.
+      Error:
+        Empty:
+          - <noprefix>
+          - <lred>No has recibido ningún mensaje privado.</lred>
+  Chat:
+    AntiSpam:
+      Similar:
+        Msg:
+          - <noprefix>
+          - <lred>¡No envíes mensajes spam!</lred>
+        Cmd:
+          - <noprefix>
+          - <lred>¡No envíes comandos spam!</lred>
+      Delay:
+        Msg:
+          - <noprefix>
+          - <lred>Tienes que esperar <orange>%time%</orange> antes de poder enviar otro mensaje.</lred>
+        Cmd:
+          - <noprefix>
+          - <lred>&cTienes que esperar <orange>%time%</orange> antes de poder usar otro comando.</lred>
+    Mention:
+      Error:
+        Cooldown:
+          - <noprefix>
+          - <lred>Puedes mencionar a <orange>%name%</orange> de nuevo en <orange>%time%</orange>.</lred>
+  Channel:
+    Join:
+      Success:
+        - <noprefix>
+        - <lgray>Te has unido al canal de chat <lyellow>%channel_name%</lyellow>.</lgray>
+      Error:
+        NoPermission:
+          - <noprefix>
+          - <lred>No tienes permisos para unirte a este canal.</lred>
+        AlreadyIn:
+          - <noprefix>
+          - <lred>¡Ya te has unido a este canal!</lred>
+    Leave:
+      Success:
+        - <noprefix>
+        - <lgray>Has abandonado el canal de chat <lyellow>%channel_name%</lyellow>.</lgray>
+      Error:
+        NotIn:
+          - <noprefix>
+          - <lred>¡No estás en el canal!</lred>
+    Set:
+      Success:
+        - <noprefix>
+        - <lgray>Se estableció <lyellow>%channel_name%</lyellow> como canal de chat predeterminado.</lgray>
+  Mentions:
+    Notify:
+      - <output:"titles:20:60:20"><sound:"block_note_block_bell">
+      - <lgreen><b>¡Mencionado!</b></lgreen>
+      - <lgray><lgreen>%player_display_name%</lgreen> te ha mencionado en el chat.</lgray>
+  PrivateMessage:
+    Error:
+      Disabled: <lgray><lred>%player_display_name%</lred> no acepta mensajes.</lgray>
+      Ignorance: <lgray><lred>%player_display_name%</lred> no acepta tus mensajes.</lgray>
+  Error:
+    Command:
+      Argument:
+        InvalidChannel: <lgray><lred>%value%</lred> no es un canal válido.</lgray>
+  SpyType:
+    SOCIAL: Social
+    COMMAND: Comando
+    CHAT: Chat
+PTP:
+  Command:
+    Teleport:
+      Invite:
+        Desc: Pedirle a un jugador que sea invocado.
+        Notify:
+          Sender:
+            - <noprefix><sound:"entity_ender_pearl_throw">
+            - <lgray>Se envió una solicitud de invocación a <lyellow>%player_display_name%</lyellow>.</lgray>
+          Target:
+            - <noprefix><sound:"entity_ender_pearl_throw">
+            - ' '
+            - <lyellow><b>Invitación de teletransporte:</b></lyellow>
+            - ' '
+            - <lyellow>El jugador <orange>%player_display_name%</orange> quiere invocarte.</lyellow>
+            - <lyellow>Escribe <lgreen>/tpyes %player_name%</lgreen> para aceptar y ser invocado.</lyellow>
+            - <lyellow>o <lred>/tpno %player_name%</lred> para rechazar.</lyellow>
+            - ' '
+            - <lyellow>      <hover:show_text:'<gray>Haz clic para ser invocado por <green>%player_display_name%</green></gray>'><click:run_command:"/tpyes %player_name%"><lgreen><b>[Aceptar]</b></lgreen></click></hover>   <hover:show_text:'<gray>Haz clic para rechazar la invocación de <red>%player_display_name%</red></gray>'><click:run_command:"/tpno %player_name%"><lred><b>[Rechazar]</b></lred></click></hover></lyellow>
+            - ' '
+      Request:
+        Desc: Pedirle a un jugador que te teletransporte.
+      Accept:
+        Desc: Aceptar solicitud de teletransporte.
+      Decline:
+        Desc: Rechazar solicitud de teletransporte.
+    Toggle:
+      Desc: Activar/desactivar solicitudes/invitaciones de teletransporte.
+      Target: <lgray>Se establecieron las solicitudes de teletransporte en <lyellow>%state%</lyellow> para <lyellow>%player_display_name%</lyellow>.</lgray>
+      Notify: '<lgray>Solicitudes de teletransporte: <lyellow>%state%</lyellow>.</lgray>'
+  Request:
+    Accept:
+      Done:
+        - <sound:"entity_enderman_teleport">
+        - <lgray>¡Has aceptado la solicitud de teletransporte de <lgreen>%player_display_name%</lgreen>!</lgray>
+      Notify:
+        - <sound:"entity_enderman_teleport">
+        - <lgray><lgreen>%player_display_name%</lgreen> aceptó tu solicitud de teletransporte.</lgray>
+      Nothing:
+        - <sound:"entity_villager_no">
+        - <lgray>No tienes ninguna solicitud activa.</lgray>
+    Decline:
+      Done:
+        - <sound:"entity_villager_no">
+        - <lgray>Has rechazado la solicitud de teletransporte de <lred>%player_display_name%</lred>.</lgray>
+      Notify:
+        - <sound:"entity_villager_no">
+        - <lgray><lred>%player_display_name%</lred> ha rechazado tu solicitud de teletransporte.</lgray>
+      Nothing:
+        - <sound:"entity_villager_no">
+        - <lgray>No tienes ninguna solicitud activa.</lgray>
+    Send:
+      Error:
+        Cooldown:
+          - <sound:"entity_villager_no">
+          - <lgray>Puedes enviar otra solicitud en <lred>%time%</lred>.</lgray>
+        Disabled:
+          - <sound:"entity_villager_no">
+          - <lgray>No puedes enviar solicitudes de teletransporte a <lred>%player_name%</lred>.</lgray>
+      Sent:
+        - <noprefix><sound:"entity_ender_pearl_throw">
+        - <lgray>Se envió una solicitud de teletransporte a <lyellow>%player_display_name%</lyellow>.</lgray>
+      Notify:
+        - <noprefix><sound:"entity_ender_pearl_throw">
+        - ' '
+        - <lyellow><b>Solicitud de teletransporte:</b></lyellow>
+        - ' '
+        - <lyellow>El jugador <orange>%player_display_name%</orange> quiere teletransportarse a ti.</lyellow>
+        - <lyellow>Escribe <lgreen>/tpyes %player_name%</lgreen> para aceptar e invocarlo.</lyellow>
+        - <lyellow>o <lred>/tpno %player_name%</lred> para rechazar.</lyellow>
+        - ' '
+        - <lyellow>      <hover:show_text:'<gray>Haz clic para teletransportar a <green>%player_display_name%</green></gray>'><click:run_command:"/tpyes %player_name%"><lgreen><b>[Aceptar]</b></lgreen></click></hover>   <hover:show_text:'<gray>Haz clic para denegar el teletransporte de <red>%player_display_name%</red>.</gray>'><click:run_command:"/tpno %player_name%"><lred><b>[Rechazar]</b></lred></click></hover></lyellow>
+        - ' '
+Scoreboard:
+  Command:
+    Scoreboard:
+      Desc: Activar/desactivar marcador.
+      Notify: '<lgray>Marcador: <lyellow>%state%</lyellow>.</lgray>'
+      Target: <lgray>Se estableció el marcador en <lyellow>%state%</lyellow> para <lyellow>%player_name%</lyellow>.</lgray>
+RTP:
+  Command:
+    RTP:
+      Desc: Teletransportarse a un lugar aleatorio.
+  Teleport:
+    Error:
+      AlreadyIn: <lred>¡Ya estás en RTP!</lred>
+      InvalidRange: <lred>El teletransporte aleatorio no es compatible con este mundo o tiene una configuración de rango no válida.</lred>
+    Notify:
+      Done:
+        - <output:"titles:20:80:20"><sound:"entity_enderman_teleport">
+        - <lgreen><b>¡Teletransporte exitoso!</b></lgreen>
+        - '<lgray>Ubicación: <lgreen>%location_x%</lgreen>, <lgreen>%location_y%</lgreen>, <lgreen>%location_z%</lgreen></lgray>'
+      Search:
+        - <output:"titles:20:80:20"><sound:"block_lava_pop">
+        - <lyellow><b>Buscando ubicación...</b></lyellow>
+        - '<lgray>Paso: <lyellow>%current%</lyellow>/<lyellow>%max%</lyellow></lgray>'
+      Failure:
+        - <output:"titles:20:80:20"><sound:"entity_villager_no">
+        - <lred><b>Teletransporte fallido</b></lred>
+        - <lgray>No se pudo encontrar una ubicación válida.</lgray>
+Extras:
+  Command:
+    Chairs:
+      Desc: Activar/desactivar Sillas.
+      Notify: <lgray>Se establecieron las <lyellow>Sillas</lyellow> en <lyellow>%state%</lyellow>.</lgray>
+      Target: <lgray>Se establecieron las <lyellow>Sillas</lyellow> de <lyellow>%player_display_name%</lyellow> en <lyellow>%state%</lyellow>.</lgray>
+    Sit:
+      Desc: Sentarse en un bloque.
+      Notify: <lgray>Ahora estás sentado.</lgray>
+      Target: <lgray>Se hizo que <lyellow>%player_name%</lyellow> se sentara.</lgray>
+    ChestSort:
+      Desc: Activar/desactivar Ordenamiento de Cofre.
+      Notify: <lgray>Se estableció el <lyellow>Ordenamiento de Cofre</lyellow> en <lyellow>%state%</lyellow>.</lgray>
+      Target: <lgray>Se estableció el <lyellow>Ordenamiento de Cofre</lyellow> de <lyellow>%player_display_name%</lyellow> en <lyellow>%state%</lyellow>.</lgray>
+BackLocation:
+  Command:
+    Back:
+      Desc: Volver a la ubicación anterior.
+      Others:
+        Done: <lgray>El jugador <lyellow>%player_display_name%</lyellow> se teletransportó a la ubicación anterior.</lgray>
+        Nothing: <lgray>El jugador <lred>%player_display_name%</lred> no tiene una ubicación anterior.</lgray>
+    DeathBack:
+      Desc: Volver a la ubicación de la muerte.
+      Others:
+        Done: <lgray>El jugador <lyellow>%player_display_name%</lyellow> se teletransportó a la ubicación de la muerte.</lgray>
+        Nothing: <lgray>El jugador <lred>%player_display_name%</lred> no tiene una ubicación de muerte.</lgray>
+  Previous:
+    Teleport:
+      Nothing:
+        - <sound:"entity_villager_no">
+        - <lgray>No tienes una ubicación anterior.</lgray>
+      Notify:
+        - <output:"action_bar"><sound:"entity_enderman_teleport">
+        - <lyellow>Volviendo a la ubicación anterior...</lyellow>
+  Death:
+    Teleport:
+      Nothing:
+        - <sound:"entity_villager_no">
+        - <lgray>No tienes una ubicación de muerte.</lgray>
+      Notify:
+        - <output:"action_bar"><sound:"entity_enderman_teleport">
+        - <lyellow>Volviendo a la ubicación de la muerte...</lyellow>
+NerfPhantoms:
+  Command:
+    NoPhantom:
+      Desc: Activar/desactivar el modo anti-fantasma.
+      Toggle:
+        Notify: '<lgray>Modo Anti-Fantasma: <lyellow>%state%</lyellow>.</lgray>'
+        Others: <lgray>Se estableció el modo Anti-Fantasma en <lyellow>%state%</lyellow> para <lyellow>%player_display_name%</lyellow>.</lgray>
+Afk:
+  Command:
+    Afk:
+      Desc: Activar/desactivar el modo AFK.
+      Done:
+        Others: '<lgray>Se estableció el modo AFK de <lyellow>%player_display_name%</lyellow> en: <lyellow>%state%</lyellow>.</lgray>'
+  Mode:
+    Enter:
+      - <noprefix>
+      - <lgray>El jugador <lyellow>%player_display_name%</lyellow> ahora está AFK.</lgray>
+    Exit:
+      - <noprefix>
+      - <lgray>El jugador <lyellow>%player_display_name%</lyellow> regresó después de <lyellow>%time%</lyellow> de estar AFK.</lgray>
+  Notify:
+    PrivateMessage:
+      - <noprefix>
+      - <lgray>El jugador <lred>%player_display_name%</lred> está AFK y es posible que no responda.</lgray>
+    TeleportRequest:
+      - <noprefix>
+      - <lgray>El jugador <lred>%player_display_name%</lred> está AFK y es posible que no responda.</lgray>
+CustomText:
+  Command:
+    Text:
+      Desc: Ver un texto personalizado.
+  Error:
+    Command:
+      Argument:
+        InvalidCustomText: <lgray><lred>%value%</lred> no es un texto personalizado válido.</lgray>
+GodMode:
+  Command:
+    God:
+      Desc: Activar/desactivar el Modo Dios.
+      Notify: <lgray>El Modo Dios se ha establecido en <lyellow>%state%</lyellow>.</lgray>
+      Target: <lgray>Se estableció el Modo Dios en <lyellow>%state%</lyellow> para <lyellow>%player_display_name%</lyellow>.</lgray>
+    FoodGod:
+      Target: <lgray>Se estableció el Dios de la Comida en <lyellow>%state%</lyellow> para <lyellow>%player_display_name%</lyellow>.</lgray>
+      Notify: <lgray>El Dios de la Comida se ha establecido en <lyellow>%state%</lyellow>.</lgray>
+  Notify:
+    DamageDisabled:
+      - <output:"action_bar">
+      - <lred>¡No puedes infligir daño en Modo Dios!</lred>
+    BadWorld:
+      - <lred><b>Información del Modo Dios:</b></lred>
+      - <lgray>¡El Modo Dios no tiene efecto en este mundo!</lgray>
+    #Traduccion por Jose1acf :3 Gracias!!!!!!!

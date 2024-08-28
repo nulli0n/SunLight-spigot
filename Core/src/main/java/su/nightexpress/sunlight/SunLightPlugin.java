@@ -2,7 +2,6 @@ package su.nightexpress.sunlight;
 
 import org.jetbrains.annotations.NotNull;
 import su.nightexpress.nightcore.NightDataPlugin;
-import su.nightexpress.nightcore.command.api.NightCommand;
 import su.nightexpress.nightcore.command.experimental.ImprovedCommands;
 import su.nightexpress.nightcore.command.experimental.node.ChainedNode;
 import su.nightexpress.nightcore.config.PluginDetails;
@@ -13,6 +12,7 @@ import su.nightexpress.sunlight.command.list.ReloadCommand;
 import su.nightexpress.sunlight.config.Config;
 import su.nightexpress.sunlight.config.Lang;
 import su.nightexpress.sunlight.config.Perms;
+import su.nightexpress.sunlight.core.CoreManager;
 import su.nightexpress.sunlight.data.DataHandler;
 import su.nightexpress.sunlight.data.UserManager;
 import su.nightexpress.sunlight.data.user.SunUser;
@@ -27,13 +27,12 @@ import su.nightexpress.sunlight.nms.v1_20_R1.V1_20_R1;
 import su.nightexpress.sunlight.nms.v1_20_R2.V1_20_R2;
 import su.nightexpress.sunlight.nms.v1_20_R3.V1_20_R3;
 
-import java.util.Collection;
-
 public class SunLightPlugin extends NightDataPlugin<SunUser> implements ImprovedCommands {
 
     private DataHandler dataHandler;
     private UserManager userManager;
 
+    private CoreManager coreManager;
     private ModuleManager moduleManager;
 
     private SunNMS sunNMS;
@@ -51,7 +50,7 @@ public class SunLightPlugin extends NightDataPlugin<SunUser> implements Improved
     public void enable() {
         this.setupInternalNMS();
         if (this.sunNMS == null) {
-            this.error("Unsupported server version. Bye.");
+            this.error("Unsupported server version!");
             this.getPluginManager().disablePlugin(this);
             return;
         }
@@ -64,12 +63,11 @@ public class SunLightPlugin extends NightDataPlugin<SunUser> implements Improved
         this.userManager = new UserManager(this);
         this.userManager.setup();
 
+        this.coreManager = new CoreManager(this);
+        this.coreManager.setup();
+
         this.moduleManager = new ModuleManager(this);
         this.moduleManager.setup();
-
-        int commands = this.getCommandManager().getCommands().size();
-        int subs = this.getCommandManager().getCommands().stream().map(NightCommand::getChildrens).mapToInt(Collection::size).sum();
-        this.info("Registered total " + commands + " main commands and " + subs + " sub-commands.");
 
         CommandRegistry.setup(this);
 
@@ -118,6 +116,11 @@ public class SunLightPlugin extends NightDataPlugin<SunUser> implements Improved
     @Override
     public UserManager getUserManager() {
         return userManager;
+    }
+
+    @NotNull
+    public CoreManager getCoreManager() {
+        return coreManager;
     }
 
     @NotNull

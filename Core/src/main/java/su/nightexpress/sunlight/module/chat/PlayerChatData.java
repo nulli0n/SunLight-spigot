@@ -12,16 +12,16 @@ import java.util.UUID;
 
 public class PlayerChatData {
 
-    private final UUID holder;
+    private final UUID              holder;
     private final Map<String, Long> messageCooldownMap;
     private final Map<String, Long> mentionCooldownMap;
 
     private UUID   lastConversationWith;
     private String lastMessage;
     private String lastCommand;
-    private long lastMessageExpireTimestamp;
-    private long lastCommandExpireTimestamp;
-    private long nextCommandTimestamp;
+    private long   lastMessageExpireTimestamp;
+    private long   lastCommandExpireTimestamp;
+    private long   nextCommandTimestamp;
 
     public PlayerChatData(@NotNull Player player) {
         this.holder = player.getUniqueId();

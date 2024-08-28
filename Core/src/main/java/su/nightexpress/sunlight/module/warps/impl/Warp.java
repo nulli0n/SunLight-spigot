@@ -16,11 +16,13 @@ import su.nightexpress.nightcore.util.Plugins;
 import su.nightexpress.nightcore.util.TimeUtil;
 import su.nightexpress.nightcore.util.placeholder.Placeholder;
 import su.nightexpress.nightcore.util.placeholder.PlaceholderMap;
+import su.nightexpress.nightcore.util.text.tag.Tags;
 import su.nightexpress.sunlight.SunLightPlugin;
 import su.nightexpress.sunlight.core.cooldown.CooldownInfo;
 import su.nightexpress.sunlight.data.user.SunUser;
 import su.nightexpress.sunlight.module.warps.WarpsModule;
 import su.nightexpress.sunlight.module.warps.command.WarpShortcutCommand;
+import su.nightexpress.sunlight.module.warps.config.WarpsConfig;
 import su.nightexpress.sunlight.module.warps.config.WarpsLang;
 import su.nightexpress.sunlight.module.warps.config.WarpsPerms;
 import su.nightexpress.sunlight.module.warps.event.PlayerWarpTeleportEvent;
@@ -34,10 +36,7 @@ import java.io.File;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 public class Warp extends AbstractFileData<SunLightPlugin> implements Placeholder {
 
@@ -358,6 +357,23 @@ public class Warp extends AbstractFileData<SunLightPlugin> implements Placeholde
     @Nullable
     public String getDescription() {
         return this.description;
+    }
+
+    @NotNull
+    public List<String> getDescriptionFormatted() {
+        if (this.description == null) return Collections.emptyList();
+
+        List<String> description = new ArrayList<>();
+        for (String line : WarpsConfig.WARP_DESCRIPTION_FORMAT.get()) {
+            if (line.contains(Placeholders.GENERIC_ENTRY)) {
+                for (String desc : Tags.LINE_BREAK.split(this.description)) {
+                    description.add(line.replace(Placeholders.GENERIC_ENTRY, desc));
+                }
+            }
+            else description.add(line);
+        }
+
+        return description;
     }
 
     public void setDescription(@Nullable String description) {

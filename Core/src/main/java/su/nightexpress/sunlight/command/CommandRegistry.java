@@ -10,6 +10,7 @@ import su.nightexpress.nightcore.config.FileConfig;
 import su.nightexpress.nightcore.util.CommandUtil;
 import su.nightexpress.nightcore.util.Lists;
 import su.nightexpress.sunlight.SunLightPlugin;
+import su.nightexpress.sunlight.command.cooldown.CommandCooldown;
 import su.nightexpress.sunlight.command.list.*;
 import su.nightexpress.sunlight.command.template.CommandTemplate;
 import su.nightexpress.sunlight.command.template.DirectCommandTemplate;
@@ -23,6 +24,7 @@ public class CommandRegistry {
 
     private static final Map<String, NodeCreator<DirectNodeBuilder>> NODE_BUILDERS = new HashMap<>();
 
+    private static final Map<String, CommandCooldown> COOLDOWNS = new HashMap<>();
     private static final Map<String, CommandTemplate> TEMPLATES  = new LinkedHashMap<>();
     private static final Set<String>                  REGISTERED = new HashSet<>();
 
@@ -48,12 +50,24 @@ public class CommandRegistry {
         return NODE_BUILDERS.containsKey(name.toLowerCase());
     }
 
+    @Nullable
+    public static CommandCooldown getCooldown(@NotNull String name) {
+        Set<String> aliases = CommandUtil.getAliases(name, true);
+        for (String alias : aliases) {
+            CommandCooldown cooldown = COOLDOWNS.get(alias);
+            if (cooldown != null) return cooldown;
+        }
+
+        return null;
+    }
+
     public static void setup(@NotNull SunLightPlugin plugin) {
         FileConfig config = FileConfig.loadOrExtract(plugin, FILE_NAME);
 
         plugin.registerPermissions(CommandPerms.class);
         config.initializeOptions(CommandConfig.class);
 
+        loadCooldowns(plugin, config);
         loadCoreCommands(plugin, config);
         checkConfig(plugin, config);
         registerCommands(plugin, config);
@@ -89,6 +103,21 @@ public class CommandRegistry {
         });
     }
 
+    private static void loadCooldowns(@NotNull SunLightPlugin plugin, @NotNull FileConfig config) {
+        if (!config.contains("Cooldowns")) {
+            CommandConfig.getDefaultCooldowns().forEach(commandCooldown -> commandCooldown.write(config, "Cooldowns." + commandCooldown.getId()));
+        }
+
+        for (String id : config.getSection("Cooldowns")) {
+            CommandCooldown cooldown = CommandCooldown.read(config, "Cooldowns." + id, id);
+            cooldown.getCommandNames().forEach(name -> {
+                COOLDOWNS.put(name.toLowerCase(), cooldown);
+            });
+        }
+
+        plugin.info("Loaded " + COOLDOWNS.size() + " command cooldowns.");
+    }
+
     private static void loadCoreCommands(@NotNull SunLightPlugin plugin, @NotNull FileConfig config) {
         AirCommand.load(plugin);
         AnvilCommand.load(plugin);
@@ -100,7 +129,6 @@ public class CommandRegistry {
         EnchantingCommand.load(plugin);
         EnderchestCommand.load(plugin);
         ExperienceCommand.load(plugin);
-        //ExtinguishCommand.load(plugin);
         FireCommands.load(plugin);
         FlyCommand.load(plugin);
         FlySpeedCommand.load(plugin);

@@ -17,6 +17,7 @@ import su.nightexpress.sunlight.command.CommandRegistry;
 import su.nightexpress.sunlight.command.template.CommandTemplate;
 import su.nightexpress.sunlight.command.CommandTools;
 import su.nightexpress.sunlight.config.Lang;
+import su.nightexpress.sunlight.utils.SunUtils;
 
 import java.util.stream.IntStream;
 
@@ -50,7 +51,7 @@ public class FlySpeedCommand {
         Player target = CommandTools.getTarget(plugin, context, arguments, CommandArguments.PLAYER, true);
         if (target == null) return false;
 
-        int speed = Math.clamp(arguments.getIntArgument(CommandArguments.VALUE), 1, SPEEDS_AMOUNT);
+        int speed = SunUtils.clamp(arguments.getIntArgument(CommandArguments.VALUE), 1, SPEEDS_AMOUNT);
 
         float realSpeed = DEF_SPEED + (MAX_SPEED - DEF_SPEED) * (speed - 1) / (SPEEDS_AMOUNT - 1);
 

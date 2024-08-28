@@ -1,6 +1,7 @@
 package su.nightexpress.sunlight.utils;
 
 import com.google.common.net.InetAddresses;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Registry;
@@ -35,7 +36,7 @@ import java.util.stream.Stream;
 
 public class SunUtils {
 
-    public static final String CONSOLE_NAME = "CONSOLE";
+    public static final String CONSOLE_NAME = Bukkit.getServer().getConsoleSender().getName();
 
     @SuppressWarnings("deprecation")
     public static List<String> getPotionEffects(@NotNull Predicate<PotionEffectType> predicate) {
@@ -63,6 +64,13 @@ public class SunUtils {
         }
 
         return uuid;
+    }
+
+    public static int clamp(long value, long min, long max) {
+        if (min > max) {
+            throw new IllegalArgumentException(min + " > " + max);
+        }
+        return (int) Math.min(max, Math.max(value, min));
     }
 
     @NotNull

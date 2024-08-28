@@ -14,23 +14,23 @@ import su.nightexpress.sunlight.core.user.IgnoredUser;
 import su.nightexpress.sunlight.data.user.SunUser;
 import su.nightexpress.sunlight.utils.SunUtils;
 
-public class UserListener extends AbstractListener<SunLightPlugin> {
+public class CoreListener extends AbstractListener<SunLightPlugin> {
 
-    public UserListener(@NotNull SunLightPlugin plugin) {
+    public CoreListener(@NotNull SunLightPlugin plugin) {
         super(plugin);
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
-    public void onQuit(PlayerQuitEvent e) {
-        Player player = e.getPlayer();
+    public void onQuit(PlayerQuitEvent event) {
+        Player player = event.getPlayer();
         SunUser user = plugin.getUserManager().getUserData(player);
 
         user.setNewlyCreated(false);
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
-    public void onJoin(PlayerJoinEvent e) {
-        Player player = e.getPlayer();
+    public void onJoin(PlayerJoinEvent event) {
+        Player player = event.getPlayer();
         SunUser user = plugin.getUserManager().getUserData(player);
 
         user.updatePlayerName();
@@ -38,11 +38,11 @@ public class UserListener extends AbstractListener<SunLightPlugin> {
     }
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-    public void onUserIgnoreChat(AsyncPlayerChatEvent e) {
-        Player pSender = e.getPlayer();
+    public void onUserIgnoreChat(AsyncPlayerChatEvent event) {
+        Player pSender = event.getPlayer();
         SunUser userSender = plugin.getUserManager().getUserData(pSender);
 
-        e.getRecipients().removeIf(pReceiver -> {
+        event.getRecipients().removeIf(pReceiver -> {
             SunUser userReceiver = plugin.getUserManager().getUserData(pReceiver);
 
             IgnoredUser ignoredSender = userReceiver.getIgnoredUser(pSender);
@@ -53,11 +53,11 @@ public class UserListener extends AbstractListener<SunLightPlugin> {
     }
 
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
-    public void onUserCommandCooldown(PlayerCommandPreprocessEvent e) {
-        Player player = e.getPlayer();
-        String commandLine = e.getMessage();
-        if (!this.plugin.getUserManager().checkCommandCooldown(player, commandLine)) {
-            e.setCancelled(true);
+    public void onCommand(PlayerCommandPreprocessEvent event) {
+        Player player = event.getPlayer();
+        String commandLine = event.getMessage();
+        if (!this.plugin.getCoreManager().checkCommandCooldown(player, commandLine)) {
+            event.setCancelled(true);
         }
     }
 }

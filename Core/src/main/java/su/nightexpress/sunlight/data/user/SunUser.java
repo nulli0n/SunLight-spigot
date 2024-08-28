@@ -6,7 +6,7 @@ import org.jetbrains.annotations.Nullable;
 import su.nightexpress.nightcore.database.AbstractUser;
 import su.nightexpress.nightcore.util.text.NightMessage;
 import su.nightexpress.sunlight.SunLightPlugin;
-import su.nightexpress.sunlight.command.CommandCooldown;
+import su.nightexpress.sunlight.command.cooldown.CommandCooldown;
 import su.nightexpress.sunlight.core.cooldown.CooldownInfo;
 import su.nightexpress.sunlight.core.cooldown.CooldownType;
 import su.nightexpress.sunlight.core.user.IgnoredUser;
@@ -64,7 +64,6 @@ public class SunUser extends AbstractUser<SunLightPlugin> {
     @Override
     public void onUnload() {
         super.onUnload();
-        this.setNewlyCreated(false);
 
         ChatModule chatModule = this.plugin.getModuleManager().getModule(ChatModule.class).orElse(null);
         if (chatModule != null) {

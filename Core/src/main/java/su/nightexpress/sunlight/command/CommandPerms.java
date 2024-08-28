@@ -82,9 +82,6 @@ public class CommandPerms {
     public static final UniPermission                       EXPERIENCE_VIEW        = create("experience", "view");
     public static final UniPermission                       EXPERIENCE_VIEW_OTHERS = createOthers("experience", "view");
 
-//    public static final UniPermission EXTINGUISH              = create(ExtinguishCommand.NAME);
-//    public static final UniPermission EXTINGUISH_OTHERS       = createOthers(ExtinguishCommand.NAME);
-
     public static final UniPermission FIRE_SET          = create("fire.set");
     public static final UniPermission FIRE_SET_OTHERS   = createOthers("fire.set", "others");
     public static final UniPermission FIRE_RESET        = create("fire.reset");
@@ -226,7 +223,6 @@ public class CommandPerms {
             ENCHANT, ENCHANT_OTHERS,
             ENCHANTING, ENCHANTING_OTHERS,
             EXPERIENCE_VIEW, EXPERIENCE_VIEW_OTHERS,
-//            EXTINGUISH, EXTINGUISH_OTHERS,
 
             FIRE_SET, FIRE_SET_OTHERS,
             FIRE_RESET, FIRE_RESET_OTHERS,

@@ -33,7 +33,7 @@ public class Placeholders extends su.nightexpress.sunlight.Placeholders {
         return new PlaceholderMap()
             .add(WARP_ID, warp.getId())
             .add(WARP_NAME, warp::getName)
-            .add(WARP_DESCRIPTION, () -> warp.getDescription() == null ? "" : warp.getDescription())
+            .add(WARP_DESCRIPTION, () -> String.join(TAG_LINE_BREAK, warp.getDescriptionFormatted()))
             .add(WARP_VISIT_COST, () -> warp.hasVisitCost() ? NumberUtil.format(warp.getVisitCostMoney()) : WarpsLang.OTHER_DISABLED.getString())
             .add(WARP_VISIT_COOLDOWN, () -> warp.hasVisitCooldown() ? TimeUtil.formatTime(warp.getVisitCooldown() * 1000L) : WarpsLang.OTHER_DISABLED.getString())
             .add(WARP_VISIT_TIMES, () -> {

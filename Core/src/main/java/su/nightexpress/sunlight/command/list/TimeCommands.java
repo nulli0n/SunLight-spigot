@@ -103,7 +103,7 @@ public class TimeCommands {
     }
 
     private static long clamp(long ticks) {
-        return Math.clamp(ticks, MIN_TICKS, MAX_TICKS);
+        return SunUtils.clamp(ticks, MIN_TICKS, MAX_TICKS);
     }
 
 

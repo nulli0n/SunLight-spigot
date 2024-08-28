@@ -39,12 +39,12 @@ public class Lang extends CoreLang {
     public static final LangString COMMAND_ARGUMENT_NAME_Y        = LangString.of("Command.Argument.Name.Y", "y");
     public static final LangString COMMAND_ARGUMENT_NAME_Z        = LangString.of("Command.Argument.Name.Z", "z");
 
-    public static final LangText GENERIC_COMMAND_COOLDOWN_DEFAULT = LangText.of("Generic.Command.Cooldown.Default",
+    public static final LangText CORE_COMMAND_COOLDOWN_DEFAULT = LangText.of("Generic.Command.Cooldown.Default",
         TAG_NO_PREFIX,
         LIGHT_RED.enclose("You have to wait " + LIGHT_ORANGE.enclose(GENERIC_TIME) + " before you can use " + LIGHT_ORANGE.enclose(GENERIC_COMMAND) + " again.")
     );
 
-    public static final LangText GENERIC_COMMAND_COOLDOWN_ONE_TIME = LangText.of("Generic.Command.Cooldown.OneTime",
+    public static final LangText CORE_COMMAND_COOLDOWN_ONE_TIME = LangText.of("Generic.Command.Cooldown.OneTime",
         TAG_NO_PREFIX,
         LIGHT_RED.enclose("This command is one-time and you already have used it.")
     );
