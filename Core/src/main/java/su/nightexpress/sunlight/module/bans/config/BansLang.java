@@ -18,55 +18,44 @@ public class BansLang extends Lang {
 
     private static final String INFO = "\uD83D\uDEC8";
 
-    public static final LangString COMMAND_ARGUMENT_NAME_REASON    = LangString.of("Command.Argument.Name.Reason", "reason");
-    public static final LangString COMMAND_ARGUMENT_NAME_IP_OR_NAME    = LangString.of("Command.Argument.Name.IPorName", "name | address");
+    public static final LangString COMMAND_ARGUMENT_NAME_REASON     = LangString.of("Command.Argument.Name.Reason", "reason");
+    public static final LangString COMMAND_ARGUMENT_NAME_IP_OR_NAME = LangString.of("Command.Argument.Name.IPorName", "name | address");
 
     public static final LangEnum<SortMode> SORT_MODE = LangEnum.of("Bans.SortMode", SortMode.class);
 
-    public static final LangString COMMAND_BAN_HISTORY_DESC = LangString.of("Bans.Command.History.Ban.Desc",
-        "View bans history of a player or IP.");
-
-    public static final LangString COMMAND_MUTE_HISTORY_DESC = LangString.of("Bans.Command.History.Mute.Desc",
-        "View mutes history of a player or IP.");
-
-    public static final LangString COMMAND_WARN_HISTORY_DESC = LangString.of("Bans.Command.History.Warn.Desc",
-        "View warns history of a player or IP.");
-
-    public static final LangString COMMAND_BAN_LIST_DESC = LangString.of("Bans.Command.BanList.Desc",
-        "List of banned players and IPs.");
-
-    public static final LangString COMMAND_MUTE_LIST_DESC = LangString.of("Bans.Command.MuteList.Desc",
-        "List of muted players.");
-
-    public static final LangString COMMAND_WARN_LIST_DESC = LangString.of("Bans.Command.WarnList.Desc",
-        "List of warned players.");
-
-    public static final LangString COMMAND_BAN_DESC  = LangString.of("Bans.Command.Ban.Desc",
-        "Ban player.");
-
-    public static final LangString COMMAND_BAN_IP_DESC = LangString.of("Bans.Command.Banip.Desc",
-        "Ban IP address.");
-
-    public static final LangString COMMAND_MUTE_DESC  = LangString.of("Bans.Command.Mute.Desc",
-        "Mute player.");
-
-    public static final LangString COMMAND_KICK_DESC  = LangString.of("Bans.Command.Kick.Desc",
-        "Kick player.");
-
-
-    public static final LangString COMMAND_UNMUTE_DESC  = LangString.of("Bans.Command.Unmute.Desc",
-        "Unmute player.");
-
-    public static final LangString COMMAND_UNBAN_DESC  = LangString.of("Bans.Command.Unban.Desc",
-        "Unban player or IP address.");
-
-    public static final LangString COMMAND_WARN_DESC  = LangString.of("Bans.Command.Warn.Desc",
-        "Warn player.");
-
-    public static final LangString COMMAND_UNWARN_DESC  = LangString.of("Bans.Command.Unwarn.Desc",
-        "Remove the most recent warn of player.");
+    public static final LangString COMMAND_BAN_HISTORY_DESC  = LangString.of("Bans.Command.History.Ban.Desc", "View bans history of a player or IP.");
+    public static final LangString COMMAND_MUTE_HISTORY_DESC = LangString.of("Bans.Command.History.Mute.Desc", "View mutes history of a player or IP.");
+    public static final LangString COMMAND_WARN_HISTORY_DESC = LangString.of("Bans.Command.History.Warn.Desc", "View warns history of a player or IP.");
+    public static final LangString COMMAND_BAN_LIST_DESC     = LangString.of("Bans.Command.BanList.Desc", "List of banned players and IPs.");
+    public static final LangString COMMAND_MUTE_LIST_DESC    = LangString.of("Bans.Command.MuteList.Desc", "List of muted players.");
+    public static final LangString COMMAND_WARN_LIST_DESC    = LangString.of("Bans.Command.WarnList.Desc", "List of warned players.");
+    public static final LangString COMMAND_BAN_DESC          = LangString.of("Bans.Command.Ban.Desc", "Ban player.");
+    public static final LangString COMMAND_BAN_IP_DESC       = LangString.of("Bans.Command.Banip.Desc", "Ban IP address.");
+    public static final LangString COMMAND_MUTE_DESC         = LangString.of("Bans.Command.Mute.Desc", "Mute player.");
+    public static final LangString COMMAND_KICK_DESC         = LangString.of("Bans.Command.Kick.Desc", "Kick player.");
+    public static final LangString COMMAND_UNMUTE_DESC       = LangString.of("Bans.Command.Unmute.Desc", "Unmute player.");
+    public static final LangString COMMAND_UNBAN_DESC        = LangString.of("Bans.Command.Unban.Desc", "Unban player or IP address.");
+    public static final LangString COMMAND_WARN_DESC         = LangString.of("Bans.Command.Warn.Desc", "Warn player.");
+    public static final LangString COMMAND_UNWARN_DESC       = LangString.of("Bans.Command.Unwarn.Desc", "Remove the most recent warn of player.");
+    public static final LangString COMMAND_ALTS_DESC         = LangString.of("Bans.Command.Alts.Desc", "List players from same IP.");
 
     // -------------------------------------
+
+    public static final LangText ALTS_GLOBAL_NOTHING = LangText.of("Bans.Alts.Global.Nothing",
+        "There are no players with same IPs."
+    );
+
+    public static final LangText ALTS_GLOBAL_LIST = LangText.of("Bans.Alts.Global.List",
+        TAG_NO_PREFIX,
+        LIGHT_YELLOW.enclose(BOLD.enclose("Alts List:")),
+        " ",
+        GENERIC_ENTRY,
+        " "
+    );
+
+    public static final LangString ALTS_GLOBAL_ENTRY = LangString.of("Bans.Alts.Global.Entry",
+        LIGHT_GRAY.enclose(LIGHT_ORANGE.enclose(GENERIC_SOURCE) + ": " + GENERIC_NAME)
+    );
 
     public static final LangText PUNISHMENT_ERROR_RANK_PRIORITY = LangText.of("Bans.Punishment.Error.RankPriority",
         TAG_NO_PREFIX,

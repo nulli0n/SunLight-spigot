@@ -40,10 +40,10 @@ import java.util.function.Function;
 
 public class DataHandler extends AbstractUserDataHandler<SunLightPlugin, SunUser> {
 
-    private static final SQLColumn USER_IP          = SQLColumn.of("ip", ColumnType.STRING);
-    private static final SQLColumn USER_COOLDOWNS   = SQLColumn.of("cooldowns", ColumnType.STRING);
-    private static final SQLColumn USER_IGNORE_LIST = SQLColumn.of("ignoredUsers", ColumnType.STRING);
-    private static final SQLColumn USER_SETTINGS    = SQLColumn.of("settings", ColumnType.STRING);
+    private static final SQLColumn COLUMN_USER_ADDRESS = SQLColumn.of("ip", ColumnType.STRING);
+    private static final SQLColumn USER_COOLDOWNS      = SQLColumn.of("cooldowns", ColumnType.STRING);
+    private static final SQLColumn USER_IGNORE_LIST    = SQLColumn.of("ignoredUsers", ColumnType.STRING);
+    private static final SQLColumn USER_SETTINGS       = SQLColumn.of("settings", ColumnType.STRING);
 
     private static final SQLColumn HOME_ID               = SQLColumn.of("homeId", ColumnType.STRING);
     private static final SQLColumn HOME_OWNER_ID         = SQLColumn.of("ownerId", ColumnType.STRING);
@@ -72,7 +72,7 @@ public class DataHandler extends AbstractUserDataHandler<SunLightPlugin, SunUser
                 long dateCreated = resultSet.getLong(COLUMN_USER_DATE_CREATED.getName());
                 long lastOnline = resultSet.getLong(COLUMN_USER_LAST_ONLINE.getName());
 
-                String ip = resultSet.getString(USER_IP.getName());
+                String ip = resultSet.getString(COLUMN_USER_ADDRESS.getName());
                 //String customName = resultSet.getString(USER_CUSTOM_NAME.getName());
 
                 Map<CooldownType, Set<CooldownInfo>> cooldowns = this.gson.fromJson(resultSet.getString(USER_COOLDOWNS.getName()), new TypeToken<Map<CooldownType, Set<CooldownInfo>>>(){}.getType());
@@ -123,8 +123,12 @@ public class DataHandler extends AbstractUserDataHandler<SunLightPlugin, SunUser
     @Override
     public void onSynchronize() {
         this.plugin.getUserManager().getLoaded().forEach(user -> {
+            if (plugin.getUserManager().isScheduledToSave(user)) return;
+
             SunUser sync = this.getUser(user.getId());
             if (sync == null) return;
+
+            if (!user.isSyncReady()) return;
 
             user.getSettings().getValues().clear();
             user.getSettings().getValues().putAll(sync.getSettings().getValues());
@@ -169,14 +173,14 @@ public class DataHandler extends AbstractUserDataHandler<SunLightPlugin, SunUser
     @Override
     @NotNull
     protected List<SQLColumn> getExtraColumns() {
-        return Arrays.asList(USER_IP, USER_IGNORE_LIST, USER_COOLDOWNS, USER_SETTINGS);
+        return Arrays.asList(COLUMN_USER_ADDRESS, USER_IGNORE_LIST, USER_COOLDOWNS, USER_SETTINGS);
     }
 
     @Override
     @NotNull
     protected List<SQLValue> getSaveColumns(@NotNull SunUser user) {
         return Arrays.asList(
-            USER_IP.toValue(user.getInetAddress()),
+            COLUMN_USER_ADDRESS.toValue(user.getInetAddress()),
             USER_IGNORE_LIST.toValue(this.gson.toJson(user.getIgnoredUsers())),
             USER_COOLDOWNS.toValue(this.gson.toJson(user.getCooldowns())),
             USER_SETTINGS.toValue(this.gson.toJson(user.getSettings()))
@@ -295,5 +299,31 @@ public class DataHandler extends AbstractUserDataHandler<SunLightPlugin, SunUser
             SQLCondition.of(HOME_OWNER_ID.toValue(userId.toString()), SQLCondition.Type.EQUAL),
             SQLCondition.of(HOME_ID.toValue(homeId), SQLCondition.Type.EQUAL)
         );
+    }
+
+    @NotNull
+    public Map<String, Set<UserInfo>> getPlayerIPs() {
+        Map<String, Set<UserInfo>> map = new HashMap<>();
+
+        Function<ResultSet, Void> function = resultSet -> {
+            try {
+                UUID playerId = UUID.fromString(resultSet.getString(COLUMN_USER_ID.getName()));
+                String playerName = resultSet.getString(COLUMN_USER_NAME.getName());
+                String address = resultSet.getString(COLUMN_USER_ADDRESS.getName());
+
+                map.computeIfAbsent(address, k -> new HashSet<>()).add(new UserInfo(playerId, playerName));
+            }
+            catch (SQLException exception) {
+                exception.printStackTrace();
+            }
+            return null;
+        };
+
+        this.load(this.tableUsers, function,
+            Lists.newList(COLUMN_USER_ID, COLUMN_USER_NAME, COLUMN_USER_ADDRESS),
+            Lists.newList()
+        );
+
+        return map;
     }
 }

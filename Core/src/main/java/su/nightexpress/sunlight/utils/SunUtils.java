@@ -37,6 +37,7 @@ import java.util.stream.Stream;
 public class SunUtils {
 
     public static final String CONSOLE_NAME = Bukkit.getServer().getConsoleSender().getName();
+    public static final String LOCAL_ADDRESS = "127.0.0.1";
 
     @SuppressWarnings("deprecation")
     public static List<String> getPotionEffects(@NotNull Predicate<PotionEffectType> predicate) {
@@ -119,7 +120,7 @@ public class SunUtils {
     @NotNull
     public static String getRawAddress(@NotNull Player player) {
         InetSocketAddress address = player.getAddress();
-        return address == null ? "127.0.0.1" : getRawAddress(address.getAddress());
+        return address == null ? LOCAL_ADDRESS : getRawAddress(address.getAddress());
     }
 
     @NotNull
@@ -129,6 +130,10 @@ public class SunUtils {
 
     public static boolean isInetAddress(@NotNull String address) {
         return InetAddresses.isInetAddress(address);
+    }
+
+    public static boolean isLocalAddress(@NotNull String address) {
+        return address.equalsIgnoreCase(LOCAL_ADDRESS);
     }
 
     public static boolean teleport(@NotNull Player player, @NotNull Entity target) {

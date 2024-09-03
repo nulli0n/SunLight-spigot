@@ -9,9 +9,9 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.jetbrains.annotations.NotNull;
 import su.nightexpress.nightcore.manager.AbstractListener;
 import su.nightexpress.sunlight.SunLightPlugin;
-import su.nightexpress.sunlight.module.scoreboard.impl.BoardConfig;
-import su.nightexpress.sunlight.module.scoreboard.impl.Board;
 import su.nightexpress.sunlight.module.scoreboard.ScoreboardModule;
+import su.nightexpress.sunlight.module.scoreboard.board.Board;
+import su.nightexpress.sunlight.module.scoreboard.board.BoardConfig;
 
 public class ScoreboardListener extends AbstractListener<SunLightPlugin> {
 

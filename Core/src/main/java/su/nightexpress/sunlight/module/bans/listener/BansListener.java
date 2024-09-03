@@ -6,12 +6,14 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.jetbrains.annotations.NotNull;
 import su.nightexpress.nightcore.language.entry.LangText;
 import su.nightexpress.nightcore.manager.AbstractListener;
 import su.nightexpress.nightcore.util.CommandUtil;
 import su.nightexpress.nightcore.util.text.NightMessage;
 import su.nightexpress.sunlight.SunLightPlugin;
+import su.nightexpress.sunlight.data.user.SunUser;
 import su.nightexpress.sunlight.module.bans.BansModule;
 import su.nightexpress.sunlight.module.bans.config.BansConfig;
 import su.nightexpress.sunlight.module.bans.config.BansLang;
@@ -90,10 +92,12 @@ public class BansListener extends AbstractListener<SunLightPlugin> {
         }
     }
 
-    /*@EventHandler(priority = EventPriority.NORMAL)
-    public void onPlayerQuit(PlayerQuitEvent event) {
+    @EventHandler(priority = EventPriority.NORMAL)
+    public void onPlayerJoin(PlayerJoinEvent event) {
+        if (!BansConfig.isAltCheckerEnabled()) return;
+
         Player player = event.getPlayer();
         SunUser user = this.plugin.getUserManager().getUserData(event.getPlayer());
-        user.getSettings().set(SettingRegistry.LAST_RANK, Players.getPermissionGroup(player));
-    }*/
+        this.module.linkAltAccount(user);
+    }
 }

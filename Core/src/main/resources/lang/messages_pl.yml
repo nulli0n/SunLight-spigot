@@ -9,13 +9,6 @@
 # Discord: depozytek
 
 # W celu zgłoszenia jakichkolwiek błędów w tłumaczeniu, dodaj mnie na Discorda, którego nazwa znajduje się wyżej.
-
-# Tutaj możesz utworzyć własne niestandardowe symbole zastępcze, aby użyć ich w konfiguracji języka.
-# Key = Placeholder, Value = Replacer.
-Placeholders:
-  '%red%': '#fd5e5e'
-  '%gray%': '#d4d9d8'
-  '%green%': '#aefd5e'
 Generic:
   Command:
     Cooldown:

@@ -20,6 +20,7 @@ import su.nightexpress.sunlight.module.chat.PlayerChatData;
 import su.nightexpress.sunlight.module.chat.config.ChatConfig;
 import su.nightexpress.sunlight.module.chat.config.ChatLang;
 import su.nightexpress.sunlight.module.chat.config.ChatPerms;
+import su.nightexpress.sunlight.module.chat.discord.DiscordHandler;
 import su.nightexpress.sunlight.module.chat.event.AsyncSunlightPlayerChatEvent;
 import su.nightexpress.sunlight.module.chat.format.FormatContainer;
 import su.nightexpress.sunlight.module.chat.mention.Mention;
@@ -97,7 +98,6 @@ public class ChatMessageHandler {
             this.module.getChannelManager().joinChannel(player, this.getChannel(), true);
         }
         this.chatEvent.getRecipients().retainAll(this.getChannel().getRecipients(this.player));
-
         this.applyItemShowcase();
         this.applyMentions();
 
@@ -317,6 +317,16 @@ public class ChatMessageHandler {
             String finalFormat = event.getFinalFormat();
             event.getRecipients().forEach(receiver -> Players.sendModernMessage(receiver, finalFormat));
             event.getRecipients().clear();
+        }
+        else if (!Players.isReal(this.player)) {
+            String finalFormat = event.getFinalFormat();
+            event.getRecipients().forEach(receiver -> receiver.sendMessage(NightMessage.asLegacy(finalFormat)));
+            event.getRecipients().clear();
+        }
+
+        DiscordHandler discordHandler = this.module.getDiscordHandler();
+        if (discordHandler != null) {
+            discordHandler.sendToChannel(this.channel, NightMessage.stripAll(event.getFinalFormat()));
         }
 
         this.getMentioned().forEach(mentioned -> {

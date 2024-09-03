@@ -18,7 +18,9 @@ import su.nightexpress.sunlight.module.tab.impl.NameTagFormat;
 import su.nightexpress.sunlight.module.tab.impl.TabListFormat;
 import su.nightexpress.sunlight.module.tab.impl.TabNameFormat;
 import su.nightexpress.sunlight.module.tab.listener.TabListener;
-import su.nightexpress.sunlight.module.tab.util.PacketUtils;
+import su.nightexpress.sunlight.module.tab.handler.NametagHandler;
+import su.nightexpress.sunlight.module.tab.handler.PacketsTagHandler;
+import su.nightexpress.sunlight.module.tab.handler.ProtocolTagHandler;
 import su.nightexpress.sunlight.utils.DynamicText;
 
 import java.util.*;
@@ -28,7 +30,7 @@ public class TabModule extends Module {
 
     private final Map<String, DynamicText> animationMap;
 
-    private boolean packetsEnabled;
+    private NametagHandler tagHandler;
 
     public TabModule(@NotNull SunLightPlugin plugin, @NotNull String id) {
         super(plugin, id);
@@ -43,23 +45,34 @@ public class TabModule extends Module {
     @Override
     protected void onModuleLoad() {
         this.loadAnimations();
+        this.loadTagHandler();
 
         this.addListener(new TabListener(this.plugin, this));
 
         this.addTask(this.plugin.createAsyncTask(this::updateTablistFormat).setTicksInterval(TabConfig.TABLIST_UPDATE_INTERVAL.get()));
-
-        if (Plugins.isLoaded(HookId.PROTOCOL_LIB)) {
-            this.packetsEnabled = true;
-            this.addTask(this.plugin.createAsyncTask(this::updateNameTagsAndSortTab).setTicksInterval(TabConfig.NAMETAG_UPDATE_INTERVAL.get()));
-        }
-        else {
-            this.warn(HookId.PROTOCOL_LIB + " is not installed. Nametags and tab sorting will be disabled.");
-        }
     }
 
     @Override
     protected void onModuleUnload() {
         this.animationMap.clear();
+    }
+
+    private void loadTagHandler() {
+        if (Plugins.isInstalled(HookId.PACKET_EVENTS)) {
+            this.tagHandler = new PacketsTagHandler(this.plugin);
+        }
+        else if (Plugins.isInstalled(HookId.PROTOCOL_LIB)) {
+            this.tagHandler = new ProtocolTagHandler(this.plugin);
+        }
+
+        if (this.tagHandler != null) {
+            this.tagHandler.setup();
+            this.addTask(this.plugin.createAsyncTask(this::updateNameTagsAndSortTab).setTicksInterval(TabConfig.NAMETAG_UPDATE_INTERVAL.get()));
+        }
+        else {
+            this.warn("No compatible packet API plugins are installed.");
+            this.warn("Install one of the following plugins to enable the Nametags feature: " + HookId.PACKET_EVENTS + ", " + HookId.PROTOCOL_LIB);
+        }
     }
 
     private void loadAnimations() {
@@ -166,11 +179,11 @@ public class TabModule extends Module {
     }
 
     public void updateNameTagsAndSortTab(@NotNull Player player) {
-        if (!this.packetsEnabled) return;
+        if (this.tagHandler == null) return;
 
         NameTagFormat tag = this.getPlayerNametag(player);
         if (tag == null) return;
 
-        PacketUtils.sendTeamPacket(player, tag);
+        this.tagHandler.sendTeamPacket(player, tag);
     }
 }

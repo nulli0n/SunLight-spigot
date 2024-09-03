@@ -25,14 +25,17 @@ import su.nightexpress.sunlight.module.chat.handler.ChatMessageHandler;
 import su.nightexpress.sunlight.module.chat.handler.CommandHandler;
 import su.nightexpress.sunlight.module.chat.handler.PrivateMessageHandler;
 import su.nightexpress.sunlight.module.chat.listener.ChatListener;
+import su.nightexpress.sunlight.module.chat.discord.DiscordHandler;
 import su.nightexpress.sunlight.module.chat.mention.Mention;
 import su.nightexpress.sunlight.module.chat.mention.PlayerMention;
 import su.nightexpress.sunlight.module.chat.module.announcer.AnnounceManager;
 import su.nightexpress.sunlight.module.chat.module.deathmessage.DeathMessageManager;
 import su.nightexpress.sunlight.module.chat.module.joinquit.JoinMessageManager;
 import su.nightexpress.sunlight.module.chat.module.spy.SpyManager;
+import su.nightexpress.sunlight.module.chat.report.ReportHandler;
+import su.nightexpress.sunlight.module.chat.report.ReportPacketsHandler;
 import su.nightexpress.sunlight.module.chat.rule.RuleManager;
-import su.nightexpress.sunlight.module.chat.util.ReportDisabler;
+import su.nightexpress.sunlight.module.chat.report.ReportProtocolHandler;
 
 import java.util.*;
 
@@ -45,10 +48,12 @@ public class ChatModule extends Module {
     private ChannelManager      channelManager;
     private DeathMessageManager deathManager;
     private JoinMessageManager  joinManager;
-    private RuleManager        ruleManager;
-    private AnnounceManager announceManager;
-    private SpyManager      spyManager;
-    private ReportDisabler reportDisabler;
+    private RuleManager         ruleManager;
+    private AnnounceManager     announceManager;
+    private SpyManager          spyManager;
+
+    private ReportHandler  reportHandler;
+    private DiscordHandler discordHandler;
 
     public ChatModule(@NotNull SunLightPlugin plugin, @NotNull String id) {
         super(plugin, id);
@@ -75,7 +80,16 @@ public class ChatModule extends Module {
     protected void onModuleUnload() {
         ChannelCommands.unload(this.plugin, this);
 
-        if (this.reportDisabler != null) this.reportDisabler.shutdown();
+        if (this.discordHandler != null) {
+            this.discordHandler.shutdown();
+            this.discordHandler = null;
+        }
+
+        if (this.reportHandler != null) {
+            this.reportHandler.shutdown();
+            this.reportHandler = null;
+        }
+
         if (this.spyManager != null) this.spyManager.shutdown();
         if (this.announceManager != null) this.announceManager.shutdown();
         if (this.deathManager != null) this.deathManager.shutdown();
@@ -133,9 +147,22 @@ public class ChatModule extends Module {
             this.announceManager.setup();
         }
 
-        if (ChatConfig.DISABLE_REPORTS.get() && Plugins.isLoaded(HookId.PROTOCOL_LIB) && Version.isAbove(Version.V1_18_R2)) {
-            this.reportDisabler = new ReportDisabler(this.plugin);
-            this.reportDisabler.setup();
+        if (ChatConfig.DISABLE_REPORTS.get() && Version.isAtLeast(Version.V1_19_R3)) {
+            if (Plugins.isInstalled(HookId.PACKET_EVENTS)) {
+                this.reportHandler = new ReportPacketsHandler(this.plugin);
+            }
+            else if (Plugins.isInstalled(HookId.PROTOCOL_LIB)) {
+                this.reportHandler = new ReportProtocolHandler(this.plugin);
+            }
+
+            if (this.reportHandler != null) {
+                this.reportHandler.setup();
+            }
+        }
+
+        if (ChatConfig.DISCORD_HOOK_ENABLED.get() && HookId.hasDiscordSRV()) {
+            this.discordHandler = new DiscordHandler(this.plugin, this);
+            this.discordHandler.setup();
         }
     }
 
@@ -166,6 +193,11 @@ public class ChatModule extends Module {
     @Nullable
     public SpyManager getSpyManager() {
         return this.spyManager;
+    }
+
+    @Nullable
+    public DiscordHandler getDiscordHandler() {
+        return this.discordHandler;
     }
 
     @NotNull

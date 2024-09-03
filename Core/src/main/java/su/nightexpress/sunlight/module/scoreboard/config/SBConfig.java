@@ -4,7 +4,7 @@ import org.jetbrains.annotations.NotNull;
 import su.nightexpress.nightcore.config.ConfigValue;
 import su.nightexpress.nightcore.util.Lists;
 import su.nightexpress.nightcore.util.Plugins;
-import su.nightexpress.sunlight.module.scoreboard.impl.BoardConfig;
+import su.nightexpress.sunlight.module.scoreboard.board.BoardConfig;
 import su.nightexpress.sunlight.utils.DynamicText;
 
 import java.util.*;

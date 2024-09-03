@@ -1,4 +1,4 @@
-package su.nightexpress.sunlight.module.scoreboard.impl;
+package su.nightexpress.sunlight.module.scoreboard.board;
 
 import org.bukkit.World;
 import org.jetbrains.annotations.NotNull;

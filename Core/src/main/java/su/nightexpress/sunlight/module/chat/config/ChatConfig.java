@@ -44,6 +44,11 @@ public class ChatConfig {
         "See also: " + WIKI_TEXT_URL
     );
 
+    public static final ConfigValue<Boolean> DISCORD_HOOK_ENABLED = ConfigValue.create("Settings.DiscordSRV.Enabled",
+        true,
+        "Sets whether or not DiscordSRV hook is enabled."
+    );
+
     public static final ConfigValue<Boolean> DISABLE_REPORTS = ConfigValue.create("Settings.Disable_Reports",
         true,
         "[" + HookId.PROTOCOL_LIB + " Required]",

@@ -7,4 +7,6 @@ depend: [ nightcore ]
 softdepend:
   - PlaceholderAPI
   - ProtocolLib
+  - packetevents
+  - DiscordSRV
 api-version: 1.18

@@ -18,10 +18,7 @@ import net.minecraft.server.level.ServerPlayerGameMode;
 import net.minecraft.world.inventory.*;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.Level;
-import org.bukkit.Bukkit;
-import org.bukkit.ExplosionResult;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
+import org.bukkit.*;
 import org.bukkit.craftbukkit.v1_21_R1.CraftServer;
 import org.bukkit.craftbukkit.v1_21_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_21_R1.entity.CraftFallingBlock;
@@ -69,17 +66,17 @@ public class MC_1_21 implements SunNMS {
 
     @NotNull
     public Object fineChatPacket(@NotNull Object packet) {
-        ClientboundPlayerChatPacket chat = (ClientboundPlayerChatPacket) packet;
-        Component component = chat.unsignedContent() == null ? Component.literal(chat.body().content()) : chat.unsignedContent();
+        ClientboundPlayerChatPacket chatPacket = (ClientboundPlayerChatPacket) packet;
+        Component component = chatPacket.unsignedContent() == null ? Component.literal(chatPacket.body().content()) : chatPacket.unsignedContent();
 
         CraftServer server = (CraftServer) Bukkit.getServer();
         Registry<ChatType> chatTypeRegistry = server.getServer().registryAccess().registryOrThrow(Registries.CHAT_TYPE);
 
-        Holder<ChatType> holder = chat.chatType().chatType();
+        Holder<ChatType> holder = chatPacket.chatType().chatType();
         ChatType type = chatTypeRegistry.stream().filter(has -> chatTypeRegistry.getId(has) == chatTypeRegistry.getId(holder.value())).findFirst().orElse(null);
         if (type == null) return packet;
 
-        ChatType.Bound decorator = new ChatType.Bound(holder, chat.chatType().name(), chat.chatType().targetName());
+        ChatType.Bound decorator = new ChatType.Bound(holder, chatPacket.chatType().name(), chatPacket.chatType().targetName());
         component = decorator.decorate(component);
 
         return new ClientboundSystemChatPacket(component, false);

@@ -36,16 +36,16 @@ public class UserInfo {
     }
 
     public boolean isUser(@NotNull Player player) {
-        return player.getUniqueId().equals(this.getId());
+        return player.getUniqueId().equals(this.id);
     }
 
     public boolean isUser(@NotNull String name) {
-        return this.getName().equalsIgnoreCase(name);
+        return this.name.equalsIgnoreCase(name);
     }
 
     @Override
     public boolean equals(Object obj) {
-        return obj instanceof UserInfo info && info.getId().equals(this.getId());
+        return obj instanceof UserInfo info && info.getId().equals(this.id);
     }
 
     @Override

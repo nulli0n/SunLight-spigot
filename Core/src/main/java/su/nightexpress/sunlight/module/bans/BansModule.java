@@ -15,12 +15,10 @@ import su.nightexpress.nightcore.util.TimeUtil;
 import su.nightexpress.nightcore.util.text.NightMessage;
 import su.nightexpress.sunlight.SunLightPlugin;
 import su.nightexpress.sunlight.config.Lang;
+import su.nightexpress.sunlight.data.user.SunUser;
 import su.nightexpress.sunlight.module.Module;
 import su.nightexpress.sunlight.module.ModuleInfo;
-import su.nightexpress.sunlight.module.bans.command.HistoryCommands;
-import su.nightexpress.sunlight.module.bans.command.ListCommands;
-import su.nightexpress.sunlight.module.bans.command.PunishCommands;
-import su.nightexpress.sunlight.module.bans.command.UnPunishCommands;
+import su.nightexpress.sunlight.module.bans.command.*;
 import su.nightexpress.sunlight.module.bans.config.BansConfig;
 import su.nightexpress.sunlight.module.bans.config.BansLang;
 import su.nightexpress.sunlight.module.bans.config.BansPerms;
@@ -36,6 +34,7 @@ import su.nightexpress.sunlight.module.bans.util.TimeUnit;
 import su.nightexpress.sunlight.utils.SunUtils;
 import su.nightexpress.sunlight.utils.UserInfo;
 
+import java.net.InetAddress;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
@@ -45,15 +44,17 @@ public class BansModule extends Module {
 
     private final Map<UUID, Map<PunishmentType, Set<PunishedPlayer>>> punishedPlayerMap;
     private final Map<String, Set<PunishedIP>>                        punishedIPMap;
+    private final Map<String, Set<UserInfo>>                              altAccountsMap;
 
     private BansDataHandler dataHandler;
-    private HistoryMenu historyMenu;
+    private HistoryMenu     historyMenu;
     private PunishmentsMenu punishmentsMenu;
 
     public BansModule(@NotNull SunLightPlugin plugin, @NotNull String id) {
         super(plugin, id);
         this.punishedPlayerMap = new ConcurrentHashMap<>();
         this.punishedIPMap = new ConcurrentHashMap<>();
+        this.altAccountsMap = new HashMap<>();
     }
 
     @Override
@@ -72,6 +73,9 @@ public class BansModule extends Module {
         this.loadMenu();
         this.loadSettings();
         this.loadCommands();
+        if (BansConfig.isAltCheckerEnabled() && !BansConfig.ALTS_CHECK_CACHE_JOINED_ONLY.get()) {
+            this.loadAlts();
+        }
 
         this.addListener(new BansListener(this.plugin, this));
     }
@@ -85,6 +89,7 @@ public class BansModule extends Module {
 
         this.punishedPlayerMap.clear();
         this.punishedIPMap.clear();
+        this.altAccountsMap.clear();
     }
 
     private void loadMenu() {
@@ -104,6 +109,13 @@ public class BansModule extends Module {
         UnPunishCommands.load(this.plugin, this);
         HistoryCommands.load(this.plugin, this);
         ListCommands.load(this.plugin, this);
+        BaseCommands.load(this.plugin, this);
+    }
+
+    private void loadAlts() {
+        this.plugin.runTaskAsync(task -> {
+            this.altAccountsMap.putAll(this.plugin.getData().getPlayerIPs());
+        });
     }
 
     @NotNull
@@ -243,7 +255,7 @@ public class BansModule extends Module {
     }
 
     public boolean hasImmunity(@NotNull String target) {
-        return BansConfig.IMMUNE_LIST.get().contains(target.toLowerCase());
+        return BansConfig.IMMUNE_LIST.get().contains(target.toLowerCase()) || SunUtils.isLocalAddress(target);
     }
 
     private boolean canBePunished(@NotNull CommandSender executor, @NotNull String target) {
@@ -532,5 +544,30 @@ public class BansModule extends Module {
                 .replace(punishData.replacePlaceholders())
                 .broadcast();
         }
+    }
+
+    @NotNull
+    public Map<String, Set<UserInfo>> getAltAccountsMap() {
+        return altAccountsMap;
+    }
+
+    @NotNull
+    public Set<UserInfo> getAltAccounts(@NotNull InetAddress address) {
+        return this.getAltAccounts(SunUtils.getRawAddress(address));
+    }
+
+    @NotNull
+    public Set<UserInfo> getAltAccounts(@NotNull String inetAddress) {
+        return this.altAccountsMap.getOrDefault(inetAddress, Collections.emptySet());
+    }
+
+    public void linkAltAccount(@NotNull SunUser user) {
+        this.linkAltAccount(user.getInetAddress(), new UserInfo(user));
+    }
+
+    public void linkAltAccount(@NotNull String inetAddress, @NotNull UserInfo userInfo) {
+        if (SunUtils.isLocalAddress(inetAddress)) return;
+
+        this.altAccountsMap.computeIfAbsent(inetAddress, k -> new HashSet<>()).add(userInfo);
     }
 }

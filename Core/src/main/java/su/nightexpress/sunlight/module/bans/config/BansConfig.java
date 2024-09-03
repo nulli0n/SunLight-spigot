@@ -6,6 +6,7 @@ import su.nightexpress.sunlight.module.bans.punishment.PunishmentReason;
 import su.nightexpress.sunlight.module.bans.punishment.PunishmentType;
 import su.nightexpress.sunlight.module.bans.util.RankDuration;
 import su.nightexpress.sunlight.module.bans.util.TimeUnit;
+import su.nightexpress.sunlight.utils.SunUtils;
 
 import java.util.*;
 
@@ -76,8 +77,25 @@ public class BansConfig {
         ),
         "Text to display for player in disconnect window when kicked.");
 
+
+
+    public static final ConfigValue<Boolean> ALTS_CHECK_ENABLED = ConfigValue.create("AltsCheck.Enabled",
+        true,
+        "Sets whether or not alt-account checker feature is enabled."
+    );
+
+    public static final ConfigValue<Boolean> ALTS_CHECK_CACHE_JOINED_ONLY = ConfigValue.create("AltsCheck.Cache_Joined_Players_Only",
+        false,
+        "Sets whether or not plugin should cache IPs only of players that joined since the latest server or plugin reboot.",
+        "When disabled, plugin will cache IPs of all players in the database, which can increase memory usage.",
+        "[*] Keep in mind that local IPs (" + SunUtils.LOCAL_ADDRESS + ") are never cached.",
+        "[Default is false]"
+    );
+
+
+
     public static final ConfigValue<Set<String>> PUNISHMENTS_MUTE_BLOCKED_COMMANDS = ConfigValue.create("Punishments.Mute.Blocked_Commands",
-        Set.of("tell", "me", "broadcast"),
+        Lists.newSet("tell", "me", "broadcast"),
         "List of disabled commands for muted players.",
         "All aliases for listed commands will be auto-detected and disabled too."
     );
@@ -166,4 +184,8 @@ public class BansConfig {
         "Executes custom commands (from console) when player reaches certain amount of active warns.",
         "Use '" + PLAYER_NAME + "' placeholder for a player name."
     );
+
+    public static boolean isAltCheckerEnabled() {
+        return ALTS_CHECK_ENABLED.get();
+    }
 }

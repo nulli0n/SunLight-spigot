@@ -161,7 +161,7 @@ public class KitSettingsEditor extends EditorMenu<SunLightPlugin, Kit> {
     @Override
     public void onClick(@NotNull MenuViewer viewer, @NotNull ClickResult result, @NotNull InventoryClickEvent event) {
         super.onClick(viewer, result, event);
-        if (result.isInventory()) {
+        if (result.isInventory() && !event.isShiftClick()) {
             event.setCancelled(false);
         }
     }

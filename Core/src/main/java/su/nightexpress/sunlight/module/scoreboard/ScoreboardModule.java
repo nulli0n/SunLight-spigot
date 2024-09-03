@@ -6,6 +6,7 @@ import org.jetbrains.annotations.Nullable;
 import su.nightexpress.nightcore.config.FileConfig;
 import su.nightexpress.nightcore.util.Players;
 import su.nightexpress.nightcore.util.Plugins;
+import su.nightexpress.nightcore.util.Version;
 import su.nightexpress.sunlight.SunLightPlugin;
 import su.nightexpress.sunlight.core.user.settings.Setting;
 import su.nightexpress.sunlight.core.user.settings.SettingRegistry;
@@ -13,12 +14,15 @@ import su.nightexpress.sunlight.data.user.SunUser;
 import su.nightexpress.sunlight.hook.HookId;
 import su.nightexpress.sunlight.module.Module;
 import su.nightexpress.sunlight.module.ModuleInfo;
+import su.nightexpress.sunlight.module.scoreboard.board.Board;
+import su.nightexpress.sunlight.module.scoreboard.board.BoardProvider;
+import su.nightexpress.sunlight.module.scoreboard.board.impl.ProtocolBoard;
 import su.nightexpress.sunlight.module.scoreboard.command.ScoreboardCommand;
 import su.nightexpress.sunlight.module.scoreboard.config.SBConfig;
 import su.nightexpress.sunlight.module.scoreboard.config.SBLang;
 import su.nightexpress.sunlight.module.scoreboard.config.SBPerms;
-import su.nightexpress.sunlight.module.scoreboard.impl.Board;
-import su.nightexpress.sunlight.module.scoreboard.impl.BoardConfig;
+import su.nightexpress.sunlight.module.scoreboard.board.BoardConfig;
+import su.nightexpress.sunlight.module.scoreboard.board.impl.PacketBoard;
 import su.nightexpress.sunlight.module.scoreboard.listener.ScoreboardListener;
 import su.nightexpress.sunlight.utils.DynamicText;
 
@@ -32,6 +36,8 @@ public class ScoreboardModule extends Module {
     private final Map<String, DynamicText> animationMap;
     private final Map<Player, Board>       boardMap;
 
+    private BoardProvider provider;
+
     public ScoreboardModule(@NotNull SunLightPlugin plugin, @NotNull String id) {
         super(plugin, id);
         this.animationMap = new HashMap<>();
@@ -39,15 +45,6 @@ public class ScoreboardModule extends Module {
     }
 
     // TODO Auto update scoreboard if player rank/perm changed
-
-    @Override
-    public boolean canLoad() {
-        if (!Plugins.isLoaded(HookId.PROTOCOL_LIB)) {
-            this.error("You must have " + HookId.PROTOCOL_LIB + " installed to use " + this.getName() + " module!");
-            return false;
-        }
-        return true;
-    }
 
     @Override
     protected void gatherInfo(@NotNull ModuleInfo moduleInfo) {
@@ -59,6 +56,7 @@ public class ScoreboardModule extends Module {
     @Override
     protected void onModuleLoad() {
         this.loadAnimations();
+        this.loadProvider();
 
         this.registerCommands();
 
@@ -73,6 +71,20 @@ public class ScoreboardModule extends Module {
         this.boardMap.values().forEach(Board::remove);
         this.boardMap.clear();
         this.animationMap.clear();
+    }
+
+    private void loadProvider() {
+        if (Plugins.isInstalled(HookId.PACKET_EVENTS) && Version.isAtLeast(Version.V1_20_R3)) {
+            this.provider = PacketBoard::new;
+        }
+        else if (Plugins.isInstalled(HookId.PROTOCOL_LIB)) {
+            this.provider = ProtocolBoard::new;
+        }
+
+        if (this.provider == null) {
+            this.warn("No compatible packet API plugins are installed.");
+            this.warn("Install one of the following plugins to enable the Scoreboard feature: " + HookId.PACKET_EVENTS + ", " + HookId.PROTOCOL_LIB);
+        }
     }
 
     private void loadAnimations() {
@@ -147,9 +159,10 @@ public class ScoreboardModule extends Module {
     }
 
     public void addBoard(@NotNull Player player, @NotNull BoardConfig boardConfig) {
+        if (this.provider == null) return;
         if (this.hasBoard(player)) return;
 
-        this.boardMap.computeIfAbsent(player, k -> new Board(player, this, boardConfig)).create();
+        this.boardMap.computeIfAbsent(player, k -> this.provider.create(player, this, boardConfig)).create();
     }
 
     public void removeBoard(@NotNull Player player) {
