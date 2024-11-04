@@ -8,6 +8,7 @@ import org.bukkit.event.block.BlockExplodeEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.inventory.Inventory;
 import org.jetbrains.annotations.NotNull;
+import su.nightexpress.sunlight.api.MenuType;
 
 import java.util.UUID;
 
@@ -33,19 +34,44 @@ public interface SunNMS {
 
     void teleport(@NotNull Player player, @NotNull Location location);
 
-    void openAnvil(@NotNull Player player);
+    default void openContainer(@NotNull Player player, @NotNull MenuType menuType) {
 
-    void openEnchanting(@NotNull Player player);
+    }
 
-    void openGrindstone(@NotNull Player player);
+    @Deprecated
+    default void openAnvil(@NotNull Player player) {
 
-    void openLoom(@NotNull Player player);
+    }
 
-    void openSmithing(@NotNull Player player);
+    @Deprecated
+    default void openEnchanting(@NotNull Player player) {
 
-    void openCartography(@NotNull Player player);
+    }
 
-    void openStonecutter(@NotNull Player player);
+    @Deprecated
+    default void openGrindstone(@NotNull Player player) {
+
+    }
+
+    @Deprecated
+    default void openLoom(@NotNull Player player) {
+
+    }
+
+    @Deprecated
+    default void openSmithing(@NotNull Player player) {
+
+    }
+
+    @Deprecated
+    default void openCartography(@NotNull Player player){
+
+    }
+
+    @Deprecated
+    default void openStonecutter(@NotNull Player player) {
+
+    }
 
     void dropFallingContent(@NotNull FallingBlock fallingBlock);
 }

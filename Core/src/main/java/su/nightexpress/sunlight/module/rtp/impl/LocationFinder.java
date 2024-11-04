@@ -132,7 +132,7 @@ public class LocationFinder {
         }
 
         Location location = new Location(this.world, locX, bY + 1, locZ);
-        Teleporter teleporter = new Teleporter(this.player, location).centered().useOriginalDirection();
+        Teleporter teleporter = new Teleporter(this.player, location).centered().validateFloor().useOriginalDirection();
 
         this.plugin.runTaskLater(task -> {
             teleporter.teleport();

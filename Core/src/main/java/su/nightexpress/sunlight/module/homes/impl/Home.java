@@ -93,7 +93,7 @@ public class Home implements Placeholder {
         plugin.getPluginManager().callEvent(event);
         if (event.isCancelled()) return false;
 
-        Teleporter teleporter = new Teleporter(player, this.getLocation()).centered();
+        Teleporter teleporter = new Teleporter(player, this.getLocation()).centered().validateFloor();
         if (!teleporter.teleport()) {
             return false;
         }

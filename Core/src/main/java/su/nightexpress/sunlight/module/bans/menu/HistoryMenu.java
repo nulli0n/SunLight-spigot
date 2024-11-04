@@ -21,12 +21,12 @@ import su.nightexpress.nightcore.menu.link.ViewLink;
 import su.nightexpress.nightcore.util.*;
 import su.nightexpress.sunlight.SunLightPlugin;
 import su.nightexpress.sunlight.config.Lang;
+import su.nightexpress.sunlight.data.user.SunUser;
 import su.nightexpress.sunlight.module.bans.BansModule;
 import su.nightexpress.sunlight.module.bans.config.BansLang;
 import su.nightexpress.sunlight.module.bans.config.BansPerms;
 import su.nightexpress.sunlight.module.bans.punishment.PunishData;
 import su.nightexpress.sunlight.module.bans.punishment.PunishmentType;
-import su.nightexpress.sunlight.utils.UserInfo;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -79,14 +79,14 @@ public class HistoryMenu extends ConfigMenu<SunLightPlugin> implements AutoFille
         }
     }
 
-    public static class PlayerSource extends Source<UserInfo> {
+    static class PlayerSource extends Source<SunUser> {
 
-        public PlayerSource(@NotNull UserInfo object, @NotNull PunishmentType type) {
+        public PlayerSource(@NotNull SunUser object, @NotNull PunishmentType type) {
             super(object, type);
         }
     }
 
-    public static class AddressSource extends Source<String> {
+    static class AddressSource extends Source<String> {
 
         public AddressSource(@NotNull String object, @NotNull PunishmentType type) {
             super(object, type);
@@ -128,6 +128,14 @@ public class HistoryMenu extends ConfigMenu<SunLightPlugin> implements AutoFille
     @Override
     public ViewLink<HistoryMenu.Source<?>> getLink() {
         return link;
+    }
+
+    public boolean openForPlayer(@NotNull Player player, @NotNull SunUser userInfo, @NotNull PunishmentType type) {
+        return this.open(player, new PlayerSource(userInfo, type));
+    }
+
+    public boolean openForIPBans(@NotNull Player player, @NotNull String address) {
+        return this.open(player, new AddressSource(address, PunishmentType.BAN));
     }
 
     @Override

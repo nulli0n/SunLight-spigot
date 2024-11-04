@@ -18,7 +18,6 @@ import su.nightexpress.sunlight.module.bans.punishment.PunishedIP;
 import su.nightexpress.sunlight.module.bans.punishment.PunishedPlayer;
 import su.nightexpress.sunlight.module.bans.punishment.PunishmentType;
 import su.nightexpress.sunlight.utils.SunUtils;
-import su.nightexpress.sunlight.utils.UserInfo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -84,7 +83,7 @@ public class HistoryCommands {
                 return;
             }
 
-            module.openHistory(context.getExecutor(), new UserInfo(user), type);
+            module.openHistory(context.getExecutor(), user, type);
         });
         return true;
     }

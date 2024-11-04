@@ -5,6 +5,7 @@ import org.bukkit.entity.EntityType;
 import org.jetbrains.annotations.NotNull;
 import su.nightexpress.nightcore.util.BukkitThing;
 import su.nightexpress.nightcore.util.wrapper.UniPermission;
+import su.nightexpress.sunlight.api.MenuType;
 import su.nightexpress.sunlight.command.list.WeatherCommands;
 import su.nightexpress.sunlight.command.mode.ModifyMode;
 import su.nightexpress.sunlight.config.Perms;
@@ -50,12 +51,13 @@ public class CommandPerms {
     public static final Function<ModifyMode, UniPermission> AIR_MODE        = mode -> create("air", mode.name().toLowerCase());
     public static final Function<ModifyMode, UniPermission> AIR_MODE_OTHERS = mode -> createOthers("air", mode.name().toLowerCase());
 
-    public static final UniPermission ANVIL        = create("anvil");
-    public static final UniPermission ANVIL_OTHERS = createOthers("anvil");
-
     public static final UniPermission BROADCAST = create("broadcast");
 
     public static final UniPermission CONDENSE = create("condense");
+
+    public static final Function<MenuType, UniPermission> CONTAINER_TYPE        = type -> create("container", type.name().toLowerCase());
+    public static final Function<MenuType, UniPermission> CONTAINER_TYPE_OTHERS = type -> createOthers("container", type.name().toLowerCase());
+
 
     public static final UniPermission DIMENSION        = create("dimension");
     public static final UniPermission DIMENSION_OTHERS = createOthers("dimension");
@@ -74,8 +76,6 @@ public class CommandPerms {
 
     public static final UniPermission ENCHANT                  = create("enchant");
     public static final UniPermission ENCHANT_OTHERS           = createOthers("enchant");
-    public static final UniPermission ENCHANTING               = create("enchanting");
-    public static final UniPermission ENCHANTING_OTHERS        = createOthers("enchanting");
 
     public static final Function<ModifyMode, UniPermission> EXPERIENCE_MODE        = mode -> create("experience", mode.name().toLowerCase());
     public static final Function<ModifyMode, UniPermission> EXPERIENCE_MODE_OTHERS = mode -> createOthers("experience", mode.name().toLowerCase());
@@ -99,9 +99,6 @@ public class CommandPerms {
 
     public static final Function<GameMode, UniPermission> GAMEMODE_TYPE   = mode -> create("gamemode", mode.name().toLowerCase());
     public static final Function<GameMode, UniPermission> GAMEMODE_TYPE_OTHERS   = mode -> createOthers("gamemode", mode.name().toLowerCase());
-
-    public static final UniPermission                     GRINDSTONE        = create("grindstone");
-    public static final UniPermission                     GRINDSTONE_OTHERS = createOthers("grindstone");
 
     public static final UniPermission HAT = create("hat");
 
@@ -137,10 +134,6 @@ public class CommandPerms {
     public static final UniPermission ITEM_REPAIR      = create("item", "repair");
     public static final UniPermission ITEM_SPAWN       = create("item", "spawn");
     public static final UniPermission ITEM_TAKE        = create("item", "take");
-
-
-    public static final UniPermission LOOM        = create("loom");
-    public static final UniPermission LOOM_OTHERS = createOthers("loom");
 
     public static final UniPermission MOB_KILL  = create("mob", "kill");
     public static final UniPermission MOB_CLEAR = create("mob", "clear");
@@ -198,14 +191,9 @@ public class CommandPerms {
 
     public static final Function<WeatherCommands.Type, UniPermission> WEATHER_TYPE = type -> create("weather", type.name().toLowerCase());
 
-    public static final UniPermission WORKBENCH        = create("workbench");
-    public static final UniPermission WORKBENCH_OTHERS = createOthers("workbench");
-
     static {
         Perms.COMMAND.addChildren(
             RELOAD,
-
-            ANVIL, ANVIL_OTHERS,
 
             BROADCAST,
 
@@ -221,7 +209,6 @@ public class CommandPerms {
             ENDERCHEST_REPAIR, ENDERCHEST_REPAIR_OTHERS,
 
             ENCHANT, ENCHANT_OTHERS,
-            ENCHANTING, ENCHANTING_OTHERS,
             EXPERIENCE_VIEW, EXPERIENCE_VIEW_OTHERS,
 
             FIRE_SET, FIRE_SET_OTHERS,
@@ -230,8 +217,6 @@ public class CommandPerms {
             FLY_SPEED, FLY_SPEED_OTHERS,
 
             FOOD_LEVEL_RESTORE, FOOD_LEVEL_RESTORE_OTHERS,
-
-            GRINDSTONE, GRINDSTONE_OTHERS,
 
             HAT,
             HEALTH_RESTORE, HEALTH_RESTORE_OTHERS,
@@ -249,8 +234,6 @@ public class CommandPerms {
             ITEM_AMOUNT, ITEM_DAMAGE, ITEM_ENCHANT,
             ITEM_GET, ITEM_GIVE, ITEM_LORE, ITEM_MODEL, ITEM_NAME,
             ITEM_POTION, ITEM_SPAWN, ITEM_TAKE, ITEM_UNBREAKABLE,
-
-            LOOM, LOOM_OTHERS,
 
             MOB_CLEAR, MOB_KILL, MOB_SPAWN,
 
@@ -280,10 +263,15 @@ public class CommandPerms {
 
             TIME_SET, TIME_SHOW,
             TIME_PERSONAL_SET, TIME_PERSONAL_SET_OTHERS,
-            TIME_PERSONAL_RESET, TIME_PERSONAL_RESET_OTHERS,
-
-            WORKBENCH, WORKBENCH_OTHERS
+            TIME_PERSONAL_RESET, TIME_PERSONAL_RESET_OTHERS
         );
+
+        for (MenuType menuType : MenuType.values()) {
+            Perms.COMMAND.addChildren(
+                CONTAINER_TYPE.apply(menuType),
+                CONTAINER_TYPE_OTHERS.apply(menuType)
+            );
+        }
 
         for (GameMode mode : GameMode.values()) {
             Perms.COMMAND.addChildren(
@@ -291,6 +279,7 @@ public class CommandPerms {
                 GAMEMODE_TYPE_OTHERS.apply(mode)
             );
         }
+
         for (ModifyMode mode : ModifyMode.values()) {
             Perms.COMMAND.addChildren(
                 AIR_MODE.apply(mode),
@@ -303,6 +292,7 @@ public class CommandPerms {
                 FOOD_LEVEL_MODE_OTHERS.apply(mode)
             );
         }
+
         for (WeatherCommands.Type type : WeatherCommands.Type.values()) {
             Perms.COMMAND.addChildren(WEATHER_TYPE.apply(type));
         }

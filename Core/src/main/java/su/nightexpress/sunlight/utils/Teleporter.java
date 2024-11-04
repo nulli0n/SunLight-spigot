@@ -1,6 +1,8 @@
 package su.nightexpress.sunlight.utils;
 
 import org.bukkit.Location;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -11,7 +13,8 @@ public class Teleporter {
     private final Player   player;
     private final Location destination;
 
-    private boolean  useOriginalDirection;
+    private boolean useOriginalDirection;
+    private boolean validateFloor;
 
     public Teleporter(@NotNull Player player, @NotNull Entity target) {
         this(player, target.getLocation());
@@ -25,6 +28,13 @@ public class Teleporter {
     public boolean teleport() {
         Location location = this.destination;
 
+        if (this.validateFloor) {
+            Block block = location.getBlock();
+            if (!block.isEmpty()) {
+                location = block.getRelative(BlockFace.UP).getLocation();
+            }
+        }
+
         if (this.useOriginalDirection) {
             Location source = this.player.getLocation();
             location.setYaw(source.getYaw());
@@ -32,6 +42,12 @@ public class Teleporter {
         }
 
         return SunUtils.teleport(this.player, location);
+    }
+
+    @NotNull
+    public Teleporter validateFloor() {
+        this.validateFloor = true;
+        return this;
     }
 
     @NotNull

@@ -12,6 +12,7 @@ import su.nightexpress.sunlight.core.cooldown.CooldownType;
 import su.nightexpress.sunlight.core.user.IgnoredUser;
 import su.nightexpress.sunlight.core.user.settings.SettingRegistry;
 import su.nightexpress.sunlight.module.chat.ChatModule;
+import su.nightexpress.sunlight.module.homes.HomesModule;
 import su.nightexpress.sunlight.module.kits.Kit;
 import su.nightexpress.sunlight.module.warps.impl.Warp;
 import su.nightexpress.sunlight.utils.UserInfo;
@@ -62,6 +63,16 @@ public class SunUser extends AbstractUser<SunLightPlugin> {
     }
 
     @Override
+    public void onLoad() {
+        super.onLoad();
+
+//        HomesModule homesModule = this.plugin.getModuleManager().getModule(HomesModule.class).orElse(null);
+//        if (homesModule != null) {
+//            homesModule.loadHomes(this.getId());
+//        }
+    }
+
+    @Override
     public void onUnload() {
         super.onUnload();
 
@@ -69,6 +80,11 @@ public class SunUser extends AbstractUser<SunLightPlugin> {
         if (chatModule != null) {
             chatModule.clearChatData(this.getId());
         }
+
+//        HomesModule homesModule = this.plugin.getModuleManager().getModule(HomesModule.class).orElse(null);
+//        if (homesModule != null) {
+//            homesModule.unloadHomes(this.getId());
+//        }
     }
 
     public void setNewlyCreated(boolean newlyCreated) {

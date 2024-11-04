@@ -99,7 +99,7 @@ public class PTPModule extends Module {
     @Nullable
     public TeleportRequest getLatest(@NotNull UUID playerId) {
         List<TeleportRequest> requests = this.getRequests(playerId);
-        return requests.isEmpty() ? null : requests.getLast();
+        return requests.isEmpty() ? null : requests.get(requests.size() - 1);
     }
 
     public void clearRequests(@NotNull Player player) {

@@ -129,7 +129,6 @@ public class HomeCommands {
         Player player = context.getPlayerOrThrow();
         String userName = arguments.getStringArgument(CommandArguments.PLAYER, player.getName());
 
-        // TODO Use user Name -> ID cache in nightcore
         plugin.getUserManager().manageUser(userName, user -> {
             if (user == null) {
                 context.errorBadPlayer();
@@ -230,7 +229,6 @@ public class HomeCommands {
         String ownerName = arguments.getStringArgument(CommandArguments.PLAYER);
         String homeName = arguments.getStringArgument(CommandArguments.NAME, Placeholders.DEFAULT);
 
-        // TODO Also ID Cache
         plugin.getUserManager().manageUser(ownerName, user -> {
             if (user == null) {
                 context.errorBadPlayer();

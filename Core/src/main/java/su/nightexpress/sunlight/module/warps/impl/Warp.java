@@ -190,7 +190,7 @@ public class Warp extends AbstractFileData<SunLightPlugin> implements Placeholde
         this.plugin.getPluginManager().callEvent(event);
         if (event.isCancelled()) return false;
 
-        Teleporter teleporter = new Teleporter(player, this.getLocation()).centered();
+        Teleporter teleporter = new Teleporter(player, this.getLocation()).centered().validateFloor();
         if (!teleporter.teleport()) return false;
 
         WarpsLang.WARP_TELEPORT_DONE.getMessage().replace(this.replacePlaceholders()).send(player);

@@ -120,13 +120,12 @@ public class CommandRegistry {
 
     private static void loadCoreCommands(@NotNull SunLightPlugin plugin, @NotNull FileConfig config) {
         AirCommand.load(plugin);
-        AnvilCommand.load(plugin);
         BroadcastCommand.load(plugin);
         CondenseCommand.load(plugin);
+        ContainerCommands.load(plugin);
         DimensionCommand.load(plugin);
         DisposalCommand.load(plugin);
         EnchantCommand.load(plugin);
-        EnchantingCommand.load(plugin);
         EnderchestCommand.load(plugin);
         ExperienceCommand.load(plugin);
         FireCommands.load(plugin);
@@ -134,13 +133,11 @@ public class CommandRegistry {
         FlySpeedCommand.load(plugin);
         FoodLevelCommand.load(plugin);
         GameModeCommand.load(plugin);
-        GrindstoneCommand.load(plugin);
         HatCommand.load(plugin);
         HealthCommand.load(plugin);
         IgnoreCommands.load(plugin);
         InventoryCommand.load(plugin);
         ItemCommands.load(plugin);
-        LoomCommand.load(plugin);
         MobCommand.load(plugin);
         NearCommand.load(plugin);
         NickCommand.load(plugin);
@@ -155,7 +152,6 @@ public class CommandRegistry {
         TeleportCommands.load(plugin);
         TimeCommands.load(plugin, config);
         WeatherCommands.load(plugin);
-        WorkbenchCommand.load(plugin);
     }
 
     private static void registerCommands(@NotNull SunLightPlugin plugin, @NotNull FileConfig config) {
@@ -231,16 +227,21 @@ public class CommandRegistry {
 
         plugin.getCommandManager().registerCommand(command);
         REGISTERED.add(name);
-        plugin.info("Registered command: " + name);
+
+        if (CommandConfig.DEBUG_REGISTER_LOG.get()) {
+            plugin.info("Registered command: " + name);
+        }
     }
 
     public static boolean unregister(@NotNull SunLightPlugin plugin, @NotNull String name) {
-        if (plugin.getCommandManager().unregisterServerCommand(name)) {
-            REGISTERED.remove(name);
+        if (!plugin.getCommandManager().unregisterServerCommand(name)) return false;
+
+        REGISTERED.remove(name);
+
+        if (CommandConfig.DEBUG_REGISTER_LOG.get()) {
             plugin.info("Unregistered command: " + name);
-            return true;
         }
 
-        return false;
+        return true;
     }
 }

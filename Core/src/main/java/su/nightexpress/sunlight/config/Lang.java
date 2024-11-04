@@ -8,6 +8,7 @@ import su.nightexpress.nightcore.language.entry.LangEnum;
 import su.nightexpress.nightcore.language.entry.LangString;
 import su.nightexpress.nightcore.language.entry.LangText;
 import su.nightexpress.nightcore.language.message.OutputType;
+import su.nightexpress.sunlight.api.MenuType;
 import su.nightexpress.sunlight.command.list.ExperienceCommand;
 import su.nightexpress.sunlight.command.list.IgnoreCommands;
 import su.nightexpress.sunlight.command.list.WeatherCommands;
@@ -22,6 +23,7 @@ public class Lang extends CoreLang {
     public static final LangEnum<GameMode>               GAME_MODE      = LangEnum.of("GameMode", GameMode.class);
     public static final LangEnum<ExperienceCommand.Type> EXP_TYPE       = LangEnum.of("ExperienceType", ExperienceCommand.Type.class);
     public static final LangEnum<WeatherCommands.Type>   WEATHER_TYPE   = LangEnum.of("WeatherType", WeatherCommands.Type.class);
+    public static final LangEnum<MenuType>               MENU_TYPE      = LangEnum.of("MenuType", MenuType.class);
 
     public static final LangString COMMAND_ARGUMENT_NAME_SLOT     = LangString.of("Command.Argument.Name.Slot", "slot");
     public static final LangString COMMAND_ARGUMENT_NAME_ENCHANT  = LangString.of("Command.Argument.Name.Enchant", "enchant");
@@ -81,18 +83,6 @@ public class Lang extends CoreLang {
     );
 
     
-    public static final LangString COMMAND_ANVIL_DESC = LangString.of("Command.Anvil.Desc", "Open portable anvil.");
-
-    public static final LangText COMMAND_ANVIL_TARGET = LangText.of("Command.Anvil.Target",
-        LIGHT_GRAY.enclose("Opened portable anvil for " + LIGHT_YELLOW.enclose(PLAYER_DISPLAY_NAME) + ".")
-    );
-
-    public static final LangText COMMAND_ANVIL_NOTIFY = LangText.of("Command.Anvil.Notify",
-        OUTPUT.enclose(OutputType.ACTION_BAR),
-        LIGHT_GRAY.enclose("You opened portable anvil.")
-    );
-
-    
     public static final LangString COMMAND_BROADCAST_DESC = LangString.of("Command.Broadcast.Desc", "Broadcast a message.");
 
     
@@ -110,6 +100,19 @@ public class Lang extends CoreLang {
     public static final LangText COMMAND_CONDENSE_DONE = LangText.of("Command.Condense.Done",
         LIGHT_GRAY.enclose("Converted " + LIGHT_YELLOW.enclose("x" + GENERIC_TOTAL + " " + GENERIC_SOURCE) + " to " + LIGHT_YELLOW.enclose("x" + GENERIC_AMOUNT + " " + GENERIC_RESULT) + ".")
     );
+
+
+    public static final LangString COMMAND_CONTAINER_DESC = LangString.of("Command.Container.Type.Desc", "Open virtual " + GENERIC_TYPE + ".");
+
+    public static final LangText COMMAND_CONTAINER_NOTIFY = LangText.of("Command.Container.Notify",
+        OUTPUT.enclose(OutputType.ACTION_BAR),
+        LIGHT_GRAY.enclose("You opened virtual " + LIGHT_YELLOW.enclose(GENERIC_TYPE) + ".")
+    );
+
+    public static final LangText COMMAND_CONTAINER_TARGET = LangText.of("Command.Container.Target",
+        LIGHT_GRAY.enclose("Opened virtual " + LIGHT_YELLOW.enclose(GENERIC_TYPE) + " for " + LIGHT_YELLOW.enclose(PLAYER_DISPLAY_NAME) + ".")
+    );
+
 
 
     public static final LangString COMMAND_DISPOSAL_DESC = LangString.of("Command.Disposal.Desc", "Open a disposal menu.");
@@ -168,18 +171,6 @@ public class Lang extends CoreLang {
         SOUND.enclose(Sound.BLOCK_GRINDSTONE_USE),
         LIGHT_GRAY.enclose("Your " + LIGHT_YELLOW.enclose(GENERIC_ITEM) + " have been disenchanted from " +
             LIGHT_YELLOW.enclose(GENERIC_NAME) + "!")
-    );
-
-
-    public static final LangString COMMAND_ENCHANTING_DESC = LangString.of("Command.Enchanting.Desc", "Open portable enchanting table.");
-
-    public static final LangText COMMAND_ENCHANTING_NOTIFY = LangText.of("Command.Enchanting.Notify",
-        OUTPUT.enclose(OutputType.ACTION_BAR),
-        LIGHT_GRAY.enclose("You opened enchanting table.")
-    );
-
-    public static final LangText COMMAND_ENCHANTING_TARGET = LangText.of("Command.Enchanting.Target",
-        LIGHT_GRAY.enclose("Opened enchanting table for " + LIGHT_YELLOW.enclose(PLAYER_DISPLAY_NAME) + ".")
     );
 
 
@@ -401,19 +392,6 @@ public class Lang extends CoreLang {
         SOUND.enclose(Sound.ENTITY_GENERIC_EAT),
         LIGHT_GRAY.enclose("Restored " + LIGHT_YELLOW.enclose(PLAYER_DISPLAY_NAME) + "'s food level!"));
 
-
-
-
-    public static final LangString COMMAND_GRINDSTONE_DESC = LangString.of("Command.Grindstone.Desc", "Open portable grindstone.");
-
-    public static final LangText COMMAND_GRINDSTONE_NOTIFY = LangText.of("Command.Grindstone.Notify",
-        OUTPUT.enclose(OutputType.ACTION_BAR),
-        LIGHT_GRAY.enclose("You opened grindstone.")
-    );
-
-    public static final LangText COMMAND_GRINDSTONE_TARGET = LangText.of("Command.Grindstone.Target",
-        LIGHT_GRAY.enclose("Opened grindstone for " + LIGHT_YELLOW.enclose(PLAYER_DISPLAY_NAME) + ".")
-    );
 
 
     public static final LangString COMMAND_GAME_MODE_TYPE_DESC = LangString.of("Command.GameMode.Type.Desc", "Set gamemode to " + GENERIC_TYPE + ".");
@@ -652,19 +630,6 @@ public class Lang extends CoreLang {
     public static final LangText COMMAND_ITEM_UNBREAKABLE_DONE = LangText.of("Command.Item.Unbreakable.Done",
         SOUND.enclose(Sound.BLOCK_ANVIL_USE),
         LIGHT_GRAY.enclose("Set " + LIGHT_YELLOW.enclose(GENERIC_ITEM) + " Unbreakable: " + LIGHT_YELLOW.enclose(GENERIC_STATE) + ".")
-    );
-
-
-
-    public static final LangString COMMAND_LOOM_DESC = LangString.of("Command.Loom.Desc", "Open portable loom.");
-
-    public static final LangText COMMAND_LOOM_NOTIFY = LangText.of("Command.Loom.Notify",
-        OUTPUT.enclose(OutputType.ACTION_BAR),
-        LIGHT_GRAY.enclose("You opened loom.")
-    );
-
-    public static final LangText COMMAND_LOOM_TARGET = LangText.of("Command.Loom.Target",
-        LIGHT_GRAY.enclose("Opened loom for " + LIGHT_YELLOW.enclose(PLAYER_DISPLAY_NAME) + ".")
     );
 
 
@@ -908,19 +873,6 @@ public class Lang extends CoreLang {
 
     public static final LangText COMMAND_WEATHER_SET = LangText.of("Command.Weather.Set",
         LIGHT_GRAY.enclose("Set " + LIGHT_YELLOW.enclose(GENERIC_TYPE) + " weather in " + LIGHT_YELLOW.enclose(GENERIC_WORLD) + ".")
-    );
-
-
-
-    public static final LangString COMMAND_WORKBENCH_DESC  = LangString.of("Command.Workbench.Desc", "Open portable workbench.");
-
-    public static final LangText COMMAND_WORKBENCH_TARGET = LangText.of("Command.Workbench.Target",
-        LIGHT_GRAY.enclose("Opened portable workbench for " + LIGHT_YELLOW.enclose(PLAYER_DISPLAY_NAME) + ".")
-    );
-
-    public static final LangText COMMAND_WORKBENCH_NOTIFY = LangText.of("Command.Workbench.Notify",
-        OUTPUT.enclose(OutputType.ACTION_BAR),
-        LIGHT_GRAY.enclose("You opened portable workbench.")
     );
 
 

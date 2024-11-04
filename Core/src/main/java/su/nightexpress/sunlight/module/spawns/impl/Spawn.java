@@ -125,7 +125,7 @@ public class Spawn extends AbstractFileData<SunLightPlugin> implements Placehold
         plugin.getPluginManager().callEvent(event);
         if (event.isCancelled()) return false;
 
-        Teleporter teleporter = new Teleporter(player, this.getLocation()).centered();
+        Teleporter teleporter = new Teleporter(player, this.getLocation()).centered().validateFloor();
         if (!teleporter.teleport()) return false;
 
         if (!silent) SpawnsLang.SPAWN_TELEPORT_DONE.getMessage().replace(this.replacePlaceholders()).send(player);

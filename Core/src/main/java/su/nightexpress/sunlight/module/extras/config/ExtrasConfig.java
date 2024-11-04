@@ -50,7 +50,7 @@ public class ExtrasConfig {
         "Players with '" + ExtrasPerms.ANVILS_COLOR.getName() + "' permission will be able to use colors on anvils.");
 
     public static final ConfigValue<Boolean> SIGN_COLORS_ENABLED = ConfigValue.create("Sign_Colors.Enabled",
-        true,
+        false,
         "Sets whether or not Sign Colors feature is enabled.",
         "Players with '" + ExtrasPerms.SIGNS_COLOR.getName() + "' permission will be able to use colors on signs.");
 

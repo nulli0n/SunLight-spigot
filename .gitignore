@@ -3,8 +3,6 @@
 /Core/pom.xml.versionsBackup
 /NMS/pom.xml.versionsBackup
 /NMS/target/
-/V1_18_R2/target/
-/V1_18_R2/pom.xml.versionsBackup
 /V1_19_R3/target/
 /V1_19_R3/pom.xml.versionsBackup
 /V1_20_R1/target/
@@ -19,3 +17,7 @@
 /MC_1_20_6/target/
 /MC_1_20_6/pom.xml.versionsBackup
 /MC_1_21/pom.xml.versionsBackup
+/MC_1_21_3/target/
+/MC_1_21_3/pom.xml.versionsBackup
+/API/target/
+/API/pom.xml.versionsBackup

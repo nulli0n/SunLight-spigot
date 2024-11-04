@@ -60,6 +60,7 @@ public class CommandTools {
 
         if (target == null || (context.getExecutor() != null && !context.getExecutor().canSee(target))) {
             context.errorBadPlayer();
+            return null;
         }
         return target;
     }

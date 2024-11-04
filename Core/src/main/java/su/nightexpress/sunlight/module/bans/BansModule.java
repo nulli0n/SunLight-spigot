@@ -215,12 +215,12 @@ public class BansModule extends Module {
         return this.punishmentsMenu.open(player, new PunishmentsMenu.Source(type));
     }
 
-    public boolean openHistory(@NotNull Player player, @NotNull UserInfo userInfo, @NotNull PunishmentType type) {
-        return this.historyMenu.open(player, new HistoryMenu.PlayerSource(userInfo, type));
+    public boolean openHistory(@NotNull Player player, @NotNull SunUser userInfo, @NotNull PunishmentType type) {
+        return this.historyMenu.openForPlayer(player, userInfo, type);
     }
 
     public boolean openHistory(@NotNull Player player, @NotNull String address) {
-        return this.historyMenu.open(player, new HistoryMenu.AddressSource(address, PunishmentType.BAN));
+        return this.historyMenu.openForIPBans(player, address);
     }
 
     public void cachePunishmentData(@NotNull PunishData punishData, @NotNull PunishmentType type) {
@@ -321,12 +321,17 @@ public class BansModule extends Module {
         return durations.stream().max(Comparator.comparingLong(RankDuration::getInMillis)).orElse(null);
     }
 
-    public boolean checkRankPriority(@NotNull CommandSender executor, @NotNull UserInfo targetInfo) {
+    public boolean checkRankPriority(@NotNull CommandSender executor, @NotNull Player target) {
+        return this.checkRankPriority(executor, plugin.getUserManager().getUserData(target));
+    }
+
+    public boolean checkRankPriority(@NotNull CommandSender executor, @NotNull SunUser targetUser) {
         if (!(executor instanceof Player player)) return true;
 
         int punisherPriority = getRankPriority(player);
-        Player target = this.plugin.getServer().getPlayer(targetInfo.getId());
-        if (target == null) target = this.plugin.getSunNMS().loadPlayerData(targetInfo.getId(), targetInfo.getName());
+
+        Player target = targetUser.getPlayer();//this.plugin.getServer().getPlayer(targetUser.getId());
+        if (target == null) target = this.plugin.getSunNMS().loadPlayerData(targetUser.getId(), targetUser.getName());
 
         if (getRankPriority(target) >= punisherPriority) {
             BansLang.PUNISHMENT_ERROR_RANK_PRIORITY.getMessage()
@@ -379,23 +384,23 @@ public class BansModule extends Module {
         return true;
     }
 
-    public boolean kick(@NotNull Player player, @NotNull CommandSender executor, @NotNull PunishmentReason reason, boolean silent) {
-        if (!this.canBePunished(executor, player.getName())) return false;
-        if (!this.checkRankPriority(executor, new UserInfo(player))) return false;
+    public boolean kick(@NotNull Player target, @NotNull CommandSender executor, @NotNull PunishmentReason reason, boolean silent) {
+        if (!this.canBePunished(executor, target.getName())) return false;
+        if (!this.checkRankPriority(executor, target)) return false;
 
-        player.kickPlayer(NightMessage.asLegacy(String.join("\n", BansConfig.GENERAL_DISCONNECT_INFO_KICK.get())
+        target.kickPlayer(NightMessage.asLegacy(String.join("\n", BansConfig.GENERAL_DISCONNECT_INFO_KICK.get())
             .replace(Placeholders.PUNISHMENT_REASON, reason.getText())
             .replace(Placeholders.PUNISHMENT_PUNISHER, SunUtils.getSenderName(executor))
         ));
 
         BansLang.KICK_DONE.getMessage()
-            .replace(Placeholders.PUNISHMENT_TARGET, player.getDisplayName())
+            .replace(Placeholders.PUNISHMENT_TARGET, target.getDisplayName())
             .replace(Placeholders.PUNISHMENT_REASON, reason.getText())
             .send(executor);
 
         if (!silent) {
             BansLang.KICK_BROADCAST.getMessage()
-                .replace(Placeholders.PUNISHMENT_TARGET, player.getDisplayName())
+                .replace(Placeholders.PUNISHMENT_TARGET, target.getDisplayName())
                 .replace(Placeholders.PUNISHMENT_REASON, reason.getText())
                 .replace(Placeholders.PUNISHMENT_PUNISHER, SunUtils.getSenderName(executor))
                 .broadcast();
@@ -404,14 +409,14 @@ public class BansModule extends Module {
         return true;
     }
 
-    public boolean punishPlayer(@NotNull UserInfo userInfo, @NotNull CommandSender executor, @NotNull PunishmentReason reason, @NotNull BanTime banTime,
+    public boolean punishPlayer(@NotNull SunUser user, @NotNull CommandSender executor, @NotNull PunishmentReason reason, @NotNull BanTime banTime,
                              @NotNull PunishmentType type,
                              boolean silent) {
-        String playerName = userInfo.getName();
-        UUID playerId = userInfo.getId();
+        String playerName = user.getName();//userInfo.getName();
+        UUID playerId = user.getId();//userInfo.getId();
 
         if (!this.canBePunished(executor, playerName)) return false;
-        if (!this.checkRankPriority(executor, userInfo)) return false;
+        if (!this.checkRankPriority(executor, user)) return false;
         if (!this.checkDuration(executor, banTime, type)) return false;
 
         // Override all previous bans/mutes/warns by making them expired when a fresh one is added.
@@ -501,9 +506,9 @@ public class BansModule extends Module {
         }
     }
 
-    public boolean unpunishPlayer(@NotNull UserInfo userInfo, @NotNull CommandSender executor, @NotNull PunishmentType type, boolean silent) {
-        String playerName = userInfo.getName();
-        UUID playerId = userInfo.getId();
+    public boolean unpunishPlayer(@NotNull SunUser user, @NotNull CommandSender executor, @NotNull PunishmentType type, boolean silent) {
+        String playerName = user.getName();//userInfo.getName();
+        UUID playerId = user.getId();//userInfo.getId();
 
         PunishedPlayer punishedPlayer = this.getActivePlayerPunishment(playerId, type);
         if (punishedPlayer == null) {

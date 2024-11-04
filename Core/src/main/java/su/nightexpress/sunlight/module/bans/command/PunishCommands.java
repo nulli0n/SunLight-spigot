@@ -13,8 +13,8 @@ import su.nightexpress.nightcore.config.FileConfig;
 import su.nightexpress.nightcore.util.Lists;
 import su.nightexpress.nightcore.util.Players;
 import su.nightexpress.sunlight.SunLightPlugin;
-import su.nightexpress.sunlight.command.CommandFlags;
 import su.nightexpress.sunlight.command.CommandArguments;
+import su.nightexpress.sunlight.command.CommandFlags;
 import su.nightexpress.sunlight.command.CommandRegistry;
 import su.nightexpress.sunlight.command.template.CommandTemplate;
 import su.nightexpress.sunlight.module.bans.BansModule;
@@ -25,7 +25,6 @@ import su.nightexpress.sunlight.module.bans.punishment.PunishmentType;
 import su.nightexpress.sunlight.module.bans.util.BanTime;
 import su.nightexpress.sunlight.module.bans.util.TimeUnit;
 import su.nightexpress.sunlight.utils.SunUtils;
-import su.nightexpress.sunlight.utils.UserInfo;
 
 import java.util.ArrayList;
 
@@ -138,13 +137,13 @@ public class PunishCommands {
                 return;
             }
 
-            UserInfo userInfo = new UserInfo(user);
+            //UserInfo userInfo = new UserInfo(user);
 
             BanTime banTime =  arguments.getArgument(CommandArguments.TIME, BanTime.class, BanTime.PERMANENT);
             PunishmentReason reason = arguments.getArgument(ARG_REASON, PunishmentReason.class, BansModule.getDefaultReason());
             boolean silent = arguments.hasFlag(CommandFlags.SILENT);
 
-            module.punishPlayer(userInfo, context.getSender(), reason, banTime, type, silent);
+            module.punishPlayer(user, context.getSender(), reason, banTime, type, silent);
         });
 
         return true;

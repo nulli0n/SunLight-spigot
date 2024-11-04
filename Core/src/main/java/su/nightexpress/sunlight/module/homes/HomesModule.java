@@ -39,7 +39,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class HomesModule extends Module {
 
     private final Map<UUID, Map<String, Home>> homeMap;
-    private final Set<Home>                    scheduledToSave;
+    private final Set<Home>                    scheduledToSave; // TODO Repplace with saveRequired Home field
     private final HomesCache                   cache;
 
     private HomesMenu homesMenu;
@@ -93,6 +93,25 @@ public class HomesModule extends Module {
     private void loadHomes() {
         this.plugin.getServer().getOnlinePlayers().forEach(player -> this.loadHomes(player.getUniqueId()));
         this.cache.initialize();
+    }
+
+    public void loadHomesIfAbsent(@NotNull UUID playerId) {
+        if (!this.homeMap.containsKey(playerId)) {
+            this.loadHomes(playerId);
+        }
+    }
+
+    public void loadHomes(@NotNull UUID playerId) {
+        this.unloadHomes(playerId);
+        this.plugin.getData().getHomes(playerId).forEach(home -> this.getHomes(playerId).put(home.getId(), home));
+    }
+
+    public void unloadHomes(@NotNull UUID playerId) {
+        this.homeMap.remove(playerId);
+    }
+
+    public boolean isLoaded(@NotNull UUID playerId) {
+        return this.homeMap.containsKey(playerId);
     }
 
     public void cleanUp() {
@@ -170,25 +189,6 @@ public class HomesModule extends Module {
 
     public int getHomesMaxAmount(@NotNull Player player) {
         return HomesConfig.HOMES_PER_RANK.get().getGreatestOrNegative(player);
-    }
-
-    public void loadHomesIfAbsent(@NotNull UUID playerId) {
-        if (!this.homeMap.containsKey(playerId)) {
-            this.loadHomes(playerId);
-        }
-    }
-
-    public void loadHomes(@NotNull UUID playerId) {
-        this.unloadHomes(playerId);
-        this.plugin.getData().getHomes(playerId).forEach(home -> this.getHomes(playerId).put(home.getId(), home));
-    }
-
-    public void unloadHomes(@NotNull UUID playerId) {
-        this.homeMap.remove(playerId);
-    }
-
-    public boolean isLoaded(@NotNull UUID playerId) {
-        return this.homeMap.containsKey(playerId);
     }
 
     public void openHomes(@NotNull Player player) {

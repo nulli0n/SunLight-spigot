@@ -5,25 +5,25 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import su.nightexpress.nightcore.util.Players;
-import su.nightexpress.sunlight.utils.UserInfo;
 
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 public class TeleportRequest {
 
-    private final UserInfo targetInfo;
-    private final UserInfo senderInfo;
-    private final Mode     mode;
+    private final UUID targetId;
+    private final UUID senderId;
+    private final Mode mode;
 
     private long expireDate;
 
     public TeleportRequest(@NotNull Player sender, @NotNull Player target, @NotNull Mode mode, int timeOut) {
-        this(new UserInfo(sender), new UserInfo(target), mode, timeOut);
+        this(sender.getUniqueId(), target.getUniqueId(), mode, timeOut);
     }
 
-    public TeleportRequest(@NotNull UserInfo senderInfo, @NotNull UserInfo targetInfo, @NotNull Mode mode, int timeOut) {
-        this.senderInfo = senderInfo;
-        this.targetInfo = targetInfo;
+    public TeleportRequest(@NotNull UUID senderId, @NotNull UUID targetId, @NotNull Mode mode, int timeOut) {
+        this.senderId = senderId;
+        this.targetId = targetId;
         this.mode = mode;
         this.expireDate = System.currentTimeMillis() + TimeUnit.MILLISECONDS.convert(timeOut, TimeUnit.SECONDS);
     }
@@ -48,22 +48,22 @@ public class TeleportRequest {
 
     @Nullable
     public Player getSender() {
-        return Bukkit.getPlayer(this.senderInfo.getId());
+        return Bukkit.getPlayer(this.senderId);
     }
 
     @Nullable
     public Player getTarget() {
-        return Bukkit.getPlayer(this.targetInfo.getId());
+        return Bukkit.getPlayer(this.targetId);
     }
 
     @NotNull
-    public UserInfo getSenderInfo() {
-        return this.senderInfo;
+    public UUID getSenderId() {
+        return this.senderId;
     }
 
     @NotNull
-    public UserInfo getTargetInfo() {
-        return this.targetInfo;
+    public UUID getTargetId() {
+        return this.targetId;
     }
 
     @NotNull

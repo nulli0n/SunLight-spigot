@@ -16,9 +16,8 @@ import su.nightexpress.sunlight.module.ptp.PTPModule;
 import su.nightexpress.sunlight.module.ptp.TeleportRequest;
 import su.nightexpress.sunlight.module.ptp.config.PTPLang;
 import su.nightexpress.sunlight.module.ptp.config.PTPPerms;
-import su.nightexpress.sunlight.utils.UserInfo;
 
-import java.util.Collections;
+import java.util.Objects;
 
 public class AcceptCommands {
 
@@ -50,9 +49,9 @@ public class AcceptCommands {
             .playerOnly()
             .withArgument(ArgumentTypes.playerName(CommandArguments.PLAYER)
                 .withSamples(context -> {
-                    if (context.getPlayer() == null) return Collections.emptyList();
+                    Player player = context.getPlayerOrThrow();
 
-                    return module.getRequests(context.getPlayer()).stream().map(TeleportRequest::getSenderInfo).map(UserInfo::getName).toList();
+                    return module.getRequests(player).stream().map(TeleportRequest::getSender).filter(Objects::nonNull).map(Player::getName).toList();
                 })
             )
             .executes((context, arguments) -> execute(plugin, module, context, arguments, accept))

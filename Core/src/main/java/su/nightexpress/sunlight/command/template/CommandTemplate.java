@@ -3,7 +3,10 @@ package su.nightexpress.sunlight.command.template;
 import org.jetbrains.annotations.NotNull;
 import su.nightexpress.nightcore.config.FileConfig;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.function.Consumer;
 
 public abstract class CommandTemplate {
 
@@ -22,6 +25,16 @@ public abstract class CommandTemplate {
                                              @NotNull String permission,
                                              DirectCommandTemplate... templates) {
         return GroupCommandTemplate.create(aliases, description, permission, Arrays.asList(templates));
+    }
+
+    public static GroupCommandTemplate group(@NotNull String[] aliases,
+                                             @NotNull String description,
+                                             @NotNull String permission,
+                                             @NotNull Consumer<List<DirectCommandTemplate>> consumer) {
+        List<DirectCommandTemplate> templates = new ArrayList<>();
+        consumer.accept(templates);
+
+        return GroupCommandTemplate.create(aliases, description, permission, templates);
     }
 
     public abstract void write(@NotNull FileConfig config, @NotNull String path);

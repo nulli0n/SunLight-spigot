@@ -219,7 +219,7 @@ public class WorldData extends AbstractFileData<SunLightPlugin> {
         }
 
         for (Player player : world.getPlayers()) {
-            Teleporter teleporter = new Teleporter(player, location).centered();
+            Teleporter teleporter = new Teleporter(player, location).centered().validateFloor();
 
             if (teleporter.teleport()) {
                 WorldsLang.UNLOAD_MOVE_OUT_INFO.getMessage().send(player);

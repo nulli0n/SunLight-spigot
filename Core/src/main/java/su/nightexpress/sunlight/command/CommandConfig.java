@@ -13,6 +13,11 @@ import java.util.Map;
 
 public class CommandConfig {
 
+    public static final ConfigValue<Boolean> DEBUG_REGISTER_LOG = ConfigValue.create("Debug.RegisterLog",
+        false,
+        "Controls whether command register info will be printed in server console."
+    );
+
     public static final ConfigValue<Boolean> UNREGISTER_CONFLICTS = ConfigValue.create("Unregister_Conflicts",
         false,
         "Sets whether or not commands with similar names/aliases should be unregistered from the server",

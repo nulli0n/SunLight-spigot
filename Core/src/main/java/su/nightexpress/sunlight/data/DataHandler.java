@@ -238,25 +238,6 @@ public class DataHandler extends AbstractUserDataHandler<SunLightPlugin, SunUser
         ));
     }
 
-//    @Deprecated
-//    public void saveHome(@NotNull Home home) {
-//        this.update(this.tableHomes,
-//            Arrays.asList(
-//                HOME_OWNER_ID.toValue(home.getOwner().getId().toString()),
-//                HOME_OWNER_NAME.toValue(home.getOwner().getName()),
-//                HOME_NAME.toValue(home.getName()),
-//                HOME_ICON.toValue(String.valueOf(ItemNbt.compress(home.getIcon()))),
-//                HOME_LOCATION.toValue(String.valueOf(LocationUtil.serialize(home.getLocation()))),
-//                HOME_TYPE.toValue(home.getType().name()),
-//                HOME_INVITED_PLAYERS.toValue(this.gson.toJson(home.getInvitedPlayers())),
-//                HOME_IS_DEFAULT.toValue(String.valueOf(home.isDefault() ? 1 : 0)),
-//                HOME_IS_RESPAWN_POINT.toValue(String.valueOf(home.isRespawnPoint() ? 1 : 0))
-//            ),
-//            SQLCondition.of(HOME_ID.toValue(home.getId()), SQLCondition.Type.EQUAL),
-//            SQLCondition.of(HOME_OWNER_ID.toValue(home.getOwner().getId().toString()), SQLCondition.Type.EQUAL)
-//        );
-//    }
-
     @NotNull
     public UpdateEntity createHomeUpdateEntity(@NotNull Home home) {
         return createUpdateEntity(

@@ -44,6 +44,7 @@ public class SkullCommand {
     @NotNull
     public static DirectNodeBuilder builderPlayer(@NotNull SunLightPlugin plugin, @NotNull CommandTemplate template, @NotNull FileConfig config) {
         return DirectNode.builder(plugin, template.getAliases())
+            .playerOnly()
             .description(Lang.COMMAND_SKULL_PLAYER_DESC)
             .permission(CommandPerms.SKULL_PLAYER)
             .withArgument(ArgumentTypes.playerName(CommandArguments.PLAYER).permission(CommandPerms.SKULL_PLAYER_OTHERS))
@@ -52,6 +53,8 @@ public class SkullCommand {
     }
 
     public static boolean executePlayer(@NotNull SunLightPlugin plugin, @NotNull CommandContext context, @NotNull ParsedArguments arguments) {
+        Player player = context.getPlayerOrThrow();
+
         Player target = CommandTools.getTarget(plugin, context, arguments, CommandArguments.PLAYER, true);
         if (target == null) return false;
 
@@ -61,7 +64,7 @@ public class SkullCommand {
                 skullMeta.setOwningPlayer(target);
             }
         });
-        Players.addItem(target, skull);
+        Players.addItem(player, skull);
 
         Lang.COMMAND_SKULL_PLAYER_DONE.getMessage().replace(Placeholders.forPlayer(target)).send(context.getSender());
         return true;

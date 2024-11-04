@@ -17,7 +17,6 @@ import su.nightexpress.sunlight.module.backlocation.config.BackLocationPerms;
 import su.nightexpress.sunlight.module.backlocation.data.LocationType;
 import su.nightexpress.sunlight.module.backlocation.data.StoredLocation;
 import su.nightexpress.sunlight.module.backlocation.listener.BackLocationListener;
-import su.nightexpress.sunlight.utils.pos.BlockPos;
 import su.nightexpress.sunlight.utils.Teleporter;
 
 import java.util.HashMap;
@@ -118,10 +117,10 @@ public class BackLocationModule extends Module {
         World world = location.getWorld();
         if (world == null) return;
 
-        BlockPos blockPos = BlockPos.from(location);
+        //BlockPos blockPos = BlockPos.from(location);
         int duration = this.getDuration(type);
 
-        StoredLocation storedLocation = new StoredLocation(world.getName(), blockPos, duration);
+        StoredLocation storedLocation = new StoredLocation(world.getName(), location.getX(), location.getY(), location.getZ(), duration);
         this.getLocationMap(playerId).put(type, storedLocation);
     }
 
@@ -139,7 +138,7 @@ public class BackLocationModule extends Module {
             return false;
         }
 
-        new Teleporter(player, location).centered().useOriginalDirection().teleport();
+        new Teleporter(player, location).useOriginalDirection().teleport();
 
         if (!silent) (isPrevious ? BackLocationLang.PREVIOUS_TELEPORT_NOTIFY : BackLocationLang.DEATH_TELEPORT_NOTIFY).getMessage().send(player);
         return true;

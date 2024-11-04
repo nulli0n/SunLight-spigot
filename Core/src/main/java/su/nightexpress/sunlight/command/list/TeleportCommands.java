@@ -92,7 +92,7 @@ public class TeleportCommands {
         Block block = world.getBlockAt(x, y, z);
         Location location = block.getRelative(BlockFace.UP).getLocation();
 
-        new Teleporter(target, location).centered().useOriginalDirection().teleport();
+        new Teleporter(target, location).centered().validateFloor().useOriginalDirection().teleport();
 
         if (context.getSender() != target) {
             Lang.COMMAND_TELEPORT_LOCATION_DONE.getMessage()
@@ -238,7 +238,7 @@ public class TeleportCommands {
         Block block = target.getWorld().getHighestBlockAt(target.getLocation()).getRelative(BlockFace.UP);
         Location location = block.getLocation();
 
-        new Teleporter(target, location).centered().useOriginalDirection().teleport();
+        new Teleporter(target, location).centered().validateFloor().useOriginalDirection().teleport();
 
         if (context.getSender() != target) {
             Lang.COMMAND_TELEPORT_TOP_DONE.getMessage().replace(Placeholders.forPlayer(target)).send(context.getSender());

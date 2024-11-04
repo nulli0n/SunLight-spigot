@@ -5,23 +5,23 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import su.nightexpress.sunlight.utils.pos.BlockPos;
 
 import java.util.concurrent.TimeUnit;
 
 public class StoredLocation {
 
     private final String   worldName;
-    private final BlockPos blockPos;
+    //private final BlockPos blockPos;
+    private final double x;
+    private final double y;
+    private final double z;
     private final long expireDate;
 
-    /*public StoredLocation(@NotNull World world, @NotNull Location location, int duration) {
-
-    }*/
-
-    public StoredLocation(@NotNull String worldName, @NotNull BlockPos blockPos, int duration) {
+    public StoredLocation(@NotNull String worldName, double x, double y, double z, int duration) {
         this.worldName = worldName;
-        this.blockPos = blockPos;
+        this.x = x;
+        this.y = y;
+        this.z = z;
         this.expireDate = System.currentTimeMillis() + TimeUnit.MILLISECONDS.convert(duration, TimeUnit.SECONDS);
     }
 
@@ -43,7 +43,9 @@ public class StoredLocation {
         World world = this.getWorld();
         if (world == null) return null;
 
-        return this.blockPos.toLocation(world);
+        return new Location(world, x, y, z);
+
+        //return this.blockPos.toLocation(world);
     }
 
     @NotNull
@@ -51,10 +53,10 @@ public class StoredLocation {
         return worldName;
     }
 
-    @NotNull
-    public BlockPos getBlockPos() {
-        return blockPos;
-    }
+//    @NotNull
+//    public BlockPos getBlockPos() {
+//        return blockPos;
+//    }
 
     public long getExpireDate() {
         return expireDate;

@@ -8,8 +8,8 @@ import su.nightexpress.nightcore.command.experimental.builder.DirectNodeBuilder;
 import su.nightexpress.nightcore.command.experimental.node.DirectNode;
 import su.nightexpress.nightcore.config.FileConfig;
 import su.nightexpress.sunlight.SunLightPlugin;
-import su.nightexpress.sunlight.command.CommandFlags;
 import su.nightexpress.sunlight.command.CommandArguments;
+import su.nightexpress.sunlight.command.CommandFlags;
 import su.nightexpress.sunlight.command.CommandRegistry;
 import su.nightexpress.sunlight.command.template.CommandTemplate;
 import su.nightexpress.sunlight.module.bans.BansModule;
@@ -20,7 +20,6 @@ import su.nightexpress.sunlight.module.bans.punishment.PunishedIP;
 import su.nightexpress.sunlight.module.bans.punishment.PunishedPlayer;
 import su.nightexpress.sunlight.module.bans.punishment.PunishmentType;
 import su.nightexpress.sunlight.utils.SunUtils;
-import su.nightexpress.sunlight.utils.UserInfo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -82,15 +81,15 @@ public class UnPunishCommands {
             return module.unbanIP(name, context.getSender(), silent);
         }
 
-        plugin.getUserManager().getUserDataAndPerformAsync(name, user -> {
+        plugin.getUserManager().manageUser(name, user -> {
             if (user == null) {
                 context.errorBadPlayer();
                 return;
             }
 
-            UserInfo userInfo = new UserInfo(user);
+            //UserInfo userInfo = new UserInfo(user);
 
-            module.unpunishPlayer(userInfo, context.getSender(), type, silent);
+            module.unpunishPlayer(user, context.getSender(), type, silent);
         });
 
         return true;
