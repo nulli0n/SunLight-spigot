@@ -1,4 +1,4 @@
-package su.nightexpress.sunlight.mc_1_21_3;
+package su.nightexpress.sunlight.nms.mc_1_21_3;
 
 import com.mojang.authlib.GameProfile;
 import net.minecraft.core.Holder;
@@ -34,8 +34,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import su.nightexpress.nightcore.util.Reflex;
 import su.nightexpress.sunlight.api.MenuType;
-import su.nightexpress.sunlight.mc_1_21_3.container.PlayerEnderChest;
-import su.nightexpress.sunlight.mc_1_21_3.container.PlayerInventory;
+import su.nightexpress.sunlight.nms.mc_1_21_3.container.PlayerEnderChest;
+import su.nightexpress.sunlight.nms.mc_1_21_3.container.PlayerInventory;
 import su.nightexpress.sunlight.nms.SunNMS;
 
 import java.lang.reflect.Method;
@@ -174,5 +174,4 @@ public class MC_1_21_3 implements SunNMS {
 
         return menu;
     }
-
 }

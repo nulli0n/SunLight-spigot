@@ -1,4 +1,4 @@
-package su.nightexpress.sunlight.mc_1_21_3.container;
+package su.nightexpress.sunlight.nms.mc_1_21_3.container;
 
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.PlayerEnderChestContainer;

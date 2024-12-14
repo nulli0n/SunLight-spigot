@@ -7,7 +7,7 @@
     <groupId>su.nightexpress.sunlight</groupId>
     <artifactId>SunLight</artifactId>
     <packaging>pom</packaging>
-    <version>3.12.4</version>
+    <version>3.12.6</version>
     <modules>
         <module>Core</module>
         <module>NMS</module>
@@ -19,12 +19,13 @@
         <module>MC_1_21</module>
         <module>MC_1_21_3</module>
         <module>API</module>
+        <module>MC_1_21_4</module>
 
     </modules>
 
     <properties>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
@@ -103,7 +104,7 @@
         <dependency>
             <groupId>su.nightexpress.nightcore</groupId>
             <artifactId>nightcore</artifactId>
-            <version>2.7.1</version>
+            <version>2.7.3</version>
         </dependency>
     </dependencies>
 

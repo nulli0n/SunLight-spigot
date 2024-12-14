@@ -90,9 +90,10 @@ public class ChairsCommands {
 
     public static boolean doSit(@NotNull SunLightPlugin plugin, @NotNull ChairsManager manager, @NotNull CommandContext context, @NotNull ParsedArguments arguments) {
         Player target = CommandTools.getTarget(plugin, context, arguments, CommandArguments.PLAYER, true);
-        if (target == null) return false;
+        if (target == null || manager.isSit(target)) return false;
 
-        Block block = target.getLocation().getBlock().getRelative(BlockFace.DOWN);
+        Block block = target.getLocation().getBlock();
+        if (block.isEmpty() || !block.getType().isSolid()) block = block.getRelative(BlockFace.DOWN);
         if (block.isEmpty() || !block.getType().isSolid()) return false;
 
         manager.sitPlayer(target, block);

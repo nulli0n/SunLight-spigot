@@ -154,6 +154,20 @@ public class V1_20_R3 implements SunNMS {
         player.openInventory(this.createContainer(MenuType.STONECUTTER, player).getBukkitView());
     }
 
+    @Override
+    public void openContainer(@NotNull Player player, @NotNull su.nightexpress.sunlight.api.MenuType menuType) {
+        switch (menuType) {
+            case STONECUTTER -> openStonecutter(player);
+            case GRINDSTONE -> openGrindstone(player);
+            case SMITHING -> openSmithing(player);
+            case LOOM -> openLoom(player);
+            case ENCHANTMENT -> openEnchanting(player);
+            case CRAFTING -> player.openWorkbench(null, true);
+            case ANVIL -> openAnvil(player);
+            case CARTOGRAPHY -> openCartography(player);
+        }
+    }
+
     @NotNull
     private <T extends AbstractContainerMenu> AbstractContainerMenu createContainer(@NotNull MenuType<T> type, @NotNull Player player) {
         CraftPlayer craftPlayer = (CraftPlayer) player;

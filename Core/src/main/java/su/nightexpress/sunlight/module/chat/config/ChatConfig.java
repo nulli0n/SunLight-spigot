@@ -247,8 +247,7 @@ public class ChatConfig {
         LIGHT_GREEN.enclose("@" + PLAYER_DISPLAY_NAME),
         "A text that will replace mention if player is valid.",
         "Player name placeholders: " + PLAYER_NAME + ", " + PLAYER_DISPLAY_NAME,
-        "Text Formations: " + WIKI_TEXT_URL,
-        "PlaceholderAPI is supported here."
+        "Text Formations: " + WIKI_TEXT_URL
     );
 
     public static final ConfigValue<Map<String, GroupMention>> MENTIONS_SPECIAL = ConfigValue.forMap("Mentions.Special",

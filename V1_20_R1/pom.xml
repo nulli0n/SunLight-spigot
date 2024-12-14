@@ -5,15 +5,15 @@
     <parent>
         <artifactId>SunLight</artifactId>
         <groupId>su.nightexpress.sunlight</groupId>
-        <version>3.12.4</version>
+        <version>3.12.6</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>V1_20_R1</artifactId>
 
     <properties>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
@@ -24,10 +24,17 @@
             <version>1.20.1-R0.1-SNAPSHOT</version>
             <classifier>remapped-mojang</classifier>
         </dependency>
+
+        <dependency>
+            <groupId>su.nightexpress.sunlight</groupId>
+            <artifactId>API</artifactId>
+            <version>3.12.6</version>
+        </dependency>
+
         <dependency>
             <groupId>su.nightexpress.sunlight</groupId>
             <artifactId>NMS</artifactId>
-            <version>3.12.4</version>
+            <version>3.12.6</version>
         </dependency>
     </dependencies>
 

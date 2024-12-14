@@ -136,7 +136,7 @@ public class KitsLang extends Lang {
         .name("Commands")
         .textRaw(KIT_COMMANDS)
         .emptyLine()
-        .text("Listed commands will be execued when", "player recievies the kit.")
+        .text("Listed commands will be executed when", "player receivies the kit.")
         .emptyLine()
         .leftClick("add command")
         .rightClick("clear")

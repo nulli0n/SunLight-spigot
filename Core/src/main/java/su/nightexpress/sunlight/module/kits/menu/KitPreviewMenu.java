@@ -83,7 +83,7 @@ public class KitPreviewMenu extends ConfigMenu<SunLightPlugin> implements Linked
     @Override
     @NotNull
     protected MenuOptions createDefaultOptions() {
-        return new MenuOptions(BLACK.enclose("Kit Preivew"), MenuSize.CHEST_54);
+        return new MenuOptions(BLACK.enclose("Kit Preview"), MenuSize.CHEST_54);
     }
 
     @Override

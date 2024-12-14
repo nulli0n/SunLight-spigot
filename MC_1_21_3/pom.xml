@@ -6,7 +6,7 @@
     <parent>
         <groupId>su.nightexpress.sunlight</groupId>
         <artifactId>SunLight</artifactId>
-        <version>3.12.4</version>
+        <version>3.12.6</version>
     </parent>
 
     <artifactId>MC_1_21_3</artifactId>
@@ -34,13 +34,13 @@
         <dependency>
             <groupId>su.nightexpress.sunlight</groupId>
             <artifactId>API</artifactId>
-            <version>3.12.4</version>
+            <version>3.12.6</version>
         </dependency>
 
         <dependency>
             <groupId>su.nightexpress.sunlight</groupId>
             <artifactId>NMS</artifactId>
-            <version>3.12.4</version>
+            <version>3.12.6</version>
         </dependency>
     </dependencies>
 
