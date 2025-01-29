@@ -77,7 +77,8 @@ public class PhysicsExplosionListener extends AbstractListener<SunLightPlugin> {
                 fallData = Material.DIRT.createBlockData();
             }
 
-            FallingBlock fall = block.getWorld().spawnFallingBlock(block.getLocation(), fallData);
+            Location blockCenter = block.getLocation().add(0.5, 0.5, 0.5);
+            FallingBlock fall = block.getWorld().spawnFallingBlock(blockCenter, fallData);
             fall.setDropItem(true);
             fall.setCancelDrop(false);
             fall.setFallDistance(0F);
