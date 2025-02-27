@@ -10,10 +10,10 @@ import su.nightexpress.nightcore.util.NumberUtil;
 import su.nightexpress.nightcore.util.TimeUtil;
 import su.nightexpress.sunlight.Placeholders;
 import su.nightexpress.sunlight.SunLightPlugin;
-import su.nightexpress.sunlight.config.Config;
 import su.nightexpress.sunlight.config.Lang;
 import su.nightexpress.sunlight.core.cooldown.CooldownInfo;
 import su.nightexpress.sunlight.core.cooldown.CooldownType;
+import su.nightexpress.sunlight.core.user.settings.SettingRegistry;
 import su.nightexpress.sunlight.data.user.SunUser;
 import su.nightexpress.sunlight.module.afk.AfkModule;
 import su.nightexpress.sunlight.module.afk.AfkState;
@@ -36,6 +36,7 @@ import su.nightexpress.sunlight.module.warps.WarpsModule;
 import su.nightexpress.sunlight.module.warps.impl.Warp;
 import su.nightexpress.sunlight.module.worlds.WorldsModule;
 import su.nightexpress.sunlight.module.worlds.impl.WorldData;
+import su.nightexpress.sunlight.utils.SunUtils;
 
 import java.util.Arrays;
 import java.util.stream.Collectors;
@@ -227,13 +228,13 @@ public class PlaceholderHook {
                 if (module == null) return null;
 
                 WorldData world = this.getWorld(module, subParams, "autowipe_next_date_");
-                if (world != null) return Config.GENERAL_DATE_FORMAT.get().format(world.getNextWipe());
+                if (world != null) return SunUtils.formatDate(world.getNextWipe());
 
                 world = this.getWorld(module, subParams, "autowipe_timelft_");
                 if (world != null) return TimeUtil.formatDuration(world.getNextWipe());
 
                 world = this.getWorld(module, subParams, "autowipe_latest_date_");
-                if (world != null) return Config.GENERAL_DATE_FORMAT.get().format(world.getLastResetDate());
+                if (world != null) return SunUtils.formatDate(world.getLastResetDate());
 
                 world = this.getWorld(module, subParams, "autowipe_latest_since_");
                 if (world != null) return TimeUtil.formatDuration(world.getLastResetDate(), System.currentTimeMillis());
@@ -259,6 +260,9 @@ public class PlaceholderHook {
                 }
                 if (params.equalsIgnoreCase("chestsort_state")) {
                     return Lang.getYesOrNo(user.getSettings().get(SortManager.SETTING_CHEST_SORT));
+                }
+                if (params.equalsIgnoreCase("pm_state")) {
+                    return Lang.getYesOrNo(user.getSettings().get(SettingRegistry.ACCEPT_PM));
                 }
                 if (params.equalsIgnoreCase("nick")) {
                     return user.hasCustomName() ? user.getCustomName() : user.getName();

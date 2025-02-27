@@ -14,11 +14,11 @@ import su.nightexpress.nightcore.config.ConfigValue;
 import su.nightexpress.nightcore.config.FileConfig;
 import su.nightexpress.nightcore.language.LangAssets;
 import su.nightexpress.nightcore.util.NumberUtil;
+import su.nightexpress.nightcore.util.TimeUtil;
 import su.nightexpress.sunlight.Placeholders;
 import su.nightexpress.sunlight.SunLightPlugin;
 import su.nightexpress.sunlight.command.*;
 import su.nightexpress.sunlight.command.template.CommandTemplate;
-import su.nightexpress.sunlight.config.Config;
 import su.nightexpress.sunlight.config.Lang;
 import su.nightexpress.sunlight.utils.SunUtils;
 
@@ -147,7 +147,7 @@ public class TimeCommands {
 
         context.send(Lang.COMMAND_TIME_SET_DONE.getMessage()
             .replace(Placeholders.GENERIC_WORLD, LangAssets.get(world))
-            .replace(Placeholders.GENERIC_TIME, localTime.format(Config.GENERAL_TIME_FORMAT.get()))
+            .replace(Placeholders.GENERIC_TIME, SunUtils.formatTime(localTime))
             .replace(Placeholders.GENERIC_TOTAL, NumberUtil.format(ticks))
         );
         return true;
@@ -169,11 +169,9 @@ public class TimeCommands {
         World world = CommandTools.getWorld(plugin, context, arguments, CommandArguments.WORLD);
         if (world == null) return false;
 
-        Player player = context.getExecutor();
-
         long worldTicks = world.getTime();
         LocalTime worldTime = SunUtils.getTimeOfTicks(worldTicks);
-        LocalTime serverTime = LocalTime.now();
+        LocalTime serverTime = TimeUtil.getCurrentTime();
 
         context.send(Lang.COMMAND_TIME_SHOW_INFO.getMessage()
             .replace(Placeholders.GENERIC_WORLD, LangAssets.get(world))
@@ -216,14 +214,14 @@ public class TimeCommands {
         if (context.getSender() != target) {
             Lang.COMMAND_TIME_PERSONAL_SET_DONE.getMessage()
                 .replace(Placeholders.forPlayer(target))
-                .replace(Placeholders.GENERIC_TIME, time.format(Config.GENERAL_TIME_FORMAT.get()))
+                .replace(Placeholders.GENERIC_TIME, SunUtils.formatTime(time))
                 .replace(Placeholders.GENERIC_TOTAL, NumberUtil.format(totalTicks))
                 .send(context.getSender());
         }
 
         if (!arguments.hasFlag(CommandFlags.SILENT)) {
             Lang.COMMAND_TIME_PERSONAL_SET_NOTIFY.getMessage()
-                .replace(Placeholders.GENERIC_TIME, time.format(Config.GENERAL_TIME_FORMAT.get()))
+                .replace(Placeholders.GENERIC_TIME, SunUtils.formatTime(time))
                 .replace(Placeholders.GENERIC_TOTAL, NumberUtil.format(totalTicks))
                 .send(target);
         }

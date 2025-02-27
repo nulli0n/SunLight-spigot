@@ -18,6 +18,7 @@ import su.nightexpress.nightcore.util.placeholder.Placeholder;
 import su.nightexpress.nightcore.util.placeholder.PlaceholderMap;
 import su.nightexpress.nightcore.util.text.tag.Tags;
 import su.nightexpress.sunlight.SunLightPlugin;
+import su.nightexpress.sunlight.api.type.TeleportType;
 import su.nightexpress.sunlight.core.cooldown.CooldownInfo;
 import su.nightexpress.sunlight.data.user.SunUser;
 import su.nightexpress.sunlight.module.warps.WarpsModule;
@@ -28,9 +29,9 @@ import su.nightexpress.sunlight.module.warps.config.WarpsPerms;
 import su.nightexpress.sunlight.module.warps.event.PlayerWarpTeleportEvent;
 import su.nightexpress.sunlight.module.warps.type.WarpType;
 import su.nightexpress.sunlight.module.warps.util.Placeholders;
-import su.nightexpress.sunlight.utils.Teleporter;
 import su.nightexpress.sunlight.utils.UserInfo;
 import su.nightexpress.sunlight.utils.pos.BlockEyedPos;
+import su.nightexpress.sunlight.utils.teleport.Teleporter;
 
 import java.io.File;
 import java.time.LocalTime;
@@ -146,18 +147,18 @@ public class Warp extends AbstractFileData<SunLightPlugin> implements Placeholde
         return this.placeholderMap;
     }
 
-    public boolean teleport(@NotNull Player player, boolean isForced) {
+    public boolean teleport(@NotNull Player player, boolean forced) {
         if (!this.isValid()) {
             WarpsLang.WARP_TELEPORT_ERROR_DISABLED.getMessage().replace(this.replacePlaceholders()).send(player);
             return false;
         }
 
-        if (!isForced && !this.hasPermission(player)) {
+        if (!forced && !this.hasPermission(player)) {
             WarpsLang.WARP_TELEPORT_ERROR_NO_PERMISSION.getMessage().replace(this.replacePlaceholders()).send(player);
             return false;
         }
 
-        if (!isForced && !this.isVisitTime(player)) {
+        if (!forced && !this.isVisitTime(player)) {
             WarpsLang.WARP_TELEPORT_ERROR_TIME.getMessage().replace(this.replacePlaceholders()).send(player);
             return false;
         }
@@ -165,7 +166,7 @@ public class Warp extends AbstractFileData<SunLightPlugin> implements Placeholde
         // Check cooldown.
         SunUser user = plugin.getUserManager().getUserData(player);
         CooldownInfo cooldownInfo = user.getCooldown(this).orElse(null);
-        if (!isForced && cooldownInfo != null) {
+        if (!forced && cooldownInfo != null) {
             long expireDate = cooldownInfo.getExpireDate();
             WarpsLang.WARP_TELEPORT_ERROR_COOLDOWN.getMessage()
                 .replace(Placeholders.GENERIC_COOLDOWN, TimeUtil.formatDuration(expireDate))
@@ -190,17 +191,19 @@ public class Warp extends AbstractFileData<SunLightPlugin> implements Placeholde
         this.plugin.getPluginManager().callEvent(event);
         if (event.isCancelled()) return false;
 
-        Teleporter teleporter = new Teleporter(player, this.getLocation()).centered().validateFloor();
-        if (!teleporter.teleport()) return false;
+        Teleporter.create(player, this.getLocation())
+            .centered()
+            .validateFloor()
+            .setForced(forced)
+            .teleport(TeleportType.WARP, () -> {
+                WarpsLang.WARP_TELEPORT_DONE.getMessage().send(player, replacer -> replacer.replace(this.replacePlaceholders()));
 
-        WarpsLang.WARP_TELEPORT_DONE.getMessage().replace(this.replacePlaceholders()).send(player);
-
-        if (!isForced && this.hasVisitCooldown() && !this.isOwner(player)) {
-            CooldownInfo info = CooldownInfo.of(this);
-            user.addCooldown(info);
-            this.plugin.getUserManager().scheduleSave(user);
-        }
-
+                if (!forced && this.hasVisitCooldown() && !this.isOwner(player)) {
+                    CooldownInfo info = CooldownInfo.of(this);
+                    user.addCooldown(info);
+                    this.plugin.getUserManager().scheduleSave(user);
+                }
+            });
         return true;
     }
 
@@ -251,7 +254,7 @@ public class Warp extends AbstractFileData<SunLightPlugin> implements Placeholde
     public boolean isVisitTime() {
         if (!this.hasVisitTimes()) return true;
 
-        LocalTime now = LocalTime.now();
+        LocalTime now = TimeUtil.getCurrentTime();
         return this.getVisitTimes().stream().anyMatch(pair -> {
             return now.isAfter(pair.getFirst()) && now.isBefore(pair.getSecond());
         });
@@ -269,7 +272,7 @@ public class Warp extends AbstractFileData<SunLightPlugin> implements Placeholde
 
     @Nullable
     public LocalTime getNearestVisitTime() {
-        LocalTime now = LocalTime.now();
+        LocalTime now = TimeUtil.getCurrentTime();
         return this.getVisitTimes().stream()
             .filter(pair -> now.isBefore(pair.getFirst()) || now.isAfter(pair.getSecond()))
             .map(Pair::getFirst).min(LocalTime::compareTo).orElse(null);
@@ -277,7 +280,7 @@ public class Warp extends AbstractFileData<SunLightPlugin> implements Placeholde
 
     @Nullable
     public LocalTime getNearestCloseTime() {
-        LocalTime now = LocalTime.now();
+        LocalTime now = TimeUtil.getCurrentTime();
         return this.getVisitTimes().stream()
             .filter(pair -> now.isAfter(pair.getFirst()) && now.isBefore(pair.getSecond()))
             .map(Pair::getSecond).findFirst().orElse(null);

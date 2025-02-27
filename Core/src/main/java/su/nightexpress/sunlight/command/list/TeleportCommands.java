@@ -20,7 +20,7 @@ import su.nightexpress.sunlight.SunLightPlugin;
 import su.nightexpress.sunlight.command.*;
 import su.nightexpress.sunlight.command.template.CommandTemplate;
 import su.nightexpress.sunlight.config.Lang;
-import su.nightexpress.sunlight.utils.Teleporter;
+import su.nightexpress.sunlight.utils.teleport.Teleporter;
 
 import java.util.Collections;
 import java.util.List;

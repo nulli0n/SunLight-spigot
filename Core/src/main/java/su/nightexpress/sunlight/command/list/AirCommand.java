@@ -41,7 +41,7 @@ public class AirCommand {
     }
 
     @NotNull
-    public static DirectNodeBuilder builderMode(@NotNull SunLightPlugin plugin, @NotNull CommandTemplate template, @NotNull LangString description, @NotNull ModifyMode mode) {
+    private static DirectNodeBuilder builderMode(@NotNull SunLightPlugin plugin, @NotNull CommandTemplate template, @NotNull LangString description, @NotNull ModifyMode mode) {
         return DirectNode.builder(plugin, template.getAliases())
             .description(description)
             .permission(CommandPerms.AIR_MODE.apply(mode))
@@ -53,7 +53,7 @@ public class AirCommand {
             .executes((context, arguments) -> executeMode(plugin, context, arguments, mode));
     }
 
-    public static boolean executeMode(@NotNull SunLightPlugin plugin, @NotNull CommandContext context, @NotNull ParsedArguments arguments, @NotNull ModifyMode mode) {
+    private static boolean executeMode(@NotNull SunLightPlugin plugin, @NotNull CommandContext context, @NotNull ParsedArguments arguments, @NotNull ModifyMode mode) {
         int amount = arguments.getIntArgument(CommandArguments.AMOUNT);
         Player target = CommandTools.getTarget(plugin, context, arguments, CommandArguments.PLAYER, true);
         if (target == null) return false;

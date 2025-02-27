@@ -1,27 +1,21 @@
 package su.nightexpress.sunlight.config;
 
 import su.nightexpress.nightcore.config.ConfigValue;
-
-import java.text.SimpleDateFormat;
-import java.time.format.DateTimeFormatter;
+import su.nightexpress.sunlight.utils.SunUtils;
 
 public class Config {
 
     public static final String DIR_MENU = "/menu/";
 
-    public static final ConfigValue<SimpleDateFormat> GENERAL_DATE_FORMAT = ConfigValue.create("General.Date_Format",
-        (cfg, path, def) -> new SimpleDateFormat(cfg.getString(path, def.toPattern())),
-        (cfg, path, format) -> cfg.set(path, format.toPattern()),
-        () -> new SimpleDateFormat("dd/MM/yyyy HH:mm:ss"),
+    public static final ConfigValue<String> GENERAL_DATE_FORMAT = ConfigValue.create("General.Date_Format",
+        "dd/MM/yyyy HH:mm:ss",
         "Sets the global date format used in various plugin modules."
-    );
+    ).whenRead(SunUtils::setDateFormatter);
 
-    public static final ConfigValue<DateTimeFormatter> GENERAL_TIME_FORMAT = ConfigValue.create("General.Time_Format",
-        (cfg, path, def) -> DateTimeFormatter.ofPattern(cfg.getString(path, "HH:mm:ss")),
-        (cfg, path, format) -> cfg.set(path, "HH:mm:ss"),
-        () -> DateTimeFormatter.ofPattern("HH:mm:ss"),
+    public static final ConfigValue<String> GENERAL_TIME_FORMAT = ConfigValue.create("General.Time_Format",
+        "HH:mm:ss",
         "Sets the global time format used in various plugin modules."
-    );
+    ).whenRead(SunUtils::setTimeFormatter);
 
     public static final ConfigValue<String> CONSOLE_NAME = ConfigValue.create("General.ConsoleName",
         "Console",

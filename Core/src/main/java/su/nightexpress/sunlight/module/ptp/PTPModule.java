@@ -8,6 +8,7 @@ import su.nightexpress.nightcore.util.TimeUtil;
 import su.nightexpress.sunlight.Placeholders;
 import su.nightexpress.sunlight.SunLightPlugin;
 import su.nightexpress.sunlight.api.event.PlayerTeleportRequestEvent;
+import su.nightexpress.sunlight.api.type.TeleportType;
 import su.nightexpress.sunlight.config.Perms;
 import su.nightexpress.sunlight.core.user.IgnoredUser;
 import su.nightexpress.sunlight.core.user.settings.Setting;
@@ -23,6 +24,7 @@ import su.nightexpress.sunlight.module.ptp.config.PTPConfig;
 import su.nightexpress.sunlight.module.ptp.config.PTPLang;
 import su.nightexpress.sunlight.module.ptp.config.PTPPerms;
 import su.nightexpress.sunlight.module.ptp.listener.PTPListener;
+import su.nightexpress.sunlight.utils.teleport.Teleporter;
 
 import java.util.*;
 
@@ -183,12 +185,13 @@ public class PTPModule extends Module {
 
         Player teleporter = request.getMode() == Mode.INVITE ? player : sender;
         Location destination = request.getMode() == Mode.INVITE ? sender.getLocation() : player.getLocation();
-        teleporter.teleport(destination);
+
         request.setExpired();
 
-        PTPLang.REQUEST_ACCEPT_DONE.getMessage().replace(Placeholders.forPlayer(sender)).send(player);
-        PTPLang.REQUEST_ACCEPT_NOTIFY.getMessage().replace(Placeholders.forPlayer(player)).send(sender);
-
+        Teleporter.create(teleporter, destination).teleport(TeleportType.PTP, () -> {
+            PTPLang.REQUEST_ACCEPT_DONE.getMessage().replace(Placeholders.forPlayer(sender)).send(player);
+            PTPLang.REQUEST_ACCEPT_NOTIFY.getMessage().replace(Placeholders.forPlayer(player)).send(sender);
+        });
         return true;
     }
 

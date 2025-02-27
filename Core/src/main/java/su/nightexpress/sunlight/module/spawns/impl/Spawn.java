@@ -15,7 +15,8 @@ import su.nightexpress.sunlight.module.spawns.config.SpawnsLang;
 import su.nightexpress.sunlight.module.spawns.config.SpawnsPerms;
 import su.nightexpress.sunlight.module.spawns.event.PlayerSpawnTeleportEvent;
 import su.nightexpress.sunlight.module.spawns.util.Placeholders;
-import su.nightexpress.sunlight.utils.Teleporter;
+import su.nightexpress.sunlight.api.type.TeleportType;
+import su.nightexpress.sunlight.utils.teleport.Teleporter;
 import su.nightexpress.sunlight.utils.pos.BlockEyedPos;
 
 import java.io.File;
@@ -108,15 +109,15 @@ public class Spawn extends AbstractFileData<SunLightPlugin> implements Placehold
         this.teleport(player, true, false);
     }
 
-    public boolean teleport(@NotNull Player player, boolean isForce, boolean silent) {
+    public boolean teleport(@NotNull Player player, boolean forced, boolean silent) {
         if (!this.isValid()) {
             if (!silent) SpawnsLang.SPAWN_TELEPORT_ERROR_WORLD.getMessage().send(player);
             return false;
         }
 
-        if (!isForce) {
+        if (!forced) {
             if (!this.hasPermission(player)) {
-                SpawnsLang.ERROR_NO_PERMISSION.getMessage().send(player);
+                if (!silent) SpawnsLang.ERROR_NO_PERMISSION.getMessage().send(player);
                 return false;
             }
         }
@@ -125,10 +126,13 @@ public class Spawn extends AbstractFileData<SunLightPlugin> implements Placehold
         plugin.getPluginManager().callEvent(event);
         if (event.isCancelled()) return false;
 
-        Teleporter teleporter = new Teleporter(player, this.getLocation()).centered().validateFloor();
-        if (!teleporter.teleport()) return false;
-
-        if (!silent) SpawnsLang.SPAWN_TELEPORT_DONE.getMessage().replace(this.replacePlaceholders()).send(player);
+        Teleporter.create(player, this.getLocation())
+            .centered()
+            .validateFloor()
+            .setForced(forced)
+            .teleport(TeleportType.SPAWN, () -> {
+                if (!silent) SpawnsLang.SPAWN_TELEPORT_DONE.getMessage().send(player, replacer -> replacer.replace(this.replacePlaceholders()));
+            });
         return true;
     }
 

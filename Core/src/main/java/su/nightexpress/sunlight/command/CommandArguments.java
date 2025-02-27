@@ -33,15 +33,15 @@ public class CommandArguments {
     public static final String ENCHANT  = "enchant";
     public static final String TEXT     = "text";
     public static final String POSITION = "position";
-    public static final String X = "x";
-    public static final String Y = "y";
-    public static final String Z = "z";
+    public static final String X        = "x";
+    public static final String Y        = "y";
+    public static final String Z        = "z";
 
     @NotNull
     public static ArgumentBuilder<EquipmentSlot> slot(@NotNull String name) {
         return CommandArgument.builder(name, (str, context) -> {
                 EquipmentSlot slot = StringUtil.getEnum(str, EquipmentSlot.class).orElse(null);
-                if (Version.isAtLeast(Version.MC_1_20_6) && slot != null && slot.name().equalsIgnoreCase("BODY")) return null; //slot == EquipmentSlot.BODY
+                if (slot == EquipmentSlot.BODY) return null;
 
                 return slot;
             })

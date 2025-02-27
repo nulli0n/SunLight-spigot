@@ -5,11 +5,11 @@ import org.jetbrains.annotations.NotNull;
 import su.nightexpress.nightcore.util.StringUtil;
 import su.nightexpress.nightcore.util.TimeUtil;
 import su.nightexpress.nightcore.util.placeholder.PlaceholderMap;
-import su.nightexpress.sunlight.config.Config;
 import su.nightexpress.sunlight.config.Lang;
 import su.nightexpress.sunlight.module.worlds.config.WorldsLang;
 import su.nightexpress.sunlight.module.worlds.impl.WorldData;
 import su.nightexpress.sunlight.module.worlds.impl.WrappedWorld;
+import su.nightexpress.sunlight.utils.SunUtils;
 
 public class Placeholders extends su.nightexpress.sunlight.Placeholders {
 
@@ -42,10 +42,10 @@ public class Placeholders extends su.nightexpress.sunlight.Placeholders {
             .add(WORLD_AUTO_RESET_ENABLED, () -> Lang.getYesOrNo(isCustom && worldData.isAutoReset()))
             .add(WORLD_AUTO_RESET_INTERVAL, () -> TimeUtil.formatTime(worldData.getResetInterval() * 1000L))
             .add(WORLD_LAST_RESET_DATE, () -> {
-                return worldData.getLastResetDate() <= 0L ? Lang.OTHER_NEVER.getString() : Config.GENERAL_DATE_FORMAT.get().format(worldData.getLastResetDate());
+                return worldData.getLastResetDate() <= 0L ? Lang.OTHER_NEVER.getString() : SunUtils.formatDate(worldData.getLastResetDate());
             })
             .add(WORLD_NEXT_RESET_DATE, () -> {
-                return worldData.getNextWipe() <= 0L ? Lang.OTHER_NEVER.getString() : Config.GENERAL_DATE_FORMAT.get().format(worldData.getNextWipe());
+                return worldData.getNextWipe() <= 0L ? Lang.OTHER_NEVER.getString() : SunUtils.formatDate(worldData.getNextWipe());
             })
             ;
     }

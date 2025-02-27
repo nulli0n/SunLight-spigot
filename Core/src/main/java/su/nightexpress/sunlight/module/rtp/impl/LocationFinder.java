@@ -12,7 +12,7 @@ import su.nightexpress.sunlight.Placeholders;
 import su.nightexpress.sunlight.SunLightPlugin;
 import su.nightexpress.sunlight.module.rtp.config.RTPConfig;
 import su.nightexpress.sunlight.module.rtp.config.RTPLang;
-import su.nightexpress.sunlight.utils.Teleporter;
+import su.nightexpress.sunlight.utils.teleport.Teleporter;
 
 import java.util.*;
 

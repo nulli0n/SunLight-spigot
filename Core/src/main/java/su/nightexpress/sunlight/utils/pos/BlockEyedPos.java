@@ -9,6 +9,7 @@ import su.nightexpress.nightcore.util.NumberUtil;
 
 import java.util.Objects;
 
+@Deprecated
 public class BlockEyedPos implements WorldPos {
 
     private final int x,y,z;

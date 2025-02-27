@@ -544,6 +544,16 @@ public class Lang extends CoreLang {
         LIGHT_GRAY.enclose("Set " + LIGHT_YELLOW.enclose(GENERIC_ITEM) + " damage to " + LIGHT_YELLOW.enclose(GENERIC_AMOUNT) + ".")
     );
 
+    public static final LangText COMMAND_ITEM_ENCHANT_ERROR_NOT_COMPATIBLE = LangText.of("Command.Item.Enchant.Error.NotCompatible",
+        SOUND.enclose(Sound.ENTITY_VILLAGER_NO),
+        LIGHT_GRAY.enclose(LIGHT_RED.enclose(GENERIC_ITEM) + " can not be enchanted with " + LIGHT_RED.enclose(GENERIC_NAME) + "!")
+    );
+
+    public static final LangText COMMAND_ITEM_ENCHANT_ERROR_OVERPOWERED = LangText.of("Command.Item.Enchant.Error.Overpowered",
+        SOUND.enclose(Sound.ENTITY_VILLAGER_NO),
+        LIGHT_GRAY.enclose(LIGHT_RED.enclose(GENERIC_NAME) + "'s max. level is " + LIGHT_RED.enclose(GENERIC_LEVEL) + "!")
+    );
+
     public static final LangText COMMAND_ITEM_ENCHANT_DONE_ENCHANTED = LangText.of("Command.Item.Enchant.Done.Enchanted",
         SOUND.enclose(Sound.BLOCK_ENCHANTMENT_TABLE_USE),
         LIGHT_GRAY.enclose(LIGHT_YELLOW.enclose(GENERIC_ITEM) + " enchanted with " + LIGHT_YELLOW.enclose(GENERIC_NAME + " " + GENERIC_LEVEL) + "!")

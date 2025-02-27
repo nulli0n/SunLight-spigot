@@ -5,6 +5,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.jetbrains.annotations.NotNull;
 
+@Deprecated
 public interface WorldPos {
 
     @NotNull String serialize();

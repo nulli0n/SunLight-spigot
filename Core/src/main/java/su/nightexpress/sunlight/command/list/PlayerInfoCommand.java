@@ -102,7 +102,7 @@ public class PlayerInfoCommand {
             .add(CAN_FLY, () -> Lang.getYesOrNo(target.getAllowFlight()))
             .add(FOOD_LEVEL, () -> NumberUtil.format(target.getFoodLevel()))
             .add(SATURATION, () -> NumberUtil.format(target.getSaturation()))
-            .add(MAX_HEALTH, () -> NumberUtil.format(EntityUtil.getAttribute(target, Attribute.GENERIC_MAX_HEALTH)))
+            .add(MAX_HEALTH, () -> NumberUtil.format(EntityUtil.getAttribute(target, Attribute.MAX_HEALTH)))
             .add(HEALTH, () -> NumberUtil.format(target.getHealth()))
             .add(GAME_MODE, () -> Lang.GAME_MODE.getLocalized(target.getGameMode()))
             .add(PLAYER_DISPLAY_NAME, target::getDisplayName)

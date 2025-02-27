@@ -40,7 +40,7 @@ public class CoreListener extends AbstractListener<SunLightPlugin> {
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onUserIgnoreChat(AsyncPlayerChatEvent event) {
         Player pSender = event.getPlayer();
-        SunUser userSender = plugin.getUserManager().getUserData(pSender);
+        //SunUser userSender = plugin.getUserManager().getUserData(pSender);
 
         event.getRecipients().removeIf(pReceiver -> {
             SunUser userReceiver = plugin.getUserManager().getUserData(pReceiver);

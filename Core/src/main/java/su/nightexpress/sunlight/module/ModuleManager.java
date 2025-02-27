@@ -20,6 +20,7 @@ import su.nightexpress.sunlight.module.scoreboard.ScoreboardModule;
 import su.nightexpress.sunlight.module.spawns.SpawnsModule;
 import su.nightexpress.sunlight.module.tab.TabModule;
 import su.nightexpress.sunlight.module.vanish.VanishModule;
+import su.nightexpress.sunlight.module.warmups.WarmupsModule;
 import su.nightexpress.sunlight.module.warps.WarpsModule;
 import su.nightexpress.sunlight.module.worlds.WorldsModule;
 
@@ -59,6 +60,7 @@ public class ModuleManager extends AbstractManager<SunLightPlugin> {
         this.register(ModuleId.CUSTOM_TEXT, id -> new CustomTextModule(this.plugin, id));
         this.register(ModuleId.GOD_MODE, id -> new GodModule(this.plugin, id));
         this.register(ModuleId.VANISH, id -> new VanishModule(this.plugin, id));
+        this.register(ModuleId.WARMUPS, id -> new WarmupsModule(this.plugin, id));
     }
 
     @Override

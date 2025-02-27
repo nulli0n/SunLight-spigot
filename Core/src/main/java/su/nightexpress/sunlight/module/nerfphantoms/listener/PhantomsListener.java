@@ -34,10 +34,10 @@ public class PhantomsListener extends AbstractListener<SunLightPlugin> {
         }
 
         if (PhantomsConfig.DAMAGE_MODIFIER_ENABLED.get()) {
-            this.modifyAttribute(phantom, Attribute.GENERIC_ATTACK_DAMAGE, PhantomsConfig.DAMAGE_MODIFIER_VALUE.get());
+            this.modifyAttribute(phantom, Attribute.ATTACK_DAMAGE, PhantomsConfig.DAMAGE_MODIFIER_VALUE.get());
         }
         if (PhantomsConfig.HEALTH_MODIFIER_ENABLED.get()) {
-            this.modifyAttribute(phantom, Attribute.GENERIC_MAX_HEALTH, PhantomsConfig.HEALTH_MODIFIER_VALUE.get());
+            this.modifyAttribute(phantom, Attribute.MAX_HEALTH, PhantomsConfig.HEALTH_MODIFIER_VALUE.get());
         }
     }
 
@@ -45,13 +45,13 @@ public class PhantomsListener extends AbstractListener<SunLightPlugin> {
         AttributeInstance instance = phantom.getAttribute(attribute);
         if (instance == null) return;
 
-        if (attribute == Attribute.GENERIC_ATTACK_DAMAGE) {
+        if (attribute == Attribute.ATTACK_DAMAGE) {
             value = EntityUtil.getAttribute(phantom, attribute) * value;
         }
 
         instance.setBaseValue(value);
 
-        if (attribute == Attribute.GENERIC_MAX_HEALTH) {
+        if (attribute == Attribute.MAX_HEALTH) {
             phantom.setHealth(value);
         }
     }

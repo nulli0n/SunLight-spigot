@@ -212,6 +212,9 @@ public class CommandRegistry {
                 }
 
                 rootBuilder.child(directBuilder);
+                if (child.isFallback()) {
+                    rootBuilder.fallback(directBuilder.build());
+                }
             });
         });
 

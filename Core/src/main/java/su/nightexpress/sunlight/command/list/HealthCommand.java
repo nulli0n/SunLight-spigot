@@ -90,7 +90,7 @@ public class HealthCommand {
 
         double amount = arguments.getDoubleArgument(CommandArguments.AMOUNT);
         double has = target.getHealth();
-        double max = EntityUtil.getAttribute(target, Attribute.GENERIC_MAX_HEALTH);
+        double max = EntityUtil.getAttribute(target, Attribute.MAX_HEALTH);
         double set = Math.clamp(mode.modify(has, amount), 0, max);
 
         target.setHealth(set);
@@ -134,7 +134,7 @@ public class HealthCommand {
         Player target = CommandTools.getTarget(plugin, context, arguments, CommandArguments.PLAYER, true);
         if (target == null) return false;
 
-        double max = EntityUtil.getAttribute(target, Attribute.GENERIC_MAX_HEALTH);
+        double max = EntityUtil.getAttribute(target, Attribute.MAX_HEALTH);
 
         target.setHealth(max);
         if (restoreClearEffects) {

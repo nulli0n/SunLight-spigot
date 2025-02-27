@@ -7,6 +7,7 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import su.nightexpress.sunlight.SunLightPlugin;
+import su.nightexpress.sunlight.api.type.TeleportType;
 import su.nightexpress.sunlight.module.Module;
 import su.nightexpress.sunlight.module.ModuleInfo;
 import su.nightexpress.sunlight.module.backlocation.command.BackCommand;
@@ -17,7 +18,7 @@ import su.nightexpress.sunlight.module.backlocation.config.BackLocationPerms;
 import su.nightexpress.sunlight.module.backlocation.data.LocationType;
 import su.nightexpress.sunlight.module.backlocation.data.StoredLocation;
 import su.nightexpress.sunlight.module.backlocation.listener.BackLocationListener;
-import su.nightexpress.sunlight.utils.Teleporter;
+import su.nightexpress.sunlight.utils.teleport.Teleporter;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -138,9 +139,10 @@ public class BackLocationModule extends Module {
             return false;
         }
 
-        new Teleporter(player, location).useOriginalDirection().teleport();
-
-        if (!silent) (isPrevious ? BackLocationLang.PREVIOUS_TELEPORT_NOTIFY : BackLocationLang.DEATH_TELEPORT_NOTIFY).getMessage().send(player);
+        TeleportType teleportType = type == LocationType.DEATH ? TeleportType.DEATH_BACK : TeleportType.BACK;
+        Teleporter.create(player, location).useOriginalDirection().teleport(teleportType, () -> {
+            if (!silent) (isPrevious ? BackLocationLang.PREVIOUS_TELEPORT_NOTIFY : BackLocationLang.DEATH_TELEPORT_NOTIFY).getMessage().send(player);
+        });
         return true;
     }
 }

@@ -20,7 +20,6 @@ public class CommandTools {
 
     @Nullable
     public static World getWorld(@NotNull SunLightPlugin plugin, @NotNull CommandContext context, @NotNull ParsedArguments arguments, @NotNull String argName) {
-        World world;
         if (arguments.hasArgument(argName)) {
             return arguments.getWorldArgument(argName);
         }

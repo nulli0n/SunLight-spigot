@@ -6,6 +6,7 @@ import org.jetbrains.annotations.Nullable;
 import su.nightexpress.nightcore.database.AbstractUser;
 import su.nightexpress.nightcore.util.text.NightMessage;
 import su.nightexpress.sunlight.SunLightPlugin;
+import su.nightexpress.sunlight.command.CommandPerms;
 import su.nightexpress.sunlight.command.cooldown.CommandCooldown;
 import su.nightexpress.sunlight.core.cooldown.CooldownInfo;
 import su.nightexpress.sunlight.core.cooldown.CooldownType;
@@ -119,6 +120,11 @@ public class SunUser extends AbstractUser<SunLightPlugin> {
     public void updatePlayerName() {
         Player player = this.getPlayer();
         if (player == null) return;
+
+        // TODO Better system, add in database who set name last to check if need reset or not
+        if (!player.hasPermission(CommandPerms.NICK_CHANGE)) {
+            this.setCustomName(null);
+        }
 
         if (this.hasCustomName()) {
             String customName = this.getCustomName();

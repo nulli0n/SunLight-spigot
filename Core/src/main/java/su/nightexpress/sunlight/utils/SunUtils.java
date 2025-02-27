@@ -20,16 +20,14 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import su.nightexpress.nightcore.util.BukkitThing;
-import su.nightexpress.nightcore.util.ItemUtil;
-import su.nightexpress.nightcore.util.Players;
-import su.nightexpress.nightcore.util.Version;
+import su.nightexpress.nightcore.util.*;
 import su.nightexpress.sunlight.SunLightAPI;
 import su.nightexpress.sunlight.config.Config;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
@@ -38,6 +36,17 @@ public class SunUtils {
 
     public static final String CONSOLE_NAME = Bukkit.getServer().getConsoleSender().getName();
     public static final String LOCAL_ADDRESS = "127.0.0.1";
+
+    private static DateTimeFormatter dateFormatter;
+    private static DateTimeFormatter timeFormatter;
+
+    public static void setDateFormatter(@NotNull String pattern) {
+        dateFormatter = DateTimeFormatter.ofPattern(pattern);
+    }
+
+    public static void setTimeFormatter(@NotNull String pattern) {
+        timeFormatter = DateTimeFormatter.ofPattern(pattern);
+    }
 
     @SuppressWarnings("deprecation")
     public static List<String> getPotionEffects(@NotNull Predicate<PotionEffectType> predicate) {
@@ -75,6 +84,7 @@ public class SunUtils {
     }
 
     @NotNull
+    @Deprecated
     public static String noSpace(@NotNull String str) {
         return str.trim().replaceAll("\\s+", "");
     }
@@ -86,12 +96,12 @@ public class SunUtils {
 
     @NotNull
     public static String formatDate(long timestamp) {
-        return Config.GENERAL_DATE_FORMAT.get().format(timestamp);
+        return dateFormatter.format(TimeUtil.getLocalDateTimeOf(timestamp));
     }
 
     @NotNull
     public static String formatTime(@NotNull LocalTime localTime) {
-        return localTime.format(Config.GENERAL_TIME_FORMAT.get());
+        return timeFormatter.format(localTime);
     }
 
     @NotNull
@@ -141,11 +151,30 @@ public class SunUtils {
     }
 
     public static boolean teleport(@NotNull Player player, @NotNull Location location) {
-        if (player.isOnline()) {
-            return player.teleport(location);
-        }
-        SunLightAPI.PLUGIN.getSunNMS().teleport(player, location);
+//        if (player.isOnline()) {
+//            return player.teleport(location);
+//        }
+//        SunLightAPI.getInternals().teleport(player, location);
+        teleport(player, location, null);
         return true;
+    }
+
+    public static void teleport(@NotNull Player player, @NotNull Location location, @Nullable Runnable onSuccess) {
+        if (player.isOnline()) {
+            // Try natural teleport.
+            if (!player.teleport(location)) {
+                return;
+            }
+        }
+        else {
+            // Otherwise force move offline player to destination location.
+            SunLightAPI.getInternals().teleport(player, location);
+        }
+
+        // Run some code after successful teleport.
+        if (onSuccess != null) {
+            onSuccess.run();
+        }
     }
 
     @NotNull

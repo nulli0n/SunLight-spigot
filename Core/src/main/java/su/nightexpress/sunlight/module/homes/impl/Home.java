@@ -10,13 +10,14 @@ import su.nightexpress.nightcore.util.StringUtil;
 import su.nightexpress.nightcore.util.placeholder.Placeholder;
 import su.nightexpress.nightcore.util.placeholder.PlaceholderMap;
 import su.nightexpress.sunlight.SunLightPlugin;
+import su.nightexpress.sunlight.api.type.TeleportType;
 import su.nightexpress.sunlight.module.homes.config.HomesConfig;
 import su.nightexpress.sunlight.module.homes.config.HomesLang;
 import su.nightexpress.sunlight.module.homes.config.HomesPerms;
 import su.nightexpress.sunlight.module.homes.event.PlayerHomeTeleportEvent;
 import su.nightexpress.sunlight.module.homes.util.Placeholders;
 import su.nightexpress.sunlight.utils.SunUtils;
-import su.nightexpress.sunlight.utils.Teleporter;
+import su.nightexpress.sunlight.utils.teleport.Teleporter;
 import su.nightexpress.sunlight.utils.UserInfo;
 
 import java.util.HashSet;
@@ -93,14 +94,14 @@ public class Home implements Placeholder {
         plugin.getPluginManager().callEvent(event);
         if (event.isCancelled()) return false;
 
-        Teleporter teleporter = new Teleporter(player, this.getLocation()).centered().validateFloor();
-        if (!teleporter.teleport()) {
-            return false;
-        }
+        // TODO forced
 
-        (this.isOwner(player) ? HomesLang.HOME_TELEPORT_SUCCESS : HomesLang.HOME_VISIT_SUCCESS).getMessage()
-            .replace(this.replacePlaceholders())
-            .send(player);
+        Teleporter.create(player, this.getLocation())
+            .centered()
+            .validateFloor()
+            .teleport(TeleportType.HOME, () -> {
+                (this.isOwner(player) ? HomesLang.HOME_TELEPORT_SUCCESS : HomesLang.HOME_VISIT_SUCCESS).getMessage().send(player, replacer -> replacer.replace(this.replacePlaceholders()));
+            });
         return true;
     }
 

@@ -11,6 +11,7 @@ import su.nightexpress.nightcore.manager.AbstractFileData;
 import su.nightexpress.nightcore.util.FileUtil;
 import su.nightexpress.nightcore.util.TimeUtil;
 import su.nightexpress.sunlight.SunLightPlugin;
+import su.nightexpress.sunlight.api.type.TeleportType;
 import su.nightexpress.sunlight.module.spawns.SpawnsModule;
 import su.nightexpress.sunlight.module.spawns.impl.Spawn;
 import su.nightexpress.sunlight.module.worlds.WorldsModule;
@@ -18,7 +19,7 @@ import su.nightexpress.sunlight.module.worlds.config.WorldsConfig;
 import su.nightexpress.sunlight.module.worlds.config.WorldsLang;
 import su.nightexpress.sunlight.module.worlds.util.DeletionType;
 import su.nightexpress.sunlight.module.worlds.util.Placeholders;
-import su.nightexpress.sunlight.utils.Teleporter;
+import su.nightexpress.sunlight.utils.teleport.Teleporter;
 
 import java.io.File;
 import java.time.LocalDateTime;
@@ -179,7 +180,7 @@ public class WorldData extends AbstractFileData<SunLightPlugin> {
         long wipeDate = this.getNextWipe();
         if (wipeDate <= 0L) return false;
 
-        long current = TimeUtil.toEpochMillis(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS));
+        long current = TimeUtil.toEpochMillis(TimeUtil.getCurrentDateTime().truncatedTo(ChronoUnit.SECONDS));
         long threshold = WorldsConfig.AUTO_RESET_NOTIFICATION_THRESHOLD.get() * 1000L;
         long diff = wipeDate - current;
         if (diff > threshold) return false;
@@ -219,11 +220,9 @@ public class WorldData extends AbstractFileData<SunLightPlugin> {
         }
 
         for (Player player : world.getPlayers()) {
-            Teleporter teleporter = new Teleporter(player, location).centered().validateFloor();
-
-            if (teleporter.teleport()) {
+            Teleporter.create(player, location).centered().validateFloor().setForced(true).teleport(TeleportType.OTHER, () -> {
                 WorldsLang.UNLOAD_MOVE_OUT_INFO.getMessage().send(player);
-            }
+            });
         }
 
         return world.getPlayers().isEmpty();
@@ -251,7 +250,7 @@ public class WorldData extends AbstractFileData<SunLightPlugin> {
         long next = this.getNextWipe();
         if (next <= 0L) return false;
 
-        long now = TimeUtil.toEpochMillis(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS));
+        long now = TimeUtil.toEpochMillis(TimeUtil.getCurrentDateTime().truncatedTo(ChronoUnit.SECONDS));
         return now >= next;
     }
 
@@ -310,7 +309,7 @@ public class WorldData extends AbstractFileData<SunLightPlugin> {
     }
 
     public void setLatestWipeDate() {
-        LocalDateTime now = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
+        LocalDateTime now = TimeUtil.getCurrentDateTime().truncatedTo(ChronoUnit.SECONDS);
         this.setLastResetDate(TimeUtil.toEpochMillis(now));
     }
 

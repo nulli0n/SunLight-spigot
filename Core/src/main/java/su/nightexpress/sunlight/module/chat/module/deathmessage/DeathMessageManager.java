@@ -227,7 +227,7 @@ public class DeathMessageManager extends AbstractManager<SunLightPlugin> {
         
         Map<EntityType, DeathMessage> map = new HashMap<>();
 
-        map.put(EntityType.PRIMED_TNT, DeathMessage.simple(GRAY.enclose(skull + LIGHT_RED.enclose(PLAYER_DISPLAY_NAME) + " lost his limbs due to TNT explosion!")));
+        map.put(EntityType.TNT, DeathMessage.simple(GRAY.enclose(skull + LIGHT_RED.enclose(PLAYER_DISPLAY_NAME) + " lost his limbs due to TNT explosion!")));
         map.put(EntityType.BEE, DeathMessage.simple(GRAY.enclose(swords + LIGHT_RED.enclose(PLAYER_DISPLAY_NAME) + " attempted to steal honey from Bees.")));
         map.put(EntityType.BLAZE, new DeathMessage(Lists.newList(
             GRAY.enclose(swords + LIGHT_RED.enclose(PLAYER_DISPLAY_NAME) + " could not reflect Blaze''s fireball."),

@@ -6,6 +6,9 @@ import io.github.retrooper.packetevents.adventure.serializer.gson.GsonComponentS
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
+import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.ScoreboardManager;
+import org.bukkit.scoreboard.Team;
 import org.jetbrains.annotations.NotNull;
 import su.nightexpress.nightcore.util.Lists;
 import su.nightexpress.nightcore.util.text.NightMessage;
@@ -38,6 +41,17 @@ public class PacketsTagHandler extends NametagHandler {
                               @NotNull Player playerOfTeam,
                               @NotNull Collection<? extends Player> receivers) {
 
+        Scoreboard scoreboard = playerOfTeam.getScoreboard();
+        Team team = scoreboard.getEntryTeam(playerOfTeam.getName());
+        Team.OptionStatus status = team == null ? null : team.getOption(Team.Option.COLLISION_RULE);
+
+        WrapperPlayServerTeams.CollisionRule collisionRule = status == null ? WrapperPlayServerTeams.CollisionRule.ALWAYS : switch (status) {
+            case NEVER -> WrapperPlayServerTeams.CollisionRule.NEVER;
+            case ALWAYS -> WrapperPlayServerTeams.CollisionRule.ALWAYS;
+            case FOR_OWN_TEAM -> WrapperPlayServerTeams.CollisionRule.PUSH_OWN_TEAM;
+            case FOR_OTHER_TEAMS -> WrapperPlayServerTeams.CollisionRule.PUSH_OTHER_TEAMS;
+        };
+
         WrapperPlayServerTeams.ScoreBoardTeamInfo info = null;
         if (mode == TeamMode.CREATE) {
             info = new WrapperPlayServerTeams.ScoreBoardTeamInfo(
@@ -45,7 +59,7 @@ public class PacketsTagHandler extends NametagHandler {
                 GsonComponentSerializer.gson().deserialize(NightMessage.asJson(teamPrefix)),
                 GsonComponentSerializer.gson().deserialize(NightMessage.asJson(teamSuffix)),
                 WrapperPlayServerTeams.NameTagVisibility.ALWAYS,
-                WrapperPlayServerTeams.CollisionRule.ALWAYS,
+                collisionRule,
                 NamedTextColor.NAMES.valueOr(teamColorRaw.toLowerCase(), NamedTextColor.GRAY),
                 WrapperPlayServerTeams.OptionData.NONE
             );

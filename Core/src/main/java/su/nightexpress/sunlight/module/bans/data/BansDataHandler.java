@@ -217,7 +217,7 @@ public class BansDataHandler extends AbstractDataHandler<SunLightPlugin> {
         for (String table : tables) {
             if (!SQLQueries.hasTable(this.getConnector(), table)) continue;
 
-            LocalDateTime deadline = LocalDateTime.now().minusDays(this.getConfig().getPurgePeriod());
+            LocalDateTime deadline = TimeUtil.getCurrentDateTime().minusDays(this.getConfig().getPurgePeriod());
             long deadlineMs = TimeUtil.toEpochMillis(deadline);
             this.delete(table,
                 SQLCondition.smaller(COLUMN_EXPIRE_DATE.toValue(deadlineMs)),

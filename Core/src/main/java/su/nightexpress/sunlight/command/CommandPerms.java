@@ -121,19 +121,20 @@ public class CommandPerms {
     public static final UniPermission INVENTORY_REPAIR        = create("inventory", "repair");
     public static final UniPermission INVENTORY_REPAIR_OTHERS = createOthers("inventory", "repair");
 
-    public static final UniPermission ITEM_AMOUNT      = create("item", "amount");
-    public static final UniPermission ITEM_DAMAGE      = create("item", "damage");
-    public static final UniPermission ITEM_UNBREAKABLE = create("item", "unbreakable");
-    public static final UniPermission ITEM_ENCHANT     = create("item", "enchant");
-    public static final UniPermission ITEM_GET         = create("item", "get");
-    public static final UniPermission ITEM_GIVE        = create("item", "give");
-    public static final UniPermission ITEM_MODEL       = create("item", "model");
-    public static final UniPermission ITEM_NAME        = create("item", "name");
-    public static final UniPermission ITEM_LORE        = create("item", "lore");
-    public static final UniPermission ITEM_POTION      = create("item", "potion");
-    public static final UniPermission ITEM_REPAIR      = create("item", "repair");
-    public static final UniPermission ITEM_SPAWN       = create("item", "spawn");
-    public static final UniPermission ITEM_TAKE        = create("item", "take");
+    public static final UniPermission ITEM_AMOUNT            = create("item", "amount");
+    public static final UniPermission ITEM_DAMAGE            = create("item", "damage");
+    public static final UniPermission ITEM_UNBREAKABLE       = create("item", "unbreakable");
+    public static final UniPermission ITEM_ENCHANT           = create("item", "enchant");
+    public static final UniPermission ITEM_ENCHANT_UNLIMITED = create("item", "enchant.unlimited");
+    public static final UniPermission ITEM_GET               = create("item", "get");
+    public static final UniPermission ITEM_GIVE              = create("item", "give");
+    public static final UniPermission ITEM_MODEL             = create("item", "model");
+    public static final UniPermission ITEM_NAME              = create("item", "name");
+    public static final UniPermission ITEM_LORE              = create("item", "lore");
+    public static final UniPermission ITEM_POTION            = create("item", "potion");
+    public static final UniPermission ITEM_REPAIR            = create("item", "repair");
+    public static final UniPermission ITEM_SPAWN             = create("item", "spawn");
+    public static final UniPermission ITEM_TAKE              = create("item", "take");
 
     public static final UniPermission MOB_KILL  = create("mob", "kill");
     public static final UniPermission MOB_CLEAR = create("mob", "clear");
@@ -231,7 +232,7 @@ public class CommandPerms {
             INVENTORY_OPEN,
             INVENTORY_REPAIR, INVENTORY_REPAIR_OTHERS,
 
-            ITEM_AMOUNT, ITEM_DAMAGE, ITEM_ENCHANT,
+            ITEM_AMOUNT, ITEM_DAMAGE, ITEM_ENCHANT, ITEM_ENCHANT_UNLIMITED,
             ITEM_GET, ITEM_GIVE, ITEM_LORE, ITEM_MODEL, ITEM_NAME,
             ITEM_POTION, ITEM_SPAWN, ITEM_TAKE, ITEM_UNBREAKABLE,
 

@@ -206,8 +206,27 @@ public class ItemCommands {
         ItemStack item = getItem(context, arguments);
         if (item == null) return false;
 
+        boolean isUnlimited = context.getSender().hasPermission(CommandPerms.ITEM_ENCHANT_UNLIMITED);
         Enchantment enchantment = arguments.getEnchantmentArgument(CommandArguments.ENCHANT);
+
+        if (!isUnlimited && !enchantment.canEnchantItem(item)) {
+            Lang.COMMAND_ITEM_ENCHANT_ERROR_NOT_COMPATIBLE.getMessage().send(context.getSender(), replacer -> replacer
+                .replace(Placeholders.GENERIC_ITEM, ItemUtil.getItemName(item))
+                .replace(Placeholders.GENERIC_NAME, LangAssets.get(enchantment))
+            );
+            return false;
+        }
+
         int level = arguments.getIntArgument(CommandArguments.LEVEL, 1);
+        if (!isUnlimited && level > enchantment.getMaxLevel()) {
+            Lang.COMMAND_ITEM_ENCHANT_ERROR_OVERPOWERED.getMessage().send(context.getSender(), replacer -> replacer
+                .replace(Placeholders.GENERIC_ITEM, ItemUtil.getItemName(item))
+                .replace(Placeholders.GENERIC_NAME, LangAssets.get(enchantment))
+                .replace(Placeholders.GENERIC_LEVEL, NumberUtil.toRoman(level))
+            );
+            return false;
+        }
+
         SunUtils.enchantItem(item, enchantment, level);
 
         context.send((level > 0 ? Lang.COMMAND_ITEM_ENCHANT_DONE_ENCHANTED : Lang.COMMAND_ITEM_ENCHANT_DONE_DISENCHANTED).getMessage()
