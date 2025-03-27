@@ -1,6 +1,7 @@
 package su.nightexpress.sunlight.module.vanish;
 
 import org.bukkit.entity.Player;
+import org.bukkit.metadata.FixedMetadataValue;
 import org.jetbrains.annotations.NotNull;
 import su.nightexpress.sunlight.SunLightPlugin;
 import su.nightexpress.sunlight.core.user.settings.Setting;
@@ -31,14 +32,11 @@ public class VanishModule extends Module {
     @Override
     protected void onModuleLoad() {
         VanishCommand.load(this.plugin, this);
-
         this.addListener(new VanishListener(this.plugin, this));
     }
 
     @Override
-    protected void onModuleUnload() {
-
-    }
+    protected void onModuleUnload() {}
 
     public boolean isVanished(@NotNull Player player) {
         SunUser user = this.plugin.getUserManager().getUserData(player);
@@ -46,14 +44,18 @@ public class VanishModule extends Module {
     }
 
     public void vanish(@NotNull Player player, boolean isVanished) {
+        // Update vanish status for other players
         for (Player other : this.plugin.getServer().getOnlinePlayers()) {
             if (isVanished) {
                 if (!other.hasPermission(VanishPerms.BYPASS_SEE)) {
                     other.hidePlayer(this.plugin, player);
                 }
-            }
-            else {
+                // Set metadata for vanish status
+                player.setMetadata("vanished", new FixedMetadataValue(this.plugin, true));
+            } else {
                 other.showPlayer(this.plugin, player);
+                // Remove metadata when no longer vanished
+                player.removeMetadata("vanished", this.plugin);
             }
         }
     }
