@@ -12,11 +12,11 @@ public class SBLang {
         "Toggle scoreboard.");
 
     public static final LangText COMMAND_SCOREBOARD_NOTIFY = LangText.of("Scoreboard.Command.Scoreboard.Notify",
-        LIGHT_GRAY.enclose("Scoreboard: " + LIGHT_YELLOW.enclose(GENERIC_STATE))
+        LIGHT_GRAY.wrap("Scoreboard: " + LIGHT_YELLOW.wrap(GENERIC_STATE))
     );
 
     public static final LangText COMMAND_SCOREBOARD_TARGET = LangText.of("Scoreboard.Command.Scoreboard.Target",
-        LIGHT_GRAY.enclose("Set Scoreboard " + LIGHT_YELLOW.enclose(GENERIC_STATE) + " for " + LIGHT_YELLOW.enclose(PLAYER_NAME) + ".")
+        LIGHT_GRAY.wrap("Set Scoreboard " + LIGHT_YELLOW.wrap(GENERIC_STATE) + " for " + LIGHT_YELLOW.wrap(PLAYER_NAME) + ".")
     );
 
 }

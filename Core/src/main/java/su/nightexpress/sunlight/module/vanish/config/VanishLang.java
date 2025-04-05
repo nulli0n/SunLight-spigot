@@ -11,10 +11,10 @@ public class VanishLang {
     public static final LangString COMMAND_VANISH_DESC = LangString.of("Command.Vanish.Desc", "Toggle Vanish.");
 
     public static final LangText COMMAND_VANISH_NOTIFY = LangText.of("Command.Vanish.Notify",
-        LIGHT_GRAY.enclose("Vanish has been set on " + LIGHT_YELLOW.enclose(GENERIC_STATE) + ".")
+        LIGHT_GRAY.wrap("Vanish has been set on " + LIGHT_YELLOW.wrap(GENERIC_STATE) + ".")
     );
 
     public static final LangText COMMAND_VANISH_TARGET = LangText.of("Command.Vanish.Target",
-        LIGHT_GRAY.enclose("Set Vanish on " + LIGHT_YELLOW.enclose(GENERIC_STATE) + " for " + LIGHT_YELLOW.enclose(PLAYER_DISPLAY_NAME) + ".")
+        LIGHT_GRAY.wrap("Set Vanish on " + LIGHT_YELLOW.wrap(GENERIC_STATE) + " for " + LIGHT_YELLOW.wrap(PLAYER_DISPLAY_NAME) + ".")
     );
 }

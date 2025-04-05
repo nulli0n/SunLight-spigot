@@ -1,6 +1,5 @@
 package su.nightexpress.sunlight.module.chat.module.announcer;
 
-import net.md_5.bungee.api.chat.ClickEvent;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -8,6 +7,7 @@ import su.nightexpress.nightcore.config.ConfigValue;
 import su.nightexpress.nightcore.config.FileConfig;
 import su.nightexpress.nightcore.util.Lists;
 import su.nightexpress.nightcore.util.Players;
+import su.nightexpress.nightcore.util.bridge.wrapper.ClickEventType;
 import su.nightexpress.nightcore.util.random.Rnd;
 import su.nightexpress.sunlight.module.chat.util.Placeholders;
 
@@ -49,7 +49,7 @@ public class Announcer {
                 DARK_GRAY.enclose(BOLD.enclose("|")) + " " + GRAY.enclose("Stay up to date with all " + BLUE.enclose("announcements") + ", "),
                 DARK_GRAY.enclose(BOLD.enclose("|")) + " " + GRAY.enclose(BLUE.enclose("giveaways") + ", " + BLUE.enclose("events") + " and much more!"),
                 " ",
-                BLUE.enclose("➥ " + CLICK.enclose("discord.gg/put_your_link", ClickEvent.Action.OPEN_URL, "https://discord.gg/put_your_link")),
+                BLUE.enclose("➥ " + CLICK.enclose("discord.gg/put_your_link", ClickEventType.OPEN_URL, "https://discord.gg/put_your_link")),
                 " "
             )),
 
@@ -59,7 +59,7 @@ public class Announcer {
                 DARK_GRAY.enclose(BOLD.enclose("|")) + " " + GRAY.enclose("Don't forget to " + GREEN.enclose("vote") + " for our"),
                 DARK_GRAY.enclose(BOLD.enclose("|")) + " " + GRAY.enclose("server daily for " + GREEN.enclose("free rewards") + "."),
                 " ",
-                GREEN.enclose("➥ " + CLICK.enclose("https://put_your_link", ClickEvent.Action.OPEN_URL, "https://put_your_link")),
+                GREEN.enclose("➥ " + CLICK.enclose("https://put_your_link", ClickEventType.OPEN_URL, "https://put_your_link")),
                 " "
             )),
 
@@ -69,7 +69,7 @@ public class Announcer {
                 DARK_GRAY.enclose(BOLD.enclose("|")) + " " + GRAY.enclose("Obtain " + ORANGE.enclose("crate keys") + " for an opportunity to"),
                 DARK_GRAY.enclose(BOLD.enclose("|")) + " " + GRAY.enclose("acquire " + ORANGE.enclose("exciting rewards") + " within the game."),
                 " ",
-                ORANGE.enclose("➥ " + CLICK.enclose("https://store.put_your_link.net", ClickEvent.Action.OPEN_URL, "https://store.put_your_link.net")),
+                ORANGE.enclose("➥ " + CLICK.enclose("https://store.put_your_link.net", ClickEventType.OPEN_URL, "https://store.put_your_link.net")),
                 " "
             ))
         ));

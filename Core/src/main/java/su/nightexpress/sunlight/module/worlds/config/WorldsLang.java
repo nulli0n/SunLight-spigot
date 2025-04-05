@@ -21,11 +21,11 @@ public class WorldsLang extends Lang {
         "Create a new world.");
 
     public static final LangText COMMAND_CREATE_WORLD_ERROR = LangText.of("Worlds.Command.Worlds.Create.Error",
-        LIGHT_RED.enclose("World with such name already exists!")
+        LIGHT_RED.wrap("World with such name already exists!")
     );
 
     public static final LangText COMMAND_CREATE_WORLD_DONE = LangText.of("Worlds.Command.Worlds.Create.Done",
-        LIGHT_GRAY.enclose("Created world data: " + LIGHT_YELLOW.enclose(WORLD_ID) + "!")
+        LIGHT_GRAY.wrap("Created world data: " + LIGHT_YELLOW.wrap(WORLD_ID) + "!")
     );
 
 
@@ -33,11 +33,11 @@ public class WorldsLang extends Lang {
         "Delete a custom world.");
 
     public static final LangText COMMAND_DELETE_WORLD_ERROR = LangText.of("Worlds.Command.Worlds.Delete.Error",
-        LIGHT_GRAY.enclose("Could not delete world: " + LIGHT_RED.enclose(WORLD_ID) + "!")
+        LIGHT_GRAY.wrap("Could not delete world: " + LIGHT_RED.wrap(WORLD_ID) + "!")
     );
 
     public static final LangText COMMAND_DELETE_WORLD_DONE = LangText.of("Worlds.Command.Worlds.Delete.Done",
-        LIGHT_GRAY.enclose("World deleted: " + LIGHT_YELLOW.enclose(WORLD_ID) + "!")
+        LIGHT_GRAY.wrap("World deleted: " + LIGHT_YELLOW.wrap(WORLD_ID) + "!")
     );
 
 
@@ -48,11 +48,11 @@ public class WorldsLang extends Lang {
         "Load a custom world.");
 
     public static final LangText COMMAND_LOAD_WORLD_ERROR = LangText.of("Worlds.Command.Worlds.Load.Error",
-        LIGHT_GRAY.enclose("Could not load world: " + LIGHT_RED.enclose(WORLD_ID) + "!")
+        LIGHT_GRAY.wrap("Could not load world: " + LIGHT_RED.wrap(WORLD_ID) + "!")
     );
 
     public static final LangText COMMAND_LOAD_WORLD_DONE = LangText.of("Worlds.Command.Worlds.Load.Done",
-        LIGHT_GRAY.enclose("World loaded: " + LIGHT_YELLOW.enclose(WORLD_ID) + "!")
+        LIGHT_GRAY.wrap("World loaded: " + LIGHT_YELLOW.wrap(WORLD_ID) + "!")
     );
 
 
@@ -60,52 +60,52 @@ public class WorldsLang extends Lang {
         "Unload a custom world.");
 
     public static final LangText COMMAND_UNLOAD_WORLD_ERROR = LangText.of("Worlds.Command.Worlds.Unload.Error",
-        LIGHT_GRAY.enclose("Could not unload world: " + LIGHT_RED.enclose(WORLD_ID) + "!")
+        LIGHT_GRAY.wrap("Could not unload world: " + LIGHT_RED.wrap(WORLD_ID) + "!")
     );
 
     public static final LangText COMMAND_UNLOAD_WORLD_DONE = LangText.of("Worlds.Command.Worlds.Unload.Done",
-        LIGHT_GRAY.enclose("World unloaded: " + LIGHT_YELLOW.enclose(WORLD_ID) + "!")
+        LIGHT_GRAY.wrap("World unloaded: " + LIGHT_YELLOW.wrap(WORLD_ID) + "!")
     );
 
 
     public static final LangText UNLOAD_MOVE_OUT_INFO = LangText.of("Worlds.AutoWipe.MoveOut",
-        LIGHT_GRAY.enclose("You have been teleported due to world unload.")
+        LIGHT_GRAY.wrap("You have been teleported due to world unload.")
     );
 
 
     public static final LangText AUTO_RESET_NOTIFY = LangText.of("Worlds.AutoWipe.Notify",
         TAG_NO_PREFIX,
         "",
-        LIGHT_RED.enclose(BOLD.enclose("Auto-Reset Warning:")),
-        LIGHT_GRAY.enclose("The world will auto-reset in " + LIGHT_RED.enclose(GENERIC_TIME)),
+        LIGHT_RED.wrap(BOLD.wrap("Auto-Reset Warning:")),
+        LIGHT_GRAY.wrap("The world will auto-reset in " + LIGHT_RED.wrap(GENERIC_TIME)),
         ""
     );
 
     public static final LangText ERROR_COMMAND_BLOCKED = LangText.of("Worlds.Error.CommandBlocked",
-        LIGHT_RED.enclose("You can't use that command in this world!")
+        LIGHT_RED.wrap("You can't use that command in this world!")
     );
 
     public static final LangText ERROR_FLY_DISABLED = LangText.of("Worlds.Error.FlyDisabled",
-        LIGHT_RED.enclose("Flying is not allowed in this world!")
+        LIGHT_RED.wrap("Flying is not allowed in this world!")
     );
 
     public static final LangText ERROR_COMMAND_INVALID_WORLD_DATA_ARGUMENT = LangText.of("Worlds.Error.Command.Argument.InvalidWorldData",
-        LIGHT_GRAY.enclose(LIGHT_RED.enclose(GENERIC_VALUE) + " is not a valid world!")
+        LIGHT_GRAY.wrap(LIGHT_RED.wrap(GENERIC_VALUE) + " is not a valid world!")
     );
 
-    public static final LangString EDITOR_TITLE_LIST = LangString.of("Worlds.Editor.Title.List", BLACK.enclose("World List"));
+    public static final LangString EDITOR_TITLE_LIST = LangString.of("Worlds.Editor.Title.List", BLACK.wrap("World List"));
 
-    public static final LangString EDITOR_TITLE_SETTINGS = LangString.of("Worlds.Editor.Title.Settings", BLACK.enclose("World Settings"));
+    public static final LangString EDITOR_TITLE_SETTINGS = LangString.of("Worlds.Editor.Title.Settings", BLACK.wrap("World Settings"));
 
-    public static final LangString EDITOR_TITLE_GENERATION = LangString.of("Worlds.Editor.Title.Generation", BLACK.enclose("World Loading/Generation"));
+    public static final LangString EDITOR_TITLE_GENERATION = LangString.of("Worlds.Editor.Title.Generation", BLACK.wrap("World Loading/Generation"));
 
-    public static final LangString EDITOR_TITLE_GAME_RULES = LangString.of("Worlds.Editor.Title.GameRules", BLACK.enclose("World Game Rules"));
+    public static final LangString EDITOR_TITLE_GAME_RULES = LangString.of("Worlds.Editor.Title.GameRules", BLACK.wrap("World Game Rules"));
 
 
     private static final String PREFIX = "Worlds.Editor.";
 
     public static final LangItem EDITOR_WORLD_RULE_OBJECT = builder(PREFIX + "World.Rule.Object")
-        .name("Rule: " + RESET.getBracketsName() + WHITE.enclose(GENERIC_NAME))
+        .name("Rule: " + RESET.getBracketsName() + WHITE.wrap(GENERIC_NAME))
         .current("Value", GENERIC_VALUE)
         .emptyLine()
         .click("change")
@@ -163,7 +163,7 @@ public class WorldsLang extends Lang {
 
     public static final LangItem EDITOR_WORLD_DELETE = builder(PREFIX + "World.Delete")
         .name("Delete Data")
-        .text(LIGHT_RED.enclose("(No Undo)"))
+        .text(LIGHT_RED.wrap("(No Undo)"))
         .emptyLine()
         .dropKey("delete world files")
         .rightClick("delete config")
@@ -188,7 +188,7 @@ public class WorldsLang extends Lang {
         .build();
 
     public static final LangItem EDITOR_WORLD_OBJECT = builder(PREFIX + "World.Object")
-        .name("World: " + RESET.getBracketsName() + WHITE.enclose(WORLD_ID))
+        .name("World: " + RESET.getBracketsName() + WHITE.wrap(WORLD_ID))
         .current("Created", WORLD_IS_CREATED)
         .current("Loaded", WORLD_IS_LOADED)
         .current("Auto-Load", WORLD_IS_AUTO_LOAD)

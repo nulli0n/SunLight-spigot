@@ -13,29 +13,29 @@ public class ExtrasLang {
     public static final LangString COMMAND_CHEST_SORT_DESC = LangString.of("Extras.Command.ChestSort.Desc", "Toggle ChestSort.");
 
     public static final LangText COMMAND_CHAIRS_NOTIFY = LangText.of("Extras.Command.Chairs.Notify",
-        LIGHT_GRAY.enclose("Set " + LIGHT_YELLOW.enclose("Chairs") + " on " + LIGHT_YELLOW.enclose(GENERIC_STATE) + ".")
+        LIGHT_GRAY.wrap("Set " + LIGHT_YELLOW.wrap("Chairs") + " on " + LIGHT_YELLOW.wrap(GENERIC_STATE) + ".")
     );
 
     public static final LangText COMMAND_CHAIRS_TARGET = LangText.of("Extras.Command.Chairs.Target",
-        LIGHT_GRAY.enclose("Set " + LIGHT_YELLOW.enclose(PLAYER_DISPLAY_NAME) + "'s " + LIGHT_YELLOW.enclose("Chairs") + " on " + LIGHT_YELLOW.enclose(GENERIC_STATE) + ".")
+        LIGHT_GRAY.wrap("Set " + LIGHT_YELLOW.wrap(PLAYER_DISPLAY_NAME) + "'s " + LIGHT_YELLOW.wrap("Chairs") + " on " + LIGHT_YELLOW.wrap(GENERIC_STATE) + ".")
     );
 
 
     public static final LangText COMMAND_SIT_NOTIFY = LangText.of("Extras.Command.Sit.Notify",
-        LIGHT_GRAY.enclose("You are sitting now.")
+        LIGHT_GRAY.wrap("You are sitting now.")
     );
 
     public static final LangText COMMAND_SIT_TARGET = LangText.of("Extras.Command.Sit.Target",
-        LIGHT_GRAY.enclose("Made " + LIGHT_YELLOW.enclose(PLAYER_NAME) + " to sit.")
+        LIGHT_GRAY.wrap("Made " + LIGHT_YELLOW.wrap(PLAYER_NAME) + " to sit.")
     );
 
 
     public static final LangText COMMAND_CHEST_SORT_NOTIFY = LangText.of("Extras.Command.ChestSort.Notify",
-        LIGHT_GRAY.enclose("Set " + LIGHT_YELLOW.enclose("Chest Sort") + " on " + LIGHT_YELLOW.enclose(GENERIC_STATE) + ".")
+        LIGHT_GRAY.wrap("Set " + LIGHT_YELLOW.wrap("Chest Sort") + " on " + LIGHT_YELLOW.wrap(GENERIC_STATE) + ".")
     );
 
     public static final LangText COMMAND_CHEST_SORT_TARGET = LangText.of("Extras.Command.ChestSort.Target",
-        LIGHT_GRAY.enclose("Set " + LIGHT_YELLOW.enclose(PLAYER_DISPLAY_NAME) + "'s " + LIGHT_YELLOW.enclose("Chest Sort") + " on " + LIGHT_YELLOW.enclose(GENERIC_STATE) + ".")
+        LIGHT_GRAY.wrap("Set " + LIGHT_YELLOW.wrap(PLAYER_DISPLAY_NAME) + "'s " + LIGHT_YELLOW.wrap("Chest Sort") + " on " + LIGHT_YELLOW.wrap(GENERIC_STATE) + ".")
     );
 
 }

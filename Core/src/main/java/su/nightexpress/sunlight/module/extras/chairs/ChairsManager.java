@@ -138,10 +138,10 @@ public class ChairsManager extends AbstractManager<SunLightPlugin> {
 
         if (!player.isDead() && !force) {
             Location holderLocation = LocationUtil.setCenter2D(chairBlock.getRelative(BlockFace.UP).getLocation());
-            this.plugin.runTask(task -> {
+            //this.plugin.runTask(task -> {
                 holderLocation.setDirection(player.getLocation().getDirection());
                 player.teleport(holderLocation);
-            });
+            //});
         }
 
         stand.remove();

@@ -28,103 +28,103 @@ public class HomesLang extends Lang {
     public static final LangString COMMAND_ADMIN_CREATE_HOME_DESC = LangString.of("Homes.Command.HomesAdmin.Create.Desc", "Create a home for the player.");
 
     public static final LangText COMMAND_HOME_INVITE_DONE = LangText.of("Homes.Command.Homes.Invute.Usage",
-        LIGHT_GRAY.enclose("You invited " + LIGHT_YELLOW.enclose(PLAYER_NAME) + " to your " + LIGHT_YELLOW.enclose(HOME_NAME) + " home!")
+        LIGHT_GRAY.wrap("You invited " + LIGHT_YELLOW.wrap(PLAYER_NAME) + " to your " + LIGHT_YELLOW.wrap(HOME_NAME) + " home!")
     );
 
     public static final LangText COMMAND_ADMIN_DELETE_HOME_DONE_SINGLE = LangText.of("Homes.Command.HomesAdmin.Delete.Done.Single",
-        LIGHT_GRAY.enclose("You deleted " + LIGHT_YELLOW.enclose(PLAYER_NAME) + "'s " + LIGHT_YELLOW.enclose(HOME_ID) + " home.")
+        LIGHT_GRAY.wrap("You deleted " + LIGHT_YELLOW.wrap(PLAYER_NAME) + "'s " + LIGHT_YELLOW.wrap(HOME_ID) + " home.")
     );
 
     public static final LangText COMMAND_ADMIN_DELETE_HOME_DONE_ALL = LangText.of("Homes.Command.HomesAdmin.Delete.Done.All",
-        LIGHT_GRAY.enclose("You deleted all " + LIGHT_YELLOW.enclose(PLAYER_NAME) + "'s homes.")
+        LIGHT_GRAY.wrap("You deleted all " + LIGHT_YELLOW.wrap(PLAYER_NAME) + "'s homes.")
     );
 
     public static final LangText COMMAND_ADMIN_CREATE_HOME_DONE_FRESH = LangText.of("Homes.Command.HomesAdmin.Create.Done.Fresh",
-        LIGHT_GRAY.enclose("Set " + LIGHT_YELLOW.enclose(HOME_ID) + " home for " + LIGHT_YELLOW.enclose(PLAYER_NAME) + ".")
+        LIGHT_GRAY.wrap("Set " + LIGHT_YELLOW.wrap(HOME_ID) + " home for " + LIGHT_YELLOW.wrap(PLAYER_NAME) + ".")
     );
 
     public static final LangText COMMAND_ADMIN_CREATE_HOME_DONE_EDITED = LangText.of("Homes.Command.HomesAdmin.Create.Done.Edited",
-        LIGHT_GRAY.enclose("Updated " + LIGHT_YELLOW.enclose(HOME_ID) + "home of " + LIGHT_YELLOW.enclose(PLAYER_NAME) + ".")
+        LIGHT_GRAY.wrap("Updated " + LIGHT_YELLOW.wrap(HOME_ID) + "home of " + LIGHT_YELLOW.wrap(PLAYER_NAME) + ".")
     );
 
     public static final LangText HOME_TELEPORT_SUCCESS = LangText.of("Homes.Home.Teleport",
-        OUTPUT.enclose(20, 60) + SOUND.enclose(Sound.ENTITY_ENDERMAN_TELEPORT),
-        LIGHT_YELLOW.enclose(BOLD.enclose("Home")),
-        LIGHT_GRAY.enclose("You teleported to " + LIGHT_YELLOW.enclose(HOME_NAME) + " home.")
+        OUTPUT.wrap(20, 60) + SOUND.wrap(Sound.ENTITY_ENDERMAN_TELEPORT),
+        LIGHT_YELLOW.wrap(BOLD.wrap("Home")),
+        LIGHT_GRAY.wrap("You teleported to " + LIGHT_YELLOW.wrap(HOME_NAME) + " home.")
     );
 
     public static final LangText HOME_VISIT_SUCCESS = LangText.of("Homes.Home.Visit.Success",
-        OUTPUT.enclose(20, 60) + SOUND.enclose(Sound.ENTITY_ENDERMAN_TELEPORT),
-        LIGHT_YELLOW.enclose(BOLD.enclose("Home Visit")),
-        LIGHT_GRAY.enclose("You visited the " + LIGHT_YELLOW.enclose(HOME_OWNER) + "'s " + LIGHT_YELLOW.enclose(HOME_NAME) + " home.")
+        OUTPUT.wrap(20, 60) + SOUND.wrap(Sound.ENTITY_ENDERMAN_TELEPORT),
+        LIGHT_YELLOW.wrap(BOLD.wrap("Home Visit")),
+        LIGHT_GRAY.wrap("You visited the " + LIGHT_YELLOW.wrap(HOME_OWNER) + "'s " + LIGHT_YELLOW.wrap(HOME_NAME) + " home.")
     );
 
     public static final LangText HOME_VISIT_ERROR_NOT_PERMITTED = LangText.of("Homes.Home.Visit.Error.NotPermitted",
-        SOUND.enclose(Sound.ENTITY_VILLAGER_NO),
-        LIGHT_RED.enclose("You don't have an invite to this home!")
+        SOUND.wrap(Sound.ENTITY_VILLAGER_NO),
+        LIGHT_RED.wrap("You don't have an invite to this home!")
     );
 
     public static final LangText HOME_VISIT_ERROR_UNSAFE = LangText.of("Homes.Home.Visit.Error.UnsafeLocation",
-        OUTPUT.enclose(20, 60) + SOUND.enclose(Sound.ENTITY_VILLAGER_NO),
-        LIGHT_RED.enclose(BOLD.enclose("Unsafe Location!")),
-        LIGHT_RED.enclose("Visit has been cancelled.")
+        OUTPUT.wrap(20, 60) + SOUND.wrap(Sound.ENTITY_VILLAGER_NO),
+        LIGHT_RED.wrap(BOLD.wrap("Unsafe Location!")),
+        LIGHT_RED.wrap("Visit has been cancelled.")
     );
 
     public static final LangText HOME_SET_ERROR_LIMIT = LangText.of("Homes.Home.Set.Error.Limit",
-        OUTPUT.enclose(20, 60) + SOUND.enclose(Sound.ENTITY_VILLAGER_NO),
-        LIGHT_RED.enclose(BOLD.enclose("Limit Reached!")),
-        LIGHT_RED.enclose("You can't create more homes.")
+        OUTPUT.wrap(20, 60) + SOUND.wrap(Sound.ENTITY_VILLAGER_NO),
+        LIGHT_RED.wrap(BOLD.wrap("Limit Reached!")),
+        LIGHT_RED.wrap("You can't create more homes.")
     );
 
     public static final LangText HOME_SET_ERROR_WORLD = LangText.of("Homes.Home.Set.Error.World",
-        OUTPUT.enclose(20, 60) + SOUND.enclose(Sound.ENTITY_VILLAGER_NO),
-        LIGHT_RED.enclose(BOLD.enclose("World Error!")),
-        LIGHT_RED.enclose("You can't create homes in this world.")
+        OUTPUT.wrap(20, 60) + SOUND.wrap(Sound.ENTITY_VILLAGER_NO),
+        LIGHT_RED.wrap(BOLD.wrap("World Error!")),
+        LIGHT_RED.wrap("You can't create homes in this world.")
     );
 
     public static final LangText HOME_SET_ERROR_UNSAFE = LangText.of("Homes.Home.Set.Error.UnsafeLocation",
-        OUTPUT.enclose(20, 60) + SOUND.enclose(Sound.ENTITY_VILLAGER_NO),
-        LIGHT_RED.enclose(BOLD.enclose("Unsafe Location!")),
-        LIGHT_RED.enclose("You can't create homes here.")
+        OUTPUT.wrap(20, 60) + SOUND.wrap(Sound.ENTITY_VILLAGER_NO),
+        LIGHT_RED.wrap(BOLD.wrap("Unsafe Location!")),
+        LIGHT_RED.wrap("You can't create homes here.")
     );
 
     public static final LangText HOME_SET_ERROR_PROTECTION = LangText.of("Homes.Home.Set.Error.Protection",
-        OUTPUT.enclose(20, 60) + SOUND.enclose(Sound.ENTITY_VILLAGER_NO),
-        LIGHT_RED.enclose(BOLD.enclose("Protected Area!")),
-        LIGHT_RED.enclose("You can't create homes here.")
+        OUTPUT.wrap(20, 60) + SOUND.wrap(Sound.ENTITY_VILLAGER_NO),
+        LIGHT_RED.wrap(BOLD.wrap("Protected Area!")),
+        LIGHT_RED.wrap("You can't create homes here.")
     );
 
     public static final LangText HOME_SET_SUCCESS = LangText.of("Homes.Home.Set.Success",
-        OUTPUT.enclose(20, 60) + SOUND.enclose(Sound.BLOCK_WOODEN_DOOR_OPEN),
-        LIGHT_YELLOW.enclose(BOLD.enclose("Home Set!")),
-        LIGHT_GRAY.enclose("Usage: " + LIGHT_YELLOW.enclose("/" + HomeCommands.DEF_TELEPORT_ALIAS + " " + HOME_ID) + " | View homes: " + LIGHT_YELLOW.enclose("/" + HomeCommands.DEF_LIST_ALIAS))
+        OUTPUT.wrap(20, 60) + SOUND.wrap(Sound.BLOCK_WOODEN_DOOR_OPEN),
+        LIGHT_YELLOW.wrap(BOLD.wrap("Home Set!")),
+        LIGHT_GRAY.wrap("Usage: " + LIGHT_YELLOW.wrap("/" + HomeCommands.DEF_TELEPORT_ALIAS + " " + HOME_ID) + " | View homes: " + LIGHT_YELLOW.wrap("/" + HomeCommands.DEF_LIST_ALIAS))
     );
 
     public static final LangText HOME_SET_EDITED = LangText.of("Homes.Home.Set.Edited",
-        OUTPUT.enclose(20, 60) + SOUND.enclose(Sound.BLOCK_WOODEN_DOOR_CLOSE),
-        LIGHT_YELLOW.enclose(BOLD.enclose("Home Updated!")),
-        LIGHT_GRAY.enclose("Home location has been updated.")
+        OUTPUT.wrap(20, 60) + SOUND.wrap(Sound.BLOCK_WOODEN_DOOR_CLOSE),
+        LIGHT_YELLOW.wrap(BOLD.wrap("Home Updated!")),
+        LIGHT_GRAY.wrap("Home location has been updated.")
     );
 
     public static final LangText HOME_DELETE_DONE = LangText.of("Homes.Home.Delete.Done",
-        OUTPUT.enclose(20, 60) + SOUND.enclose(Sound.ENTITY_ZOMBIE_BREAK_WOODEN_DOOR),
-        LIGHT_YELLOW.enclose(BOLD.enclose("Home Removed!")),
-        LIGHT_GRAY.enclose("You removed " + LIGHT_YELLOW.enclose(HOME_NAME) + " home.")
+        OUTPUT.wrap(20, 60) + SOUND.wrap(Sound.ENTITY_ZOMBIE_BREAK_WOODEN_DOOR),
+        LIGHT_YELLOW.wrap(BOLD.wrap("Home Removed!")),
+        LIGHT_GRAY.wrap("You removed " + LIGHT_YELLOW.wrap(HOME_NAME) + " home.")
     );
 
     public static final LangText ERROR_NO_HOMES = LangText.of("Homes.Error.NoHomes",
-        LIGHT_RED.enclose("You have no homes set!")
+        LIGHT_RED.wrap("You have no homes set!")
     );
 
     public static final LangText COMMAND_ERROR_INVALID_HOME_ARGUMENT = LangText.of("Homes.Command.Error.Argument.InvalidHome",
-        LIGHT_GRAY.enclose(LIGHT_RED.enclose(GENERIC_VALUE) + " is not a valid home.")
+        LIGHT_GRAY.wrap(LIGHT_RED.wrap(GENERIC_VALUE) + " is not a valid home.")
     );
 
     public static final LangString EDITOR_ENTER_PLAYER_NAME = LangString.of("Homes.Editor.Enter.PlayerName",
-        LIGHT_GRAY.enclose("Enter " + LIGHT_GREEN.enclose("[Player Name]"))
+        LIGHT_GRAY.wrap("Enter " + LIGHT_GREEN.wrap("[Player Name]"))
     );
 
     public static final LangString EDITOR_ENTER_HOME_NAME = LangString.of("Homes.Editor.Enter.HomeName",
-        LIGHT_GRAY.enclose("Enter " + LIGHT_GREEN.enclose("[Home Name]"))
+        LIGHT_GRAY.wrap("Enter " + LIGHT_GREEN.wrap("[Home Name]"))
     );
 }

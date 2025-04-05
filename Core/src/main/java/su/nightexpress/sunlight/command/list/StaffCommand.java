@@ -1,7 +1,6 @@
 package su.nightexpress.sunlight.command.list;
 
 import me.clip.placeholderapi.PlaceholderAPI;
-import net.md_5.bungee.api.chat.ClickEvent;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import su.nightexpress.nightcore.command.experimental.CommandContext;
@@ -10,7 +9,11 @@ import su.nightexpress.nightcore.command.experimental.builder.DirectNodeBuilder;
 import su.nightexpress.nightcore.command.experimental.node.DirectNode;
 import su.nightexpress.nightcore.config.ConfigValue;
 import su.nightexpress.nightcore.config.FileConfig;
-import su.nightexpress.nightcore.util.*;
+import su.nightexpress.nightcore.util.Lists;
+import su.nightexpress.nightcore.util.NumberUtil;
+import su.nightexpress.nightcore.util.Players;
+import su.nightexpress.nightcore.util.Plugins;
+import su.nightexpress.nightcore.util.bridge.wrapper.ClickEventType;
 import su.nightexpress.sunlight.Placeholders;
 import su.nightexpress.sunlight.SunLightPlugin;
 import su.nightexpress.sunlight.command.CommandPerms;
@@ -18,7 +21,9 @@ import su.nightexpress.sunlight.command.CommandRegistry;
 import su.nightexpress.sunlight.command.template.CommandTemplate;
 import su.nightexpress.sunlight.config.Lang;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import static su.nightexpress.nightcore.util.text.tag.Tags.*;
 import static su.nightexpress.sunlight.Placeholders.*;
@@ -59,7 +64,7 @@ public class StaffCommand {
 
         entryFormat = ConfigValue.create("Settings.Staff.EntryFormat",
             LIGHT_GRAY.enclose(LIGHT_YELLOW.enclose("●") + " %vault_prefix%" +
-                HOVER.encloseHint(CLICK.enclose(PLAYER_DISPLAY_NAME, ClickEvent.Action.SUGGEST_COMMAND, "/msg " + PLAYER_NAME + " "), GRAY.enclose("Click to send private message."))
+                HOVER.encloseHint(CLICK.enclose(PLAYER_DISPLAY_NAME, ClickEventType.SUGGEST_COMMAND, "/msg " + PLAYER_NAME + " "), GRAY.enclose("Click to send private message."))
                 + "%vault_suffix%"
             ),
             "Player entry format.",

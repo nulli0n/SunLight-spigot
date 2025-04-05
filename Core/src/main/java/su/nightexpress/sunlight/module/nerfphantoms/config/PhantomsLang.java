@@ -13,11 +13,11 @@ public class PhantomsLang extends CoreLang {
         "Toggle anti-phantom mode.");
 
     public static final LangText COMMAND_NO_PHANTOM_TOGGLE_NOTIFY = LangText.of("NerfPhantoms.Command.NoPhantom.Toggle.Notify",
-        LIGHT_GRAY.enclose("Anti-Phantom mode: " + LIGHT_YELLOW.enclose(GENERIC_STATE) + ".")
+        LIGHT_GRAY.wrap("Anti-Phantom mode: " + LIGHT_YELLOW.wrap(GENERIC_STATE) + ".")
     );
 
     public static final LangText COMMAND_NO_PHANTOM_TOGGLE_OTHERS = LangText.of("NerfPhantoms.Command.NoPhantom.Toggle.Others",
-        LIGHT_GRAY.enclose("Set Anti-Phantom mode " + LIGHT_YELLOW.enclose(GENERIC_STATE) + " for " + LIGHT_YELLOW.enclose(PLAYER_DISPLAY_NAME) + ".")
+        LIGHT_GRAY.wrap("Set Anti-Phantom mode " + LIGHT_YELLOW.wrap(GENERIC_STATE) + " for " + LIGHT_YELLOW.wrap(PLAYER_DISPLAY_NAME) + ".")
     );
 
 }

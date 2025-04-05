@@ -1,7 +1,6 @@
 package su.nightexpress.sunlight.command.list;
 
 import me.clip.placeholderapi.PlaceholderAPI;
-import net.md_5.bungee.api.chat.ClickEvent;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -15,6 +14,7 @@ import su.nightexpress.nightcore.util.Lists;
 import su.nightexpress.nightcore.util.NumberUtil;
 import su.nightexpress.nightcore.util.Players;
 import su.nightexpress.nightcore.util.Plugins;
+import su.nightexpress.nightcore.util.bridge.wrapper.ClickEventType;
 import su.nightexpress.sunlight.Placeholders;
 import su.nightexpress.sunlight.SunLightPlugin;
 import su.nightexpress.sunlight.command.CommandPerms;
@@ -51,22 +51,22 @@ public class NearCommand {
         listFormat = ConfigValue.create("Settings.Near.Format",
             Lists.newList(
                 " ",
-                LIGHT_YELLOW.enclose(BOLD.enclose("Nearby Players:")),
+                LIGHT_YELLOW.wrap(BOLD.wrap("Nearby Players:")),
                 GENERIC_ENTRY,
                 " "
             ),
             "List format for the '" + NAME + "' command.",
             "Use '" + GENERIC_RADIUS + "' placeholder for command radius value.",
-            "Available text formations: " + WIKI_TEXT_URL
+            "Available text formations: " + URL_WIKI_TEXT
         ).read(config);
 
         entryFormat = ConfigValue.create("Settings.Near.EntryFormat",
-            LIGHT_GRAY.enclose(LIGHT_YELLOW.enclose("●") + " %vault_prefix%" +
-                HOVER.encloseHint(CLICK.enclose(PLAYER_DISPLAY_NAME, ClickEvent.Action.SUGGEST_COMMAND, "/ptp request " + PLAYER_NAME), GRAY.enclose("Click to send teleport request."))
-                + "%vault_suffix%" + " " + GRAY.enclose("(" + WHITE.enclose(GENERIC_AMOUNT) + " blocks away)")
+            LIGHT_GRAY.wrap(LIGHT_YELLOW.wrap("●") + " %vault_prefix%" +
+                HOVER.wrapShowText(CLICK.wrap(PLAYER_DISPLAY_NAME, ClickEventType.SUGGEST_COMMAND, "/ptp request " + PLAYER_NAME), GRAY.wrap("Click to send teleport request."))
+                + "%vault_suffix%" + " " + GRAY.wrap("(" + WHITE.wrap(GENERIC_AMOUNT) + " blocks away)")
             ),
             "Player entry format.",
-            "Available text formations: " + WIKI_TEXT_URL,
+            "Available text formations: " + URL_WIKI_TEXT,
             Plugins.PLACEHOLDER_API + " is supported here."
         ).read(config);
 

@@ -18,9 +18,9 @@ public class SpawnsLang extends CoreLang {
     );
 
     public static final LangText COMMAND_DELETE_SPAWN_DONE = LangText.of("Spawns.Command.Spawns.Delete.Done",
-        OUTPUT.enclose(20, 60),
-        LIGHT_YELLOW.enclose(BOLD.enclose("Spawn Deleted!")),
-        LIGHT_GRAY.enclose("You deleted " + LIGHT_YELLOW.enclose(SPAWN_DISPLAY_NAME) + " spawn!")
+        OUTPUT.wrap(20, 60),
+        LIGHT_YELLOW.wrap(BOLD.wrap("Spawn Deleted!")),
+        LIGHT_GRAY.wrap("You deleted " + LIGHT_YELLOW.wrap(SPAWN_DISPLAY_NAME) + " spawn!")
     );
 
     public static final LangString COMMAND_SET_SPAWN_DESC = LangString.of("Spawns.Command.Spawns.Create.Desc",
@@ -28,9 +28,9 @@ public class SpawnsLang extends CoreLang {
     );
 
     public static final LangText COMMAND_SET_SPAWN_DONE = LangText.of("Spawns.Command.Spawns.Create.Done",
-        OUTPUT.enclose(20, 60),
-        LIGHT_GREEN.enclose(BOLD.enclose("Spawn Set: ") + WHITE.enclose(SPAWN_DISPLAY_NAME)),
-        LIGHT_GRAY.enclose("Use " + LIGHT_GREEN.enclose("/" + SpawnCommands.DEF_EDITOR_ALIAS) + " to configure it.")
+        OUTPUT.wrap(20, 60),
+        LIGHT_GREEN.wrap(BOLD.wrap("Spawn Set: ") + WHITE.wrap(SPAWN_DISPLAY_NAME)),
+        LIGHT_GRAY.wrap("Use " + LIGHT_GREEN.wrap("/" + SpawnCommands.DEF_EDITOR_ALIAS) + " to configure it.")
     );
 
     public static final LangString COMMAND_SPAWN_DESC = LangString.of("Spawns.Command.Spawns.Teleport.Desc",
@@ -38,11 +38,11 @@ public class SpawnsLang extends CoreLang {
     );
 
     public static final LangText COMMAND_SPAWN_DONE_OTHERS = LangText.of("Spawns.Command.Spawns.Teleport.Notify",
-        LIGHT_GRAY.enclose("Teleporting " + LIGHT_YELLOW.enclose(PLAYER_DISPLAY_NAME) + " on " + LIGHT_YELLOW.enclose(SPAWN_DISPLAY_NAME) + " spawn.")
+        LIGHT_GRAY.wrap("Teleporting " + LIGHT_YELLOW.wrap(PLAYER_DISPLAY_NAME) + " on " + LIGHT_YELLOW.wrap(SPAWN_DISPLAY_NAME) + " spawn.")
     );
 
     public static final LangText COMMAND_SPAWN_ERROR_NO_DEFAULT = LangText.of("Spawns.Command.Spawn.Error.NoDefault",
-        LIGHT_RED.enclose("You must specify spawn name.")
+        LIGHT_RED.wrap("You must specify spawn name.")
     );
 
     public static final LangString COMMAND_SPAWNS_EDITOR_DESC = LangString.of("Spawns.Command.Spawns.Editor.Desc",
@@ -50,32 +50,32 @@ public class SpawnsLang extends CoreLang {
     );
 
     public static final LangText SPAWN_TELEPORT_DONE = LangText.of("Spawns.Command.Spawns.Teleport.Done",
-        OUTPUT.enclose(20, 60),
-        LIGHT_YELLOW.enclose(BOLD.enclose("Spawn")),
-        LIGHT_GRAY.enclose("You teleported to the " + LIGHT_YELLOW.enclose(SPAWN_DISPLAY_NAME) + " spawn.")
+        OUTPUT.wrap(20, 60),
+        LIGHT_YELLOW.wrap(BOLD.wrap("Spawn")),
+        LIGHT_GRAY.wrap("You teleported to the " + LIGHT_YELLOW.wrap(SPAWN_DISPLAY_NAME) + " spawn.")
     );
 
     public static final LangText SPAWN_TELEPORT_ERROR_WORLD = LangText.of("Spawns.Spawn.Teleport.Error.World",
-        LIGHT_RED.enclose("This spawn located in a world that is not available currently.")
+        LIGHT_RED.wrap("This spawn located in a world that is not available currently.")
     );
 
     public static final LangText ERROR_COMMAND_INVALID_SPAWN_ARGUMENT = LangText.of("Spawns.Spawn.Error.Invalid",
-        LIGHT_GRAY.enclose(LIGHT_RED.enclose(GENERIC_VALUE) + " is not a valid spawn!")
+        LIGHT_GRAY.wrap(LIGHT_RED.wrap(GENERIC_VALUE) + " is not a valid spawn!")
     );
 
-    public static final LangString EDITOR_TITLE_LIST = LangString.of("Spawns.Editor.Title.List", BLACK.enclose("Spawns Editor"));
-    public static final LangString EDITOR_TITLE_SETTINGS = LangString.of("Spawns.Editor.Title.Settings", BLACK.enclose("Spawn Settings"));
+    public static final LangString EDITOR_TITLE_LIST = LangString.of("Spawns.Editor.Title.List", BLACK.wrap("Spawns Editor"));
+    public static final LangString EDITOR_TITLE_SETTINGS = LangString.of("Spawns.Editor.Title.Settings", BLACK.wrap("Spawn Settings"));
 
     public static final LangString EDITOR_ENTER_NAME = LangString.of("Spawns.Editor.Enter.Name",
-        LIGHT_GRAY.enclose("Enter " + LIGHT_GREEN.enclose("[Spawn Name]"))
+        LIGHT_GRAY.wrap("Enter " + LIGHT_GREEN.wrap("[Spawn Name]"))
     );
 
     public static final LangString EDITOR_ENTER_PRIORITY = LangString.of("Spawns.Editor.Enter.Priority",
-        LIGHT_GRAY.enclose("Enter " + LIGHT_GREEN.enclose("[Priority]"))
+        LIGHT_GRAY.wrap("Enter " + LIGHT_GREEN.wrap("[Priority]"))
     );
 
     public static final LangString EDITOR_ENTER_GROUP = LangString.of("Spawns.Editor.Enter.Group",
-        LIGHT_GRAY.enclose("Enter " + LIGHT_GREEN.enclose("[Group Name]"))
+        LIGHT_GRAY.wrap("Enter " + LIGHT_GREEN.wrap("[Group Name]"))
     );
 
     private static final String PREFIX_OLD = "Editor.SpawnsEditorType.";
@@ -156,11 +156,11 @@ public class SpawnsLang extends CoreLang {
         .build();
 
     public static final LangItem EDITOR_SPAWN_OBJECT = builder(PREFIX_OLD + "SPAWN_OBJECT")
-        .name(SPAWN_DISPLAY_NAME + RESET.getBracketsName() + LIGHT_GRAY.enclose(" (ID: " + WHITE.enclose(SPAWN_ID) + ")"))
+        .name(SPAWN_DISPLAY_NAME + RESET.getBracketsName() + LIGHT_GRAY.wrap(" (ID: " + WHITE.wrap(SPAWN_ID) + ")"))
         .current("Priority", SPAWN_PRIORITY)
         .current("Permission", SPAWN_PERMISSION_REQUIRED)
         .emptyLine()
         .leftClick("edit")
-        .shiftRight("delete " + LIGHT_RED.enclose("(no undo)"))
+        .shiftRight("delete " + LIGHT_RED.wrap("(no undo)"))
         .build();
 }

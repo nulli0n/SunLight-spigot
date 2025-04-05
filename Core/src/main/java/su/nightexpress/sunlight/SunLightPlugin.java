@@ -20,6 +20,7 @@ import su.nightexpress.sunlight.hook.impl.PlaceholderHook;
 import su.nightexpress.sunlight.module.ModuleManager;
 import su.nightexpress.sunlight.nms.SunNMS;
 import su.nightexpress.sunlight.nms.mc_1_21_4.MC_1_21_4;
+import su.nightexpress.sunlight.nms.mc_1_21_5.MC_1_21_5;
 
 public class SunLightPlugin extends NightDataPlugin<SunUser> implements ImprovedCommands {
 
@@ -90,6 +91,7 @@ public class SunLightPlugin extends NightDataPlugin<SunUser> implements Improved
     private void setupInternalNMS() {
         this.sunNMS = switch (Version.getCurrent()) {
             case MC_1_21_4 -> new MC_1_21_4();
+            case MC_1_21_5 -> new MC_1_21_5();
             default -> null;
         };
     }

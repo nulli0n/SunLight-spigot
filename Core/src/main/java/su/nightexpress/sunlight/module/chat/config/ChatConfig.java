@@ -1,6 +1,5 @@
 package su.nightexpress.sunlight.module.chat.config;
 
-import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import org.bukkit.Sound;
 import org.bukkit.event.EventPriority;
@@ -10,6 +9,7 @@ import su.nightexpress.nightcore.config.ConfigValue;
 import su.nightexpress.nightcore.util.Lists;
 import su.nightexpress.nightcore.util.Plugins;
 import su.nightexpress.nightcore.util.StringUtil;
+import su.nightexpress.nightcore.util.bridge.wrapper.ClickEventType;
 import su.nightexpress.nightcore.util.wrapper.UniSound;
 import su.nightexpress.sunlight.hook.HookId;
 import su.nightexpress.sunlight.module.chat.command.PrivateMessageCommands;
@@ -81,7 +81,7 @@ public class ChatConfig {
     );
 
     public static final ConfigValue<String> ROLEPLAY_COMMANDS_ME_FORMAT = ConfigValue.create("Roleplay_Commands.Format.Me",
-        ITALIC.enclose(LIGHT_CYAN.enclose(PLAYER_DISPLAY_NAME) + " " + LIGHT_GRAY.enclose(GENERIC_MESSAGE)),
+        ITALIC.wrap(LIGHT_CYAN.wrap(PLAYER_DISPLAY_NAME) + " " + LIGHT_GRAY.wrap(GENERIC_MESSAGE)),
         "Sets format for the '" + RoleplayCommands.NODE_ME + "' command."
     );
 
@@ -93,31 +93,31 @@ public class ChatConfig {
             String br = TAG_LINE_BREAK;
 
             map.put("player_info", new FormatComponent("player_info",
-                HOVER.encloseHint(
-                    CLICK.enclose(
+                HOVER.wrapShowText(
+                    CLICK.wrap(
                         PLAYER_DISPLAY_NAME,
-                        ClickEvent.Action.SUGGEST_COMMAND,
+                        ClickEventType.SUGGEST_COMMAND,
                         "/tell " + PLAYER_NAME + " "
                     ),
-                    LIGHT_GRAY.enclose("Player: " + LIGHT_PURPLE.enclose(PLAYER_NAME) + " Nickname: " + LIGHT_PURPLE.enclose(PLAYER_DISPLAY_NAME) + RESET.getBracketsName() + br + "Balance: " + LIGHT_PURPLE.enclose("$%vault_eco_balance_formatted%") + br + br + GRAY.enclose("(Click to send private message)"))
+                    LIGHT_GRAY.wrap("Player: " + LIGHT_PURPLE.wrap(PLAYER_NAME) + " Nickname: " + LIGHT_PURPLE.wrap(PLAYER_DISPLAY_NAME) + RESET.getBracketsName() + br + "Balance: " + LIGHT_PURPLE.wrap("$%vault_eco_balance_formatted%") + br + br + GRAY.wrap("(Click to send private message)"))
                 )
             ));
 
             map.put("rank_owner", new FormatComponent("rank_owner",
-                HOVER.encloseHint(PLAYER_PREFIX, LIGHT_GRAY.enclose("This player is the server " + LIGHT_YELLOW.enclose("Owner")))
+                HOVER.wrapShowText(PLAYER_PREFIX, LIGHT_GRAY.wrap("This player is the server " + LIGHT_YELLOW.wrap("Owner")))
             ));
 
             map.put("rank_member", new FormatComponent("rank_member",
-                HOVER.encloseHint(
-                    CLICK.enclose(PLAYER_PREFIX, ClickEvent.Action.RUN_COMMAND, "/donate"),
-                    LIGHT_GRAY.enclose("Consider " + LIGHT_GREEN.enclose("/donate") + " to get special ranks")
+                HOVER.wrapShowText(
+                    CLICK.wrap(PLAYER_PREFIX, ClickEventType.RUN_COMMAND, "/donate"),
+                    LIGHT_GRAY.wrap("Consider " + LIGHT_GREEN.wrap("/donate") + " to get special ranks")
                 )
             ));
 
             map.put("msg", new FormatComponent("msg",
-                HOVER.encloseHint(
-                    GRAY.enclose(GENERIC_MESSAGE),
-                    ITALIC.enclose(LIGHT_GRAY.enclose("Message was sent at: " + WHITE.enclose("%localtime_time_HH:MM:ss%")))
+                HOVER.wrapShowText(
+                    GRAY.wrap(GENERIC_MESSAGE),
+                    ITALIC.wrap(LIGHT_GRAY.wrap("Message was sent at: " + WHITE.wrap("%localtime_time_HH:MM:ss%")))
                 )
             ));
 
@@ -190,10 +190,10 @@ public class ChatConfig {
     );
 
     public static final ConfigValue<String> PM_FORMAT_INCOMING = ConfigValue.create("Private_Messages.Format.Incoming",
-        LIGHT_PURPLE.enclose("[Whisper]") + " " + LIGHT_PINK.enclose(PLAYER_DISPLAY_NAME + ": ") + LIGHT_GRAY.enclose(GENERIC_MESSAGE) + " " +
-            CLICK.enclose(
-                HOVER.encloseHint(LIGHT_PURPLE.enclose("[⬅]"), LIGHT_PURPLE.enclose("Click to reply!")),
-                ClickEvent.Action.SUGGEST_COMMAND, "/" + PrivateMessageCommands.DEF_PM_ALIAS + " " + PLAYER_NAME
+        LIGHT_PURPLE.wrap("[Whisper]") + " " + LIGHT_PINK.wrap(PLAYER_DISPLAY_NAME + ": ") + LIGHT_GRAY.wrap(GENERIC_MESSAGE) + " " +
+            CLICK.wrap(
+                HOVER.wrapShowText(LIGHT_PURPLE.wrap("[⬅]"), LIGHT_PURPLE.wrap("Click to reply!")),
+                ClickEventType.SUGGEST_COMMAND, "/" + PrivateMessageCommands.DEF_PM_ALIAS + " " + PLAYER_NAME
             ),
         "Format for incoming private messages.",
         "Use " + GENERIC_MESSAGE + " placeholder for a message text.",
@@ -202,7 +202,7 @@ public class ChatConfig {
     );
 
     public static final ConfigValue<String> PM_FORMAT_OUTGOING = ConfigValue.create("Private_Messages.Format.Outgoing",
-        LIGHT_PURPLE.enclose("[Whisper]") + " " + LIGHT_PINK.enclose("You ➡ " + PLAYER_DISPLAY_NAME + ": ") + LIGHT_GRAY.enclose(GENERIC_MESSAGE),
+        LIGHT_PURPLE.wrap("[Whisper]") + " " + LIGHT_PINK.wrap("You ➡ " + PLAYER_DISPLAY_NAME + ": ") + LIGHT_GRAY.wrap(GENERIC_MESSAGE),
         "Format for outgoing private messages.",
         "Use " + GENERIC_MESSAGE + " placeholder for a message text.",
         "Player name placeholders: " + PLAYER_NAME + ", " + PLAYER_DISPLAY_NAME,
@@ -244,7 +244,7 @@ public class ChatConfig {
 //        "Sets mention regex pattern used to find and replace mentions in message.");
 
     public static final ConfigValue<String> MENTIONS_FORMAT = ConfigValue.create("Mentions.Format",
-        LIGHT_GREEN.enclose("@" + PLAYER_DISPLAY_NAME),
+        LIGHT_GREEN.wrap("@" + PLAYER_DISPLAY_NAME),
         "A text that will replace mention if player is valid.",
         "Player name placeholders: " + PLAYER_NAME + ", " + PLAYER_DISPLAY_NAME,
         "Text Formations: " + WIKI_TEXT_URL
@@ -254,8 +254,8 @@ public class ChatConfig {
         (cfg, path, id) -> GroupMention.read(cfg, path + "." + id, id),
         (cfg, path, map) -> map.forEach((id, mention) -> mention.write(cfg, path + "." + id)),
         () -> Map.of(
-            "all", new GroupMention("all", CYAN.enclose("@All"), Lists.newSet(Placeholders.WILDCARD)),
-            "admin", new GroupMention("admin", LIGHT_RED.enclose("@Admin"), Lists.newSet("admin"))
+            "all", new GroupMention("all", CYAN.wrap("@All"), Lists.newSet(Placeholders.WILDCARD)),
+            "admin", new GroupMention("admin", LIGHT_RED.wrap("@Admin"), Lists.newSet("admin"))
         ),
         "A list of custom mentions, that can be applied to multiple players based on their permission group.",
         "Use asterisk (*) to include all permission groups.",
@@ -276,9 +276,9 @@ public class ChatConfig {
         (cfg, path, map) -> map.forEach((type, format) -> cfg.set(path + "." + type.name(), format)),
         () -> {
             Map<SpyType, String> map = new HashMap<>();
-            map.put(SpyType.SOCIAL, LIGHT_RED.enclose("[SocialSpy]") + " " + GRAY.enclose(PLAYER_NAME + " ➡ " + GENERIC_TARGET + ":") + " " + LIGHT_GRAY.enclose(GENERIC_MESSAGE));
-            map.put(SpyType.COMMAND, LIGHT_RED.enclose("[CommandSpy]") + " " + GRAY.enclose(PLAYER_NAME + " executed a command:") + " " + LIGHT_GRAY.enclose(GENERIC_MESSAGE));
-            map.put(SpyType.CHAT, LIGHT_RED.enclose("[ChatSpy]") + " " + GRAY.enclose("[" + CHANNEL_NAME + "]" + " " + PLAYER_NAME + ":") + " " + LIGHT_GRAY.enclose(GENERIC_MESSAGE));
+            map.put(SpyType.SOCIAL, LIGHT_RED.wrap("[SocialSpy]") + " " + GRAY.wrap(PLAYER_NAME + " ➡ " + GENERIC_TARGET + ":") + " " + LIGHT_GRAY.wrap(GENERIC_MESSAGE));
+            map.put(SpyType.COMMAND, LIGHT_RED.wrap("[CommandSpy]") + " " + GRAY.wrap(PLAYER_NAME + " executed a command:") + " " + LIGHT_GRAY.wrap(GENERIC_MESSAGE));
+            map.put(SpyType.CHAT, LIGHT_RED.wrap("[ChatSpy]") + " " + GRAY.wrap("[" + CHANNEL_NAME + "]" + " " + PLAYER_NAME + ":") + " " + LIGHT_GRAY.wrap(GENERIC_MESSAGE));
             return map;
         },
         "Sets the format for each Spy Mode.",
@@ -362,7 +362,7 @@ public class ChatConfig {
     );
 
     public static final ConfigValue<String> ITEM_SHOW_FORMAT = ConfigValue.create("Item_Show.Format.Chat",
-        GRAY.enclose("<" + WHITE.enclose(HOVER.enclose(ITEM_NAME, HoverEvent.Action.SHOW_ITEM, ITEM_VALUE)) + ">"),
+        GRAY.wrap("<" + WHITE.wrap(HOVER.wrapShowText(ITEM_NAME, ITEM_VALUE)) + ">"),
         "Item Showcase format.",
         "Text Formations: " + WIKI_TEXT_URL,
         "Placeholders:",

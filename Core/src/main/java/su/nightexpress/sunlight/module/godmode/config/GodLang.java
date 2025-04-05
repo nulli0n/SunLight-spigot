@@ -14,30 +14,30 @@ public class GodLang {
     public static final LangString COMMAND_FOOD_GOD_DESC = LangString.of("Command.FoodGod.Desc", "Toggle Food God.");
 
     public static final LangText COMMAND_FOOD_GOD_TARGET = LangText.of("GodMode.Command.FoodGod.Target",
-        LIGHT_GRAY.enclose("Set Food God on " + LIGHT_YELLOW.enclose(GENERIC_STATE) + " for " + LIGHT_YELLOW.enclose(PLAYER_DISPLAY_NAME) + ".")
+        LIGHT_GRAY.wrap("Set Food God on " + LIGHT_YELLOW.wrap(GENERIC_STATE) + " for " + LIGHT_YELLOW.wrap(PLAYER_DISPLAY_NAME) + ".")
     );
 
     public static final LangText COMMAND_FOOD_GOD_NOTIFY = LangText.of("GodMode.Command.FoodGod.Notify",
-        LIGHT_GRAY.enclose("Food God has been set on " + LIGHT_YELLOW.enclose(GENERIC_STATE) + ".")
+        LIGHT_GRAY.wrap("Food God has been set on " + LIGHT_YELLOW.wrap(GENERIC_STATE) + ".")
     );
 
 
     public static final LangText COMMAND_GOD_TOGGLE_NOTIFY = LangText.of("GodMode.Command.God.Notify",
-        LIGHT_GRAY.enclose("God Mode has been set on " + LIGHT_YELLOW.enclose(GENERIC_STATE) + ".")
+        LIGHT_GRAY.wrap("God Mode has been set on " + LIGHT_YELLOW.wrap(GENERIC_STATE) + ".")
     );
 
     public static final LangText COMMAND_GOD_TOGGLE_TARGET = LangText.of("GodMode.Command.God.Target",
-        LIGHT_GRAY.enclose("Set God Mode on " + LIGHT_YELLOW.enclose(GENERIC_STATE) + " for " + LIGHT_YELLOW.enclose(PLAYER_DISPLAY_NAME) + ".")
+        LIGHT_GRAY.wrap("Set God Mode on " + LIGHT_YELLOW.wrap(GENERIC_STATE) + " for " + LIGHT_YELLOW.wrap(PLAYER_DISPLAY_NAME) + ".")
     );
 
 
     public static final LangText NOTIFY_DISABLED_DAMAGE = LangText.of("GodMode.Notify.DamageDisabled",
-        OUTPUT.enclose(OutputType.ACTION_BAR),
-        LIGHT_RED.enclose("You can't inflict damage in God Mode!")
+        OUTPUT.wrap(OutputType.ACTION_BAR),
+        LIGHT_RED.wrap("You can't inflict damage in God Mode!")
     );
 
     public static final LangText NOTIFY_BAD_WORLD = LangText.of("GodMode.Notify.BadWorld",
-        LIGHT_RED.enclose(BOLD.enclose("God Mode Info:")),
-        LIGHT_GRAY.enclose("God Mode has no effect in this world!")
+        LIGHT_RED.wrap(BOLD.wrap("God Mode Info:")),
+        LIGHT_GRAY.wrap("God Mode has no effect in this world!")
     );
 }

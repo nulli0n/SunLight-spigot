@@ -47,77 +47,77 @@ public class BansLang extends Lang {
 
     public static final LangText ALTS_GLOBAL_LIST = LangText.of("Bans.Alts.Global.List",
         TAG_NO_PREFIX,
-        LIGHT_YELLOW.enclose(BOLD.enclose("Alts List:")),
+        LIGHT_YELLOW.wrap(BOLD.wrap("Alts List:")),
         " ",
         GENERIC_ENTRY,
         " "
     );
 
     public static final LangString ALTS_GLOBAL_ENTRY = LangString.of("Bans.Alts.Global.Entry",
-        LIGHT_GRAY.enclose(LIGHT_ORANGE.enclose(GENERIC_SOURCE) + ": " + GENERIC_NAME)
+        LIGHT_GRAY.wrap(LIGHT_ORANGE.wrap(GENERIC_SOURCE) + ": " + GENERIC_NAME)
     );
 
     public static final LangText PUNISHMENT_ERROR_RANK_PRIORITY = LangText.of("Bans.Punishment.Error.RankPriority",
         TAG_NO_PREFIX,
         " ",
-        LIGHT_RED.enclose(INFO + " " + BOLD.enclose("Error!")),
-        LIGHT_GRAY.enclose(LIGHT_RED.enclose("»") + " You can't punish " + LIGHT_RED.enclose(PUNISHMENT_TARGET) + "!"),
+        LIGHT_RED.wrap(INFO + " " + BOLD.wrap("Error!")),
+        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " You can't punish " + LIGHT_RED.wrap(PUNISHMENT_TARGET) + "!"),
         " "
     );
 
     public static final LangText PUNISHMENT_ERROR_PUNISH_DURATION = LangText.of("Bans.Punishment.Error.PunishDuration",
         TAG_NO_PREFIX,
         " ",
-        LIGHT_RED.enclose(INFO + " " + BOLD.enclose("Error!")),
-        LIGHT_GRAY.enclose(LIGHT_RED.enclose("»") + " You can't punish more than " + LIGHT_RED.enclose(GENERIC_TIME) + "!"),
+        LIGHT_RED.wrap(INFO + " " + BOLD.wrap("Error!")),
+        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " You can't punish more than " + LIGHT_RED.wrap(GENERIC_TIME) + "!"),
         " "
     );
 
     public static final LangText PUNISHMENT_ERROR_UNPUNISH_DURATION = LangText.of("Bans.Punishment.Error.UnPunishDuration",
         TAG_NO_PREFIX,
         " ",
-        LIGHT_RED.enclose(INFO + " " + BOLD.enclose("Error!")),
-        LIGHT_GRAY.enclose(LIGHT_RED.enclose("»") + " You can't remove punishments with duration more than " + LIGHT_RED.enclose(GENERIC_TIME) + "!"),
+        LIGHT_RED.wrap(INFO + " " + BOLD.wrap("Error!")),
+        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " You can't remove punishments with duration more than " + LIGHT_RED.wrap(GENERIC_TIME) + "!"),
         " "
     );
 
     public static final LangText PUNISHMENT_ERROR_IMMUNE = LangText.of("Bans.Punishment.Error.Immune",
         TAG_NO_PREFIX,
         " ",
-        LIGHT_RED.enclose(INFO + " " + BOLD.enclose("Error!")),
-        LIGHT_GRAY.enclose(LIGHT_RED.enclose("»") + " Player " + LIGHT_RED.enclose(PUNISHMENT_TARGET) + " can't be punished!"),
+        LIGHT_RED.wrap(INFO + " " + BOLD.wrap("Error!")),
+        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " Player " + LIGHT_RED.wrap(PUNISHMENT_TARGET) + " can't be punished!"),
         " "
     );
 
     public static final LangText PUNISHMENT_ERROR_PLAYER_NOT_BANNED = LangText.of("Bans.Punishment.Error.PlayerNotBanned",
         TAG_NO_PREFIX,
         " ",
-        LIGHT_RED.enclose(INFO + " " + BOLD.enclose("Error!")),
-        LIGHT_GRAY.enclose(LIGHT_RED.enclose("»") + " Player " + LIGHT_RED.enclose(PUNISHMENT_TARGET) + " is not banned!"),
+        LIGHT_RED.wrap(INFO + " " + BOLD.wrap("Error!")),
+        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " Player " + LIGHT_RED.wrap(PUNISHMENT_TARGET) + " is not banned!"),
         " "
     );
 
     public static final LangText PUNISHMENT_ERROR_IP_NOT_BANNED = LangText.of("Bans.Punishment.Error.IPNotBanned",
         TAG_NO_PREFIX,
         " ",
-        LIGHT_RED.enclose(INFO + " " + BOLD.enclose("Error!")),
-        LIGHT_GRAY.enclose(LIGHT_RED.enclose("»") + " IP Address " + LIGHT_RED.enclose(PUNISHMENT_TARGET) + " is not banned!"),
+        LIGHT_RED.wrap(INFO + " " + BOLD.wrap("Error!")),
+        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " IP Address " + LIGHT_RED.wrap(PUNISHMENT_TARGET) + " is not banned!"),
         " "
     );
 
     public static final LangText PUNISHMENT_ERROR_NOT_MUTED = LangText.of("Bans.Punishment.Error.NotMuted",
         TAG_NO_PREFIX,
         " ",
-        LIGHT_RED.enclose(INFO + " " + BOLD.enclose("Error!")),
-        LIGHT_GRAY.enclose(LIGHT_RED.enclose("»") + " Player " + LIGHT_RED.enclose(PUNISHMENT_TARGET) + " is not muted!"),
+        LIGHT_RED.wrap(INFO + " " + BOLD.wrap("Error!")),
+        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " Player " + LIGHT_RED.wrap(PUNISHMENT_TARGET) + " is not muted!"),
         " "
     );
 
     public static final LangText PUNISHMENT_ERROR_NOT_WARNED = LangText.of("Bans.Punishment.Error.NotWarned",
         TAG_NO_PREFIX,
         " ",
-        LIGHT_RED.enclose(INFO + " " + BOLD.enclose("Error!")),
-        LIGHT_GRAY.enclose(LIGHT_RED.enclose("»") + " Player " + LIGHT_RED.enclose(PUNISHMENT_TARGET) + " has no warns!"),
+        LIGHT_RED.wrap(INFO + " " + BOLD.wrap("Error!")),
+        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " Player " + LIGHT_RED.wrap(PUNISHMENT_TARGET) + " has no warns!"),
         " "
     );
 
@@ -127,16 +127,16 @@ public class BansLang extends Lang {
 
     public static final LangText KICK_DONE = LangText.of("Bans.Kick.Done",
         TAG_NO_PREFIX,
-        LIGHT_GRAY.enclose(LIGHT_RED.enclose(INFO) + " Kicked " + LIGHT_RED.enclose(PUNISHMENT_TARGET) + " for " + LIGHT_RED.enclose(PUNISHMENT_REASON) + ".")
+        LIGHT_GRAY.wrap(LIGHT_RED.wrap(INFO) + " Kicked " + LIGHT_RED.wrap(PUNISHMENT_TARGET) + " for " + LIGHT_RED.wrap(PUNISHMENT_REASON) + ".")
     );
 
     public static final LangText KICK_BROADCAST = LangText.of("Bans.Kick.Broadcast",
         TAG_NO_PREFIX,
         " ",
-        LIGHT_RED.enclose(INFO + " " + BOLD.enclose("Kick Notification")),
-        LIGHT_GRAY.enclose(LIGHT_RED.enclose("»") + " Player " + LIGHT_RED.enclose(PUNISHMENT_TARGET) + " have been kicked!"),
-        LIGHT_GRAY.enclose(LIGHT_RED.enclose("»") + " By: " + LIGHT_RED.enclose(PUNISHMENT_PUNISHER)),
-        LIGHT_GRAY.enclose(LIGHT_RED.enclose("»") + " Reason: " + LIGHT_RED.enclose(PUNISHMENT_REASON)),
+        LIGHT_RED.wrap(INFO + " " + BOLD.wrap("Kick Notification")),
+        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " Player " + LIGHT_RED.wrap(PUNISHMENT_TARGET) + " have been kicked!"),
+        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " By: " + LIGHT_RED.wrap(PUNISHMENT_PUNISHER)),
+        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " Reason: " + LIGHT_RED.wrap(PUNISHMENT_REASON)),
         " "
     );
 
@@ -147,19 +147,19 @@ public class BansLang extends Lang {
     public static final LangText COMMAND_BAN_DONE_PERMANENT = LangText.of("Bans.Command.Ban.Done.Permanent",
         TAG_NO_PREFIX,
         " ",
-        LIGHT_RED.enclose(INFO + " " + BOLD.enclose("Ban Info")),
-        LIGHT_GRAY.enclose(LIGHT_RED.enclose("»") + " You permanently banned " + LIGHT_RED.enclose(PUNISHMENT_TARGET) + "."),
-        LIGHT_GRAY.enclose(LIGHT_RED.enclose("»") + " Reason: " + LIGHT_RED.enclose(PUNISHMENT_REASON)),
+        LIGHT_RED.wrap(INFO + " " + BOLD.wrap("Ban Info")),
+        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " You permanently banned " + LIGHT_RED.wrap(PUNISHMENT_TARGET) + "."),
+        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " Reason: " + LIGHT_RED.wrap(PUNISHMENT_REASON)),
         " "
     );
 
     public static final LangText BAN_PERMANENT_BROADCAST = LangText.of("Bans.Ban.Permanent.Broadcast",
         TAG_NO_PREFIX,
         " ",
-        LIGHT_RED.enclose(INFO + " " + BOLD.enclose("Ban Notification")),
-        LIGHT_GRAY.enclose(LIGHT_RED.enclose("»") + " Player " + LIGHT_RED.enclose(PUNISHMENT_TARGET) + " have permanently been banned!"),
-        LIGHT_GRAY.enclose(LIGHT_RED.enclose("»") + " By: " + LIGHT_RED.enclose(PUNISHMENT_PUNISHER)),
-        LIGHT_GRAY.enclose(LIGHT_RED.enclose("»") + " Reason: " + LIGHT_RED.enclose(PUNISHMENT_REASON)),
+        LIGHT_RED.wrap(INFO + " " + BOLD.wrap("Ban Notification")),
+        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " Player " + LIGHT_RED.wrap(PUNISHMENT_TARGET) + " have permanently been banned!"),
+        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " By: " + LIGHT_RED.wrap(PUNISHMENT_PUNISHER)),
+        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " Reason: " + LIGHT_RED.wrap(PUNISHMENT_REASON)),
         " "
     );
 
@@ -170,21 +170,21 @@ public class BansLang extends Lang {
     public static final LangText COMMAND_BAN_DONE_TEMPORARY = LangText.of("Bans.Command.Ban.Done.Temporary",
         TAG_NO_PREFIX,
         " ",
-        LIGHT_RED.enclose(INFO + " " + BOLD.enclose("Ban Info")),
-        LIGHT_GRAY.enclose(LIGHT_RED.enclose("»") + " You banned " + LIGHT_RED.enclose(PUNISHMENT_TARGET) + "."),
-        LIGHT_GRAY.enclose(LIGHT_RED.enclose("»") + " Reason: " + LIGHT_RED.enclose(PUNISHMENT_REASON)),
-        LIGHT_GRAY.enclose(LIGHT_RED.enclose("»") + " Duration: " + LIGHT_RED.enclose(PUNISHMENT_EXPIRES_IN)),
+        LIGHT_RED.wrap(INFO + " " + BOLD.wrap("Ban Info")),
+        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " You banned " + LIGHT_RED.wrap(PUNISHMENT_TARGET) + "."),
+        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " Reason: " + LIGHT_RED.wrap(PUNISHMENT_REASON)),
+        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " Duration: " + LIGHT_RED.wrap(PUNISHMENT_EXPIRES_IN)),
         " "
     );
 
     public static final LangText BAN_TEMPORARY_BROADCAST = LangText.of("Bans.Ban.Temporary.Broadcast",
         TAG_NO_PREFIX,
         " ",
-        LIGHT_RED.enclose(INFO + " " + BOLD.enclose("Ban Notification")),
-        LIGHT_GRAY.enclose(LIGHT_RED.enclose("»") + " Player " + LIGHT_RED.enclose(PUNISHMENT_TARGET) + " have been banned!"),
-        LIGHT_GRAY.enclose(LIGHT_RED.enclose("»") + " By: " + LIGHT_RED.enclose(PUNISHMENT_PUNISHER)),
-        LIGHT_GRAY.enclose(LIGHT_RED.enclose("»") + " Reason: " + LIGHT_RED.enclose(PUNISHMENT_REASON)),
-        LIGHT_GRAY.enclose(LIGHT_RED.enclose("»") + " Duration: " + LIGHT_RED.enclose(PUNISHMENT_EXPIRES_IN)),
+        LIGHT_RED.wrap(INFO + " " + BOLD.wrap("Ban Notification")),
+        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " Player " + LIGHT_RED.wrap(PUNISHMENT_TARGET) + " have been banned!"),
+        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " By: " + LIGHT_RED.wrap(PUNISHMENT_PUNISHER)),
+        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " Reason: " + LIGHT_RED.wrap(PUNISHMENT_REASON)),
+        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " Duration: " + LIGHT_RED.wrap(PUNISHMENT_EXPIRES_IN)),
         " "
     );
 
@@ -195,19 +195,19 @@ public class BansLang extends Lang {
     public static final LangText COMMAND_BAN_IP_DONE_PERMANENT = LangText.of("Bans.Command.BanIP.Done.Permanent",
         TAG_NO_PREFIX,
         " ",
-        LIGHT_RED.enclose(INFO + " " + BOLD.enclose("Ban Info")),
-        LIGHT_GRAY.enclose(LIGHT_RED.enclose("»") + " You permanently banned IP: " + LIGHT_RED.enclose(PUNISHMENT_TARGET) + "."),
-        LIGHT_GRAY.enclose(LIGHT_RED.enclose("»") + " Reason: " + LIGHT_RED.enclose(PUNISHMENT_REASON)),
+        LIGHT_RED.wrap(INFO + " " + BOLD.wrap("Ban Info")),
+        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " You permanently banned IP: " + LIGHT_RED.wrap(PUNISHMENT_TARGET) + "."),
+        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " Reason: " + LIGHT_RED.wrap(PUNISHMENT_REASON)),
         " "
     );
 
     public static final LangText BAN_IP_PERMANENT_BROADCAST = LangText.of("Bans.BanIP.Permanent.Broadcast",
         TAG_NO_PREFIX,
         " ",
-        LIGHT_RED.enclose(INFO + " " + BOLD.enclose("Ban Notification")),
-        LIGHT_GRAY.enclose(LIGHT_RED.enclose("»") + " IP Address " + LIGHT_RED.enclose(PUNISHMENT_TARGET) + " have permanently been banned!"),
-        LIGHT_GRAY.enclose(LIGHT_RED.enclose("»") + " By: " + LIGHT_RED.enclose(PUNISHMENT_PUNISHER)),
-        LIGHT_GRAY.enclose(LIGHT_RED.enclose("»") + " Reason: " + LIGHT_RED.enclose(PUNISHMENT_REASON)),
+        LIGHT_RED.wrap(INFO + " " + BOLD.wrap("Ban Notification")),
+        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " IP Address " + LIGHT_RED.wrap(PUNISHMENT_TARGET) + " have permanently been banned!"),
+        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " By: " + LIGHT_RED.wrap(PUNISHMENT_PUNISHER)),
+        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " Reason: " + LIGHT_RED.wrap(PUNISHMENT_REASON)),
         " "
     );
 
@@ -218,21 +218,21 @@ public class BansLang extends Lang {
     public static final LangText COMMAND_BAN_IP_DONE_TEMPORARY = LangText.of("Bans.Command.BanIP.Done.Temporary",
         TAG_NO_PREFIX,
         " ",
-        LIGHT_RED.enclose(INFO + " " + BOLD.enclose("Ban Info")),
-        LIGHT_GRAY.enclose(LIGHT_RED.enclose("»") + " You banned IP: " + LIGHT_RED.enclose(PUNISHMENT_TARGET) + "."),
-        LIGHT_GRAY.enclose(LIGHT_RED.enclose("»") + " Reason: " + LIGHT_RED.enclose(PUNISHMENT_REASON)),
-        LIGHT_GRAY.enclose(LIGHT_RED.enclose("»") + " Duration: " + LIGHT_RED.enclose(PUNISHMENT_EXPIRES_IN)),
+        LIGHT_RED.wrap(INFO + " " + BOLD.wrap("Ban Info")),
+        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " You banned IP: " + LIGHT_RED.wrap(PUNISHMENT_TARGET) + "."),
+        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " Reason: " + LIGHT_RED.wrap(PUNISHMENT_REASON)),
+        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " Duration: " + LIGHT_RED.wrap(PUNISHMENT_EXPIRES_IN)),
         " "
     );
 
     public static final LangText BAN_IP_TEMPORARY_BROADCAST = LangText.of("Bans.BanIP.Temporary.Broadcast",
         TAG_NO_PREFIX,
         " ",
-        LIGHT_RED.enclose(INFO + " " + BOLD.enclose("Ban Notification")),
-        LIGHT_GRAY.enclose(LIGHT_RED.enclose("»") + " IP Address " + LIGHT_RED.enclose(PUNISHMENT_TARGET) + " have been banned!"),
-        LIGHT_GRAY.enclose(LIGHT_RED.enclose("»") + " By: " + LIGHT_RED.enclose(PUNISHMENT_PUNISHER)),
-        LIGHT_GRAY.enclose(LIGHT_RED.enclose("»") + " Reason: " + LIGHT_RED.enclose(PUNISHMENT_REASON)),
-        LIGHT_GRAY.enclose(LIGHT_RED.enclose("»") + " Duration: " + LIGHT_RED.enclose(PUNISHMENT_EXPIRES_IN)),
+        LIGHT_RED.wrap(INFO + " " + BOLD.wrap("Ban Notification")),
+        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " IP Address " + LIGHT_RED.wrap(PUNISHMENT_TARGET) + " have been banned!"),
+        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " By: " + LIGHT_RED.wrap(PUNISHMENT_PUNISHER)),
+        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " Reason: " + LIGHT_RED.wrap(PUNISHMENT_REASON)),
+        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " Duration: " + LIGHT_RED.wrap(PUNISHMENT_EXPIRES_IN)),
         " "
     );
 
@@ -243,17 +243,17 @@ public class BansLang extends Lang {
     public static final LangText UNBAN_DONE = LangText.of("Bans.UnBan.Done",
         TAG_NO_PREFIX,
         " ",
-        LIGHT_GREEN.enclose(INFO + " " + BOLD.enclose("Ban Info")),
-        LIGHT_GRAY.enclose(LIGHT_GREEN.enclose("»") + " You unbanned " + LIGHT_GREEN.enclose(PUNISHMENT_TARGET) + "."),
+        LIGHT_GREEN.wrap(INFO + " " + BOLD.wrap("Ban Info")),
+        LIGHT_GRAY.wrap(LIGHT_GREEN.wrap("»") + " You unbanned " + LIGHT_GREEN.wrap(PUNISHMENT_TARGET) + "."),
         " "
     );
 
     public static final LangText UNBAN_BROADCAST = LangText.of("Bans.UnBan.Broadcast",
         TAG_NO_PREFIX,
         " ",
-        LIGHT_GREEN.enclose(INFO + " " + BOLD.enclose("Ban Info")),
-        LIGHT_GRAY.enclose(LIGHT_GREEN.enclose("»") + " Player " + LIGHT_GREEN.enclose(PUNISHMENT_TARGET) + " have been unbanned."),
-        LIGHT_GRAY.enclose(LIGHT_GREEN.enclose("»") + " By: " + LIGHT_GREEN.enclose(PUNISHMENT_PUNISHER)),
+        LIGHT_GREEN.wrap(INFO + " " + BOLD.wrap("Ban Info")),
+        LIGHT_GRAY.wrap(LIGHT_GREEN.wrap("»") + " Player " + LIGHT_GREEN.wrap(PUNISHMENT_TARGET) + " have been unbanned."),
+        LIGHT_GRAY.wrap(LIGHT_GREEN.wrap("»") + " By: " + LIGHT_GREEN.wrap(PUNISHMENT_PUNISHER)),
         " "
     );
 
@@ -264,17 +264,17 @@ public class BansLang extends Lang {
     public static final LangText UNBAN_IP_DONE = LangText.of("Bans.UnBanIP.Done",
         TAG_NO_PREFIX,
         " ",
-        LIGHT_GREEN.enclose(INFO + " " + BOLD.enclose("Ban Info")),
-        LIGHT_GRAY.enclose(LIGHT_GREEN.enclose("»") + " You unbanned IP " + LIGHT_GREEN.enclose(PUNISHMENT_TARGET) + "."),
+        LIGHT_GREEN.wrap(INFO + " " + BOLD.wrap("Ban Info")),
+        LIGHT_GRAY.wrap(LIGHT_GREEN.wrap("»") + " You unbanned IP " + LIGHT_GREEN.wrap(PUNISHMENT_TARGET) + "."),
         " "
     );
 
     public static final LangText UNBAN_IP_BROADCAST = LangText.of("Bans.UnBanIP.Broadcast",
         TAG_NO_PREFIX,
         " ",
-        LIGHT_GREEN.enclose(INFO + " " + BOLD.enclose("Ban Info")),
-        LIGHT_GRAY.enclose(LIGHT_GREEN.enclose("»") + " IP Address " + LIGHT_GREEN.enclose(PUNISHMENT_TARGET) + " have been unbanned."),
-        LIGHT_GRAY.enclose(LIGHT_GREEN.enclose("»") + " By: " + LIGHT_GREEN.enclose(PUNISHMENT_PUNISHER)),
+        LIGHT_GREEN.wrap(INFO + " " + BOLD.wrap("Ban Info")),
+        LIGHT_GRAY.wrap(LIGHT_GREEN.wrap("»") + " IP Address " + LIGHT_GREEN.wrap(PUNISHMENT_TARGET) + " have been unbanned."),
+        LIGHT_GRAY.wrap(LIGHT_GREEN.wrap("»") + " By: " + LIGHT_GREEN.wrap(PUNISHMENT_PUNISHER)),
         " "
     );
 
@@ -285,29 +285,29 @@ public class BansLang extends Lang {
     public static final LangText COMMAND_MUTE_DONE_PERMANENT = LangText.of("Bans.Command.Mute.Done.Permanent",
         TAG_NO_PREFIX,
         " ",
-        LIGHT_RED.enclose(INFO + " " + BOLD.enclose("Mute Info")),
-        LIGHT_GRAY.enclose(LIGHT_RED.enclose("»") + " You permanently muted " + LIGHT_RED.enclose(PUNISHMENT_TARGET) + "."),
-        LIGHT_GRAY.enclose(LIGHT_RED.enclose("»") + " Reason: " + LIGHT_RED.enclose(PUNISHMENT_REASON)),
+        LIGHT_RED.wrap(INFO + " " + BOLD.wrap("Mute Info")),
+        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " You permanently muted " + LIGHT_RED.wrap(PUNISHMENT_TARGET) + "."),
+        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " Reason: " + LIGHT_RED.wrap(PUNISHMENT_REASON)),
         " "
     );
 
     public static final LangText MUTE_PERMANENT_NOTIFY = LangText.of("Bans.Mute.Permanent.Notify",
         TAG_NO_PREFIX,
         " ",
-        LIGHT_RED.enclose(INFO + " " + BOLD.enclose("Mute Notification")),
-        LIGHT_GRAY.enclose(LIGHT_RED.enclose("»") + " You have permanently been muted!"),
-        LIGHT_GRAY.enclose(LIGHT_RED.enclose("»") + " By: " + LIGHT_RED.enclose(PUNISHMENT_PUNISHER)),
-        LIGHT_GRAY.enclose(LIGHT_RED.enclose("»") + " Reason: " + LIGHT_RED.enclose(PUNISHMENT_REASON)),
+        LIGHT_RED.wrap(INFO + " " + BOLD.wrap("Mute Notification")),
+        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " You have permanently been muted!"),
+        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " By: " + LIGHT_RED.wrap(PUNISHMENT_PUNISHER)),
+        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " Reason: " + LIGHT_RED.wrap(PUNISHMENT_REASON)),
         " "
     );
 
     public static final LangText MUTE_PERMANENT_BROADCAST = LangText.of("Bans.Mute.Permanent.Broadcast",
         TAG_NO_PREFIX,
         " ",
-        LIGHT_RED.enclose(INFO + " " + BOLD.enclose("Mute Notification")),
-        LIGHT_GRAY.enclose(LIGHT_RED.enclose("»") + " Player " + LIGHT_RED.enclose(PUNISHMENT_TARGET) + " have permanently been muted!"),
-        LIGHT_GRAY.enclose(LIGHT_RED.enclose("»") + " By: " + LIGHT_RED.enclose(PUNISHMENT_PUNISHER)),
-        LIGHT_GRAY.enclose(LIGHT_RED.enclose("»") + " Reason: " + LIGHT_RED.enclose(PUNISHMENT_REASON)),
+        LIGHT_RED.wrap(INFO + " " + BOLD.wrap("Mute Notification")),
+        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " Player " + LIGHT_RED.wrap(PUNISHMENT_TARGET) + " have permanently been muted!"),
+        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " By: " + LIGHT_RED.wrap(PUNISHMENT_PUNISHER)),
+        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " Reason: " + LIGHT_RED.wrap(PUNISHMENT_REASON)),
         " "
     );
 
@@ -318,32 +318,32 @@ public class BansLang extends Lang {
     public static final LangText COMMAND_MUTE_DONE_TEMPORARY = LangText.of("Bans.Command.Mute.Done.Temporary",
         TAG_NO_PREFIX,
         " ",
-        LIGHT_RED.enclose(INFO + " " + BOLD.enclose("Mute Info")),
-        LIGHT_GRAY.enclose(LIGHT_RED.enclose("»") + " You muted " + LIGHT_RED.enclose(PUNISHMENT_TARGET) + "."),
-        LIGHT_GRAY.enclose(LIGHT_RED.enclose("»") + " Reason: " + LIGHT_RED.enclose(PUNISHMENT_REASON)),
-        LIGHT_GRAY.enclose(LIGHT_RED.enclose("»") + " Duration: " + LIGHT_RED.enclose(PUNISHMENT_EXPIRES_IN)),
+        LIGHT_RED.wrap(INFO + " " + BOLD.wrap("Mute Info")),
+        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " You muted " + LIGHT_RED.wrap(PUNISHMENT_TARGET) + "."),
+        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " Reason: " + LIGHT_RED.wrap(PUNISHMENT_REASON)),
+        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " Duration: " + LIGHT_RED.wrap(PUNISHMENT_EXPIRES_IN)),
         " "
     );
 
     public static final LangText MUTE_TEMPORARY_NOTIFY = LangText.of("Bans.Mute.Temporary.Notify",
         TAG_NO_PREFIX,
         " ",
-        LIGHT_RED.enclose(INFO + " " + BOLD.enclose("Mute Notification")),
-        LIGHT_GRAY.enclose(LIGHT_RED.enclose("»") + " You have been muted!"),
-        LIGHT_GRAY.enclose(LIGHT_RED.enclose("»") + " By: " + LIGHT_RED.enclose(PUNISHMENT_PUNISHER)),
-        LIGHT_GRAY.enclose(LIGHT_RED.enclose("»") + " Reason: " + LIGHT_RED.enclose(PUNISHMENT_REASON)),
-        LIGHT_GRAY.enclose(LIGHT_RED.enclose("»") + " Duration: " + LIGHT_RED.enclose(PUNISHMENT_EXPIRES_IN)),
+        LIGHT_RED.wrap(INFO + " " + BOLD.wrap("Mute Notification")),
+        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " You have been muted!"),
+        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " By: " + LIGHT_RED.wrap(PUNISHMENT_PUNISHER)),
+        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " Reason: " + LIGHT_RED.wrap(PUNISHMENT_REASON)),
+        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " Duration: " + LIGHT_RED.wrap(PUNISHMENT_EXPIRES_IN)),
         " "
     );
 
     public static final LangText MUTE_TEMPORARY_BROADCAST = LangText.of("Bans.Mute.Temporary.Broadcast",
         TAG_NO_PREFIX,
         " ",
-        LIGHT_RED.enclose(INFO + " " + BOLD.enclose("Mute Notification")),
-        LIGHT_GRAY.enclose(LIGHT_RED.enclose("»") + " Player " + LIGHT_RED.enclose(PUNISHMENT_TARGET) + " have been muted!"),
-        LIGHT_GRAY.enclose(LIGHT_RED.enclose("»") + " By: " + LIGHT_RED.enclose(PUNISHMENT_PUNISHER)),
-        LIGHT_GRAY.enclose(LIGHT_RED.enclose("»") + " Reason: " + LIGHT_RED.enclose(PUNISHMENT_REASON)),
-        LIGHT_GRAY.enclose(LIGHT_RED.enclose("»") + " Duration: " + LIGHT_RED.enclose(PUNISHMENT_EXPIRES_IN)),
+        LIGHT_RED.wrap(INFO + " " + BOLD.wrap("Mute Notification")),
+        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " Player " + LIGHT_RED.wrap(PUNISHMENT_TARGET) + " have been muted!"),
+        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " By: " + LIGHT_RED.wrap(PUNISHMENT_PUNISHER)),
+        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " Reason: " + LIGHT_RED.wrap(PUNISHMENT_REASON)),
+        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " Duration: " + LIGHT_RED.wrap(PUNISHMENT_EXPIRES_IN)),
         " "
     );
 
@@ -354,26 +354,26 @@ public class BansLang extends Lang {
     public static final LangText UNMUTE_DONE = LangText.of("Bans.Unmute.Done",
         TAG_NO_PREFIX,
         " ",
-        LIGHT_GREEN.enclose(INFO + " " + BOLD.enclose("Mute Info")),
-        LIGHT_GRAY.enclose(LIGHT_GREEN.enclose("»") + " You unmuted " + LIGHT_GREEN.enclose(PUNISHMENT_TARGET) + "."),
+        LIGHT_GREEN.wrap(INFO + " " + BOLD.wrap("Mute Info")),
+        LIGHT_GRAY.wrap(LIGHT_GREEN.wrap("»") + " You unmuted " + LIGHT_GREEN.wrap(PUNISHMENT_TARGET) + "."),
         " "
     );
 
     public static final LangText UNMUTE_NOTIFY = LangText.of("Bans.Unmute.Notify",
         TAG_NO_PREFIX,
         " ",
-        LIGHT_GREEN.enclose(INFO + " " + BOLD.enclose("Mute Info")),
-        LIGHT_GRAY.enclose(LIGHT_GREEN.enclose("»") + " You have been unmuted."),
-        LIGHT_GRAY.enclose(LIGHT_GREEN.enclose("»") + " By: " + LIGHT_GREEN.enclose(PUNISHMENT_PUNISHER)),
+        LIGHT_GREEN.wrap(INFO + " " + BOLD.wrap("Mute Info")),
+        LIGHT_GRAY.wrap(LIGHT_GREEN.wrap("»") + " You have been unmuted."),
+        LIGHT_GRAY.wrap(LIGHT_GREEN.wrap("»") + " By: " + LIGHT_GREEN.wrap(PUNISHMENT_PUNISHER)),
         " "
     );
 
     public static final LangText UNMUTE_BROADCAST = LangText.of("Bans.Unmute.Broadcast",
         TAG_NO_PREFIX,
         " ",
-        LIGHT_GREEN.enclose(INFO + " " + BOLD.enclose("Mute Info")),
-        LIGHT_GRAY.enclose(LIGHT_GREEN.enclose("»") + " Player " + LIGHT_GREEN.enclose(PUNISHMENT_TARGET) + " have been unmuted."),
-        LIGHT_GRAY.enclose(LIGHT_GREEN.enclose("»") + " By: " + LIGHT_GREEN.enclose(PUNISHMENT_PUNISHER)),
+        LIGHT_GREEN.wrap(INFO + " " + BOLD.wrap("Mute Info")),
+        LIGHT_GRAY.wrap(LIGHT_GREEN.wrap("»") + " Player " + LIGHT_GREEN.wrap(PUNISHMENT_TARGET) + " have been unmuted."),
+        LIGHT_GRAY.wrap(LIGHT_GREEN.wrap("»") + " By: " + LIGHT_GREEN.wrap(PUNISHMENT_PUNISHER)),
         " "
     );
 
@@ -384,29 +384,29 @@ public class BansLang extends Lang {
     public static final LangText COMMAND_WARN_DONE_PERMANENT = LangText.of("Bans.Command.Warn.Done.Permanent",
         TAG_NO_PREFIX,
         " ",
-        LIGHT_RED.enclose(INFO + " " + BOLD.enclose("Warn Info")),
-        LIGHT_GRAY.enclose(LIGHT_RED.enclose("»") + " You permanently warned " + LIGHT_RED.enclose(PUNISHMENT_TARGET) + "."),
-        LIGHT_GRAY.enclose(LIGHT_RED.enclose("»") + " Reason: " + LIGHT_RED.enclose(PUNISHMENT_REASON)),
+        LIGHT_RED.wrap(INFO + " " + BOLD.wrap("Warn Info")),
+        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " You permanently warned " + LIGHT_RED.wrap(PUNISHMENT_TARGET) + "."),
+        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " Reason: " + LIGHT_RED.wrap(PUNISHMENT_REASON)),
         " "
     );
 
     public static final LangText WARN_PERMANENT_NOTIFY = LangText.of("Bans.Warn.Permanent.Notify",
         TAG_NO_PREFIX,
         " ",
-        LIGHT_RED.enclose(INFO + " " + BOLD.enclose("Warn Notification")),
-        LIGHT_GRAY.enclose(LIGHT_RED.enclose("»") + " You have permanently been warned!"),
-        LIGHT_GRAY.enclose(LIGHT_RED.enclose("»") + " By: " + LIGHT_RED.enclose(PUNISHMENT_PUNISHER)),
-        LIGHT_GRAY.enclose(LIGHT_RED.enclose("»") + " Reason: " + LIGHT_RED.enclose(PUNISHMENT_REASON)),
+        LIGHT_RED.wrap(INFO + " " + BOLD.wrap("Warn Notification")),
+        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " You have permanently been warned!"),
+        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " By: " + LIGHT_RED.wrap(PUNISHMENT_PUNISHER)),
+        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " Reason: " + LIGHT_RED.wrap(PUNISHMENT_REASON)),
         " "
     );
 
     public static final LangText WARN_PERMANENT_BROADCAST = LangText.of("Bans.Warn.Permanent.Broadcast",
         TAG_NO_PREFIX,
         " ",
-        LIGHT_RED.enclose(INFO + " " + BOLD.enclose("Warn Notification")),
-        LIGHT_GRAY.enclose(LIGHT_RED.enclose("»") + " Player " + LIGHT_RED.enclose(PUNISHMENT_TARGET) + " have permanently been warned!"),
-        LIGHT_GRAY.enclose(LIGHT_RED.enclose("»") + " By: " + LIGHT_RED.enclose(PUNISHMENT_PUNISHER)),
-        LIGHT_GRAY.enclose(LIGHT_RED.enclose("»") + " Reason: " + LIGHT_RED.enclose(PUNISHMENT_REASON)),
+        LIGHT_RED.wrap(INFO + " " + BOLD.wrap("Warn Notification")),
+        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " Player " + LIGHT_RED.wrap(PUNISHMENT_TARGET) + " have permanently been warned!"),
+        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " By: " + LIGHT_RED.wrap(PUNISHMENT_PUNISHER)),
+        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " Reason: " + LIGHT_RED.wrap(PUNISHMENT_REASON)),
         " "
     );
 
@@ -417,32 +417,32 @@ public class BansLang extends Lang {
     public static final LangText COMMAND_WARN_DONE_TEMPORARY = LangText.of("Bans.Command.Warn.Done.Temporary",
         TAG_NO_PREFIX,
         " ",
-        LIGHT_RED.enclose(INFO + " " + BOLD.enclose("Warn Info")),
-        LIGHT_GRAY.enclose(LIGHT_RED.enclose("»") + " You warned " + LIGHT_RED.enclose(PUNISHMENT_TARGET) + "."),
-        LIGHT_GRAY.enclose(LIGHT_RED.enclose("»") + " Reason: " + LIGHT_RED.enclose(PUNISHMENT_REASON)),
-        LIGHT_GRAY.enclose(LIGHT_RED.enclose("»") + " Duration: " + LIGHT_RED.enclose(PUNISHMENT_EXPIRES_IN)),
+        LIGHT_RED.wrap(INFO + " " + BOLD.wrap("Warn Info")),
+        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " You warned " + LIGHT_RED.wrap(PUNISHMENT_TARGET) + "."),
+        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " Reason: " + LIGHT_RED.wrap(PUNISHMENT_REASON)),
+        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " Duration: " + LIGHT_RED.wrap(PUNISHMENT_EXPIRES_IN)),
         " "
     );
 
     public static final LangText WARN_TEMPORARY_NOTIFY = LangText.of("Bans.Warn.Temporary.Notify",
         TAG_NO_PREFIX,
         " ",
-        LIGHT_RED.enclose(INFO + " " + BOLD.enclose("Warn Notification")),
-        LIGHT_GRAY.enclose(LIGHT_RED.enclose("»") + " You have been warned!"),
-        LIGHT_GRAY.enclose(LIGHT_RED.enclose("»") + " By: " + LIGHT_RED.enclose(PUNISHMENT_PUNISHER)),
-        LIGHT_GRAY.enclose(LIGHT_RED.enclose("»") + " Reason: " + LIGHT_RED.enclose(PUNISHMENT_REASON)),
-        LIGHT_GRAY.enclose(LIGHT_RED.enclose("»") + " Duration: " + LIGHT_RED.enclose(PUNISHMENT_EXPIRES_IN)),
+        LIGHT_RED.wrap(INFO + " " + BOLD.wrap("Warn Notification")),
+        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " You have been warned!"),
+        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " By: " + LIGHT_RED.wrap(PUNISHMENT_PUNISHER)),
+        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " Reason: " + LIGHT_RED.wrap(PUNISHMENT_REASON)),
+        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " Duration: " + LIGHT_RED.wrap(PUNISHMENT_EXPIRES_IN)),
         " "
     );
 
     public static final LangText WARN_TEMPORARY_BROADCAST = LangText.of("Bans.Warn.Temporary.Broadcast",
         TAG_NO_PREFIX,
         " ",
-        LIGHT_RED.enclose(INFO + " " + BOLD.enclose("Warn Notification")),
-        LIGHT_GRAY.enclose(LIGHT_RED.enclose("»") + " Player " + LIGHT_RED.enclose(PUNISHMENT_TARGET) + " have been warned!"),
-        LIGHT_GRAY.enclose(LIGHT_RED.enclose("»") + " By: " + LIGHT_RED.enclose(PUNISHMENT_PUNISHER)),
-        LIGHT_GRAY.enclose(LIGHT_RED.enclose("»") + " Reason: " + LIGHT_RED.enclose(PUNISHMENT_REASON)),
-        LIGHT_GRAY.enclose(LIGHT_RED.enclose("»") + " Duration: " + LIGHT_RED.enclose(PUNISHMENT_EXPIRES_IN)),
+        LIGHT_RED.wrap(INFO + " " + BOLD.wrap("Warn Notification")),
+        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " Player " + LIGHT_RED.wrap(PUNISHMENT_TARGET) + " have been warned!"),
+        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " By: " + LIGHT_RED.wrap(PUNISHMENT_PUNISHER)),
+        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " Reason: " + LIGHT_RED.wrap(PUNISHMENT_REASON)),
+        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " Duration: " + LIGHT_RED.wrap(PUNISHMENT_EXPIRES_IN)),
         " "
     );
 
@@ -453,33 +453,33 @@ public class BansLang extends Lang {
     public static final LangText UNWARN_DONE = LangText.of("Bans.Unwarn.Done",
         TAG_NO_PREFIX,
         " ",
-        LIGHT_GREEN.enclose(INFO + " " + BOLD.enclose("Warn Info")),
-        LIGHT_GRAY.enclose(LIGHT_GREEN.enclose("»") + " You removed a warn from " + LIGHT_GREEN.enclose(PUNISHMENT_TARGET) + "."),
+        LIGHT_GREEN.wrap(INFO + " " + BOLD.wrap("Warn Info")),
+        LIGHT_GRAY.wrap(LIGHT_GREEN.wrap("»") + " You removed a warn from " + LIGHT_GREEN.wrap(PUNISHMENT_TARGET) + "."),
         " "
     );
 
     public static final LangText UNWARN_NOTIFY = LangText.of("Bans.Unwarn.Notify",
         TAG_NO_PREFIX,
         " ",
-        LIGHT_GREEN.enclose(INFO + " " + BOLD.enclose("Warn Info")),
-        LIGHT_GRAY.enclose(LIGHT_GREEN.enclose("»") + " Your latest warn has been removed."),
-        LIGHT_GRAY.enclose(LIGHT_GREEN.enclose("»") + " By: " + LIGHT_GREEN.enclose(PUNISHMENT_PUNISHER)),
+        LIGHT_GREEN.wrap(INFO + " " + BOLD.wrap("Warn Info")),
+        LIGHT_GRAY.wrap(LIGHT_GREEN.wrap("»") + " Your latest warn has been removed."),
+        LIGHT_GRAY.wrap(LIGHT_GREEN.wrap("»") + " By: " + LIGHT_GREEN.wrap(PUNISHMENT_PUNISHER)),
         " "
     );
 
     public static final LangText UNWARN_BROADCAST = LangText.of("Bans.Unwarn.Broadcast",
         TAG_NO_PREFIX,
         " ",
-        LIGHT_GREEN.enclose(INFO + " " + BOLD.enclose("Warn Info")),
-        LIGHT_GRAY.enclose(LIGHT_GREEN.enclose("»") + " Latest warn has been removed from " + LIGHT_GREEN.enclose(PUNISHMENT_TARGET) + "."),
-        LIGHT_GRAY.enclose(LIGHT_GREEN.enclose("»") + " By: " + LIGHT_GREEN.enclose(PUNISHMENT_PUNISHER)),
+        LIGHT_GREEN.wrap(INFO + " " + BOLD.wrap("Warn Info")),
+        LIGHT_GRAY.wrap(LIGHT_GREEN.wrap("»") + " Latest warn has been removed from " + LIGHT_GREEN.wrap(PUNISHMENT_TARGET) + "."),
+        LIGHT_GRAY.wrap(LIGHT_GREEN.wrap("»") + " By: " + LIGHT_GREEN.wrap(PUNISHMENT_PUNISHER)),
         " "
     );
 
     // -------------------------------------
 
     public static final LangText ERROR_COMMAND_INVALID_REASON_ARGUMENT = LangText.of("Error.Command.Argument.InvalidReason",
-        LIGHT_GRAY.enclose(LIGHT_RED.enclose(GENERIC_VALUE) + " is not a valid reason!"));
+        LIGHT_GRAY.wrap(LIGHT_RED.wrap(GENERIC_VALUE) + " is not a valid reason!"));
 
     public static final LangString OTHER_NO_REASON = LangString.of("Bans.Other.NoReason", "<no reason>");
 

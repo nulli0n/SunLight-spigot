@@ -11,25 +11,25 @@ public class AfkLang {
     public static final LangString COMMAND_AFK_DESC = LangString.of("Afk.Command.Afk.Desc", "Toggle AFK mode.");
 
     public static final LangText COMMAND_AFK_DONE_OTHERS = LangText.of("Afk.Command.Afk.Done.Others",
-        LIGHT_GRAY.enclose("Set " + LIGHT_YELLOW.enclose(PLAYER_DISPLAY_NAME) + " afk mode: " + LIGHT_YELLOW.enclose(GENERIC_STATE) + "."));
+        LIGHT_GRAY.wrap("Set " + LIGHT_YELLOW.wrap(PLAYER_DISPLAY_NAME) + " afk mode: " + LIGHT_YELLOW.wrap(GENERIC_STATE) + "."));
 
     public static final LangText AFK_ENTER = LangText.of("Afk.Mode.Enter",
         TAG_NO_PREFIX,
-        LIGHT_GRAY.enclose("Player " + LIGHT_YELLOW.enclose(PLAYER_DISPLAY_NAME) + " is AFK now.")
+        LIGHT_GRAY.wrap("Player " + LIGHT_YELLOW.wrap(PLAYER_DISPLAY_NAME) + " is AFK now.")
     );
 
     public static final LangText AFK_EXIT = LangText.of("Afk.Mode.Exit",
         TAG_NO_PREFIX,
-        LIGHT_GRAY.enclose("Player " + LIGHT_YELLOW.enclose(PLAYER_DISPLAY_NAME) + " returned after " + LIGHT_YELLOW.enclose(GENERIC_TIME) + " of afk.")
+        LIGHT_GRAY.wrap("Player " + LIGHT_YELLOW.wrap(PLAYER_DISPLAY_NAME) + " returned after " + LIGHT_YELLOW.wrap(GENERIC_TIME) + " of afk.")
     );
 
     public static final LangText AFK_NOTIFY_PM = LangText.of("Afk.Notify.PrivateMessage",
         TAG_NO_PREFIX,
-        LIGHT_GRAY.enclose("Player " + LIGHT_RED.enclose(PLAYER_DISPLAY_NAME) + " is AFK and may not respond.")
+        LIGHT_GRAY.wrap("Player " + LIGHT_RED.wrap(PLAYER_DISPLAY_NAME) + " is AFK and may not respond.")
     );
 
     public static final LangText AFK_NOTIFY_TELEPORT = LangText.of("Afk.Notify.TeleportRequest",
         TAG_NO_PREFIX,
-        LIGHT_GRAY.enclose("Player " + LIGHT_RED.enclose(PLAYER_DISPLAY_NAME) + " is AFK and may not respond.")
+        LIGHT_GRAY.wrap("Player " + LIGHT_RED.wrap(PLAYER_DISPLAY_NAME) + " is AFK and may not respond.")
     );
 }
