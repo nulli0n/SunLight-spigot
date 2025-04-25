@@ -393,9 +393,8 @@ public class ItemCommands {
             .playerOnly()
             .description(Lang.COMMAND_ITEM_MODEL_DESC)
             .permission(CommandPerms.ITEM_MODEL)
-            .withArgument(ArgumentTypes.integerAbs(CommandArguments.VALUE))
-            .executes((context, arguments) -> executeModel(plugin, context, arguments))
-            ;
+            .withArgument(ArgumentTypes.integerAbs(CommandArguments.VALUE).required())
+            .executes((context, arguments) -> executeModel(plugin, context, arguments));
     }
 
     public static boolean executeModel(@NotNull SunLightPlugin plugin, @NotNull CommandContext context, @NotNull ParsedArguments arguments) {
@@ -500,6 +499,7 @@ public class ItemCommands {
         if (item == null) return false;
 
         boolean result = SunUtils.repairItem(item);
+        // TODO Better messages for: no durability / already at this value + check if item is damageable
         context.send((result ? Lang.COMMAND_ITEM_REPAIR_DONE : Lang.ERROR_ITEM_NOT_DAMAGEABLE).getMessage()
             .replace(Placeholders.GENERIC_ITEM, ItemUtil.getItemName(item))
         );

@@ -79,8 +79,7 @@ public class SkullCommand {
             .description(Lang.COMMAND_SKULL_CUSTOM_DESC)
             .permission(CommandPerms.SKULL_CUSTOM)
             .withArgument(ArgumentTypes.string(CommandArguments.VALUE).required())
-            .executes((context, arguments) -> executeCustom(plugin, context, arguments))
-            ;
+            .executes((context, arguments) -> executeCustom(plugin, context, arguments));
     }
 
     public static boolean executeCustom(@NotNull SunLightPlugin plugin, @NotNull CommandContext context, @NotNull ParsedArguments arguments) {
@@ -88,7 +87,8 @@ public class SkullCommand {
         if (player == null) return false;
 
         String textureURL = arguments.getStringArgument(CommandArguments.VALUE);
-        ItemStack itemStack = ItemUtil.getSkinHead(textureURL);
+        // TODO Better impl
+        ItemStack itemStack = textureURL.length() < 16 ? new ItemStack(Material.PLAYER_HEAD) : ItemUtil.getSkinHead(textureURL);
         Players.addItem(player, itemStack);
 
         Lang.COMMAND_SKULL_CUSTOM_DONE.getMessage().send(context.getSender());

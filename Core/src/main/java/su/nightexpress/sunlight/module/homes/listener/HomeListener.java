@@ -74,8 +74,15 @@ public class HomeListener extends AbstractListener<SunLightPlugin> {
         }
 
         Home home = this.module.getHome(player, homeId);
+
         if (home == null || player.isSneaking()) {
             event.setUseInteractedBlock(Event.Result.DENY);
+
+            // Allow to just sleep on bed if can't create more homes.
+            if (home == null && !this.module.canCreateMoreHomes(player)) {
+                player.sleep(block.getLocation(), false);
+                return;
+            }
 
             if (this.module.setHome(player, homeId, location, false)) {
                 if (overrideRespawn) {

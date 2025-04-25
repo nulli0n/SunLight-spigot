@@ -212,6 +212,7 @@ public class SunUtils {
 
         ItemMeta meta = item.getItemMeta();
         if (!(meta instanceof Damageable damageable)) return false;
+        if (damageable.getDamage() == damage) return false; // Do not affect Damageable component for the same value.
 
         damageable.setDamage(Math.max(0, Math.abs(damage)));
         item.setItemMeta(meta);

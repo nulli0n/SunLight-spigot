@@ -1,12 +1,14 @@
 package su.nightexpress.sunlight.nms.mc_1_21_5.container;
 
+import net.minecraft.world.entity.EntityEquipment;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import org.bukkit.craftbukkit.v1_21_R4.entity.CraftHumanEntity;
-import org.bukkit.craftbukkit.v1_21_R4.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_21_R4.inventory.CraftInventory;
+import org.bukkit.craftbukkit.entity.CraftHumanEntity;
+import org.bukkit.craftbukkit.entity.CraftPlayer;
+import org.bukkit.craftbukkit.inventory.CraftInventory;
 import org.jetbrains.annotations.NotNull;
 import su.nightexpress.nightcore.util.Reflex;
+import su.nightexpress.nightcore.util.Version;
 
 public class PlayerInventory extends Inventory {
 
@@ -16,10 +18,17 @@ public class PlayerInventory extends Inventory {
     private final CraftPlayer    owner;
 
     public PlayerInventory(@NotNull CraftPlayer player) {
-        super(player.getHandle(), player.getHandle().equipment);
+        super(player.getHandle(), getEquipment(player));
         this.owner = player;
         this.inventory = new CraftInventory(this);
         this.reflectContents();
+    }
+
+    private static EntityEquipment getEquipment(@NotNull CraftPlayer craftPlayer) {
+        if (Version.isSpigot()) {
+            return (EntityEquipment) Reflex.getFieldValue(craftPlayer.getHandle(), "equipment");
+        }
+        return craftPlayer.getHandle().getInventory().equipment;
     }
 
     private void reflectContents() {
@@ -39,7 +48,7 @@ public class PlayerInventory extends Inventory {
     }
 
     @Override
-    public void onClose(CraftHumanEntity who) {
+    public void onClose(@NotNull CraftHumanEntity who) {
         super.onClose(who);
         this.saveOnExit();
     }
@@ -55,7 +64,7 @@ public class PlayerInventory extends Inventory {
     }
 
     @Override
-    public boolean stillValid(Player entityhuman) {
+    public boolean stillValid(@NotNull Player player) {
         return true;
     }
 

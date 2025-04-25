@@ -203,6 +203,13 @@ public class HomesModule extends Module {
         this.homeMenu.open(player, home);
     }
 
+    public boolean canCreateMoreHomes(@NotNull Player player) {
+        int max = this.getHomesMaxAmount(player);
+        if (max < 0) return true;
+
+        return this.getHomesAmount(player) < max;
+    }
+
     public boolean checkLocation(@NotNull Player player, @NotNull Location location, boolean notify) {
         if (!player.hasPermission(HomesPerms.BYPASS_CREATION_WORLDS)) {
             String world = player.getWorld().getName();
