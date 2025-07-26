@@ -107,7 +107,7 @@ public class KitsMenu extends ConfigMenu<SunLightPlugin> implements AutoFilled<K
                 noPermLore.addAll(this.loreNoPerm);
             }
             else {
-                SunUser user = plugin.getUserManager().getUserData(player);
+                SunUser user = plugin.getUserManager().getOrFetch(player);
                 user.getCooldown(kit).ifPresent(info -> {
                     cooldownLore.addAll(this.loreCooldown);
                     placeholders.add(Placeholders.GENERIC_COOLDOWN, info.isPermanent() ? Lang.OTHER_NEVER.getString() : TimeUtil.formatDuration(info.getExpireDate()));

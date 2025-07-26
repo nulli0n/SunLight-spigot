@@ -192,7 +192,7 @@ public class WarpListMenu extends ConfigMenu<SunLightPlugin> implements AutoFill
                 }
 
                 if (warp.hasVisitCooldown()) {
-                    SunUser user = plugin.getUserManager().getUserData(player);
+                    SunUser user = plugin.getUserManager().getOrFetch(player);
                     CooldownInfo cooldownInfo = user.getCooldown(warp).orElse(null);
                     if (cooldownInfo != null) {
                         loreTeleport.clear();

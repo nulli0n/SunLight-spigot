@@ -69,7 +69,7 @@ public class IgnoreListMenu extends ConfigMenu<SunLightPlugin> implements AutoFi
     @Override
     public void onAutoFill(@NotNull MenuViewer viewer, @NotNull AutoFill<IgnoredUser> autoFill) {
         UUID targetId = this.getLink(viewer);
-        SunUser targetUser = plugin.getUserManager().getUserData(targetId);
+        SunUser targetUser = plugin.getUserManager().getOrFetch(targetId);
         if (targetUser == null) return;
 
         autoFill.setSlots(this.userSlots);
@@ -92,7 +92,7 @@ public class IgnoreListMenu extends ConfigMenu<SunLightPlugin> implements AutoFi
             Player player = viewer1.getPlayer();
             if (event.isRightClick()) {
                 targetUser.removeIgnoredUser(ignoredUser.getUserInfo().getId());
-                this.plugin.getUserManager().saveAsync(targetUser);
+                this.plugin.getUserManager().save(targetUser);
                 this.plugin.runTask(task -> this.open(player, viewer1.getPage()));
                 return;
             }

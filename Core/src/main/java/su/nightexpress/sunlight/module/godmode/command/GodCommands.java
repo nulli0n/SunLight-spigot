@@ -54,12 +54,12 @@ public class GodCommands {
 
         ToggleMode mode = CommandTools.getToggleMode(plugin, context, arguments, CommandArguments.MODE);
 
-        SunUser user = plugin.getUserManager().getUserData(target);
+        SunUser user = plugin.getUserManager().getOrFetch(target);
         Setting<Boolean> setting = GodModule.GOD_MODE;
 
         boolean state = mode.apply(user.getSettings().get(setting));
         user.getSettings().set(setting, state);
-        plugin.getUserManager().scheduleSave(user);
+        plugin.getUserManager().save(user);
 
         // Notify about god mode in disabled world.
         if (state && !module.isAllowedWorld(target)) {
@@ -102,12 +102,12 @@ public class GodCommands {
 
         ToggleMode mode = CommandTools.getToggleMode(plugin, context, arguments, CommandArguments.MODE);
 
-        SunUser user = plugin.getUserManager().getUserData(target);
+        SunUser user = plugin.getUserManager().getOrFetch(target);
         Setting<Boolean> setting = GodModule.FOOD_GOD;
 
         boolean state = mode.apply(user.getSettings().get(setting));
         user.getSettings().set(setting, state);
-        plugin.getUserManager().scheduleSave(user);
+        plugin.getUserManager().save(user);
 
         if (context.getSender() != target) {
             GodLang.COMMAND_FOOD_GOD_TARGET.getMessage()

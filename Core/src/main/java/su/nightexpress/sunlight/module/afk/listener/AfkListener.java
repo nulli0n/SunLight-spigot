@@ -56,7 +56,7 @@ public class AfkListener extends AbstractListener<SunLightPlugin> {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onStateQuit(PlayerQuitEvent event) {
-        this.module.untrack(event.getPlayer());
+        this.module.untrack(event.getPlayer(), true);
     }
 
     @EventHandler(priority = EventPriority.MONITOR)

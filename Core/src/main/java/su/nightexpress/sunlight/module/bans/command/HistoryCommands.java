@@ -77,7 +77,7 @@ public class HistoryCommands {
             return module.openHistory(context.getExecutor(), nameOrAddress);
         }
 
-        plugin.getUserManager().getUserDataAndPerform(nameOrAddress, user -> {
+        plugin.getUserManager().manageUser(nameOrAddress, user -> {
             if (user == null) {
                 context.errorBadPlayer();
                 return;

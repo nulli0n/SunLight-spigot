@@ -1,6 +1,7 @@
 package su.nightexpress.sunlight.module.extras.listener;
 
 import com.google.common.collect.Sets;
+import org.bukkit.ExplosionResult;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -41,13 +42,17 @@ public class PhysicsExplosionListener extends AbstractListener<SunLightPlugin> {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onEntityExplode(EntityExplodeEvent event) {
-        if (!this.plugin.getSunNMS().canDestroyBlocks(event)) return;
+        ExplosionResult result = event.getExplosionResult();
+        if (result != ExplosionResult.DESTROY && result != ExplosionResult.DESTROY_WITH_DECAY) return;
 
         this.create(event.blockList(), event.getLocation());
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onBlockExplode(BlockExplodeEvent event) {
+        ExplosionResult result = event.getExplosionResult();
+        if (result != ExplosionResult.DESTROY && result != ExplosionResult.DESTROY_WITH_DECAY) return;
+
         this.create(event.blockList(), event.getBlock().getLocation());
     }
 

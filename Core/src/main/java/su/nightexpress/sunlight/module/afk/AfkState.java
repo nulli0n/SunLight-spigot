@@ -57,6 +57,10 @@ public class AfkState {
     }
 
     public void exitAfk() {
+        this.exitAfk(false);
+    }
+
+    public void exitAfk(boolean silent) {
         if (!this.isAfk()) return;
 
         this.afk = false;
@@ -76,10 +80,7 @@ public class AfkState {
         PlayerAfkEvent event = new PlayerAfkEvent(this.player, this);
         this.plugin.getPluginManager().callEvent(event);
 
-        AfkLang.AFK_EXIT.getMessage()
-            .replace(Placeholders.forPlayer(player))
-            .replace(Placeholders.GENERIC_TIME, time)
-            .broadcast();
+        if (!silent) AfkLang.AFK_EXIT.getMessage().replace(Placeholders.forPlayer(player)).replace(Placeholders.GENERIC_TIME, time).broadcast();
     }
 
     public void enterAfk() {

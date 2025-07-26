@@ -21,6 +21,10 @@ public class VanishListener extends AbstractListener<SunLightPlugin> {
     @EventHandler(priority = EventPriority.MONITOR)
     public void onJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
+        if (this.module.isVanished(player)) {
+            this.module.vanish(player, true);
+        }
+
         if (player.hasPermission(VanishPerms.BYPASS_SEE)) return;
 
         for (Player vanished : plugin.getServer().getOnlinePlayers()) {

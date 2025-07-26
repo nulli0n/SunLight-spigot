@@ -59,6 +59,8 @@ public class CustomTextModule extends Module {
 
         dir.mkdirs();
 
+        // TODO Text-coversion methods + options to auto convert Latins to special latins
+
         this.createText("rules", text -> {
             text.setDescription("Server rules.");
             text.setText(Lists.newList(

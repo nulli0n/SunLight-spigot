@@ -164,7 +164,7 @@ public class Warp extends AbstractFileData<SunLightPlugin> implements Placeholde
         }
 
         // Check cooldown.
-        SunUser user = plugin.getUserManager().getUserData(player);
+        SunUser user = plugin.getUserManager().getOrFetch(player);
         CooldownInfo cooldownInfo = user.getCooldown(this).orElse(null);
         if (!forced && cooldownInfo != null) {
             long expireDate = cooldownInfo.getExpireDate();
@@ -201,7 +201,7 @@ public class Warp extends AbstractFileData<SunLightPlugin> implements Placeholde
                 if (!forced && this.hasVisitCooldown() && !this.isOwner(player)) {
                     CooldownInfo info = CooldownInfo.of(this);
                     user.addCooldown(info);
-                    this.plugin.getUserManager().scheduleSave(user);
+                    this.plugin.getUserManager().save(user);
                 }
             });
         return true;
@@ -239,7 +239,7 @@ public class Warp extends AbstractFileData<SunLightPlugin> implements Placeholde
     }
 
     public boolean isOnCooldown(@NotNull Player player) {
-        SunUser user = plugin.getUserManager().getUserData(player);
+        SunUser user = plugin.getUserManager().getOrFetch(player);
         return user.getCooldown(this).isPresent();
     }
 

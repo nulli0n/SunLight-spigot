@@ -49,7 +49,7 @@ public class ScoreboardCommand {
 
         ToggleMode mode = CommandTools.getToggleMode(plugin, context, arguments, CommandArguments.MODE);
 
-        SunUser user = plugin.getUserManager().getUserData(target);
+        SunUser user = plugin.getUserManager().getOrFetch(target);
         boolean state = mode.apply(user.getSettings().get(ScoreboardModule.SETTING_SCOREBOARD));
 
         if (state) {
@@ -60,7 +60,7 @@ public class ScoreboardCommand {
         }
 
         user.getSettings().set(ScoreboardModule.SETTING_SCOREBOARD, state);
-        plugin.getUserManager().scheduleSave(user);
+        plugin.getUserManager().save(user);
 
         if (context.getSender() != target) {
             SBLang.COMMAND_SCOREBOARD_TARGET.getMessage()

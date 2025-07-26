@@ -176,7 +176,7 @@ public class BansDataHandler extends AbstractDataHandler<SunLightPlugin> {
 
         UUID playerId = punishment.getUserId();
         if (playerId == null) {
-            SunUser user = plugin.getUserManager().getUserData(punishment.getUser());
+            SunUser user = plugin.getUserManager().getOrFetch(punishment.getUser());
             if (user == null) {
                 return null;
             }

@@ -63,7 +63,7 @@ public class CommandCooldown {
 
     public boolean isApplicable(@NotNull String command, @NotNull String commandMessage) {
         if (this.commandNames.isEmpty()) return false;
-        if (this.patterns.isEmpty()) return false;
+        //if (this.patterns.isEmpty()) return false;
 
         String[] commandLine = commandMessage.split(" ");
         commandLine[0] = command; // Replace slashed/semicoloned command with a pure name extracted before.
@@ -72,7 +72,7 @@ public class CommandCooldown {
         Set<String> aliases = CommandUtil.getAliases(command, true);
         if (aliases.stream().noneMatch(this.commandNames::contains)) return false;
 
-        return this.patterns.stream().anyMatch(pattern -> pattern.isApplicable(commandLine));
+        return this.patterns.isEmpty() || this.patterns.stream().anyMatch(pattern -> pattern.isApplicable(commandLine));
     }
 
     @NotNull

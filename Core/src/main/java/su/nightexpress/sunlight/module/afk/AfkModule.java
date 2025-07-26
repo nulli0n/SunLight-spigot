@@ -78,11 +78,11 @@ public class AfkModule extends Module {
         this.stateMap.put(player.getUniqueId(), state);
     }
 
-    public void untrack(@NotNull Player player) {
+    public void untrack(@NotNull Player player, boolean silent) {
         AfkState tracker = this.stateMap.remove(player.getUniqueId());
         if (tracker == null) return;
 
-        tracker.exitAfk();
+        tracker.exitAfk(silent);
         tracker.reset();
     }
 

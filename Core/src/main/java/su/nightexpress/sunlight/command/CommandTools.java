@@ -51,7 +51,7 @@ public class CommandTools {
         Player target = Players.getPlayer(playerName);
 
         if (target == null && loadData) {
-            SunUser user = plugin.getUserManager().getUserData(playerName); // TODO Find only ID and Name
+            SunUser user = plugin.getUserManager().getOrFetch(playerName); // TODO Find only ID and Name
             if (user != null) {
                 target = plugin.getSunNMS().loadPlayerData(user.getId(), user.getName());
             }

@@ -51,12 +51,12 @@ public class GodModule extends Module {
     }
 
     public boolean hasClassicGod(@NotNull Player player) {
-        SunUser user = plugin.getUserManager().getUserData(player);
+        SunUser user = plugin.getUserManager().getOrFetch(player);
         return user.getSettings().get(GOD_MODE);
     }
 
     public boolean hasFoodGod(@NotNull Player player) {
-        SunUser user = plugin.getUserManager().getUserData(player);
+        SunUser user = plugin.getUserManager().getOrFetch(player);
         return user.getSettings().get(FOOD_GOD);
     }
 

@@ -117,11 +117,11 @@ public class PrivateMessageCommands {
         ToggleMode mode = CommandTools.getToggleMode(plugin, context, arguments, CommandArguments.MODE);
 
         Setting<Boolean> setting = SettingRegistry.ACCEPT_PM;
-        SunUser user = plugin.getUserManager().getUserData(target);
+        SunUser user = plugin.getUserManager().getOrFetch(target);
         boolean state = mode.apply(user.getSettings().get(setting));
 
         user.getSettings().set(setting, state);
-        plugin.getUserManager().scheduleSave(user);
+        plugin.getUserManager().save(user);
 
         if (context.getSender() != target) {
             ChatLang.COMMAND_TOGGLE_PM_TOGGLE_TARGET.getMessage()

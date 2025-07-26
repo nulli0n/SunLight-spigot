@@ -7,10 +7,9 @@ import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.craftbukkit.inventory.CraftInventory;
 import org.jetbrains.annotations.NotNull;
 import su.nightexpress.nightcore.util.Reflex;
+import su.nightexpress.nightcore.util.Version;
 
 public class PlayerEnderChest extends PlayerEnderChestContainer {
-
-    private static final String ITEMS_FIELD = "c"; // 'items'
 
     private final CraftInventory inventory = new CraftInventory(this);
     private final CraftPlayer    owner;
@@ -18,7 +17,9 @@ public class PlayerEnderChest extends PlayerEnderChestContainer {
     public PlayerEnderChest(CraftPlayer owner) {
         super(owner.getHandle());
         this.owner = owner;
-        Reflex.setFieldValue(this, ITEMS_FIELD, owner.getHandle().getEnderChestInventory().items);
+
+        String field = Version.isPaper() ? "items" : "c";
+        Reflex.setFieldValue(this, field, owner.getHandle().getEnderChestInventory().items);
     }
 
     @NotNull

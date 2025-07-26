@@ -20,9 +20,12 @@ import su.nightexpress.sunlight.module.worlds.config.WorldsLang;
 import su.nightexpress.sunlight.module.worlds.impl.WrappedWorld;
 import su.nightexpress.sunlight.module.worlds.util.Placeholders;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Objects;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 public class WorldRulesEditor extends EditorMenu<SunLightPlugin, WrappedWorld> implements AutoFilled<GameRule<?>> {
 
@@ -52,8 +55,13 @@ public class WorldRulesEditor extends EditorMenu<SunLightPlugin, WrappedWorld> i
         World world = this.getLink(viewer).getWorld();
 
         autoFill.setSlots(IntStream.range(0, 36).toArray());
-        autoFill.setItems(Arrays.stream(GameRule.values()).sorted(Comparator.comparing(GameRule::getName)).toList());
+        autoFill.setItems(Stream.of(world.getGameRules())
+            .map(GameRule::getByName).filter(Objects::nonNull)
+            .sorted(Comparator.comparing(GameRule::getName))
+            .collect(Collectors.toCollection(ArrayList::new))
+        );
         autoFill.setItemCreator(gameRule -> {
+
             Material material = Material.MAP;
             if (gameRule.getType() == Boolean.class) {
                 if (world.getGameRuleValue(gameRule) == Boolean.TRUE) {

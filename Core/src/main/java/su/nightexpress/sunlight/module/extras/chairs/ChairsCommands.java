@@ -53,11 +53,11 @@ public class ChairsCommands {
         if (target == null) return false;
 
         ToggleMode mode = CommandTools.getToggleMode(plugin, context, arguments, CommandArguments.MODE);
-        SunUser user = plugin.getUserManager().getUserData(target);
+        SunUser user = plugin.getUserManager().getOrFetch(target);
         boolean state = mode.apply(ChairsManager.isChairsEnabled(user));
 
         user.getSettings().set(ChairsManager.SETTING_CHAIRS, state);
-        plugin.getUserManager().scheduleSave(user);
+        plugin.getUserManager().save(user);
 
         if (context.getSender() != target) {
             ExtrasLang.COMMAND_CHAIRS_TARGET.getMessage()

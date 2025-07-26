@@ -67,9 +67,4 @@ public class PlayerInventory extends Inventory {
     public boolean stillValid(@NotNull Player player) {
         return true;
     }
-
-    public void update() {
-        super.tick();
-        this.player.getInventory().tick();
-    }
 }

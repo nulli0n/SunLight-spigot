@@ -49,14 +49,14 @@ public class PhantomsModule extends Module {
 
 
     public void setAntiPhantom(@NotNull Player player, boolean state) {
-        SunUser user = plugin.getUserManager().getUserData(player);
+        SunUser user = plugin.getUserManager().getOrFetch(player);
         user.getSettings().set(ANTI_PHANTOM, state);
-        this.plugin.getUserManager().scheduleSave(user);
+        this.plugin.getUserManager().save(user);
     }
 
     private void resetRestTime() {
         for (Player player : plugin.getServer().getOnlinePlayers()) {
-            SunUser user = plugin.getUserManager().getUserData(player);
+            SunUser user = plugin.getUserManager().getOrFetch(player);
             if (!user.getSettings().get(ANTI_PHANTOM)) continue;
 
             player.setStatistic(Statistic.TIME_SINCE_REST, 0);

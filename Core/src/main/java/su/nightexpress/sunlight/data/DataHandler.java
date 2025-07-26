@@ -1,27 +1,18 @@
 package su.nightexpress.sunlight.data;
 
+import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import su.nightexpress.nightcore.database.AbstractUserDataHandler;
-import su.nightexpress.nightcore.database.sql.SQLColumn;
-import su.nightexpress.nightcore.database.sql.SQLCondition;
-import su.nightexpress.nightcore.database.sql.SQLValue;
-import su.nightexpress.nightcore.database.sql.column.ColumnType;
-import su.nightexpress.nightcore.database.sql.executor.SelectQueryExecutor;
-import su.nightexpress.nightcore.database.sql.query.UpdateEntity;
-import su.nightexpress.nightcore.database.sql.query.UpdateQuery;
-import su.nightexpress.nightcore.util.ItemNbt;
-import su.nightexpress.nightcore.util.Lists;
-import su.nightexpress.nightcore.util.LocationUtil;
-import su.nightexpress.nightcore.util.StringUtil;
+import su.nightexpress.nightcore.db.AbstractUserDataManager;
+import su.nightexpress.nightcore.db.sql.column.Column;
+import su.nightexpress.nightcore.db.sql.column.ColumnType;
+import su.nightexpress.nightcore.db.sql.query.impl.DeleteQuery;
+import su.nightexpress.nightcore.db.sql.query.impl.SelectQuery;
+import su.nightexpress.nightcore.db.sql.query.type.ValuedQuery;
+import su.nightexpress.nightcore.db.sql.util.WhereOperator;
 import su.nightexpress.sunlight.SunLightPlugin;
 import su.nightexpress.sunlight.core.cooldown.CooldownInfo;
-import su.nightexpress.sunlight.core.cooldown.CooldownType;
 import su.nightexpress.sunlight.core.user.IgnoredUser;
 import su.nightexpress.sunlight.data.serialize.CooldownSerializer;
 import su.nightexpress.sunlight.data.serialize.IgnoredUserSerializer;
@@ -30,105 +21,51 @@ import su.nightexpress.sunlight.data.serialize.UserSettingsSerializer;
 import su.nightexpress.sunlight.data.user.SunUser;
 import su.nightexpress.sunlight.data.user.UserSettings;
 import su.nightexpress.sunlight.module.homes.impl.Home;
-import su.nightexpress.sunlight.module.homes.impl.HomeType;
 import su.nightexpress.sunlight.utils.UserInfo;
 
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.*;
 import java.util.function.Function;
 
-public class DataHandler extends AbstractUserDataHandler<SunLightPlugin, SunUser> {
+public class DataHandler extends AbstractUserDataManager<SunLightPlugin, SunUser> {
 
-    private static final SQLColumn COLUMN_USER_ADDRESS = SQLColumn.of("ip", ColumnType.STRING);
-    private static final SQLColumn USER_COOLDOWNS      = SQLColumn.of("cooldowns", ColumnType.STRING);
-    private static final SQLColumn USER_IGNORE_LIST    = SQLColumn.of("ignoredUsers", ColumnType.STRING);
-    private static final SQLColumn USER_SETTINGS       = SQLColumn.of("settings", ColumnType.STRING);
+    public static final Gson GSON = new GsonBuilder().setPrettyPrinting()
+        .registerTypeAdapter(UserInfo.class, new UserInfoSerializer())
+        .registerTypeAdapter(UserSettings.class, new UserSettingsSerializer())
+        .registerTypeAdapter(IgnoredUser.class, new IgnoredUserSerializer())
+        .registerTypeAdapter(CooldownInfo.class, new CooldownSerializer())
+        .create();
 
-    private static final SQLColumn HOME_ID               = SQLColumn.of("homeId", ColumnType.STRING);
-    private static final SQLColumn HOME_OWNER_ID         = SQLColumn.of("ownerId", ColumnType.STRING);
-    private static final SQLColumn HOME_OWNER_NAME       = SQLColumn.of("ownerName", ColumnType.STRING);
-    private static final SQLColumn HOME_NAME             = SQLColumn.of("name", ColumnType.STRING);
-    private static final SQLColumn HOME_ICON             = SQLColumn.of("icon", ColumnType.STRING);
-    private static final SQLColumn HOME_LOCATION         = SQLColumn.of("location", ColumnType.STRING);
-    private static final SQLColumn HOME_TYPE             = SQLColumn.of("type", ColumnType.STRING);
-    private static final SQLColumn HOME_INVITED_PLAYERS  = SQLColumn.of("invitedPlayers", ColumnType.STRING);
-    private static final SQLColumn HOME_IS_DEFAULT       = SQLColumn.of("isDefault", ColumnType.BOOLEAN);
-    private static final SQLColumn HOME_IS_RESPAWN_POINT = SQLColumn.of("isRespawnPoint", ColumnType.BOOLEAN);
+    static final Column    COLUMN_USER_ADDRESS = Column.of("ip", ColumnType.STRING);
+    static final Column USER_COOLDOWNS      = Column.of("cooldowns", ColumnType.STRING);
+    static final Column USER_IGNORE_LIST    = Column.of("ignoredUsers", ColumnType.STRING);
+    static final Column USER_SETTINGS       = Column.of("settings", ColumnType.STRING);
+
+    static final Column HOME_ID               = Column.of("homeId", ColumnType.STRING);
+    static final Column HOME_OWNER_ID         = Column.of("ownerId", ColumnType.STRING);
+    static final Column HOME_OWNER_NAME       = Column.of("ownerName", ColumnType.STRING);
+    static final Column HOME_NAME             = Column.of("name", ColumnType.STRING);
+    static final Column HOME_ICON             = Column.of("icon", ColumnType.STRING);
+    static final Column HOME_LOCATION         = Column.of("location", ColumnType.STRING);
+    static final Column HOME_TYPE             = Column.of("type", ColumnType.STRING);
+    static final Column HOME_INVITED_PLAYERS  = Column.of("invitedPlayers", ColumnType.STRING);
+    static final Column HOME_IS_DEFAULT       = Column.of("isDefault", ColumnType.BOOLEAN);
+    static final Column HOME_IS_RESPAWN_POINT = Column.of("isRespawnPoint", ColumnType.BOOLEAN);
 
     private final String tableHomes;
-
-    private final Function<ResultSet, SunUser> userFunction;
-    private final Function<ResultSet, Home>    functionHome;
 
     public DataHandler(@NotNull SunLightPlugin plugin) {
         super(plugin);
         this.tableHomes = this.getTablePrefix() + "_homes";
-
-        this.userFunction = (resultSet) -> {
-            try {
-                UUID uuid = UUID.fromString(resultSet.getString(COLUMN_USER_ID.getName()));
-                String name = resultSet.getString(COLUMN_USER_NAME.getName());
-                long dateCreated = resultSet.getLong(COLUMN_USER_DATE_CREATED.getName());
-                long lastOnline = resultSet.getLong(COLUMN_USER_LAST_ONLINE.getName());
-
-                String ip = resultSet.getString(COLUMN_USER_ADDRESS.getName());
-                //String customName = resultSet.getString(USER_CUSTOM_NAME.getName());
-
-                Map<CooldownType, Set<CooldownInfo>> cooldowns = this.gson.fromJson(resultSet.getString(USER_COOLDOWNS.getName()), new TypeToken<Map<CooldownType, Set<CooldownInfo>>>(){}.getType());
-                if (cooldowns == null) cooldowns = new HashMap<>();
-
-                Map<UUID, IgnoredUser> ignoredUsers = gson.fromJson(resultSet.getString(USER_IGNORE_LIST.getName()), new TypeToken<Map<UUID, IgnoredUser>>() {}.getType());
-                if (ignoredUsers == null) ignoredUsers = new HashMap<>();
-                else ignoredUsers.values().removeIf(Objects::isNull);
-
-                UserSettings settings = gson.fromJson(resultSet.getString(USER_SETTINGS.getName()), new TypeToken<UserSettings>(){}.getType());
-                if (settings == null) settings = new UserSettings();
-
-                return new SunUser(plugin, uuid, name, dateCreated, lastOnline, ip, cooldowns, ignoredUsers, settings);
-            }
-            catch (SQLException ex) {
-                ex.printStackTrace();
-                return null;
-            }
-        };
-
-        this.functionHome = resultSet -> {
-            try {
-                String id = resultSet.getString(HOME_ID.getName());
-                UUID ownerId = UUID.fromString(resultSet.getString(HOME_OWNER_ID.getName()));
-                String ownerName = resultSet.getString(HOME_OWNER_NAME.getName());
-                String name = resultSet.getString(HOME_NAME.getName());
-                ItemStack icon = ItemNbt.decompress(resultSet.getString(HOME_ICON.getName()));
-                if (icon == null) icon = new ItemStack(Material.GRASS_BLOCK);
-
-                Location location = LocationUtil.deserialize(resultSet.getString(HOME_LOCATION.getName()));
-                if (location == null) return null;
-
-                HomeType type = StringUtil.getEnum(resultSet.getString(HOME_TYPE.getName()), HomeType.class).orElse(HomeType.PRIVATE);
-                Set<UserInfo> invitedPlayers = this.gson.fromJson(resultSet.getString(HOME_INVITED_PLAYERS.getName()), new TypeToken<Set<UserInfo>>(){}.getType());
-                boolean isDefault = resultSet.getBoolean(HOME_IS_DEFAULT.getName());
-                boolean isRespawnPoint = resultSet.getBoolean(HOME_IS_RESPAWN_POINT.getName());
-
-                UserInfo owner = new UserInfo(ownerId, ownerName);
-                return new Home(plugin, id, owner, name, icon, location, type, invitedPlayers, isDefault, isRespawnPoint);
-            }
-            catch (Exception e) {
-                e.printStackTrace();
-                return null;
-            }
-        };
     }
 
     @Override
     public void onSynchronize() {
         this.plugin.getUserManager().getLoaded().forEach(user -> {
-            if (plugin.getUserManager().isScheduledToSave(user)) return;
+            if (user.isAutoSavePlanned() || !user.isAutoSyncReady()) return;
 
             SunUser sync = this.getUser(user.getId());
             if (sync == null) return;
-
-            if (!user.isSyncReady()) return;
 
             user.getSettings().getValues().clear();
             user.getSettings().getValues().putAll(sync.getSettings().getValues());
@@ -142,26 +79,18 @@ public class DataHandler extends AbstractUserDataHandler<SunLightPlugin, SunUser
     @Override
     @NotNull
     protected GsonBuilder registerAdapters(@NotNull GsonBuilder builder) {
-        return super.registerAdapters(builder)
-            .registerTypeAdapter(UserInfo.class, new UserInfoSerializer())
-            .registerTypeAdapter(UserSettings.class, new UserSettingsSerializer())
-            .registerTypeAdapter(IgnoredUser.class, new IgnoredUserSerializer())
-            .registerTypeAdapter(CooldownInfo.class, new CooldownSerializer())
-            ;
+        return builder;
     }
 
     @Override
-    protected void createUserTable() {
-        super.createUserTable();
+    @NotNull
+    protected Function<ResultSet, SunUser> createUserFunction() {
+        return DataQueries.USER_LOAD;
+    }
 
-        this.addColumn(this.tableUsers, USER_SETTINGS.toValue("{}"), USER_COOLDOWNS.toValue("{}"));
-        this.dropColumn(this.tableUsers,
-            SQLColumn.of("nickname", ColumnType.STRING),
-            SQLColumn.of("kitCooldowns", ColumnType.STRING),
-            SQLColumn.of("commandCooldowns", ColumnType.STRING),
-            SQLColumn.of("settingsBool", ColumnType.STRING),
-            SQLColumn.of("settingsNum", ColumnType.STRING)
-        );
+    @Override
+    protected void onInitialize() {
+        super.onInitialize();
 
         this.createTable(this.tableHomes, Arrays.asList(
             HOME_ID, HOME_OWNER_ID, HOME_OWNER_NAME, HOME_NAME,
@@ -171,139 +100,86 @@ public class DataHandler extends AbstractUserDataHandler<SunLightPlugin, SunUser
     }
 
     @Override
-    @NotNull
-    protected List<SQLColumn> getExtraColumns() {
-        return Arrays.asList(COLUMN_USER_ADDRESS, USER_IGNORE_LIST, USER_COOLDOWNS, USER_SETTINGS);
+    protected void addUpsertQueryData(@NotNull ValuedQuery<?, SunUser> query) {
+        query.setValue(COLUMN_USER_ADDRESS, SunUser::getInetAddress);
+        query.setValue(USER_IGNORE_LIST, user -> GSON.toJson(user.getIgnoredUsers()));
+        query.setValue(USER_COOLDOWNS, user -> GSON.toJson(user.getCooldowns()));
+        query.setValue(USER_SETTINGS, user -> GSON.toJson(user.getSettings()));
     }
 
     @Override
-    @NotNull
-    protected List<SQLValue> getSaveColumns(@NotNull SunUser user) {
-        return Arrays.asList(
-            COLUMN_USER_ADDRESS.toValue(user.getInetAddress()),
-            USER_IGNORE_LIST.toValue(this.gson.toJson(user.getIgnoredUsers())),
-            USER_COOLDOWNS.toValue(this.gson.toJson(user.getCooldowns())),
-            USER_SETTINGS.toValue(this.gson.toJson(user.getSettings()))
-        );
+    protected void addSelectQueryData(@NotNull SelectQuery<SunUser> query) {
+        query.column(COLUMN_USER_ADDRESS);
+        query.column(USER_IGNORE_LIST);
+        query.column(USER_COOLDOWNS);
+        query.column(USER_SETTINGS);
     }
 
     @Override
-    @NotNull
-    protected Function<ResultSet, SunUser> getUserFunction() {
-        return this.userFunction;
+    protected void addTableColumns(@NotNull List<Column> columns) {
+        columns.add(COLUMN_USER_ADDRESS);
+        columns.add(USER_IGNORE_LIST);
+        columns.add(USER_COOLDOWNS);
+        columns.add(USER_SETTINGS);
     }
 
     @NotNull
     public List<Home> getHomes() {
-        return SelectQueryExecutor.builder(this.tableHomes, this.functionHome).execute(this.getConnector());
+        return this.select(this.tableHomes, new SelectQuery<>(HomesQueries.HOME_LOADER).all());
     }
 
     @NotNull
     public List<Home> getHomes(@NotNull UUID id) {
-        return SelectQueryExecutor.builder(this.tableHomes, this.functionHome)
-            .where(SQLCondition.of(HOME_OWNER_ID.toValue(id.toString()), SQLCondition.Type.EQUAL))
-            .execute(this.getConnector());
+        return this.select(this.tableHomes, new SelectQuery<>(HomesQueries.HOME_LOADER).all().where(HOME_OWNER_ID, WhereOperator.EQUAL, id.toString()));
     }
 
     @Nullable
     public Home getHome(@NotNull UUID userId, @NotNull String homeId) {
-        return SelectQueryExecutor.builder(this.tableHomes, this.functionHome)
-            .where(
-                SQLCondition.of(HOME_OWNER_ID.toValue(userId.toString()), SQLCondition.Type.EQUAL),
-                SQLCondition.of(HOME_ID.toValue(homeId), SQLCondition.Type.EQUAL))
-            .execute(this.getConnector()).stream().findFirst().orElse(null);
+        return this.selectFirst(this.tableHomes, new SelectQuery<>(HomesQueries.HOME_LOADER).all()
+            .where(HOME_OWNER_ID, WhereOperator.EQUAL, userId.toString())
+            .where(HOME_ID, WhereOperator.EQUAL, homeId)
+        );
     }
 
     @Nullable
     public Home getHome(@NotNull String userName, @NotNull String homeId) {
-        return SelectQueryExecutor.builder(this.tableHomes, this.functionHome)
-            .where(
-                SQLCondition.of(HOME_OWNER_NAME.toValue(userName), SQLCondition.Type.EQUAL),
-                SQLCondition.of(HOME_ID.toValue(homeId), SQLCondition.Type.EQUAL))
-            .execute(this.getConnector()).stream().findFirst().orElse(null);
+        return this.selectFirst(this.tableHomes, new SelectQuery<>(HomesQueries.HOME_LOADER).all()
+            .where(HOME_OWNER_NAME, WhereOperator.EQUAL, userName)
+            .where(HOME_ID, WhereOperator.EQUAL, homeId)
+        );
     }
 
     public void addHome(@NotNull Home home) {
-        this.insert(this.tableHomes, Arrays.asList(
-            HOME_ID.toValue(home.getId()),
-            HOME_OWNER_ID.toValue(home.getOwner().getId().toString()),
-            HOME_OWNER_NAME.toValue(home.getOwner().getName()),
-            HOME_NAME.toValue(home.getName()),
-            HOME_ICON.toValue(String.valueOf(ItemNbt.compress(home.getIcon()))),
-            HOME_LOCATION.toValue(String.valueOf(LocationUtil.serialize(home.getLocation()))),
-            HOME_TYPE.toValue(home.getType().name()),
-            HOME_INVITED_PLAYERS.toValue(this.gson.toJson(home.getInvitedPlayers())),
-            HOME_IS_DEFAULT.toValue(String.valueOf(home.isDefault() ? 1 : 0)),
-            HOME_IS_RESPAWN_POINT.toValue(String.valueOf(home.isRespawnPoint() ? 1 : 0))
-        ));
-    }
-
-    @NotNull
-    public UpdateEntity createHomeUpdateEntity(@NotNull Home home) {
-        return createUpdateEntity(
-            Lists.newList(
-                HOME_OWNER_ID.toValue(home.getOwner().getId().toString()),
-                HOME_OWNER_NAME.toValue(home.getOwner().getName()),
-                HOME_NAME.toValue(home.getName()),
-                HOME_ICON.toValue(String.valueOf(ItemNbt.compress(home.getIcon()))),
-                HOME_LOCATION.toValue(String.valueOf(LocationUtil.serialize(home.getLocation()))),
-                HOME_TYPE.toValue(home.getType().name()),
-                HOME_INVITED_PLAYERS.toValue(this.gson.toJson(home.getInvitedPlayers())),
-                HOME_IS_DEFAULT.toValue(String.valueOf(home.isDefault() ? 1 : 0)),
-                HOME_IS_RESPAWN_POINT.toValue(String.valueOf(home.isRespawnPoint() ? 1 : 0))
-            ),
-            Lists.newList(
-                SQLCondition.of(HOME_ID.toValue(home.getId()), SQLCondition.Type.EQUAL),
-                SQLCondition.of(HOME_OWNER_ID.toValue(home.getOwner().getId().toString()), SQLCondition.Type.EQUAL)
-            )
-        );
+        this.insert(this.tableHomes, HomesQueries.HOME_INSERT, home);
     }
 
     public void saveHomes(@NotNull Collection<Home> homes) {
-        this.executeUpdate(UpdateQuery.create(this.tableHomes, homes.stream().map(this::createHomeUpdateEntity).toList()));
+        this.update(this.tableHomes, HomesQueries.HOME_UPDATE, homes);
     }
 
     public void deleteHome(@NotNull Home home) {
-        this.deleteHome(home.getOwner().getId(), home.getId());
+        this.delete(this.tableHomes, HomesQueries.HOME_DELETE, home);
     }
 
     public void deleteHomes(@NotNull UUID userId) {
-        this.delete(this.tableHomes, SQLCondition.of(HOME_OWNER_ID.toValue(userId.toString()), SQLCondition.Type.EQUAL));
+        this.delete(this.tableHomes, HomesQueries.HOME_DELETE_OWNER_ID, userId);
     }
 
     public void deleteHomes(@NotNull String userName) {
-        this.delete(this.tableHomes, SQLCondition.of(HOME_OWNER_NAME.toValue(userName), SQLCondition.Type.EQUAL));
+        this.delete(this.tableHomes, HomesQueries.HOME_DELETE_OWNER_NAME, userName);
     }
 
-    public void deleteHome(@NotNull UUID userId, @NotNull String homeId) {
-        this.delete(this.tableHomes,
-            SQLCondition.of(HOME_OWNER_ID.toValue(userId.toString()), SQLCondition.Type.EQUAL),
-            SQLCondition.of(HOME_ID.toValue(homeId), SQLCondition.Type.EQUAL)
-        );
+    public void deleteHome(@NotNull UUID ownerId, @NotNull String homeId) {
+        this.delete(this.tableHomes, new DeleteQuery<>().where(HOME_OWNER_ID, WhereOperator.EQUAL, o -> ownerId.toString()).where(HOME_ID, WhereOperator.EQUAL, o -> homeId), new Object());
     }
 
     @NotNull
     public Map<String, Set<UserInfo>> getPlayerIPs() {
         Map<String, Set<UserInfo>> map = new HashMap<>();
 
-        Function<ResultSet, Void> function = resultSet -> {
-            try {
-                UUID playerId = UUID.fromString(resultSet.getString(COLUMN_USER_ID.getName()));
-                String playerName = resultSet.getString(COLUMN_USER_NAME.getName());
-                String address = resultSet.getString(COLUMN_USER_ADDRESS.getName());
-
-                map.computeIfAbsent(address, k -> new HashSet<>()).add(new UserInfo(playerId, playerName));
-            }
-            catch (SQLException exception) {
-                exception.printStackTrace();
-            }
-            return null;
-        };
-
-        this.load(this.tableUsers, function,
-            Lists.newList(COLUMN_USER_ID, COLUMN_USER_NAME, COLUMN_USER_ADDRESS),
-            Lists.newList()
-        );
+        this.getUsers().forEach(user -> {
+            map.computeIfAbsent(user.getInetAddress(), k -> new HashSet<>()).add(new UserInfo(user));
+        });
 
         return map;
     }

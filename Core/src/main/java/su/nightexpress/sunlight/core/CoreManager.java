@@ -39,7 +39,7 @@ public class CoreManager extends AbstractManager<SunLightPlugin> {
         CommandCooldown cooldown = CommandRegistry.getCooldown(commandName);
         if (cooldown == null || !cooldown.isApplicable(commandName, commandMessage)) return true;
 
-        SunUser user = plugin.getUserManager().getUserData(player);
+        SunUser user = plugin.getUserManager().getOrFetch(player);
 
         CooldownInfo cooldownInfo = user.getCooldown(cooldown).orElse(null);
         if (cooldownInfo != null) {
@@ -56,7 +56,7 @@ public class CoreManager extends AbstractManager<SunLightPlugin> {
         if (seconds == 0) return true;
 
         user.addCooldown(CooldownInfo.of(cooldown, seconds));
-        this.plugin.getUserManager().scheduleSave(user);
+        this.plugin.getUserManager().save(user);
         return true;
     }
 }

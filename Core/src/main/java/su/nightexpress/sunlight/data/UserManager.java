@@ -1,7 +1,7 @@
 package su.nightexpress.sunlight.data;
 
 import org.jetbrains.annotations.NotNull;
-import su.nightexpress.nightcore.database.AbstractUserManager;
+import su.nightexpress.nightcore.db.AbstractUserManager;
 import su.nightexpress.sunlight.SunLightPlugin;
 import su.nightexpress.sunlight.core.menu.IgnoreListMenu;
 import su.nightexpress.sunlight.core.menu.IgnoreSettingsMenu;
@@ -14,8 +14,8 @@ public class UserManager extends AbstractUserManager<SunLightPlugin, SunUser> {
     private IgnoreListMenu ignoreListMenu;
     private IgnoreSettingsMenu ignoreSettingsMenu;
 
-    public UserManager(@NotNull SunLightPlugin plugin) {
-        super(plugin);
+    public UserManager(@NotNull SunLightPlugin plugin, @NotNull DataHandler dataHandler) {
+        super(plugin, dataHandler);
     }
 
     @Override
@@ -35,8 +35,8 @@ public class UserManager extends AbstractUserManager<SunLightPlugin, SunUser> {
 
     @Override
     @NotNull
-    public SunUser createUserData(@NotNull UUID uuid, @NotNull String name) {
-        return SunUser.create(this.plugin, uuid, name);
+    public SunUser create(@NotNull UUID uuid, @NotNull String name) {
+        return SunUser.create(uuid, name);
     }
 
     @NotNull

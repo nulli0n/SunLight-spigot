@@ -322,7 +322,7 @@ public class BansModule extends Module {
     }
 
     public boolean checkRankPriority(@NotNull CommandSender executor, @NotNull Player target) {
-        return this.checkRankPriority(executor, plugin.getUserManager().getUserData(target));
+        return this.checkRankPriority(executor, plugin.getUserManager().getOrFetch(target));
     }
 
     public boolean checkRankPriority(@NotNull CommandSender executor, @NotNull SunUser targetUser) {

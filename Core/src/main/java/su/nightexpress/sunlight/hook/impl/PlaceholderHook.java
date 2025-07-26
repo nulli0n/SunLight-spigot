@@ -98,7 +98,7 @@ public class PlaceholderHook {
             String prefix = split[0];
             String subParams = split.length >= 2 ? Arrays.stream(split).skip(1).collect(Collectors.joining("_")) : prefix;
 
-            SunUser user = plugin.getUserManager().getUserData(player);
+            SunUser user = plugin.getUserManager().getOrFetch(player);
 
             if (prefix.equalsIgnoreCase("afk")) {
                 AfkModule module = this.plugin.getModuleManager().getModule(AfkModule.class).orElse(null);

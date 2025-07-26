@@ -23,7 +23,7 @@ public class CoreListener extends AbstractListener<SunLightPlugin> {
     @EventHandler(priority = EventPriority.MONITOR)
     public void onQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
-        SunUser user = plugin.getUserManager().getUserData(player);
+        SunUser user = plugin.getUserManager().getOrFetch(player);
 
         user.setNewlyCreated(false);
     }
@@ -31,7 +31,7 @@ public class CoreListener extends AbstractListener<SunLightPlugin> {
     @EventHandler(priority = EventPriority.LOWEST)
     public void onJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        SunUser user = plugin.getUserManager().getUserData(player);
+        SunUser user = plugin.getUserManager().getOrFetch(player);
 
         user.updatePlayerName();
         user.setInetAddress(SunUtils.getRawAddress(player));
@@ -43,7 +43,7 @@ public class CoreListener extends AbstractListener<SunLightPlugin> {
         //SunUser userSender = plugin.getUserManager().getUserData(pSender);
 
         event.getRecipients().removeIf(pReceiver -> {
-            SunUser userReceiver = plugin.getUserManager().getUserData(pReceiver);
+            SunUser userReceiver = plugin.getUserManager().getOrFetch(pReceiver);
 
             IgnoredUser ignoredSender = userReceiver.getIgnoredUser(pSender);
             if (ignoredSender == null) return false;

@@ -94,7 +94,7 @@ public class Kit extends AbstractFileData<SunLightPlugin> implements Placeholder
         }
 
         // Check kit cooldown.
-        SunUser user = plugin.getUserManager().getUserData(player);
+        SunUser user = plugin.getUserManager().getOrFetch(player);
         CooldownInfo cooldownInfo = user.getCooldown(this).orElse(null);
         if (!force && cooldownInfo != null) {
             long expireDate = cooldownInfo.getExpireDate();
@@ -127,7 +127,7 @@ public class Kit extends AbstractFileData<SunLightPlugin> implements Placeholder
 
         if (!force && this.hasCooldown() && !player.hasPermission(KitsPerms.BYPASS_COOLDOWN)) {
             user.addCooldown(CooldownInfo.of(this));
-            this.plugin.getUserManager().scheduleSave(user);
+            this.plugin.getUserManager().save(user);
         }
 
         if (!silent) KitsLang.KIT_GET.getMessage().replace(this.replacePlaceholders()).send(player);
@@ -150,7 +150,7 @@ public class Kit extends AbstractFileData<SunLightPlugin> implements Placeholder
     }
 
     public boolean isOnCooldown(@NotNull Player player) {
-        SunUser user = plugin.getUserManager().getUserData(player);
+        SunUser user = plugin.getUserManager().getOrFetch(player);
         return user.getCooldown(this).isPresent();
     }
 

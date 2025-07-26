@@ -90,7 +90,7 @@ public class PrivateMessageHandler {
     private boolean checkDisabledPM() {
         if (this.playerReceiver == null) return true;
 
-        SunUser user = plugin.getUserManager().getUserData(this.playerReceiver);
+        SunUser user = plugin.getUserManager().getOrFetch(this.playerReceiver);
         if (!user.getSettings().get(SettingRegistry.ACCEPT_PM) && !this.sender.hasPermission(ChatPerms.BYPASS_PM_DISABLED)) {
             ChatLang.PRIVATE_MESSAGE_ERROR_DISABLED.getMessage()
                 .replace(Placeholders.forPlayer(this.playerReceiver))
@@ -105,7 +105,7 @@ public class PrivateMessageHandler {
         if (this.playerReceiver == null) return true;
         if (this.playerSender == null) return true;
 
-        SunUser user = plugin.getUserManager().getUserData(this.playerReceiver);
+        SunUser user = plugin.getUserManager().getOrFetch(this.playerReceiver);
         IgnoredUser ignoredUser = user.getIgnoredUser(this.playerSender);
         if (ignoredUser != null && ignoredUser.isDenyConversations() && !this.sender.hasPermission(Perms.BYPASS_IGNORE_PM)) {
             ChatLang.PRIVATE_MESSAGE_ERROR_IGNORANCE.getMessage()

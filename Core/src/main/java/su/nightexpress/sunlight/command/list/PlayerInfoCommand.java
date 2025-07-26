@@ -86,7 +86,7 @@ public class PlayerInfoCommand {
         Player target = CommandTools.getTarget(plugin, context, arguments, CommandArguments.PLAYER, true);
         if (target == null) return false;
 
-        SunUser user = plugin.getUserManager().getUserData(target);
+        SunUser user = plugin.getUserManager().getOrFetch(target);
 
         List<String> format = new ArrayList<>(PlayerInfoCommand.format);
         if (Plugins.hasPlaceholderAPI()) format.replaceAll(str -> PlaceholderAPI.setPlaceholders(target, str));

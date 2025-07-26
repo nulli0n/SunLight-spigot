@@ -182,7 +182,7 @@ public class ScoreboardModule extends Module {
     }
 
     public boolean isScoreboardEnabled(@NotNull Player player) {
-        SunUser user = plugin.getUserManager().getUserData(player);
+        SunUser user = plugin.getUserManager().getOrFetch(player);
         return user.getSettings().get(SETTING_SCOREBOARD);
     }
 }

@@ -75,6 +75,8 @@ public class KitsUtils {
     @NotNull
     public static ItemStack[] fuseItems(ItemStack[] kitItems, ItemStack[] inventory, @NotNull List<ItemStack> left) {
         for (int index = 0; index < inventory.length; index++) {
+            if (index >= kitItems.length) break;
+
             ItemStack itemInv = inventory[index];
             ItemStack itemKit = kitItems[index];
             if (itemKit == null || itemKit.getType().isAir()) continue;

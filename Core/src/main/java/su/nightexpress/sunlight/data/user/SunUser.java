@@ -3,8 +3,9 @@ package su.nightexpress.sunlight.data.user;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import su.nightexpress.nightcore.database.AbstractUser;
+import su.nightexpress.nightcore.db.AbstractUser;
 import su.nightexpress.nightcore.util.text.NightMessage;
+import su.nightexpress.sunlight.SunLightAPI;
 import su.nightexpress.sunlight.SunLightPlugin;
 import su.nightexpress.sunlight.command.CommandPerms;
 import su.nightexpress.sunlight.command.cooldown.CommandCooldown;
@@ -20,7 +21,7 @@ import su.nightexpress.sunlight.utils.UserInfo;
 
 import java.util.*;
 
-public class SunUser extends AbstractUser<SunLightPlugin> {
+public class SunUser extends AbstractUser {
 
     @Deprecated // TODO Move in UserCooldowns class
     private final Map<CooldownType, Set<CooldownInfo>> cooldowns;
@@ -31,7 +32,7 @@ public class SunUser extends AbstractUser<SunLightPlugin> {
     private boolean newlyCreated;
 
     @NotNull
-    public static SunUser create(@NotNull SunLightPlugin plugin, @NotNull UUID uuid, @NotNull String name) {
+    public static SunUser create(@NotNull UUID uuid, @NotNull String name) {
         long dateCreated = System.currentTimeMillis();
         long lastOnline = System.currentTimeMillis();
         String inetAddress = "";
@@ -39,14 +40,13 @@ public class SunUser extends AbstractUser<SunLightPlugin> {
         Map<UUID, IgnoredUser> ignoredUsers = new HashMap<>();
         UserSettings settings = new UserSettings();
 
-        SunUser user = new SunUser(plugin, uuid, name, dateCreated, lastOnline, inetAddress, cooldowns, ignoredUsers, settings);
+        SunUser user = new SunUser(uuid, name, dateCreated, lastOnline, inetAddress, cooldowns, ignoredUsers, settings);
         user.newlyCreated = true;
 
         return user;
     }
 
-    public SunUser(@NotNull SunLightPlugin plugin,
-                   @NotNull UUID uuid,
+    public SunUser(@NotNull UUID uuid,
                    @NotNull String name,
                    long dateCreated,
                    long lastOnline,
@@ -55,7 +55,7 @@ public class SunUser extends AbstractUser<SunLightPlugin> {
                    @NotNull Map<UUID, IgnoredUser> ignoredUsers,
                    @NotNull UserSettings settings
     ) {
-        super(plugin, uuid, name, dateCreated, lastOnline);
+        super(uuid, name, dateCreated, lastOnline);
 
         this.setInetAddress(inetAddress);
         this.cooldowns = new HashMap<>(cooldowns);
@@ -77,7 +77,7 @@ public class SunUser extends AbstractUser<SunLightPlugin> {
     public void onUnload() {
         super.onUnload();
 
-        ChatModule chatModule = this.plugin.getModuleManager().getModule(ChatModule.class).orElse(null);
+        ChatModule chatModule = SunLightAPI.getPlugin().getModuleManager().getModule(ChatModule.class).orElse(null);
         if (chatModule != null) {
             chatModule.clearChatData(this.getId());
         }

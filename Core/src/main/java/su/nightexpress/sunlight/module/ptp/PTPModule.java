@@ -114,12 +114,12 @@ public class PTPModule extends Module {
 
 
     public boolean isRequestsEnabled(@NotNull Player player) {
-        return this.plugin.getUserManager().getUserData(player).getSettings().get(TELEPORT_REQUESTS);
+        return this.plugin.getUserManager().getOrFetch(player).getSettings().get(TELEPORT_REQUESTS);
     }
 
 
     public boolean sendRequest(@NotNull Player player, @NotNull Player target, @NotNull Mode mode) {
-        SunUser targetUser = plugin.getUserManager().getUserData(target);
+        SunUser targetUser = plugin.getUserManager().getOrFetch(target);
 
         // Check if 'accepter' disaled requests so request should be declined.
         if (!this.isRequestsEnabled(target) && !player.hasPermission(Perms.BYPASS_TELEPORT_REQUESTS_DISABLED)) {

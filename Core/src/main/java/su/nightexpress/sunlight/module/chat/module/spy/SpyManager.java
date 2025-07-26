@@ -52,7 +52,7 @@ public class SpyManager extends AbstractManager<SunLightPlugin> {
     @NotNull
     public Set<Player> getSpies(@NotNull SpyType spyType) {
         return this.plugin.getServer().getOnlinePlayers().stream()
-            .filter(player -> this.plugin.getUserManager().getUserData(player).getSettings().get(spyType.getSettingChat()))
+            .filter(player -> this.plugin.getUserManager().getOrFetch(player).getSettings().get(spyType.getSettingChat()))
             .collect(Collectors.toSet());
     }
 
@@ -108,7 +108,7 @@ public class SpyManager extends AbstractManager<SunLightPlugin> {
     private void writeSpyLog(@NotNull CommandSender sender, @NotNull String format, @NotNull SpyType spyType) {
         if (!(sender instanceof Player player)) return;
 
-        SunUser user = this.plugin.getUserManager().getUserData(player);
+        SunUser user = this.plugin.getUserManager().getOrFetch(player);
         if (!user.getSettings().get(spyType.getSettingLog())) {
             return;
         }

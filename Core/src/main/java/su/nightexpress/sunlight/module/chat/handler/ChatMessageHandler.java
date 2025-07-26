@@ -224,7 +224,7 @@ public class ChatMessageHandler {
             Mention mention = this.module.getMention(mentionName);
             if (mention != null && mention.hasPermission(this.player)) {
                 mention.getAffectedPlayers(this.channel).forEach(target -> {
-                    SunUser targetUser = this.plugin.getUserManager().getUserData(target);
+                    SunUser targetUser = this.plugin.getUserManager().getOrFetch(target);
                     if (targetUser.getSettings().get(ChatModule.MENTIONS_SETTING)) {
                         this.mentioned.add(target);
                     }

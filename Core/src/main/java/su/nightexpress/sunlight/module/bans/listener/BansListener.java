@@ -97,7 +97,7 @@ public class BansListener extends AbstractListener<SunLightPlugin> {
         if (!BansConfig.isAltCheckerEnabled()) return;
 
         Player player = event.getPlayer();
-        SunUser user = this.plugin.getUserManager().getUserData(event.getPlayer());
+        SunUser user = this.plugin.getUserManager().getOrFetch(event.getPlayer());
         this.module.linkAltAccount(user);
     }
 }

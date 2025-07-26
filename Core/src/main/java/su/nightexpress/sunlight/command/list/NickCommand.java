@@ -56,7 +56,7 @@ public class NickCommand {
 
     @NotNull
     private static String filterColors(@NotNull String name) {
-        return NightMessage.stripTags(name, TagPool.BASE_COLORS_AND_STYLES);
+        return NightMessage.stripTags(name, TagPool.ALL_COLORS_AND_STYLES);
     }
 
     @NotNull
@@ -102,7 +102,7 @@ public class NickCommand {
 
         String nick = arguments.getStringArgument(CommandArguments.NAME);
 
-        String raw = NightMessage.stripAll(nick);
+        String raw = NightMessage.stripTags(nick);
         if (!player.hasPermission(CommandPerms.NICK_BYPASS_LENGTH)) {
             if (raw.length() < minLength) {
                 context.send(Lang.COMMAND_NICK_CHANGE_ERROR_TOO_SHORT.getMessage().replace(Placeholders.GENERIC_AMOUNT, minLength));
@@ -137,10 +137,10 @@ public class NickCommand {
         }
         else nick = raw;
 
-        SunUser user = plugin.getUserManager().getUserData(player);
+        SunUser user = plugin.getUserManager().getOrFetch(player);
         user.setCustomName(nick);
         user.updatePlayerName();
-        plugin.getUserManager().scheduleSave(user);
+        plugin.getUserManager().save(user);
         context.send(Lang.COMMAND_NICK_CHANGE_DONE.getMessage().replace(Placeholders.GENERIC_NAME, nick));
 
         return true;
@@ -161,10 +161,10 @@ public class NickCommand {
         Player target = CommandTools.getTarget(plugin, context, arguments, CommandArguments.PLAYER, true);
         if (target == null) return false;
 
-        SunUser user = plugin.getUserManager().getUserData(target);
+        SunUser user = plugin.getUserManager().getOrFetch(target);
         user.setCustomName(null);
         target.setDisplayName(null);
-        plugin.getUserManager().scheduleSave(user);
+        plugin.getUserManager().save(user);
 
         if (context.getSender() != target) {
             context.send(Lang.COMMAND_NICK_CLEAR_TARGET.getMessage().replace(Placeholders.forPlayer(target)));
@@ -202,10 +202,10 @@ public class NickCommand {
         }
         else nick = raw;
 
-        SunUser user = plugin.getUserManager().getUserData(target);
+        SunUser user = plugin.getUserManager().getOrFetch(target);
         user.setCustomName(nick);
         user.updatePlayerName();
-        plugin.getUserManager().scheduleSave(user);
+        plugin.getUserManager().save(user);
 
         if (context.getSender() != user.getPlayer()) {
             context.send(Lang.COMMAND_NICK_SET_TARGET.getMessage()

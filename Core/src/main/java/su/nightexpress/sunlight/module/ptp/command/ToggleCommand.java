@@ -50,10 +50,10 @@ public class ToggleCommand {
 
         ToggleMode mode = CommandTools.getToggleMode(plugin, context, arguments, CommandArguments.MODE);
 
-        SunUser user = plugin.getUserManager().getUserData(target);
+        SunUser user = plugin.getUserManager().getOrFetch(target);
         boolean state = mode.apply(user.getSettings().get(PTPModule.TELEPORT_REQUESTS));
         user.getSettings().set(PTPModule.TELEPORT_REQUESTS, state);
-        plugin.getUserManager().scheduleSave(user);
+        plugin.getUserManager().save(user);
 
         if (context.getSender() != target) {
             PTPLang.COMMAND_TOGGLE_DONE.getMessage()

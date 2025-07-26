@@ -67,12 +67,12 @@ public class IgnoreCommands {
             return false;
         }
 
-        SunUser user = plugin.getUserManager().getUserData(player);
+        SunUser user = plugin.getUserManager().getOrFetch(player);
         if (!user.addIgnoredUser(target)) {
             Lang.COMMAND_IGNORE_ADD_ERROR_ALREADY_IN.getMessage().send(player);
             return false;
         }
-        plugin.getUserManager().scheduleSave(user);
+        plugin.getUserManager().save(user);
 
         Lang.COMMAND_IGNORE_ADD_DONE.getMessage().replace(Placeholders.forPlayer(target)).send(player);
         return true;
@@ -125,7 +125,7 @@ public class IgnoreCommands {
         if (player == null) return false;
 
         String userName = arguments.getStringArgument(CommandArguments.PLAYER);
-        SunUser user = plugin.getUserManager().getUserData(player);
+        SunUser user = plugin.getUserManager().getOrFetch(player);
 
         IgnoredUser ignoredUser = user.getIgnoredUser(userName);
         if (ignoredUser == null) {
@@ -134,7 +134,7 @@ public class IgnoreCommands {
         }
 
         if (user.removeIgnoredUser(ignoredUser.getUserInfo().getId())) {
-            plugin.getUserManager().scheduleSave(user);
+            plugin.getUserManager().save(user);
         }
 
         Lang.COMMAND_IGNORE_REMOVE_DONE.getMessage()

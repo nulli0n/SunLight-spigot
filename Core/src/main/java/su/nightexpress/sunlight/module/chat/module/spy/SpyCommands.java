@@ -69,11 +69,11 @@ public class SpyCommands {
 
         ToggleMode mode = CommandTools.getToggleMode(plugin, context, arguments, CommandArguments.MODE);
 
-        SunUser user = plugin.getUserManager().getUserData(player);
+        SunUser user = plugin.getUserManager().getOrFetch(player);
         boolean state = mode.apply(user.getSettings().get(spyType.getSettingLog()));
 
         user.getSettings().set(spyType.getSettingLog(), state);
-        plugin.getUserManager().scheduleSave(user);
+        plugin.getUserManager().save(user);
 
         ChatLang.COMMAND_SPY_LOGGER_DONE.getMessage()
             .replace(Placeholders.forPlayer(player))
@@ -108,11 +108,11 @@ public class SpyCommands {
 
         ToggleMode mode = CommandTools.getToggleMode(plugin, context, arguments, CommandArguments.MODE);
 
-        SunUser user = plugin.getUserManager().getUserData(player);
+        SunUser user = plugin.getUserManager().getOrFetch(player);
         boolean state = mode.apply(user.getSettings().get(spyType.getSettingChat()));
 
         user.getSettings().set(spyType.getSettingChat(), state);
-        plugin.getUserManager().scheduleSave(user);
+        plugin.getUserManager().save(user);
 
         if (context.getSender() != player) {
             ChatLang.COMMAND_SPY_MODE_DONE_OTHERS.getMessage()

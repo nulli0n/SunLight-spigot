@@ -18,7 +18,6 @@ import net.minecraft.world.inventory.*;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.Level;
 import org.bukkit.Bukkit;
-import org.bukkit.ExplosionResult;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.CraftServer;
@@ -27,11 +26,8 @@ import org.bukkit.craftbukkit.entity.CraftFallingBlock;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.Player;
-import org.bukkit.event.block.BlockExplodeEvent;
-import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.inventory.Inventory;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import su.nightexpress.nightcore.util.Reflex;
 import su.nightexpress.sunlight.api.MenuType;
 import su.nightexpress.sunlight.nms.SunNMS;
@@ -45,23 +41,6 @@ public class MC_1_21_5 implements SunNMS {
 
     // setGameModeForPlayer
     private static final Method SET_GAME_MODE = Reflex.getMethod(ServerPlayerGameMode.class, "a", GameType.class, GameType.class);
-
-    @Override
-    @SuppressWarnings("UnstableApiUsage")
-    public boolean canDestroyBlocks(@NotNull EntityExplodeEvent event) {
-        return this.canDestroyBlocks(event.getExplosionResult());
-    }
-
-    @Override
-    @SuppressWarnings("UnstableApiUsage")
-    public boolean canDestroyBlocks(@NotNull BlockExplodeEvent event) {
-        return this.canDestroyBlocks(event.getExplosionResult());
-    }
-
-    @SuppressWarnings("UnstableApiUsage")
-    private boolean canDestroyBlocks(@NotNull ExplosionResult result) {
-        return result == ExplosionResult.DESTROY || result == ExplosionResult.DESTROY_WITH_DECAY;
-    }
 
     @Override
     public void dropFallingContent(@NotNull FallingBlock fallingBlock) {
@@ -141,19 +120,18 @@ public class MC_1_21_5 implements SunNMS {
     }
 
     @Override
-    public void openContainer(@NotNull Player player, @NotNull MenuType menuType) {
-        if (menuType == MenuType.CRAFTING) {
-            player.openWorkbench(null, true);
-            return;
-        }
+    public void openPlayerInventory(@NotNull Player player, @NotNull Player owner) {
+        player.openInventory(this.getPlayerInventory(owner));
+    }
 
+    @Override
+    public void openContainer(@NotNull Player player, @NotNull MenuType menuType) {
         AbstractContainerMenu menu = this.createContainer(menuType, player);
-        if (menu == null) return;
 
         player.openInventory(menu.getBukkitView());
     }
 
-    @Nullable
+    @NotNull
     private AbstractContainerMenu createContainer(@NotNull MenuType type, @NotNull Player player) {
         CraftPlayer craftPlayer = (CraftPlayer) player;
         ServerPlayer nmsPlayer = craftPlayer.getHandle();
@@ -163,7 +141,7 @@ public class MC_1_21_5 implements SunNMS {
 
         AbstractContainerMenu menu = switch (type) {
             case ANVIL -> new AnvilMenu(contId, inventory, access);
-            case CRAFTING -> null;
+            case CRAFTING -> new CraftingMenu(contId, inventory, access);
             case ENCHANTMENT -> new EnchantmentMenu(contId, inventory, access);
             case LOOM -> new LoomMenu(contId, inventory, access);
             case SMITHING -> new SmithingMenu(contId, inventory, access);
@@ -171,7 +149,7 @@ public class MC_1_21_5 implements SunNMS {
             case STONECUTTER -> new StonecutterMenu(contId, inventory, access);
             case CARTOGRAPHY -> new CartographyTableMenu(contId, inventory, access);
         };
-        if (menu != null) menu.checkReachable = false;
+        menu.checkReachable = false;
 
         return menu;
     }

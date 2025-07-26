@@ -66,9 +66,4 @@ public class PlayerInventory extends Inventory {
     public boolean stillValid(Player entityhuman) {
         return true;
     }
-
-    public void update() {
-        super.tick();
-        this.player.getInventory().tick();
-    }
 }

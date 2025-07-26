@@ -52,11 +52,11 @@ public class MentionsCommand {
         ToggleMode mode = CommandTools.getToggleMode(plugin, context, arguments, CommandArguments.MODE);
 
         Setting<Boolean> setting = ChatModule.MENTIONS_SETTING;
-        SunUser user = plugin.getUserManager().getUserData(target);
+        SunUser user = plugin.getUserManager().getOrFetch(target);
         boolean state = mode.apply(user.getSettings().get(setting));
 
         user.getSettings().set(setting, state);
-        plugin.getUserManager().scheduleSave(user);
+        plugin.getUserManager().save(user);
 
         if (context.getSender() != target) {
             ChatLang.COMMAND_MENTIONS_TOGGLE_TARGET.getMessage()

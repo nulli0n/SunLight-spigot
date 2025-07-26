@@ -49,7 +49,7 @@ public class NoPhantomCommand {
 
         ToggleMode mode = CommandTools.getToggleMode(plugin, context, arguments, CommandArguments.MODE);
 
-        SunUser user = plugin.getUserManager().getUserData(target);
+        SunUser user = plugin.getUserManager().getOrFetch(target);
         boolean state = mode.apply(user.getSettings().get(PhantomsModule.ANTI_PHANTOM));
         module.setAntiPhantom(target, state);
 

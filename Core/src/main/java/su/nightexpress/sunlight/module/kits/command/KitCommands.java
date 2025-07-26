@@ -208,7 +208,7 @@ public class KitCommands {
             }
 
             if (user.removeCooldown(kit)) {
-                plugin.getUserManager().scheduleSave(user);
+                plugin.getUserManager().save(user);
             }
 
             if (!user.getName().equalsIgnoreCase(context.getSender().getName())) {
@@ -260,7 +260,7 @@ public class KitCommands {
             }
 
             user.addCooldown(new CooldownInfo(CooldownType.KIT, kit.getId(), expireDate));
-            plugin.getUserManager().scheduleSave(user);
+            plugin.getUserManager().save(user);
 
             String time = amount < 0 ? Lang.OTHER_INFINITY.getLegacy() : TimeUtil.formatDuration(expireDate + 100L);
 

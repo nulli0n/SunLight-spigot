@@ -25,7 +25,7 @@ public class SpawnListener extends AbstractListener<SunLightPlugin> {
     @EventHandler(priority = EventPriority.LOWEST)
     public void onSpawnJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        SunUser user = this.plugin.getUserManager().getUserData(player);
+        SunUser user = this.plugin.getUserManager().getOrFetch(player);
         Spawn spawn;
         if (!user.hasPlayedBefore()) {
             if (!SpawnsConfig.NEWBIE_TELEPORT_ENABLED.get()) return;

@@ -190,8 +190,7 @@ public class InventoryCommand {
             return context.sendFailure(Lang.ERROR_COMMAND_NOT_YOURSELF.getMessage());
         }
 
-        Inventory inventory = plugin.getSunNMS().getPlayerInventory(target);
-        player.openInventory(inventory);
+        plugin.getSunNMS().openPlayerInventory(player, target);
 
         return context.sendSuccess(Lang.COMMAND_INVENTORY_OPEN_DONE.getMessage().replace(Placeholders.forPlayer(target)));
     }

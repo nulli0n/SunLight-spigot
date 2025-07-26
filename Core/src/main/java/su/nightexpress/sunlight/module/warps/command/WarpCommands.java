@@ -187,7 +187,7 @@ public class WarpCommands {
             }
 
             if (user.removeCooldown(warp)) {
-                plugin.getUserManager().scheduleSave(user);
+                plugin.getUserManager().save(user);
             }
 
             if (!user.getName().equalsIgnoreCase(context.getSender().getName())) {
@@ -237,7 +237,7 @@ public class WarpCommands {
             }
 
             user.addCooldown(new CooldownInfo(CooldownType.WARP, warp.getId(), expireDate));
-            plugin.getUserManager().scheduleSave(user);
+            plugin.getUserManager().save(user);
 
             String time = amount < 0 ? Lang.OTHER_INFINITY.getLegacy() : TimeUtil.formatDuration(expireDate + 100L);
 

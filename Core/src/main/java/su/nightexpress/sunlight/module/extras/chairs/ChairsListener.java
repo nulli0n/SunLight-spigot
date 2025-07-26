@@ -45,7 +45,7 @@ public class ChairsListener extends AbstractListener<SunLightPlugin> {
         Block block = e.getClickedBlock();
         if (block == null || !ChairsManager.isChair(block)) return;
 
-        SunUser user = plugin.getUserManager().getUserData(player);
+        SunUser user = plugin.getUserManager().getOrFetch(player);
         if (!ChairsManager.isChairsEnabled(user)) return;
 
         if (player.getLocation().distance(LocationUtil.getCenter(block.getLocation())) >= 2D) {
