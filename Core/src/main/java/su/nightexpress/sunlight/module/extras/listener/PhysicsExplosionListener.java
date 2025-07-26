@@ -82,14 +82,15 @@ public class PhysicsExplosionListener extends AbstractListener<SunLightPlugin> {
                 fallData = Material.DIRT.createBlockData();
             }
 
-            FallingBlock fall = block.getWorld().spawnFallingBlock(block.getLocation(), fallData);
+            Location blockCenter = LocationUtil.setCenter2D(block.getLocation());
+            FallingBlock fall = block.getWorld().spawnFallingBlock(blockCenter, fallData);
             fall.setDropItem(true);
             fall.setCancelDrop(false);
             fall.setFallDistance(0F);
             PDCUtil.set(fall, this.physx, true);
 
             Vector vector = LocationUtil.getDirection(from, fall.getLocation()).multiply(0.6D);
-            vector.setY(vector.getY() + 0.3D + Rnd.getDouble(0D, 2D) / 4.5D);
+            vector.setY(vector.getY() + 0.5D + Rnd.getDouble(0D, 2D) / 4.5D);
             fall.setVelocity(vector);
 
             block.setType(Material.AIR);
