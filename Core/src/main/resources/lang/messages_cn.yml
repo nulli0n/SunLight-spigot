@@ -1,8 +1,9 @@
-# 插件版本 3.12.0
-# 作者: 氿雾
-# Plugin Version 3.12.0
-# Author: 氿雾
+# 作者：star_mao
+# 适用插件版本：3.12.1
 
+# --------------------------------------------------
+# 命令的语言配置
+# --------------------------------------------------
 Command:
   Argument:
     Name:
@@ -13,672 +14,1725 @@ Command:
       Type: 类型
       Time: 时间
       Mode: 模式
-      IPAddress: 地址
-      Radius: 范围
+      IPAddress: IP
+      Radius: 半径
       Text: 文本
       Position: 位置
       X: x
       Y: y
       Z: z
       Reason: 原因
-      IPorName: 名字 | 地址
+      IPorName: 名称 | 地址
   Air:
     Add:
-      Desc: 添加氧气Tick
+      Desc: 增加氧气值
     Set:
-      Desc: 设置氧气Tick
-      Target: "&7为玩家 &a%player_display_name% &7设置了 &e%amount% &7个氧气Tick。新的氧气Tick是: &e%current% &8/ &e%max%"
+      Desc: 设置氧气值
+      Target: '<lgray>成功设置 <lyellow>%player_display_name%</lyellow> 的氧气值为 <lyellow>%amount%</lyellow> 现在的氧气值为: <lyellow>%current%</lyellow>/<lyellow>%max%</lyellow></lgray>'
       Notify:
-        - <output:"action_bar">
-        - "&7你的氧气Tick被设置成了 &e%amount%: &e%current% &8/ &e%max%"
+      - <output:"action_bar">
+      - '<lgray>你的氧气值已设置为 <lyellow>%amount%</lyellow> 现在的氧气值为: <lyellow>%current%</lyellow>/<lyellow>%max%</lyellow></lgray>'
     Remove:
-      Desc: 删除氧气Tick
+      Desc: 减少氧气值
     Give:
-      Target: "&7为玩家 &a%player_display_name% &7添加了 &e%amount% &7个氧气Tick。新的氧气Tick是: &e%current% &8/ &e%max%"
+      Target: '<lgray>成功向 <lyellow>%player_display_name%</lyellow> 添加了 <lyellow>%amount%</lyellow> 氧气值，现在的氧气值为: <lyellow>%current%</lyellow>/<lyellow>%max%</lyellow></lgray>'
       Notify:
-        - <output:"action_bar">
-        - "&7你被给予了 &e%amount% &7个氧气Tick: &e%current% &8/ &e%max%"
+      - <output:"action_bar">
+      - '<lgray>你获得了 <lyellow>%amount%</lyellow> 氧气值，现在的氧气值为: <lyellow>%current%</lyellow>/<lyellow>%max%</lyellow></lgray>'
     Take:
-      Target: "&e%amount% 为玩家 &a%player_display_name% &7删除了 &e%amount% &7个氧气Tick。新的氧气Tick是: &e%current% &8/ &e%max%"
+      Target: '<lgray>成功从 <lyellow>%player_display_name%</lyellow> 移除了 <lyellow>%amount%</lyellow> 氧气值，现在的氧气值为: <lyellow>%current%</lyellow>/<lyellow>%max%</lyellow></lgray>'
       Notify:
-        - <output:"action_bar">
-        - "&7你被删除了 &e%amount% &7个氧气Tick: &e%current% &8/ &e%max%"
+      - <output:"action_bar">
+      - '<lgray>你失去了 <lyellow>%amount%</lyellow> 氧气值，现在的氧气值为: <lyellow>%current%</lyellow>/<lyellow>%max%</lyellow></lgray>'
   Anvil:
     Desc: 打开便携式铁砧
-    Target: "&7为 &a%player_display_name% &7打开便携式铁砧"
+    Target: <lgray>已为 <lyellow>%player_display_name%</lyellow> 打开便携式铁砧</lgray>
     Notify:
-      - <output:"action_bar">
-      - "&7你打开了便携式铁砧"
+    - <output:"action_bar">
+    - <lgray>你打开了便携式铁砧</lgray>
   Broadcast:
     Desc: 广播一条消息
   Condense:
-    Desc: 将物品压缩成方块
+    Desc: 将物品压缩成块
     Error:
       Nothing:
-        - <sound:"entity_villager_no">
-        - "&7没有可压缩成方块的物品"
-      NotEnough: "&c没有足够多的物品将 &b%source% &c压缩成为 &b%result%。&c至少需要 &e%amount% &c个物品"
-    Done: "&7将 &e%total% &7个 &b%source% &7压缩成 &e%amount% &7个 &b%result%"
+      - <sound:"entity_villager_no">
+      - <lgray>没有物品可压缩</lgray>
+      NotEnough: <lgray>无法将 <lred>%source%</lred> 压缩为 <lred>%result%</lred> 至少需要 <lred>%amount%</lred>个</lgray>
+    Done: <lgray>已将 <lyellow>%total%x %source%</lyellow> 压缩为 <lyellow>%amount%x %result%</lyellow></lgray>
   Disposal:
-    Desc: 打开处理菜单
-    Target: "&7为玩家 &a%player_display_name% &7打开处理菜单"
+    Desc: 打开垃圾桶
+    Target: <lgray>已为 <lyellow>%player_display_name%</lyellow> 打开垃圾桶</lgray>
     Notify:
-      - <output:"action_bar"><sound:"block_chest_open">
-      - "&7你打开了处理菜单"
-  Desc: 传送到一个世界
-  Target: "&7已将 &a%player_display_name% &7传送到 &b%world% &7世界"
-  Notify:
+    - <output:"action_bar"><sound:"block_chest_open">
+    - <lgray>你打开了垃圾桶</lgray>
+  Dimension:
+    Desc: 传送到另一个世界
+    Target: <lgray>已将 <lyellow>%player_display_name%</lyellow> 传送到 <lyellow>%world%</lyellow></lgray>
+    Notify:
     - <output:"action_bar"><sound:"entity_enderman_teleport">
-    - "&7你已经前往 &b%world%"
+    - <lgray>你传送到了 <lyellow>%world%</lyellow></lgray>
   Enchant:
-    Desc: 在一个槽位中对物品进行 添加/删除 附魔
+    Desc: 为指定槽位的物品附魔
+    Usage: <槽位> <附魔> <等级> [玩家] [-s]
     Error:
-      NoItem: "&c没有可附魔的物品！"
+      NoItem: <lred>没有可供附魔的物品!</lred>
     Enchanted:
       Target:
-        - <sound:"block_enchantment_table_use">
-        - "&7已在 &a%player_display_name% &7的 &b%type% &7槽位中的 &b%item% &7附魔了 &b%name% &e%amount%!"
+      - <sound:"block_enchantment_table_use">
+      - <lgray>附魔 <lyellow>%name% %amount%</lyellow> 已添加到 <lyellow>%player_display_name%</lyellow> <lyellow>%type%</lyellow> 槽位的 <lyellow>%item%</lyellow> 上!</lgray>
       Notify:
-        - <sound:"block_enchantment_table_use">
-        - "&7你的 &b%item% &7已被附魔为 &b%name% &e%amount%!"
+      - <sound:"block_enchantment_table_use">
+      - <lgray>附魔 <lyellow>%name% %amount%</lyellow> 已添加到你的 <lyellow>%item%</lyellow> 上!</lgray>
     Disenchanted:
       Target:
-        - <sound:"block_grindstone_use">
-        - "&7已从 &a%player_display_name% &7的 &b%type% &7槽位中的 &b%item% &7删除了 &b%name% &7附魔"
+      - <sound:"block_grindstone_use">
+      - <lgray>附魔 <lyellow>%name%</lyellow> 已从 <lyellow>%player_display_name%</lyellow> <lyellow>%type%</lyellow> 槽位的 <lyellow>%item%</lyellow> 上移除!</lgray>
       Notify:
-        - <sound:"block_grindstone_use">
-        - "&7你的 &b%item% &7已被去除了 &b%name% &7附魔！"
+      - <sound:"block_grindstone_use">
+      - <lgray>附魔 <lyellow>%name%</lyellow> 已从你的 <lyellow>%item%</lyellow> 上移除!</lgray>
   Enchanting:
     Desc: 打开便携式附魔台
     Notify:
-      - <output:"action_bar">
-      - "&7你打开了附魔台"
-    Target: "&7为 &a%player_display_name% &7打开了便携附魔台"
+    - <output:"action_bar">
+    - <lgray>你打开了便携式附魔台</lgray>
+    Target: <lgray>已为 <lyellow>%player_display_name%</lyellow> 打开便携式附魔台</lgray>
   Experience:
     Add:
       Desc: 添加经验值或等级
       Info:
-        - <noprefix>
-        - ""
-        - "&7为 &a%player_display_name% &7添加了 &e%amount% &b%type%"
-        - "&7当前等级: &e%level%"
-        - "&7当前总经验值: &e%total%"
-        - ""
+      - <noprefix>
+      - ' '
+      - <lgray>已添加 <lyellow>%amount%</lyellow> %type% 经验给 <lyellow>%player_display_name%</lyellow></lgray>
+      - <lgray>新等级: <lyellow>%level%</lyellow></lgray>
+      - <lgray>总经验: <lyellow>%total%</lyellow></lgray>
+      - ' '
       Notify:
-        - <noprefix>
-        - ""
-        - "&e%amount% &b%type% &7已添加到你的经验中！"
-        - "&7当前等级: &e%level%"
-        - "&7当前总经验值: &e%total%"
-        - ""
+      - <noprefix>
+      - ' '
+      - <lgray>你获得了 <lyellow>%amount%</lyellow> %type%</lgray>
+      - <lgray>新等级: <lyellow>%level%</lyellow></lgray>
+      - <lgray>总经验: <lyellow>%total%</lyellow></lgray>
+      - ' '
     Remove:
-      Desc: 删除经验值或等级
+      Desc: 减少经验值或等级
       Info:
-        - <noprefix>
-        - ""
-        - "&7从 &a%player_display_name% &7删除了 &e%amount% &b%type%"
-        - "&7当前等级: &e%level%"
-        - "&7当前总经验值: &e%total%"
-        - ""
+      - <noprefix>
+      - ' '
+      - <lgray>已减少 <lyellow>%player_display_name%</lyellow> 的 <lyellow>%amount%</lyellow> %type% 经验</lgray>
+      - <lgray>新等级: <lyellow>%level%</lyellow></lgray>
+      - <lgray>总经验: <lyellow>%total%</lyellow></lgray>
+      - ' '
       Notify:
-        - <noprefix>
-        - ""
-        - "&e%amount% &b%type% &7已从你的经验中删除！"
-        - "&7当前等级: &e%level%"
-        - "&7当前总经验值: &e%total%"
-        - ""
+      - <noprefix>
+      - ' '
+      - <lgray>你获得了 <lyellow>%amount%</lyellow> %type%</lgray>
+      - '<lgray>新等级: <lyellow>%level%</lyellow></lgray>'
+      - '<lgray>总经验: <lyellow>%total%</lyellow></lgray>'
+      - ' '
     Set:
       Desc: 设置经验值或等级
       Info:
-        - <noprefix>
-        - ""
-        - "&7为 &a%player_display_name% &7设置了 &e%amount% &b%type%"
-        - "&7当前等级: &e%level%"
-        - "&7当前总经验值: &e%total%"
-        - ""
+      - <noprefix>
+      - ' '
+      - <lgray>已设置 <lyellow>%player_display_name%</lyellow> 的经验为 <lyellow>%amount%</lyellow> %type%</lgray>
+      - <lgray>新等级: <lyellow>%level%</lyellow></lgray>
+      - <lgray>总经验: <lyellow>%total%</lyellow></lgray>
+      - ' '
       Notify:
-        - <noprefix>
-        - ""
-        - "&e%amount% &b%type% &7已设置为你的经验！"
-        - "&7当前等级: &e%level%"
-        - "&7当前总经验值: &e%total%"
-        - ""
+      - <noprefix>
+      - ' '
+      - <lgray>你获得了 <lyellow>%amount%</lyellow> %type%</lgray>
+      - '<lgray>新等级: <lyellow>%level%</lyellow></lgray>'
+      - '<lgray>总经验: <lyellow>%total%</lyellow></lgray>'
+      - ' '
     View:
       Desc: 查看经验状态
     Info:
       Info:
-        - <noprefix>
-        - ""
-        - "&b经验状态 &8- &a%player_display_name%:"
-        - "&7当前等级: &e%level%"
-        - "&7当前总经验值: &e%total%"
-        - "&7升级所需经验: &e%max%"
-        - ""
+      - <noprefix>
+      - ' '
+      - <lyellow><b>%player_display_name% 的经验:</b></lyellow>
+      - <lgray>等级: <lyellow>%level%</lyellow></lgray>
+      - <lgray>总经验: <lyellow>%total%</lyellow></lgray>
+      - <lgray>距离下一级: <lyellow>%max%</lyellow></lgray>
+      - ' '
   Enderchest:
+    Desc: 管理玩家的末影箱
+    Usage: '[帮助]'
     Clear:
-      Desc: 清空末影箱
+      Desc: 清空 [玩家] 的末影箱
+      Usage: '[玩家] [-s]'
       Done:
         Target:
-          - <sound:"block_fire_extinguish">
-          - "&7已清空 &a%player_display_name% &7的末影箱！"
+        - <sound:"block_fire_extinguish">
+        - <lgray>已清空 <lyellow>%player_display_name%</lyellow> 的末影箱!</lgray>
         Notify:
-          - <sound:"block_fire_extinguish">
-          - "&7你的末影箱已被清空！"
+        - <sound:"block_fire_extinguish">
+        - <lgray>你的末影箱已被清空!</lgray>
     Copy:
       Desc: 复制玩家的末影箱
+      Usage: <来源玩家> [目标玩家]
       Done:
         Executor:
-          - <sound:"item_armor_equip_leather">
-          - "&7已复制 &a%player_display_name% &7的末影箱"
+        - <sound:"item_armor_equip_leather">
+        - <lgray>已复制 <lyellow>%player_display_name%</lyellow> 的末影箱</lgray>
         Others:
-          - <sound:"item_armor_equip_leather">
-          - "&7已将 &a%source% &7的末影箱内容复制到 &a%target% &7的末影箱中"
+        - <sound:"item_armor_equip_leather">
+        - <lgray>已将 <lyellow>%source%</lyellow> 的末影箱复制到 <lyellow>%target%</lyellow> 的末影箱</lgray>
     Fill:
-      Desc: 使用指定物品填充末影箱
+      Desc: 使用指定物品填充玩家的末影箱
+      Usage: <玩家> <物品>
       Done:
         Executor:
-          - <sound:"entity_item_pickup">
-          - "&7已使用 &b%item% &7填充 &a%player_display_name% &7的末影箱"
+        - <sound:"entity_item_pickup">
+        - <lgray>已使用 <lyellow>%item%</lyellow> 填满 <lyellow>%player_display_name%</lyellow> 的末影箱</lgray>
     Open:
-      Desc: 打开末影箱
+      Desc: 打开 [玩家] 的末影箱
+      Usage: '[玩家]'
       Done:
         Executor:
-          - <sound:"block_ender_chest_open">
-          - "&7已打开 &a%player_display_name% &7的末影箱"
+        - <sound:"block_ender_chest_open">
+        - <lgray>已打开 <lyellow>%player_display_name%</lyellow> 的末影箱</lgray>
     Repair:
-      Desc: 修复所有末影箱物品
+      Desc: 修复 [玩家] 末影箱内的所有物品
+      Usage: '[玩家] [-s]'
       Notify:
-        - <sound:"block_anvil_use">
-        - "&7已修复所有末影箱物品！"
+      - <sound:"block_anvil_use">
+      - <lgray>你末影箱内的所有物品已被修复!</lgray>
       Target:
-        - <sound:"block_anvil_use">
-        - "&7已修复 &a%player_display_name% &7的末影箱中所有物品！"
+      - <sound:"block_anvil_use">
+      - <lgray>已修复 <lyellow>%player_display_name%</lyellow> 末影箱的内所有物品!</lgray>
+  FoodGod:
+    Desc: 切换 [玩家] 的食神状态
   Hat:
-    Desc: 将物品戴在头上
+    Desc: 把物品放在头上
     Done:
-      - <sound:"item_armor_equip_leather">
-      - "&7享受你的新帽子吧！"
+    - <sound:"item_armor_equip_leather">
+    - <lgray>享受你的新帽子!</lgray>
   Fly:
-    Desc: 切换飞行模式
-    Target: "&7为 &a%player_display_name% &7的飞行模式设置为 &b%state%"
-    Notify: "&7飞行模式 &b%state%"
+    Desc: 切换 [玩家] 的飞行模式
+    Usage: '[玩家] [-on] [-off] [-s]'
+    Target: <lgray>将 <lyellow>%player_display_name%</lyellow> 的飞行模式设置为 <lyellow>%state%</lyellow></lgray>
+    Notify: <lgray>飞行模式切换为 <lyellow>%state%</lyellow></lgray>
   FlySpeed:
-    Desc: 更改飞行速度
+    Desc: 改变 [玩家] 的飞行速度
+    Usage: <速度> [玩家] [-s]
     Done:
-      Notify: "&7你的飞行速度已设置为 &e%amount%"
-      Target: "&7为 &a%player_display_name% &7的飞行速度设置为 &e%amount%"
+      Notify: <lgray>你的飞行速度已设置为 <lyellow>%amount%</lyellow></lgray>
+      Target: <lgray>设置 <lyellow>%player_display_name%</lyellow> 的飞行速度为 <lyellow>%amount%</lyellow></lgray>
   Fire:
+    Desc: 管理 [玩家] 的燃烧刻
+    Usage: <操作> <时间> [玩家]
     Set:
-      Desc: 设置火焰持续时间
-      Info: "&7为 &a%player_display_name% &7设置火焰持续时间为 &a%amount%，&7即点燃时间: &a%time% &7秒"
-      Target: "&7你已被点燃 &a%time% &7秒"
+      Desc: 设置燃烧时间
+      Info: '<lgray>设置 <lyellow>%player_display_name%</lyellow> 的燃烧刻为 <lyellow>%amount%</lyellow>, 持续时间: <lyellow>%time%</lyellow>s</lgray>'
+      Target: <lgray>你被点燃了, 持续时间:<lyellow>%time%</lyellow>s</lgray>
     Reset:
-      Desc: 重置火焰持续时间
+      Desc: 清除燃烧刻
       Info:
-        - <sound:"block_fire_extinguish">
-        - "&7已重置 &a%player_display_name% &7的火焰持续时间值，即已熄灭"
+      - <sound:"block_fire_extinguish">
+      - <lgray>已清除 <lyellow>%player_display_name%</lyellow> 身上的火焰</lgray>
       Target:
-        - <sound:"block_fire_extinguish">
-        - "&7你已被熄灭身上的火焰"
+      - <sound:"block_fire_extinguish">
+      - <lgray>你身上的火焰被扑灭了</lgray>
   Food:
+    Desc: 管理 [玩家] 的饱食度
+    Usage: <操作> <数量> [玩家] [-s]
     Add:
-      Desc: 增加食物点数
+      Desc: 增加饱食度
     Set:
-      Desc: 设置食物等级
-      Target: "&7将 &a%player_display_name% &7的食物等级设为 &e%amount%"
-      Notify: "&7你的食物等级已设为 &e%amount%"
+      Desc: 设置饱食度
+      Target: <lgray>设置 <lyellow>%player_display_name%</lyellow> 的饱食度为 <lyellow>%amount%</lyellow></lgray>
+      Notify: <lgray>你的饱食度被设置为 <lyellow>%amount%</lyellow></lgray>
     Remove:
-      Desc: 减少食物点数
+      Desc: 减少饱食度
     Restore:
-      Desc: 恢复食物等级
+      Desc: 恢复饱食度
       Notify:
-        - <sound:"entity_generic_eat">
-        - "&7你的食物等级已恢复！"
+      - <sound:"entity_generic_eat">
+      - <lgray>你的饱食度已恢复!</lgray>
       Info:
-        - <sound:"entity_generic_eat">
-        - "&7已恢复 &a%player_display_name% &7的食物等级！"
+      - <sound:"entity_generic_eat">
+      - <lgray>已恢复 <lyellow>%player_display_name%</lyellow> 的饱食度!</lgray>
     Give:
-      Target: "&7给 &a%player_display_name% &7增加了 &e%amount% &7食物点数。当前食物等级: &e%current%"
-      Notify: "&7你的食物等级增加了 &e%amount%"
+      Target: '<lgray>给予 <lyellow>%player_display_name%</lyellow> <lyellow>%amount%</lyellow> 饱食度，新的饱食度为: <lyellow>%current%</lyellow></lgray>'
+      Notify: <lgray>你获得了 <lyellow>%amount%</lyellow> 饱食度</lgray>
     Take:
-      Target: "&7从 &a%player_display_name% &7删除了 &e%amount% &7食物点数。当前食物等级: &e%current%"
-      Notify: "&7你的食物等级减少了 &e%amount%"
+      Target: '<lgray>移除了 <lyellow>%player_display_name%</lyellow> <lyellow>%amount%</lyellow> 饱食度，新的饱食度为:<lyellow>%current%</lyellow></lgray>'
+      Notify: <lgray>你失去了 <lyellow>%amount%</lyellow> 饱食度</lgray>
   Grindstone:
     Desc: 打开便携式砂轮
+    Usage: '[玩家] [-s]'
     Notify:
-      - <output:"action_bar">
-      - "&7你打开了砂轮"
-    Target: "&7为 &a%player_display_name% &7打开了砂轮"
+    - <output:"action_bar">
+    - <lgray>你打开了便携式砂轮</lgray>
+    Target: <lgray>已为 <lyellow>%player_display_name%</lyellow> 打开便携式砂轮</lgray>
   GameMode:
+    Desc: 改变 [玩家] 的游戏模式
+    Usage: <游戏模式> [玩家] [-s]
     Type:
-      Desc: 将游戏模式设为 %type%
-    Notify: "&7你的游戏模式已设为 &b%type%"
-    Target: "&7将 &a%player_display_name% &7的游戏模式设置成 &b%type%"
+      Desc: 设置游戏模式为 %type%
+    Notify: <lgray>你的游戏模式已设为 <lyellow>%type%</lyellow></lgray>
+    Target: <lgray>将 <lyellow>%player_display_name%</lyellow> 的游戏模式设为 <lyellow>%type%</lyellow></lgray>
   Health:
+    Desc: 管理 [玩家] 生命值
+    Usage: <操作> <数量> [玩家] [-s]
     Add:
       Desc: 增加生命值
-      Target: "&7为 &a%player_display_name% &7增加了 &e%amount% &7点生命值。当前生命值: &e%current% &8/ &e%max%"
+      Target: '<lgray>添加 <lyellow>%player_display_name%</lyellow> <lyellow>%amount%</lyellow> 生命值，当前生命值: <lyellow>%current%</lyellow>/<lyellow>%max%</lyellow></lgray>'
       Notify:
-        - <output:"action_bar">
-        - "&7你获得了 &e%amount% &7点生命值: &e%current% &8/ &e%max%"
+      - <output:"action_bar">
+      - '<lgray>你获得了 <lyellow>%amount%</lyellow> 生命值，当前生命值: <lyellow>%current%</lyellow>/<lyellow>%max%</lyellow></lgray>'
     Set:
       Desc: 设置生命值
-      Target: "&7为 &a%player_display_name% 设置了 &e%amount% 生命值。当前生命值: &e%current% &8/ &e%max%"
+      Target: '<lgray>已设置 <lyellow>%player_display_name%</lyellow> 的生命值为 <lyellow>%amount%</lyellow>'
       Notify:
-        - <output:"action_bar">
-        - "&7你的生命值已设为 &e%amount% &8/ &e%max%"
+      - <output:"action_bar">
+      - <lgray>你的生命值已被设置为 <lyellow>%amount%</lyellow>/<lyellow>%max%</lyellow></lgray>
     Remove:
       Desc: 减少生命值
-      Target: "&7从 &a%player_display_name% 减少了 &e%amount% 生命值。当前生命值: &e%current% &8/ &e%max%"
+      Target: '<lgray>减少 <lyellow>%player_display_name%</lyellow> <lyellow>%amount%</lyellow> 生命值，当前生命值: <lyellow>%current%</lyellow>/<lyellow>%max%</lyellow></lgray>'
       Notify:
-        - <output:"action_bar">
-        - "&7你失去了 &e%amount% &7点生命值: &e%current% &8/ &e%max%"
+      - <output:"action_bar">
+      - '<lgray>你失去了 <lyellow>%amount%</lyellow> 生命值，当前生命值: <lyellow>%current%</lyellow>/<lyellow>%max%</lyellow></lgray>'
     Restore:
       Desc: 恢复生命值
-      Info: "&7玩家 &a%player_display_name% &7的生命值已被恢复"
-      Notfiy: "&7You have been healed!"
+      Notfiy: <lgray>你已恢复!</lgray>
+      Info: <lgray>恢复了 <lyellow>%player_display_name%</lyellow> 的生命值</lgray>
   Ignore:
+    Desc: 管理你的黑名单列表
+    Usage: '[帮助]'
     Add:
-      Desc: 将玩家加入黑名单
+      Desc: 将玩家添加到你的黑名单中
+      Usage: <玩家>
       Done:
-        - "&e玩家已被屏蔽！"
-        - "&7玩家 &a%player_display_name% &7已被加入黑名单"
-        - "&7你可以通过 &e/ignorelist &7改变设置或解除屏蔽"
+      - <lyellow><b>玩家黑名单!</b></lyellow>
+      - <lgray>玩家 <lyellow>%player_display_name%</lyellow> 已加入黑名单</lgray>
+      - <lgray>你可以使用 <lyellow>/ignorelist</lyellow> 更改设置或移出黑名单</lgray>
       Error:
-        AlreadyIn: "&7玩家已经被屏蔽了"
+        AlreadyIn: <lgray>玩家已在黑名单中</lgray>
     List:
-      Desc: 打开玩家黑名单
+      Desc: 打开黑名单列表
     Remove:
-      Desc: 将玩家从黑名单删除
-      Done: "&7玩家 &a%player_name% &7已被解除屏蔽"
+      Desc: 将玩家从黑名单中移除
+      Done: <lgray>玩家 <lyellow>%player_name%</lyellow> 已从黑名单中移除</lgray>
       Error:
-        NotIn: "&7Player is not blocked."
+        NotIn: <lgray>玩家不在黑名单中</lgray>
   Inventory:
+    Desc: 管理玩家背包
+    Usage: '[帮助]'
     Clear:
-      Desc: 清空物品栏
+      Desc: 清空背包
+      Usage: '[玩家] [-s]'
       Done:
         Target:
-          - <sound:"block_fire_extinguish">
-          - "&7已清空 &a%player_display_name% &7的物品栏！"
+        - <sound:"block_fire_extinguish">
+        - <lgray>已清空 <lyellow>%player_display_name%</lyellow> 的背包!</lgray>
         Notify:
-          - <sound:"block_fire_extinguish">
-          - "&7你的物品栏已被清空！"
+        - <sound:"block_fire_extinguish">
+        - <lgray>你的背包已被清空!</lgray>
     Copy:
-      Desc: 复制玩家的物品栏
+      Desc: 复制玩家的背包
+      Usage: <来源玩家> [目标玩家]
       Done:
         Notify:
-          - <sound:"item_armor_equip_leather">
-          - "&7已复制 &a%player_display_name% &7的物品栏"
+        - <sound:"item_armor_equip_leather">
+        - <lgray>已复制 <lyellow>%player_display_name%</lyellow> 的背包</lgray>
         Target:
-          - <sound:"item_armor_equip_leather">
-          - "&7已将 &a%source% &7的物品栏复制到 &a%target% &7的物品栏中"
+        - <sound:"item_armor_equip_leather">
+        - <lgray>已将 <lyellow>%source%</lyellow> 的背包复制到 <lyellow>%target%</lyellow></lgray>
     Fill:
-      Desc: 使用指定物品填充物品栏
+      Desc: 用指定物品填充玩家的背包
+      Usage: <玩家> <物品>
       Done:
-        - <sound:"entity_item_pickup">
-        - "&7已使用 &b%item% &7填充 &a%player_display_name% &7的物品栏"
+      - <sound:"entity_item_pickup">
+      - <lgray>已用 <lyellow>%item%</lyellow> 填充 <lyellow>%player_display_name%</lyellow> 的背包</lgray>
     Open:
-      Desc: 打开玩家的物品栏
+      Desc: 打开玩家的背包
+      Usage: <玩家>
       Done:
-        - <sound:"block_chest_open">
-        - "&7已打开 &a%player_display_name% &7的物品栏"
+      - <sound:"block_chest_open">
+      - <lgray>已打开 <lyellow>%player_display_name%</lyellow> 的背包</lgray>
     Repair:
-      Desc: 修复所有物品栏物品
+      Desc: 修复 [玩家] 背包中的所有物品
+      Usage: '[玩家] [-s]'
       Notify:
-        - <sound:"block_anvil_use">
-        - "&7已修复所有物品栏物品！"
+      - <sound:"block_anvil_use">
+      - <lgray已修复背包中的所有物品!</lgray>
       Target:
-        - <sound:"block_anvil_use">
-        - "&7已修复 &a%player_display_name% &7的物品栏中所有物品！"
+      - <sound:"block_anvil_use">
+      - <lgray>已修复 <lyellow>%player_display_name%</lyellow> 背包中的所有物品!</lgray>
   Item:
+    Desc: 物品管理工具
+    Usage: '[帮助]'
+    Error:
+      Material: <lgray><lyellow>%item%</lyellow> 不是有效的材料</lgray>
+      EmptyHand: <lgray>你必须手持一个物品!</lgray>
     Amount:
       Desc: 更改物品数量
+      Usage: '[数量]'
       Done:
-        - <sound:"entity_item_pickup">
-        - "&7将 &b%item% &7的堆叠数量设为 &e%amount% &7个"
+      - <sound:"entity_item_pickup">
+      - <lgray>设置 <lyellow>%item%</lyellow> 的数量为 x<lyellow>%amount%</lyellow></lgray>
     Damage:
       Desc: 更改物品的耐久度
+      Usage: '[数量]'
       Done:
-        - <sound:"block_anvil_use">
-        - "&7将 &b%item% &7的耐久度设为 &e%amount%"
+      - <sound:"block_anvil_use">
+      - <lgray>设置 <lyellow>%item%</lyellow> 的耐久度为 <lyellow>%amount%</lyellow></lgray>
+      Error:
+        NotDamageable: 
+        - <sound:"ENTITY_VILLAGER_NO">
+        - <lgray><lyellow>%item%</lyellow> 无法损坏</lgray>
     Enchant:
-      Desc: 对手持物品 添加/删除 附魔
+      Desc: 附魔手中的物品
+      Usage: <附魔名称> <等级>
       Done:
         Enchanted:
-          - <sound:"block_enchantment_table_use">
-          - "&b%item% &7已附魔 &b%name% %level%!"
+        - <sound:"block_enchantment_table_use">
+        - <lgray>附魔 <lyellow>%name% %level%</lyellow> 已添加到 <lyellow>%item%</lyellow></lgray>
         Disenchanted:
-          - <sound:"block_enchantment_table_use">
-          - "&7附魔 &b%name% &7已从 &b%item% &7上删除！"
+        - <sound:"block_enchantment_table_use">
+        - <lgray>附魔 <lyellow>%name%</lyellow> 已从 <lyellow>%item%</lyellow> 上移除!</lgray>
     Get:
-      Desc: 获取指定的物品堆叠
+      Desc: 获取指定的物品
+      Usage: <材料> [数量] [-name <名称>] [-lore <文本>] [-ench <附魔等级>]
       Done:
-        - <sound:"entity_item_pickup">
-        - "&7你获得了 &e%amount% &7个 &b%type%！"
+      - <sound:"entity_item_pickup">
+      - <lgray>你获得了 <lyellow>%amount%x %type%</lyellow></lgray>
     Give:
-      Desc: 给玩家指定的物品堆叠
+      Desc: 将指定的物品给予玩家
+      Usage: <玩家> <材料> [数量] [-name <名称>] [-lore <文本>] [-ench <附魔等级>]
       Done:
-        - <sound:"entity_item_pickup">
-        - "&7已向 &a%player_display_name% &7添加 &b%type% &7个 &e%amount%！"
+      - <sound:"entity_item_pickup">
+      - <lgray>给予 <lyellow>%player_display_name%</lyellow> <lyellow>%amount%x %type%</lyellow></lgray>
       Notify:
-        - <sound:"entity_item_pickup">
-        - "&b%type% &7个 &e%amount% &7已添加到你的物品栏！"
+      - <sound:"entity_item_pickup">
+      - <lgray>你获得了 <lyellow>%amount%x %type%</lyellow></lgray>
     Take:
-      Desc: 从玩家处拿走物品
+      Desc: 移除玩家的物品
+      Usage: <玩家> <材料> [数量] [-name <名字>] [-lore <文本>] [-ench <附魔等级>]
       Done:
-        - <sound:"entity_glow_item_frame_remove_item">
-        - "&7从 &a%player_display_name% &7拿走了 &b%type% &7个 &e%amount%！"
+      - <sound:"entity_glow_item_frame_remove_item">
+      - <lgray>移除 <lyellow>%player_display_name%</lyellow> <lyellow>%amount%x %type%</lyellow></lgray>
       Error:
         NotEnough:
-          - <sound:"entity_villager_no">
-          - "&7无法拿走物品。玩家没有足够的 &b%type% &7(&e%amount% &8/ &e%total%&7)！"
+        - <sound:"entity_villager_no">
+        - <lgray>无法移除物品，玩家的 <lred>%type%</lred> 数量不足 (<white>%amount%</white>/<white>%total%</white>)</lgray>
       Notify:
-        - <sound:"entity_glow_item_frame_remove_item">
-        - "&e%amount% &7个 &b%type% &7已从你的物品栏中拿走！"
+      - <sound:"entity_glow_item_frame_remove_item">
+      - <lgray>你失去了 <lyellow>%amount%x %type%</lyellow></lgray>
     Lore:
+      Desc: 更改物品描述
+      Usage: '[帮助]'
       Add:
-        Desc: 添加描述
+        Desc: 向物品添加一行新的描述
+        Usage: <文本> [-pos <位置>]
         Done:
-          - <sound:"block_anvil_use">
-          - "&7描述已添加！"
+        - <sound:"block_anvil_use">
+        - <lgray>描述已添加!</lgray>
       Remove:
-        Desc: 删除描述
+        Desc: 从物品描述中删除一行
+        Usage: <位置>
         Done:
-          - <sound:"block_anvil_use">
-          - "&7描述已删除！"
+        - <sound:"block_anvil_use">
+        - <lgray>描述已删除!</lgray>
       Clear:
-        Desc: 清空描述
+        Desc: 清除物品描述
         Done:
-          - <sound:"block_anvil_use">
-          - "&7描述已清空！"
+        - <sound:"block_anvil_use">
+        - <lgray>描述已清除!</lgray>
     Model:
       Desc: 更改物品模型数据
+      Usage: <模型数据>
       Done:
-        - <sound:"block_anvil_use">
-        - "&7将 &e%amount% &7设为 &b%item% &7的自定义模型数据！"
+      - <sound:"block_anvil_use">
+      - <lgray>设置 <lyellow>%item%</lyellow> 的模型数据为 <lyellow>%amount%</lyellow></lgray>
     Name:
-      Desc: 更改物品显示名称
+      Desc: 更改物品的显示名称
+      Usage: '[名称]'
       Done:
         Changed:
-          - <sound:"block_anvil_use">
-          - "&7物品已重命名！"
+        - <sound:"block_anvil_use">
+        - <lgray>物品已重命名!</lgray>
+        Reset:
+        - <sound:"block_anvil_use">
+        - <lgray>物品名称已恢复默认!</lgray>
     Potion:
+      Error:
+        NotAPotion: <lgray>你必须持有药水!</lgray>
+        InvalidEffect: <lgray>无效效果!</lgray>
       Add:
-        Desc: 向药水添加效果
-        Done: "&7药水效果已添加！"
+        Desc: 给药水添加效果
+        Usage: <效果> <放大器> <持续时间>
+        Done: <lgray>已添加药水效果!</lgray>
     Repair:
       Desc: 修复物品
       Done:
-        - <sound:"block_anvil_use">
-        - "&7物品 &b%item% &7已修复！"
+      - <sound:"block_anvil_use">
+      - <lgray>物品 <lyellow>%item%</lyellow> 已修复!</lgray>
     Spawn:
-      Desc: 在世界中生成物品
+      Desc: 生成指定的物品堆叠
+      Usage: <材料> <数量> [世界] [x] [y] [z] [-name <名字>] [-lore <文本>] [-ench <附魔等级>]
       Done:
-        - <sound:"entity_item_pickup">
-        - "&e%amount% &7个 &b%type% &7已在 &b%location_world% &e%location_x%, %location_y%, %location_z% &7位置生成！"
+      - <sound:"entity_item_pickup">
+      - <lgray>已在 <lyellow>%location_world%</lyellow> 的 <lyellow>%location_x%, %location_y%, %location_z%</lyellow> 处生成了 <lyellow>%amount%x %type%</lyellow></lgray>
     Unbreakable:
-      Desc: 切换不可破坏状态
+      Desc: 使物品无法破坏
+      Error:
+        NotDamageable:
+        - <sound:"ENTITY_VILLAGER_NO">
+        - '<lgray><lyellow>%item%</lyellow> 无法破坏'
       Done:
-        - <sound:"block_anvil_use">
-        - "&7将 &b%item% &7的不可破坏状态设为: &b%state%"
+      - <sound:"block_anvil_use">
+      - '<lgray>设置 <lyellow>%item%</lyellow> 无法破坏: <lyellow>%state%</lyellow></lgray>'
   Loom:
     Desc: 打开便携式织布机
+    Usage: '[玩家] [-s]'
     Notify:
-      - <output:"action_bar">
-      - "&7你打开了织布机"
-    Target: "&7为 &a%player_display_name% &7打开了织布机"
+    - <output:"action_bar">
+    - <lgray>你打开了便携式织布机</lgray>
+    Target: <lgray>为 <lyellow>%player_display_name%</lyellow> 打开了便携式织布机</lgray>
   Mob:
+    Desc: 生物管理工具
+    Usage: '[帮助]'
     Kill:
-      Desc: 杀死指定生物
+      Desc: 称杀指定生物
+      Usage: '[类型] [-all][-r <半径>] [-w <世界>] [-lim <限制>]'
+      Error:
+        Type:
+        - <sound:"ENTITY_VILLAGER_NO">
+        - '<lgray>实体 <lyellow>%type%</lyellow> 无法被杀死!'
       Done:
-        - <sound:"entity_zombie_death">
-        - "&7在 &b%world% &7内 &e%radius% &7方块范围内杀死了 &e%amount% &7个 &b%type%"
+      - <sound:"entity_zombie_death">
+      - <lgray>在 <lyellow>%world%</lyellow> 世界的 <lyellow>%radius%</lyellow> 格范围内击杀了 <lyellow>%amount%x %type%</lyellow></lgray>
     Clear:
       Desc: 杀死所有生物
+      Usage: '[范围] [-w <世界>]'
       Done:
-        - <sound:"entity_zombie_death">
-        - "&7在 &b%world% &7内 &e%radius% &7方块范围内杀死了 &e%amount% &7个生物"
+      - <sound:"entity_zombie_death">
+      - <lgray>在 <lyellow>%world%</lyellow> 世界的 <lyellow>%radius%</lyellow> 格范围内击杀了 <lyellow>%amount%</lyellow> 只生物</lgray>
     Spawn:
-      Desc: 生成生物
-      Done: "&7创建了 &e%amount% &7个 &b%type%"
+      Desc: 生成指定的生物
+      Usage: <类型> [数量] [-name <名字>]
+      Error:
+        Type: <lgray>无效或无法生成此实体类型!</lgray>
+      Done: <lgray>生成 <lyellow>%amount%x %type%</lyellow></lgray>
   Near:
-    Desc: 显示最近的玩家
+    Desc: 显示附近的玩家
     Error:
-      Nothing: "&7在 &e%radius% &7方块半径内没有玩家"
+      Nothing: <lgray>半径 <lyellow>%radius%</lyellow> 格内没有玩家</lgray>
   Nick:
+    Desc: 自定义昵称管理
+    Usage: '[帮助]'
     Clear:
-      Desc: 删除自定义名称
-      Target: "&7删除了 &a%player_display_name% &7的自定义名称"
-      Notify: "&7你的自定义名称已被删除"
+      Desc: 清除 [玩家] 的自定义昵称
+      Usage: '[玩家] [-s]'
+      Target: <lgray>清除 <lyellow>%player_display_name%</lyellow> 的自定义昵称</lgray>
+      Notify: <lgray>你的自定义昵称已被清除</lgray>
     Set:
-      Desc: 设置玩家的自定义名称
-      Target: "&7将 &a%player_name% &7的自定义名称设为 &b%name%"
-      Notify: "&7你获得了新的自定义名称: &b%name%"
+      Desc: 设置玩家的自定义昵称
+      Usage: <玩家> <昵称> [-s]
+      Target: <lgray>设置 <lyellow>%player_name%</lyellow> 的自定义昵称为 <lyellow>%name%</lyellow></lgray>
+      Notify: '<lgray>你的自定义昵称已设置为: <lyellow>%name%</lyellow></lgray>'
     Change:
-      Desc: 设置自定义名称
-      Done: "&7你已将自定义名称更改为 &b%name%"
+      Desc: 更改你的自定义昵称
+      Usage: <昵称>
+      Done: <lgray>你的自定义昵称已更改为 <lyellow>%name%</lyellow></lgray>
     Error:
-      BadWords: "&c该名称不允许使用"
-      Regex: "&c名称包含禁止的字符"
-      TooLong: "&c名称不能超过 &e%amount% &c个字符"
-      TooShort: "&c名称不能短于 &e%amount% &c个字符"
+      BadWords: <lred>昵称包含禁止使用的词汇</lred>
+      Regex: <lred>昵称包含不允许使用的字符</lred>
+      TooLong: <lgray>昵称长度不能超过 <lred>%amount%</lred> 个字符</lgray>
+      TooShort: <lred>昵称长度不能少于 <lred>%amount%</lred> 个字符</lred>
   PlayerInfo:
     Desc: 显示玩家信息
+    Usage: <玩家>
   Skull:
+    Desc: 获得玩家的头颅
+    Usage: <玩家>
+    Done: <lgray>你获得了 <lyellow>%player_name%</lyellow> 的头颅</lgray>
     Custom:
-      Desc: 创建自定义头部
-      Done: "&7创建了自定义头部"
+      Desc: 创建自定义头颅
+      Done: <lgray>创建自定义头颅</lgray>
     Player:
-      Desc: 获取玩家头部
-      Done: "&7你获得了 &a%player_name% &7的头部"
+      Desc: 获取玩家的头颅
+      Done: <lgray>你获得了<lyellow>%player_name%</lyellow> 的头颅</lgray>
   Staff:
-    Desc: 显示在线工作人员
-    Empty: "&c没有在线工作人员"
+    Desc: 显示在线管理员
+    Empty: <lgray>没有管理员在线</lgray>
   Spawner:
-    Desc: 更改刷怪笼类型
-    Done: "&7刷怪笼类型已更改为 &b%type%"
+    Desc: 更改刷怪笼生成生物类型
+    Usage: <类型>
+    Done: <lgray>生物类型已更改为 <lyellow>%type%</lyellow></lgray>
     Error:
-      Type: "&c此类型不能设置为刷怪笼"
-      Block: "&c你必须查看刷怪笼方块！"
+      Type: <lred>无法设置为此类型</lred>
+      Block: <lred>你必须看着刷怪笼!</lred>
   Speed:
-    Desc: 更改行走速度
+    Desc: 更改玩家的移速
     Done:
-      Notify: "&7你的行走速度已设为 &e%amount%"
-      Target: "&7为 &a%player_display_name% &7设置行走速度至 &e%amount%"
+      Notify: <lgray>你的移速已设置为 <lyellow>%amount%</lyellow>.</lgray>
+      Target: <lgray>已设置玩家 <lyellow>%player_display_name%</lyellow> 的移速为 <lyellow>%amount%</lyellow></lgray>
   Sudo:
+    Desc: 强制玩家执行命令或发送聊天消息
+    Usage: <玩家> <命令> [消息]
     Command:
-      Desc: 强制玩家执行一个命令
+      Desc: 强制玩家执行命令
     Chat:
       Desc: 强制玩家发送聊天消息
     Done:
-      Command: "&7强制 &a%player_display_name% &7执行: &d/%command%"
-      Chat: "&7强制 &a%player_display_name% &7说: &b%command%"
+      Command: '<lgray>已强制 <lyellow>%player_display_name%</lyellow> 执行命令: <lyellow>/%command%</lyellow></lgray>'
+      Chat: '<lgray>已强制 <lyellow>%player_display_name%</lyellow> 发送消息: <lyellow>%command%</lyellow></lgray>'
   Suicide:
     Desc: 自杀
     Done:
-      - <noprefix>
-      - "&a%player_display_name% &7自杀了"
+    - <noprefix>
+    - <lgray><lyellow>%player_display_name%</lyellow> 终结了自我</lgray>
+  Smite:
+    Desc: 用闪电攻击 [玩家] 玩家
+    Usage: '[玩家] [-s]'
+    Target: <lgray>闪电击中了 <lyellow>%player_name%</lyellow>!</lgray>
+    Notify: <lgray>你被闪电击中了!</lgray>
   Teleport:
+    Desc: 传送工具
+    Usage: '[帮助]'
     Location:
-      Desc: 传送到坐标
+      Desc: 传送到指定的坐标
+      Usage: <x> <y> <z> [玩家] [-w <世界>] [-s]
       Done:
         Target:
-          - <sound:"entity_enderman_teleport">
-          - "&7玩家 &a%player_display_name% &7传送到了 &b%location_world% &e%location_x%, %location_y%, %location_z%"
+        - <sound:"entity_enderman_teleport">
+        - <lgray>已将玩家传送到 <lyellow>%location_world%</lyellow> 的 <lyellow>%location_x%, %location_y%, %location_z%</lyellow> 处</lgray>
         Notify:
-          - <sound:"entity_enderman_teleport">
-          - "&7传送至 &b%location_world% &e%location_x%, %location_y%, %location_z%"
+        - <sound:"entity_enderman_teleport">
+        - <lgray>已传送到 <lyellow>%location_world%</lyellow> 的 <lyellow>%location_x%, %location_y%, %location_z%</lyellow> 处</lgray>
     Summon:
-      Desc: 召唤玩家到你这里
+      Desc: 将玩家传送到你的位置
+      Usage: <玩家> [-s]
       Target:
-        - <sound:"entity_enderman_teleport">
-        - "&7你召唤了 &a%player_display_name%"
+      - <sound:"entity_enderman_teleport">
+      - <lgray>你已将玩家 <lyellow>%player_display_name%</lyellow> 传送到你的位置</lgray>
       Notify:
-        - <sound:"entity_enderman_teleport">
-        - "&7你被 &a%player_display_name% &7召唤"
+      - <sound:"entity_enderman_teleport">
+      - <lgray>你被 <lyellow>%player_display_name%</lyellow> 传送到他的位置</lgray>
     To:
-      Desc: 传送到玩家
+      Desc: 传送到指定的玩家
+      Usage: <玩家>
       Done:
-        - <sound:"entity_enderman_teleport">
-        - "&7传送至 &a%player_display_name%..."
+      - <sound:"entity_enderman_teleport">
+      - <lgray>传送到 <lyellow>%player_display_name%</lyellow></lgray>
     Send:
-      Desc: 将一个玩家传送到另一个玩家
+      Desc: 将一名玩家传送到另一名玩家身边
+      Usage: <玩家> <目标> [-s]
       Target:
-        - <sound:"entity_enderman_teleport">
-        - "&7将 &a%source% &7传送至 &a%target%"
+      - <sound:"entity_enderman_teleport">
+      - <lgray>已将玩家 <lyellow>%source%</lyellow> 传送到 <lyellow>%target%</lyellow></lgray>
       Notify:
-        - <sound:"entity_enderman_teleport">
-        - "&7你已被传送至 &a%player_display_name%"
+      - <sound:"entity_enderman_teleport">
+      - <lgray>你已传送到 <lyellow>%player_display_name%</lyellow></lgray>
     Top:
-      Desc: 传送到最高方块
+      Desc: 将 [玩家] 传送到最上方的方块
+      Usage: '[玩家] [-s]'
       Target:
-        - <sound:"entity_enderman_teleport">
-        - "&7将 &a%player_display_name% &7传送至最高位置的方块上"
+      - <sound:"entity_enderman_teleport">
+      - <lgray>已将 <lyellow>%player_display_name%</lyellow> 传送到最顶部的方块</lgray>
       Notify:
-        - <sound:"entity_enderman_teleport">
-        - "&7传送至最高位置的方块上..."
+      - <sound:"entity_enderman_teleport">
+      - <lgray>你已被传送到最顶部的方块</lgray>
   Time:
+    Desc: 时间管理工具
+    Usage: '[帮助]'
     Show:
-      Desc: 显示当前世界时间
+      Desc: 显示个人和当前世界时间
+      Usage: '[-w <世界>]'
       Print:
-        - <noprefix>
-        - ""
-        - "&b时间信息:"
-        - "&b%world% &7的时间: &a%time% &7(&e%ticks% &7游戏刻)"
-        - "&7服务器时间: &a%global%"
-        - ""
+      - <noprefix>
+      - ' '
+      - <lyellow><b>时间信息:</b></lyellow>
+      - '<lgray><lyellow>▪ </lyellow>%world% 时间: <lyellow>%time%</lyellow> (<white>%ticks% 刻</white>)</lgray>'
+      - '<lgray><lyellow>▪ </lyellow>服务器时间: <lyellow>%global%</lyellow></lgray>'
+      - ' '
     Set:
       Desc: 设置世界时间
-      Done: "&7在世界 &b%world% &7时间已设置为 &e%time% &7(&e%total% &7游戏刻)"
+      Usage: <刻> [-w <世界>]
+      Done: <lgray>设置世界 <lyellow>%world%</lyellow> 的时间为 <lyellow>%time%</lyellow> (<white>%total% 刻</white>)</lgray>
     Personal:
       Set:
-        Desc: 设置个人时间
-        Target: "&7将 &a%player_display_name% &7的时间设置为 &a%time% &7(&e%total% &7游戏刻)"
-        Notify: "&7你的个人时间已设置为 &a%time% &7(&e%total% &7游戏刻)"
+        Desc: 设置[玩家]个人时间
+        Usage: <刻> [玩家] [-r] [-s]
+        Target: <lgray>设置 <lyellow>%player_display_name%</lyellow> 的时间为 <lyellow>%time%</lyellow> (<white>%total% 刻</white>)</lgray>
+        Notify: <lgray>你的个人时间已设置为 <lyellow>%time%</lyellow> (<white>%total% 刻</white>)</lgray>
       Reset:
         Desc: 重置个人时间
-        Target: "&7重置了 &a%player_display_name% &7的时间"
-        Notify: "&7你的个人时间已被重置"
-  Smite:
-    Desc: 使用闪电惩罚玩家
-    Target: "&7已对 &a%player_name% &7施加天谴！"
-    Notify: "&7你已被天谴！"
+        Target: <lgray>重置 <lyellow>%player_display_name%</lyellow> 的时间</lgray>
+        Notify: <lgray>你的个人时间已重置</lgray>
+  Vanish:
+    Desc: 切换 [玩家] 的隐身模式
+    Notify: <lgray>切换隐身模式为 <lyellow>%state%</lyellow></lgray>
+    Target: <lgray>设置玩家 <lyellow>%player_display_name%</lyellow> 的隐身模式为 <lyellow>%state%</lyellow></lgray>
   Weather:
+    Desc: 更改世界的天气
+    Usage: <类型> [-w <世界>]
     Type:
-      Desc: 将天气设置为 %type%
-    Set: "&7在世界 &b%world% &7设置了 &e%type% &7天气"
+      Desc: 设置天气为  %type%
+    Set: <lgray>设置 <lyellow>%world%</lyellow> 世界的天气为 <lyellow>%type%</lyellow></lgray>
   Workbench:
     Desc: 打开便携式工作台
-    Target: "&7为 &a%player_display_name% &7打开了便携式工作台"
+    Usage: '[玩家] [-s]'
+    Target: <lgray>为玩家 <lyellow>%player_display_name%</lyellow> 打开了便携式工作台</lgray>
     Notify:
-      - <output:"action_bar">
-      - "&7你已打开便携式工作台"
-  FoodGod:
-    Desc: 切换食神模式
-  Vanish:
-    Desc: 切换隐身状态
-    Notify: "&7隐身状态已设置为 &b%state%"
-    Target: "&7为 &a%player_display_name% &7设置了隐身状态为 &b%state%"
-  Dimension:
-    Desc: 传送到一个世界
-    Target: "&7已将 &a%player_display_name% &7传送到 &b%world%"
-    Notify:
-      - <output:"action_bar"><sound:"entity_enderman_teleport">
-      - "&7你已经前往了 &e%world%"
+    - <output:"action_bar">
+    - <lgray>你已打开便携式工作台</lgray>
+
+# --------------------------------------------------
+# 通用语言配置
+# --------------------------------------------------
 Generic:
   Command:
     Cooldown:
       Default:
-        - <noprefix>
-        - "&c你必须等待 &a%time% &c才能再次使用 &d%command%"
+      - <noprefix>
+      - <lred>你需要等待 <lorange>%time%</lorange> 才可以再次使用 <lorange>%command%</lorange></lred>
       OneTime:
-        - <noprefix>
-        - "&c此命令是一次性的，你已经使用过它了"
+      - <noprefix>
+      - <lred>这个命令只能使用一次，而你已经使用过了</lred>
+
+# --------------------------------------------------
+# 一些错误信息的语言配置
+# --------------------------------------------------
 Error:
-  ItemNotAPotion: "&c你必须手持药水！"
+  ItemNotAPotion: <lred>你必须手持药水!</lred>
   EmptyHand:
-    - <sound:"block_anvil_place">
-    - "&c你必须手持物品！"
+  - <sound:"block_anvil_place">
+  - <lred>你必须手持物品!</lred>
   ItemNotDamageable:
-    - <sound:"block_anvil_place">
-    - "&c物品 &b%item% &c没有耐久度"
+  - <sound:"block_anvil_place">
+  - <lgray>物品 <lred>%item%</lred> 没有耐久度</lgray>
   Command:
     Argument:
-      InvalidSlot: "&e%value% &c不是一个有效的装备槽位！"
-      InvalidType: "&b%value% &c不是一个有效类型！"
-      InvalidTime: "&a%value% &c不是一个有效时间！"
-      InvalidMode: "&b%value% &c不是一个有效模式！"
-      InvalidIPAddress: "&e%value% &c不是一个IP地址！"
-      InvalidReason: "&b%value% &c不是一个有效理由！"
+      InvalidSlot: <lgray><lred>%value%</lred> 不是有效的装备槽!</lgray>
+      InvalidType: <lgray><lred>%value%</lred> 不是有效的类型!</lgray>
+      InvalidTime: <lgray><lred>%value%</lred> 不是有效的时间!</lgray>
+      InvalidMode: <lgray><lred>%value%</lred> 不是有效的模式!</lgray>
+      InvalidIPAddress: <lgray><lred>%value%</lred> 不是IP地址!</lgray>
+      InvalidReason: <lgray><lred>%value%</lred> 不是有效的原因!</lgray>
+
+# --------------------------------------------------
+# 各个模块编辑配置时的语言配置
+# --------------------------------------------------
+Editor:
+  Input:
+    Generic:
+      Value: <lgray>输入 <lgreen>[值]</lgreen></lgray>
+      Seconds: <lgray>输入 <lgreen>[秒数]</lgreen></lgray>
+      Name: <lgray>输入 <lgreen>[名称]</lgreen></lgray>
+  SpawnsEditorType:
+    DeathTeleport:
+      Ranks:
+        Name: <lyellow><b>组</b></lyellow>
+        Lore:
+        - '%spawn_respawn_teleport_groups%'
+        - ''
+        - <lgray>设置将在重生后</lgray>
+        - <lgray>传送到此出生点的组列表</lgray>
+        - ''
+        - <lyellow>[▶]</lyellow> <lgray>Shift+左键点击 <lyellow>添加组</lyellow></lgray>
+        - <lyellow>[▶]</lyellow> <lgray>Shift+右键点击 <lyellow>清除组</lyellow></lgray>
+      Toggle:
+        Name: <lyellow><b>重生传送</b></lyellow>
+        Lore:
+        - '<lyellow>● <lgray>启用: </lgray>%spawn_respawn_teleport_enabled%</lyellow>'
+        - ''
+        - <lgray>列出的组中的玩家</lgray>
+        - <lgray>重生时将传送到此出生点</lgray>
+        - ''
+        - <lyellow>[▶]</lyellow> <lgray>左键点击 <lyellow>切换</lyellow></lgray>
+    LoginTeleport:
+      Ranks:
+        Name: <lyellow><b>组</b></lyellow>
+        Lore:
+        - '%spawn_login_teleport_groups%'
+        - ''
+        - <lgray>设置将在登录后</lgray>
+        - <lgray>传送到此出生点的组列表</lgray>
+        - ''
+        - <lyellow>[▶]</lyellow> <lgray>Shift+左键点击 <lyellow>添加组</lyellow></lgray>
+        - <lyellow>[▶]</lyellow> <lgray>Shift+右键点击 <lyellow>清除组</lyellow></lgray>
+      Toggle:
+        Name: <lyellow><b>登录传送</b></lyellow>
+        Lore:
+        - '<lyellow>● <lgray>启用: </lgray>%spawn_login_teleport_enabled%</lyellow>'
+        - ''
+        - <lgray>登录时将列出的组中的玩家传送到此出生点</lgray>
+        - ''
+        - <lyellow>[▶]</lyellow> <lgray>左键点击 <lyellow>切换</lyellow></lgray>
+    SPAWN_CHANGE_PRIORITY:
+      Name: <lyellow><b>优先级</b></lyellow>
+      Lore:
+      - '<lyellow>● <lgray>当前: </lgray>%spawn_priority%</lyellow>'
+      - ''
+      - <lgray>当玩家有多个可用出生点时</lgray>
+      - <lgray>优先级最高的出生点将被使用</lgray>
+      - <red>仅对登录/死亡出生点有效</lred>
+      - ''
+      - <lyellow>[▶]</lyellow> <lgray>左键点击 <lyellow>更改</lyellow></lgray>
+    SPAWN_CHANGE_PERMISSION:
+      Name: <lyellow><b>权限要求</b></lyellow>
+      Lore:
+      - '<lyellow>● <lgray>启用: </lgray>%spawn_permission_required%</lyellow>'
+      - '<lyellow>● <lgray>权限节点: </lgray>%spawn_permission_node%</lyellow>'
+      - ''
+      - <lgray>设置玩家在使用该出生点时</lgray>
+      - <lgray>是否需要权限</lgray>
+      - ''
+      - <lyellow>[▶]</lyellow> <lgray>左键点击 <lyellow>切换</lyellow></lgray>
+    SPAWN_CHANGE_LOCATION:
+      Name: <lyellow><b>位置</b></lyellow>
+      Lore:
+      - '<lyellow>● <lgray>当前: </lgray>世界:%spawn_location_world% 坐标:%spawn_location_x%, %spawn_location_y%, %spawn_location_z%</lyellow>'
+      - ''
+      - <lyellow>[▶]</lyellow> <lgray>左键点击 <lyellow>设置为你的位置</lyellow></lgray>
+      - <lyellow>[▶]</lyellow> <lgray>右键点击 <lyellow>设为世界出生点</lyellow></lgray>
+    SPAWN_CHANGE_NAME:
+      Name: <lyellow><b>显示名称</b></lyellow>
+      Lore:
+      - '<lyellow>● <lgray>当前: </lgray>%spawn_name%</lyellow>'
+      - ''
+      - <lgray>设置出生点的显示名称</lgray>
+      - ''
+      - <lyellow>[▶]</lyellow> <lgray>左键点击 <lyellow>更改</lyellow></lgray>
+    SPAWN_OBJECT:
+      Name: '<lyellow><b>%spawn_name%<reset><lgray> (ID: <white>%spawn_id%</white>)</lgray></b></lyellow>'
+      Lore:
+      - '<lyellow>● <lgray>优先级: </lgray>%spawn_priority%</lyellow>'
+      - '<lyellow>● <lgray>权限要求: </lgray>%spawn_permission_required%</lyellow>'
+      - ''
+      - <lyellow>[▶]</lyellow> <lgray>左键点击 <lyellow>编辑</lyellow></lgray>
+      - <lyellow>[▶]</lyellow> <lgray>Shift+右键点击 <lyellow>删除 <lred>(无法撤销)</lred></lyellow></lgray>
+  KitsEditorType:
+    KIT_CHANGE_ARMOR:
+      Name: <lyellow><b>礼包装备</b></lyellow>
+      Lore:
+      - ''
+      - '<lgray><lyellow>槽位 #1: <lgray>靴子</lgray></lyellow></lgray>'
+      - '<lgray><lyellow>槽位 #2: <lgray>护腿</lgray></lyellow></lgray>'
+      - '<lgray><lyellow>槽位 #3: <lgray>胸甲</lgray></lyellow></lgray>'
+      - '<lgray><lyellow>槽位 #4: <lgray>头盔</lgray></lyellow></lgray>'
+      - '<lgray><lyellow>槽位 #5: <lgray>副手</lgray></lyellow></lgray>'
+      - ''
+      - <lyellow>[▶]</lyellow> <lgray>点击 <lyellow>编辑</lyellow></lgray>
+    KIT_CHANGE_INVENTORY:
+      Name: <lyellow><b>礼包物品</b></lyellow>
+      Lore:
+      - ''
+      - '<lgray>添加到玩家背包中的物品</lgray>'
+      - '<lgray>只需 <lyellow>添加/取走</lyellow> 物品，然后按ESC键保存</lgray>'
+      - ''
+      - <lyellow>[▶]</lyellow> <lgray>点击 <lyellow>编辑</lyellow></lgray>
+    KIT_CHANGE_COMMANDS:
+      Name: <lyellow><b>命令</b></lyellow>
+      Lore:
+      - '%kit_commands%'
+      - ''
+      - <lgray>命令列表</lgray>
+      - <lgray>在发送礼包给玩家时将被执行</lgray>
+      - ''
+      - <lyellow>[▶]</lyellow> <lgray>左键点击 <lyellow>添加命令</lyellow></lgray>
+      - <lyellow>[▶]</lyellow> <lgray>右键点击 <lyellow>清空</lyellow></lgray>
+    KIT_CHANGE_ICON:
+      Name: <lyellow><b>图标</b></lyellow>
+      Lore:
+      - <lyellow>[▶]</lyellow> <lgray>拖放物品到此处 <lyellow>替换</lyellow></lgray>
+    KIT_CHANGE_PRIORITY:
+      Name: <lyellow><b>优先级</b></lyellow>
+      Lore:
+      - '<lyellow>● <lgray>当前: </lgray>%kit_priority%</lyellow>'
+      - ''
+      - <lgray>设置礼包的优先级</lgray>
+      - <lgray>此选项用于在GUI中对礼包进行排序</lgray>
+      - ''
+      - <lyellow>[▶]</lyellow> <lgray>点击 <lyellow>更改</lyellow></lgray>
+    KIT_CHANGE_COST:
+      Name: <lyellow><b>费用</b></lyellow>
+      Lore:
+      - '<lyellow>● <lgray>当前: </lgray>%kit_cost_money%</lyellow>'
+      - ''
+      - <lgray>设置玩家必须支付多少费用</lgray>
+      - <lgray>才能使用该礼包</lgray>
+      - ''
+      - <lyellow>[▶]</lyellow> <lgray>左键点击 <lyellow>更改</lyellow></lgray>
+      - <lyellow>[▶]</lyellow> <lgray>右键点击 <lyellow>禁用</lyellow></lgray>
+    KIT_CHANGE_PERMISSION:
+      Name: <lyellow><b>权限要求</b></lyellow>
+      Lore:
+      - '<lyellow>● <lgray>要求: </lgray>%kit_permission_required%</lyellow>'
+      - '<lyellow>● <lgray>节点: </lgray>%kit_permission_node%</lyellow>'
+      - ''
+      - <lgray>设置玩家是否必须具备权限</lgray>
+      - <lgray>才能使用该礼包</lgray>
+      - ''
+      - <lyellow>[▶]</lyellow> <lgray>左键点击 <lyellow>切换</lyellow></lgray>
+    KIT_CHANGE_COOLDOWN:
+      Name: <lyellow><b>冷却时间</b></lyellow>
+      Lore:
+      - '<lyellow>● <lgray>当前: </lgray>%kit_cooldown%</lyellow>'
+      - ''
+      - <lgray>设置再次使用此礼包前需等待的时间</lgray>
+      - ''
+      - <lyellow>[▶]</lyellow> <lgray>左键点击 <lyellow>更改</lyellow></lgray>
+      - <lyellow>[▶]</lyellow> <lgray>[F]键 <lyellow>设为一次性</lyellow></lgray>
+      - <lyellow>[▶]</lyellow> <lgray>[Q]键 <lyellow>禁用</lyellow></lgray>
+    KIT_CHANGE_DESCRIPTION:
+      Name: <lyellow><b>礼包描述</b></lyellow>
+      Lore:
+      - '%kit_description%'
+      - ''
+      - <lyellow>[▶]</lyellow> <lgray>左键点击 <lyellow>添加一行</lyellow></lgray>
+      - <lyellow>[▶]</lyellow> <lgray>右键点击 <lyellow>清空</lyellow></lgray>
+    KIT_CHANGE_NAME:
+      Name: <lyellow><b>礼包显示名称</b></lyellow>
+      Lore:
+      - '<lyellow>● <lgray>当前: </lgray>%kit_name%</lyellow>'
+      - ''
+      - <lyellow>[▶]</lyellow> <lgray>左键点击 <lyellow>更改</lyellow></lgray>
+    KIT_OBJECT:
+      Name: <lyellow><b>%kit_name%<reset> <gray>(<white>%kit_id%</white>)</gray></b></lyellow>
+      Lore:
+      - '<lyellow>● <lgray>优先级: </lgray>%kit_priority%</lyellow>'
+      - '<lyellow>● <lgray>权限: </lgray>%kit_permission_required%</lyellow>'
+      - ''
+      - <lyellow>[▶]</lyellow> <lgray>左键点击 <lyellow>编辑</lyellow></lgray>
+      - <lyellow>[▶]</lyellow> <lgray>Shift+右键点击 <lyellow>删除 <lred>(不可撤销)</lred></lyellow></lgray>
+
+# --------------------------------------------------
+# 装备槽位的语言配置
+# --------------------------------------------------
 EquipmentSlot:
-  HAND: 主手
+  HAND: 手持物品
   OFF_HAND: 副手
-  FEET: 脚部
-  LEGS: 腿部
-  CHEST: 胸部
-  HEAD: 头部
+  FEET: 靴子
+  LEGS: 护腿
+  CHEST: 护甲
+  HEAD: 头盔
+
+# --------------------------------------------------
+# 游戏模式的语言配置
+# --------------------------------------------------
 GameMode:
-  CREATIVE: 创造模式
-  SURVIVAL: 生存模式
-  ADVENTURE: 冒险模式
-  SPECTATOR: 观察者模式
+  CREATIVE: 创造
+  SURVIVAL: 生存
+  ADVENTURE: 冒险
+  SPECTATOR: 观察者
+
+# --------------------------------------------------
+# 经验类型的语言配置
+# --------------------------------------------------
 ExperienceType:
-  POINTS: 经验点数
-  LEVELS: 等级
+  POINTS: 点
+  LEVELS: 级
+
+# --------------------------------------------------
+# 天气类型的语言配置
+# --------------------------------------------------
 WeatherType:
-  CLEAR: 晴朗
-  STORM: 风暴
-  THUNDER: 雷暴
+  CLEAR: 晴天
+  STORM: 雨天
+  THUNDER: 雷雨天
+
+# --------------------------------------------------
+# 处罚模块的语言配置
+# --------------------------------------------------
+Bans:
+  Command:
+    History:
+      Ban:
+        Desc: 查看被封禁 玩家/IP 的历史记录
+      Mute:
+        Desc: 查看被禁言 玩家/IP 的历史记录
+      Warn:
+        Desc: 查看被警告 玩家/IP 的历史记录
+    BanList:
+      Desc: 被封禁的 玩家/IP 列表
+    MuteList:
+      Desc: 被禁言的 玩家/IP 列表
+    WarnList:
+      Desc: 被警告的 玩家/IP 列表
+    Ban:
+      Desc: 封禁玩家
+      Done:
+        Permanent:
+        - <noprefix>
+        - ' '
+        - <lred>🛈 <b>封禁信息</b></lred>
+        - <lgray><lred>»</lred> 你封禁了 <lred>%punishment_user%</lred></lgray>
+        - '<lgray><lred>»</lred> 原因: <lred>%punishment_reason%</lred></lgray>'
+        - ' '
+        Temporary:
+        - <noprefix>
+        - ' '
+        - <lred>🛈 <b>封禁信息</b></lred>
+        - <lgray><lred>»</lred> 你暂时封禁了 <lred>%punishment_user%</lred></lgray>
+        - '<lgray><lred>»</lred> 原因: <lred>%punishment_reason%</lred></lgray>'
+        - '<lgray><lred>»</lred> 时间: <lred>%punishment_expires_in%</lred></lgray>'
+        - ' '
+    Banip:
+      Desc: 封禁IP地址
+    Mute:
+      Desc: 禁言玩家
+      Done:
+        Permanent:
+        - <noprefix>
+        - ' '
+        - <lred>🛈 <b>禁言信息</b></lred>
+        - <lgray><lred>»</lred> 你已被 <lred>%punishment_user%</lred> 永久禁言</lgray>
+        - '<lgray><lred>»</lred> 原因: <lred>%punishment_reason%</lred></lgray>'
+        - ' '
+        Temporary:
+        - <noprefix>
+        - ' '
+        - <lred>🛈 <b>禁言信息</b></lred>
+        - <lgray><lred>»</lred> 你已被 <lred>%punishment_user%</lred> 禁言</lgray>
+        - '<lgray><lred>»</lred> 原因: <lred>%punishment_reason%</lred></lgray>'
+        - '<lgray><lred>»</lred> 时间: <lred>%punishment_expires_in%</lred></lgray>'
+        - ' '
+    Kick:
+      Desc: 踢出玩家
+    Unmute:
+      Desc: 解除玩家禁言
+    Unban:
+      Desc: 解封玩家或IP地址
+    Warn:
+      Desc: 警告玩家
+      Done:
+        Permanent:
+        - <noprefix>
+        - ' '
+        - <lred>🛈 <b>警告信息</b></lred>
+        - <lgray><lred>»</lred> 你永久警告了玩家 <lred>%punishment_user%</lred></lgray>
+        - '<lgray><lred>»</lred> 原因: <lred>%punishment_reason%</lred></lgray>'
+        - ' '
+        Temporary:
+        - <noprefix>
+        - ' '
+        - <lred>🛈 <b>警告信息</b></lred>
+        - <lgray><lred>»</lred> 你警告了玩家 <lred>%punishment_user%</lred></lgray>
+        - '<lgray><lred>»</lred> 原因: <lred>%punishment_reason%</lred></lgray>'
+        - '<lgray><lred>»</lred> 时间: <lred>%punishment_expires_in%</lred></lgray>'
+        - ' '
+    Unwarn:
+      Desc: 删除玩家最新的警告
+    BanIP:
+      Done:
+        Permanent:
+        - <noprefix>
+        - ' '
+        - <lred>🛈 <b>封禁信息</b></lred>
+        - '<lgray><lred>»</lred> 你永久封禁了IP: <lred>%punishment_user%</lred></lgray>'
+        - '<lgray><lred>»</lred> 原因: <lred>%punishment_reason%</lred></lgray>'
+        - ' '
+        Temporary:
+        - <noprefix>
+        - ' '
+        - <lred>🛈 <b>封禁信息</b></lred>
+        - '<lgray><lred>»</lred> 你暂时封禁了IP: <lred>%punishment_user%</lred></lgray>'
+        - '<lgray><lred>»</lred> 原因: <lred>%punishment_reason%</lred></lgray>'
+        - '<lgray><lred>»</lred> 时间: <lred>%punishment_expires_in%</lred></lgray>'
+        - ' '
+  Punishment:
+    Error:
+      RankPriority:
+      - <noprefix>
+      - ' '
+      - <lred>🛈 <b>错误!</b></lred>
+      - <lgray><lred>»</lred> 你不能处罚 <lred>%punishment_user%</lred>!</lgray>
+      - ' '
+      PunishDuration:
+      - <noprefix>
+      - ' '
+      - <lred>🛈 <b>错误!</b></lred>
+      - <lgray><lred>»</lred> 你不能处罚超过 <lred>%time%</lred>!</lgray>
+      - ' '
+      UnPunishDuration:
+      - <noprefix>
+      - ' '
+      - <lred>🛈 <b>错误!</b></lred>
+      - <lgray><lred>»</lred> 你不能删除持续时间超过 <lred>%time%</lred> 的处罚!</lgray>
+      - ' '
+      Immune:
+      - <noprefix>
+      - ' '
+      - <lred>🛈 <b>错误!</b></lred>
+      - <lgray><lred>»</lred> 玩家 <lred>%punishment_user%</lred> 无法受到处罚!</lgray>
+      - ' '
+      PlayerNotBanned:
+      - <noprefix>
+      - ' '
+      - <lred>🛈 <b>错误!</b></lred>
+      - <lgray><lred>»</lred> 玩家 <lred>%punishment_user%</lred> 未封禁!</lgray>
+      - ' '
+      IPNotBanned:
+      - <noprefix>
+      - ' '
+      - <lred>🛈 <b>错误!</b></lred>
+      - <lgray><lred>»</lred> IP地址 <lred>%punishment_user%</lred> 未封禁!</lgray>
+      - ' '
+      NotMuted:
+      - <noprefix>
+      - ' '
+      - <lred>🛈 <b>错误!</b></lred>
+      - <lgray><lred>»</lred> 玩家 <lred>%punishment_user%</lred> 没有禁言!</lgray>
+      - ' '
+      NotWarned:
+      - <noprefix>
+      - ' '
+      - <lred>🛈 <b>错误!</b></lred>
+      - <lgray><lred>»</lred> 玩家 <lred>%punishment_user%</lred> 没有警告!</lgray>
+      - ' '
+  Kick:
+    Done:
+    - <noprefix>
+    - '<lgray><lred>🛈</lred> 踢出 <lred>%punishment_user%</lred> 原因: <lred>%punishment_reason%</lred></lgray>'
+    Broadcast:
+    - <noprefix>
+    - ' '
+    - <lred>🛈 <b>踢出通知</b></lred>
+    - <lgray><lred>»</lred> 玩家 <lred>%punishment_user%</lred> 已被踢出!</lgray>
+    - '<lgray><lred>»</lred> 管理: <lred>%punishment_punisher%</lred></lgray>'
+    - '<lgray><lred>»</lred> 时间: <lred>%punishment_reason%</lred></lgray>'
+    - ' '
+  Ban:
+    Permanent:
+      Broadcast:
+      - <noprefix>
+      - ' '
+      - <lred>🛈 <b>封禁通知</b></lred>
+      - <lgray><lred>»</lred> 玩家 <lred>%punishment_user%</lred> 已被永久封禁!</lgray>
+      - '<lgray><lred>»</lred> 管理: <lred>%punishment_punisher%</lred></lgray>'
+      - '<lgray><lred>»</lred> 原因: <lred>%punishment_reason%</lred></lgray>'
+      - ' '
+    Temporary:
+      Broadcast:
+      - <noprefix>
+      - ' '
+      - <lred>🛈 <b>封禁通知</b></lred>
+      - <lgray><lred>»</lred> 玩家 <lred>%punishment_user%</lred> 已被暂时封禁!</lgray>
+      - '<lgray><lred>»</lred> 管理: <lred>%punishment_punisher%</lred></lgray>'
+      - '<lgray><lred>»</lred> 原因: <lred>%punishment_reason%</lred></lgray>'
+      - '<lgray><lred>»</lred> 时间: <lred>%punishment_expires_in%</lred></lgray>'
+      - ' '
+  BanIP:
+    Permanent:
+      Broadcast:
+      - <noprefix>
+      - ' '
+      - <lred>🛈 <b>封禁通知</b></lred>
+      - <lgray><lred>»</lred> IP地址 <lred>%punishment_user%</lred> 已被永久封禁!</lgray>
+      - '<lgray><lred>»</lred> 管理: <lred>%punishment_punisher%</lred></lgray>'
+      - '<lgray><lred>»</lred> 原因: <lred>%punishment_reason%</lred></lgray>'
+      - ' '
+    Temporary:
+      Broadcast:
+      - <noprefix>
+      - ' '
+      - <lred>🛈 <b>封禁通知</b></lred>
+      - <lgray><lred>»</lred> IP地址 <lred>%punishment_user%</lred> 已被暂时封禁!</lgray>
+      - '<lgray><lred>»</lred> 管理: <lred>%punishment_punisher%</lred></lgray>'
+      - '<lgray><lred>»</lred> 原因: <lred>%punishment_reason%</lred></lgray>'
+      - '<lgray><lred>»</lred> 时间: <lred>%punishment_expires_in%</lred></lgray>'
+      - ' '
+  UnBan:
+    Done:
+    - <noprefix>
+    - ' '
+    - <lgreen>🛈 <b>封禁信息</b></lgreen>
+    - <lgray><lgreen>»</lgreen> 你解封了玩家 <lgreen>%punishment_user%</lgreen></lgray>
+    - ' '
+    Broadcast:
+    - <noprefix>
+    - ' '
+    - <lgreen>🛈 <b>封禁信息</b></lgreen>
+    - <lgray><lgreen>»</lgreen> 玩家 <lgreen>%punishment_user%</lgreen> 已解封</lgray>
+    - '<lgray><lgreen>»</lgreen> 管理: <lgreen>%punishment_punisher%</lgreen></lgray>'
+    - ' '
+  UnBanIP:
+    Done:
+    - <noprefix>
+    - ' '
+    - <lgreen>🛈 <b>封禁信息</b></lgreen>
+    - <lgray><lgreen>»</lgreen> 你解封了IP <lgreen>%punishment_user%</lgreen></lgray>
+    - ' '
+    Broadcast:
+    - <noprefix>
+    - ' '
+    - <lgreen>🛈 <b>封禁信息</b></lgreen>
+    - <lgray><lgreen>»</lgreen> IP地址 <lgreen>%punishment_user%</lgreen> 已解封</lgray>
+    - '<lgray><lgreen>»</lgreen> 管理: <lgreen>%punishment_punisher%</lgreen></lgray>'
+    - ' '
+  Mute:
+    Permanent:
+      Notify:
+      - <noprefix>
+      - ' '
+      - <lred>🛈 <b>禁言通知</b></lred>
+      - <lgray><lred>»</lred> 你已被永久禁言!</lgray>
+      - '<lgray><lred>»</lred> 管理: <lred>%punishment_punisher%</lred></lgray>'
+      - '<lgray><lred>»</lred> 原因: <lred>%punishment_reason%</lred></lgray>'
+      - ' '
+      Broadcast:
+      - <noprefix>
+      - ' '
+      - <lred>🛈 <b>禁言通知</b></lred>
+      - <lgray><lred>»</lred> 玩家 <lred>%punishment_user%</lred> 已被永久禁言!</lgray>
+      - '<lgray><lred>»</lred> 管理: <lred>%punishment_punisher%</lred></lgray>'
+      - '<lgray><lred>»</lred> 原因: <lred>%punishment_reason%</lred></lgray>'
+      - ' '
+    Temporary:
+      Notify:
+      - <noprefix>
+      - ' '
+      - <lred>🛈 <b>禁言通知</b></lred>
+      - <lgray><lred>»</lred> 你已被暂时禁言!</lgray>
+      - '<lgray><lred>»</lred> 管理: <lred>%punishment_punisher%</lred></lgray>'
+      - '<lgray><lred>»</lred> 原因: <lred>%punishment_reason%</lred></lgray>'
+      - '<lgray><lred>»</lred> 时间: <lred>%punishment_expires_in%</lred></lgray>'
+      - ' '
+      Broadcast:
+      - <noprefix>
+      - ' '
+      - <lred>🛈 <b>禁言通知</b></lred>
+      - <lgray><lred>»</lred> 玩家 <lred>%punishment_user%</lred> 已被暂时禁言!</lgray>
+      - '<lgray><lred>»</lred> 管理: <lred>%punishment_punisher%</lred></lgray>'
+      - '<lgray><lred>»</lred> 原因: <lred>%punishment_reason%</lred></lgray>'
+      - '<lgray><lred>»</lred> 时间: <lred>%punishment_expires_in%</lred></lgray>'
+      - ' '
+  Unmute:
+    Done:
+    - <noprefix>
+    - ' '
+    - <lgreen>🛈 <b>禁言信息</b></lgreen>
+    - <lgray><lgreen>»</lgreen> 你解除了 <lgreen>%punishment_user%</lgreen> 的禁言</lgray>
+    - ' '
+    Notify:
+    - <noprefix>
+    - ' '
+    - <lgreen>🛈 <b>禁言信息</b></lgreen>
+    - <lgray><lgreen>»</lgreen> 你被解除了禁言</lgray>
+    - '<lgray><lgreen>»</lgreen> 管理: <lgreen>%punishment_punisher%</lgreen></lgray>'
+    - ' '
+    Broadcast:
+    - <noprefix>
+    - ' '
+    - <lgreen>🛈 <b>禁言信息</b></lgreen>
+    - <lgray><lgreen>»</lgreen> 玩家 <lgreen>%punishment_user%</lgreen> 的禁言已解除</lgray>
+    - '<lgray><lgreen>»</lgreen> 管理: <lgreen>%punishment_punisher%</lgreen></lgray>'
+    - ' '
+  Warn:
+    Permanent:
+      Notify:
+      - <noprefix>
+      - ' '
+      - <lred>🛈 <b>警告通知</b></lred>
+      - <lgray><lred>»</lred> 你已被永久警告!</lgray>
+      - '<lgray><lred>»</lred> 管理: <lred>%punishment_punisher%</lred></lgray>'
+      - '<lgray><lred>»</lred> 原因: <lred>%punishment_reason%</lred></lgray>'
+      - ' '
+      Broadcast:
+      - <noprefix>
+      - ' '
+      - <lred>🛈 <b>警告通知</b></lred>
+      - <lgray><lred>»</lred> 玩家 <lred>%punishment_user%</lred> 被永久警告了!</lgray>
+      - '<lgray><lred>»</lred> 管理: <lred>%punishment_punisher%</lred></lgray>'
+      - '<lgray><lred>»</lred> 原因: <lred>%punishment_reason%</lred></lgray>'
+      - ' '
+    Temporary:
+      Notify:
+      - <noprefix>
+      - ' '
+      - <lred>🛈 <b>警告通知</b></lred>
+      - <lgray><lred>»</lred> 你已被暂时警告!</lgray>
+      - '<lgray><lred>»</lred> 管理: <lred>%punishment_punisher%</lred></lgray>'
+      - '<lgray><lred>»</lred> 原因: <lred>%punishment_reason%</lred></lgray>'
+      - '<lgray><lred>»</lred> 时间: <lred>%punishment_expires_in%</lred></lgray>'
+      - ' '
+      Broadcast:
+      - <noprefix>
+      - ' '
+      - <lred>🛈 <b>警告通知</b></lred>
+      - <lgray><lred>»</lred> 玩家 <lred>%punishment_user%</lred> 被暂时警告了!</lgray>
+      - '<lgray><lred>»</lred> 管理: <lred>%punishment_punisher%</lred></lgray>'
+      - '<lgray><lred>»</lred> 原因: <lred>%punishment_reason%</lred></lgray>'
+      - '<lgray><lred>»</lred> 时间: <lred>%punishment_expires_in%</lred></lgray>'
+      - ' '
+  Unwarn:
+    Done:
+    - <noprefix>
+    - ' '
+    - <lgreen>🛈 <b>警告信息</b></lgreen>
+    - <lgray><lgreen>»</lgreen> 你删除了玩家 <lgreen>%punishment_user%</lgreen> 的警告</lgray>
+    - ' '
+    Notify:
+    - <noprefix>
+    - ' '
+    - <lgreen>🛈 <b>警告信息</b></lgreen>
+    - <lgray><lgreen>»</lgreen> 你最新的警告已被删除</lgray>
+    - '<lgray><lgreen>»</lgreen> 管理: <lgreen>%punishment_punisher%</lgreen></lgray>'
+    - ' '
+    Broadcast:
+    - <noprefix>
+    - ' '
+    - <lgreen>🛈 <b>警告信息</b></lgreen>
+    - <lgray><lgreen>»</lgreen> 玩家 <lgreen>%punishment_user%</lgreen> 最新的警告已被删除</lgray>
+    - '<lgray><lgreen>»</lgreen> 管理: <lgreen>%punishment_punisher%</lgreen></lgray>'
+    - ' '
+  Other:
+    NoReason: <无原因>
+  SortMode:
+    NAME: 名称
+    DATE: 日期
+    PUNISHER: 处罚者
+    REASON: 原因
+
+# --------------------------------------------------
+# 世界模块的语言配置
+# --------------------------------------------------
+Worlds:
+  Command:
+    Worlds:
+      Create:
+        Usage: <名称>
+        Desc: 创建一个新的世界
+        Error: <lred>已存在该名称的世界!</lred>
+        Done: '<lgray>已创建世界: <lyellow>%world_id%</lyellow></lgray>'
+      Delete:
+        Usage: <世界> [-f]
+        Desc: 删除指定的世界 [及其文件夹]
+        Error: '<lgray>无法删除: <lred>%world_id%</lred>!世界已加载或存在文件访问错误</lgray>'
+        Done: '<lgray>已删除世界: <lyellow>%world_id%</lyellow></lgray>'
+      Editor:
+        Desc: 打开世界编辑器
+      Load:
+        Usage: <世界>
+        Desc: 将指定的世界加载到服务器中
+        Error: '<lgray>无法加载世界: <lred>%world_id%</lred></lgray>'
+        Done: '<lgray>已加载世界: <lyellow>%world_id%</lyellow></lgray>'
+      Unload:
+        Usage: <世界>
+        Desc: 将指定的世界从服务器卸载
+        Error: '<lgray>无法卸载世界: <lred>%world_id%</lred></lgray>'
+        Done: '<lgray>已卸载世界: <lyellow>%world_id%</lyellow></lgray>'
+  AutoWipe:
+    MoveOut: <lgray>因世界重置，你已被传送</lgray>
+    Notify:
+    - <noprefix>
+    - ''
+    - <lred><b>重置警告:</b></lred>
+    - <lgray>该世界将在 <lred>%time%</lred> 后重置</lgray>
+  Error:
+    CommandBlocked: <lred>你不能在这个世界使用该命令!</lred>
+    FlyDisabled: <lred>该世界不允许飞行!</lred>
+    Command:
+      Argument:
+        InvalidWorldData: <lgray><lred>%value%</lred> 不是一个有效的世界!</lgray>
+  Editor:
+    Title:
+      List: <black>世界列表</black>
+      Settings: <black>世界设置</black>
+      Generation: <black>世界加载/生成</black>
+      GameRules: <black>世界游戏规则</black>
+    World:
+      Rule:
+        Object:
+          Name: '<lyellow><b>规则: <reset><white>%name%</white></b></lyellow>'
+          Lore:
+          - '<lyellow>● <lgray>数值: </lgray>%value%</lyellow>'
+          - ''
+          - <lyellow>[▶]</lyellow> <lgray>点击 <lyellow>更改</lyellow></lgray>
+      Difficulty:
+        Name: <lyellow><b>难度</b></lyellow>
+        Lore:
+        - '<lyellow>● <lgray>当前: </lgray>%world_difficulty%</lyellow>'
+        - ''
+        - <lgray>设置世界的难度</lgray>
+        - ''
+        - <lyellow>[▶]</lyellow> <lgray>点击 <lyellow>切换</lyellow></lgray>
+      AutoWipe:
+        Name: <lyellow><b>自动重置</b></lyellow>
+        Lore:
+        - <lgray>设置此世界是否在一定的</lgray>
+        - <lgray>间隔时间内自动重置</lgray>
+        - ''
+        - '<lyellow>● <lgray>启用: </lgray>%world_auto_wipe_enabled%</lyellow>'
+        - '<lyellow>● <lgray>间隔时间: </lgray>%world_auto_wipe_interval%</lyellow>'
+        - '<lyellow>● <lgray>上次重置时间: </lgray>%world_auto_wipe_last_wipe%</lyellow>'
+        - '<lyellow>● <lgray>下次重置时间: </lgray>%world_auto_wipe_next_wipe%</lyellow>'
+        - ''
+        - <lyellow>[▶]</lyellow> <lgray>左键点击 <lyellow>切换</lyellow></lgray>
+        - <lyellow>[▶]</lyellow> <lgray>右键点击 <lyellow>更改间隔时间</lyellow></lgray>
+        - <lyellow>[▶]</lyellow> <lgray>[Q]键 <lyellow>设置上次重置时间</lyellow></lgray>
+      GameRules:
+        Name: <lyellow><b>游戏规则</b></lyellow>
+        Lore:
+        - ''
+        - <lgray>管理此世界的游戏规则!</lgray>
+        - ''
+        - <lyellow>[▶]</lyellow> <lgray>点击 <lyellow>编辑</lyellow></lgray>
+      Structures:
+        Name: <lyellow><b>结构生成</b></lyellow>
+        Lore:
+        - '<lyellow>● <lgray>启用: </lgray>%world_structures%</lyellow>'
+        - ''
+        - <lgray>设置是否在此世界中生成结构</lgray>
+        - ''
+        - <lyellow>[▶]</lyellow> <lgray>点击 <lyellow>切换</lyellow></lgray>
+      Environment:
+        Name: <lyellow><b>维度</b></lyellow>
+        Lore:
+        - '<lyellow>● <lgray>当前: </lgray>%world_environment%</lyellow>'
+        - ''
+        - <lyellow>[▶]</lyellow> <lgray>点击 <lyellow>切换</lyellow></lgray>
+      Generator:
+        Name: <lyellow><b>世界生成器</b></lyellow>
+        Lore:
+        - '<lyellow>● <lgray>当前: </lgray>%world_generator%</lyellow>'
+        - ''
+        - <lyellow>[▶]</lyellow> <lgray>点击 <lyellow>更改</lyellow></lgray>
+      Delete:
+        Name: <lyellow><b>删除世界</b></lyellow>
+        Lore:
+        - <lgray><lred>删除世界的配置和文件(无法撤消)</lred></lgray>
+        - ''
+        - <lyellow>[▶]</lyellow> <lgray>[Q]键 <lyellow>删除世界文件</lyellow></lgray>
+        - <lyellow>[▶]</lyellow> <lgray>右键点击 <lyellow>删除配置</lyellow></lgray>
+        - <lyellow>[▶]</lyellow> <lgray>Shift+右键点击 <lyellow>删除配置和文件</lyellow></lgray>
+      Unload:
+        Name: <lyellow><b>卸载世界</b></lyellow>
+        Lore: []
+      Load:
+        Name: <lyellow><b>加载世界</b></lyellow>
+        Lore: []
+      AutoLoad:
+        Name: <lyellow><b>自动加载</b></lyellow>
+        Lore:
+        - '<lyellow>● <lgray>启用: </lgray>%world_auto_load%</lyellow>'
+        - ''
+        - <lgray>设置是否在服务器启动时自动加载此世界</lgray>
+        - ''
+        - <lyellow>[▶]</lyellow> <lgray>点击 <lyellow>切换</lyellow></lgray>
+      Object:
+        Name: '<lyellow><b>世界: <reset><white>%world_id%</white></b></lyellow>'
+        Lore:
+        - '<lyellow>● <lgray>创建时间: </lgray>%world_is_created%</lyellow>'
+        - '<lyellow>● <lgray>加载状态: </lgray>%world_is_loaded%</lyellow>'
+        - '<lyellow>● <lgray>自动加载: </lgray>%world_auto_load%</lyellow>'
+        - ''
+        - <lyellow>[▶]</lyellow> <lgray>点击 <lyellow>编辑</lyellow></lgray>
+  Difficulty:
+    PEACEFUL: 和平
+    EASY: 简单
+    NORMAL: 普通
+    HARD: 困难
+
+# --------------------------------------------------
+# 出生点模块的语言配置
+# --------------------------------------------------
+Spawns:
+  Command:
+    Spawns:
+      Delete:
+        Desc: 删除指定的出生点
+        Done:
+        - <output:"titles:20:60:20">
+        - <lyellow><b>出生点已删除!</b></lyellow>
+        - <lgray>你删除了 <lyellow>%spawn_name%</lyellow> 出生点!</lgray>
+      Create:
+        Desc: 创建出生点
+        Done:
+        - <output:"titles:20:60:20">
+        - '<lgreen><b>已设置出生点: </b><white>%spawn_name%</white></lgreen>'
+        - <lgray>使用 <lgreen>/editspawn</lgreen> 进行配置</lgray>
+      Teleport:
+        Desc: 传送到指定的出生点
+        Notify: <lgray>传送 <lyellow>%player_display_name%</lyellow> 到 <lyellow>%spawn_name%</lyellow> 出生点</lgray>
+        Done:
+        - <output:"titles:20:60:20">
+        - <lyellow><b>出生点</b></lyellow>
+        - <lgray>你传送到了 <lyellow>%spawn_name%</lyellow> 出生点</lgray>
+      Editor:
+        Desc: 打开出生点编辑器
+    Spawn:
+      Error:
+        NoDefault: <lred>你必须指定出生点名称</lred>
+  Spawn:
+    Teleport:
+      Error:
+        World: <lred>此出生点当前位于不可用的世界中</lred>
+    Error:
+      Invalid: <lgray><lred>%value%</lred> 出生点不存在!</lgray>
+  Editor:
+    Title:
+      List: <black>出生点编辑</black>
+      Settings: <black>出生点设置</black>
+    Enter:
+      Name: <lgray>输入 <lgreen>[出生点名称]</lgreen></lgray>
+      Priority: <lgray>输入 <lgreen>[优先级]</lgreen></lgray>
+      Group: <lgray>输入 <lgreen>[组名称]</lgreen></lgray>
+
+# --------------------------------------------------
+# 家园模块的语言配置
+# --------------------------------------------------
+Homes:
+  Command:
+    Argument:
+      Name:
+        Home: 家
+    Homes:
+      Delete:
+        Desc: 删除家
+      Teleport:
+        Desc: 传送到家
+      Set:
+        Desc: 创建家
+      Visit:
+        Desc: 访问家
+      Invite:
+        Desc: 邀请玩家到家
+      List:
+        Desc: 家列表
+      Invute:
+        Usage: <lgray>你邀请了 <lyellow>%player_name%</lyellow> 到你的 <lyellow>%home_name%</lyellow> 家!</lgray>
+    HomesAdmin:
+      Delete:
+        Desc: 删除玩家的家
+        Done:
+          Single: <lgray>你删除了 <lyellow>%player_name%</lyellow> 的 <lyellow>%home_id%</lyellow> 家</lgray>
+          All: <lgray>你删除了 <lyellow>%player_name%</lyellow> 全部的家</lgray>
+      Create:
+        Desc: 为玩家创建家
+        Done:
+          Fresh: <lgray>你为 <lyellow>%player_name%</lyellow> 创建了 <lyellow>%home_id%</lyellow> 家</lgray>
+          Edited: <lgray>你编辑了 <lyellow>%player_name%</lyellow> 的 <lyellow>%home_id%</lyellow> 家的位置</lgray>
+    Error:
+      Argument:
+        InvalidHome: <lgray><lred>%value%</lred> 不是一个有效的家</lgray>
+  Home:
+    Teleport:
+    - <output:"titles:20:60:20"><sound:"entity_enderman_teleport">
+    - <lyellow><b>欢迎回家</b></lyellow>
+    - <lgray>你传送到了 <lyellow>%home_name%</lyellow> 家</lgray>
+    Visit:
+      Success:
+      - <output:"titles:20:60:20"><sound:"entity_enderman_teleport">
+      - <lyellow><b>访问家</b></lyellow>
+      - <lgray>你访问了 <lyellow>%home_owner%</lyellow> 的 <lyellow>%home_name%</lyellow> 家</lgray>
+      Error:
+        NotPermitted:
+        - <sound:"entity_villager_no">
+        - <lred>你没有访问此家园的权限!</lred>
+        UnsafeLocation:
+        - <output:"titles:20:60:20"><sound:"entity_villager_no">
+        - <lred><b>不安全的位置!</b></lred>
+        - <lred>传送已取消</lred>
+    Set:
+      Error:
+        Limit:
+        - <output:"titles:20:60:20"><sound:"entity_villager_no">
+        - <lred><b>已达上限!</b></lred>
+        - <lred>你不能再创建更多的家</lred>
+        World:
+        - <output:"titles:20:60:20"><sound:"entity_villager_no">
+        - <lred><b>世界错误!</b></lred>
+        - <lred>你不能在这个世界设置家</lred>
+        UnsafeLocation:
+        - <output:"titles:20:60:20"><sound:"entity_villager_no">
+        - <lred><b>不安全的位置!</b></lred>
+        - <lred>你不能在这里设置家</lred>
+        Protection:
+        - <output:"titles:20:60:20"><sound:"entity_villager_no">
+        - <lred><b>区域保护!</b></lred>
+        - <lred>你不能在受保护的区域设置家</lred>
+      Success:
+      - <output:"titles:20:60:20"><sound:"block_wooden_door_open">
+      - <lyellow><b>设置成功!</b></lyellow>
+      - '<lgray>传送: <lyellow>/home %home_id%</lyellow> | 菜单: <lyellow>/homelist</lyellow></lgray>'
+      Edited:
+      - <output:"titles:20:60:20"><sound:"block_wooden_door_close">
+      - <lyellow><b>已更新!</b></lyellow>
+      - <lgray>家的位置已经更新</lgray>
+    Delete:
+      Done:
+      - <output:"titles:20:60:20"><sound:"entity_zombie_break_wooden_door">
+      - <lyellow><b>删除成功!</b></lyellow>
+      - <lgray>你删除了 <lyellow>%home_name%</lyellow> 家</lgray>
+  Error:
+    NoHomes: <lred>你没有设置家!</lred>
+  Editor:
+    Enter:
+      PlayerName: <lgray>输入 <lgreen>[玩家名称]</lgreen></lgray>
+      HomeName: <lgray>输入 <lgreen>[家名称]</lgreen></lgray>
+  HomeType:
+    PUBLIC: 公开
+    PRIVATE: 私人
+
+# --------------------------------------------------
+# 礼包模块的语言配置
+# --------------------------------------------------
 Kits:
   Command:
     Kits:
       Editor:
         Desc: 打开礼包编辑器
       Preview:
-        Desc: 预览礼包
-        Others: "&7为 &a%player_display_name% &7打开了 &b%kit_name% &7礼包预览"
+        Desc: 预览指定礼包的内容
+        Others: <lgray>为 <lyellow>%player_display_name%</lyellow> 打开了 <lyellow>%kit_name%</lyellow> 的预览</lgray>
       Give:
-        Desc: 发放礼包
-        Done: "&7已向 &a%player_display_name% &7发放了 &b%kit_name% &7礼包！"
-        Notify: "&7你获得了 &b%kit_name% &7礼包"
+        Desc: 给予玩家一个礼包
+        Done: <lgray>给予玩家 <lyellow>%player_display_name%</lyellow> <lyellow>%kit_name%</lyellow> 礼包!</lgray>
+        Notify: <lgray>你获得了 <lyellow>%kit_name%</lyellow> 礼包</lgray>
       List:
-        Desc: 打开礼包 GUI
-        Others: "&7为 &a%player_display_name% &7打开了礼包 GUI"
+        Desc: 打开礼包列表
+        Others: <lgray>为玩家 <lyellow>%player_display_name%</lyellow> 打开礼包列表</lgray>
       ResetCooldown:
-        Desc: 重置玩家的礼包冷却时间
-        Done: "&7已重置 &a%player_name% &7的 &b%kit_name% &7礼包冷却时间"
-        Notify: "&7你的 &b%kit_name% &7礼包冷却时间已被重置！"
+        Desc: 重置 [玩家] 的礼包冷却时间
+        Done: <lgray>重置 <lyellow>%player_name%</lyellow> <lyellow>%kit_name%</lyellow> 礼包的冷却时间</lgray>
+        Notify: <lgray>你的 <lyellow>%kit_name%</lyellow> 礼包冷却时间已被重置!</lgray>
       SetCooldown:
-        Desc: 设置玩家的礼包冷却时间
-        Done: "&7已为 &a%player_name% &7设置 &b%kit_name% &7礼包冷却时间为 &a%amount%"
-        Notify: "&7你的 &b%kit_name% &7礼包冷却时间已被设置为 &a%amount%！"
+        Desc: 设置 [玩家] 的礼包冷却时间
+        Done: <lgray>设置玩家 <lyellow>%player_name%</lyellow> <lyellow>%kit_name%</lyellow> 礼包的冷却时间为 <lyellow>%amount%</lyellow></lgray>
+        Notify: <lgray>你的 <lyellow>%kit_name%</lyellow> 礼包冷却时间已被设置为 <lyellow>%amount%</lyellow></lgray>
     Error:
       Argument:
-        InvalidKit: "&b%value% &c不是一个有效的礼包！"
+        InvalidKit: <lgray><lred>%value%</lred> 不是一个有效的礼包!</lgray>
   Kit:
     Get:
-      - <output:"titles:20:60:20"><sound:"item_armor_equip_leather">
-      - "&a礼包已接收！"
-      - "&7你获得了 &b%kit_name% &7礼包！"
+    - <output:"titles:20:60:20"><sound:"item_armor_equip_leather">
+    - <lyellow><b>领取成功!</b></lyellow>
+    - <lgray>你获得了 <lyellow>%kit_name%</lyellow> 礼包!</lgray>
     Error:
-      NoPermission: "&c你没有权限使用这个礼包！"
-      NotEnoughFunds: "&c你买不起这个礼包！你需要 &6%kit_cost_money% &c金币"
+      NoPermission: <lred>你没有使用该礼包的权限!</lred>
+      NotEnoughFunds: <lred>你无法购买该礼包! 你需要 <lred>$%kit_cost_money%</lred></lred>
       Cooldown:
-        Expirable: "&c你可以再过 &a%cooldown% &c使用这个礼包"
-        OneTimed: "&c你已经使用过这个礼包。你不能再使用它了"
+        Expirable: <lred>你需要等待 <lred>%cooldown%</lred> 才能再次使用该礼包</lred>
+        OneTimed: <lred>你已经使用过该礼包了，不能再次使用</lred>
   Editor:
     Title:
-      List: "&8礼包编辑器"
-      Settings: "&8礼包设置"
-      Content: "&8礼包内容"
+      List: <black>礼包编辑</black>
+      Settings: <black>礼包设置</black>
+      Content: <black>礼包描述</black>
     Enter:
-      Id: "&7输入 &a[礼包标识符]"
-      Command: "&7输入 &a[命令]"
-      Cost: "&7输入 &a[金钱成本]"
-      Description: "&7输入 &a[描述]"
-      Priority: "&7输入 &a[优先级]"
+      Id: <lgray>输入 <lgreen>[礼包ID]</lgreen></lgray>
+      Command: <lgray>输入 <lgreen>[指令]</lgreen></lgray>
+      Cost: <lgray>输入 <lgreen>[费用]</lgreen></lgray>
+      Description: <lgray>输入 <lgreen>[描述]</lgreen></lgray>
+      Priority: <lgray>输入 <lgreen>[优先级]</lgreen></lgray>
     Error:
-      AlreadyExists: "&7礼包已存在！"
+      AlreadyExists: <lgray>礼包已经存在!</lgray>
+
+# --------------------------------------------------
+# 地标模块的语言配置
+# --------------------------------------------------
+Warps:
+  Command:
+    Warps:
+      Delete:
+        Desc: 删除指定的地标
+      Create:
+        Desc: 创建新的地标
+      Teleport:
+        Desc: 传送到指定的地标
+        Others: <lgray>传送玩家 <lyellow>%player_display_name%</lyellow> 到 <lyellow>%warp_name%</lyellow> 地标</lgray>
+      ResetCooldown:
+        Desc: 重置地标传送冷却时间
+        Done: <lgray>重置玩家 <lyellow>%player_name%</lyellow> 的 <lyellow>%warp_name%</lyellow> 地标传送冷却时间</lgray>
+        Notify: <lgray>你的 <lyellow>%warp_name%</lyellow> 地标传送冷却时间已被重置!</lgray>
+      SetCooldown:
+        Desc: 设置地标传送冷却时间
+        Done: <lgray>设置玩家 <lyellow>%player_name%</lyellow> 的 <lyellow>%warp_name%</lyellow> 地标传送冷却时间为 <lyellow>%amount%</lyellow></lgray>
+        Notify: <lgray>你的 <lyellow>%warp_name%</lyellow> 地标传送冷却时间已被设置为 <lyellow>%amount%</lyellow>!</lgray>
+      List:
+        Desc: 打开地标GUI界面
+        Others: <lgray>打开 <lyellow>%player_display_name%</lyellow> 的地标GUI界面</lgray>
+  Delete:
+    Done:
+    - <output:"titles:20:60:20"><sound:"block_glass_break">
+    - <lyellow><b>删除地标!</b></lyellow>
+    - <lgray>你删除了 <lyellow>%warp_name%</lyellow> 地标</lgray>
+  Warp:
+    Creation:
+      New:
+      - <output:"titles:20:60:20"><sound:"block_anvil_place">
+      - <lgreen><b>创建成功!</b></lgreen>
+      - '<lgray>传送: <lgreen>/warp %warp_id%</lgreen> | 编辑: <lgreen>/warplist</lgreen></lgray>'
+      Relocate:
+      - <output:"titles:20:60:20"><sound:"block_anvil_place">
+      - <lgreen><b>重新定位!</b></lgreen>
+      - <lgray>地标 <lgreen>%warp_name%</lgreen> 已设为此处</lgray>
+      Error:
+        Limit:
+        - <output:"titles:20:60:20"><sound:"entity_villager_no">
+        - <lred><b>已达上限!</b></lred>
+        - <lgray>你不能再创建地标!</lgray>
+        World:
+        - <output:"titles:20:60:20"><sound:"entity_villager_no">
+        - <lred><b>世界错误!</b></lred>
+        - <lgray>你不能在该世界内创建地标!</lgray>
+        Exists:
+        - <output:"titles:20:60:20"><sound:"entity_villager_no">
+        - <lred><b>地标已存在!</b></lred>
+        - <lgray>已存在同名的地标</lgray>
+        Unsafe:
+        - <output:"titles:20:60:20"><sound:"entity_villager_no">
+        - <lred><b>不安全的位置!</b></lred>
+        - <lgray>你不能在此处设置地标</lgray>
+    Teleport:
+      Done:
+      - <output:"titles:20:60:20"><sound:"entity_enderman_teleport">
+      - <lyellow><b>%warp_name%</b></lyellow>
+      - <lgray>%warp_description%</lgray>
+      Error:
+        NotEnoughFunds:
+        - <output:"titles:20:60:20"><sound:"entity_villager_no">
+        - <lred><b>余额不足!</b></lred>
+        - <lgray>你需要 <lred>$%warp_visit_cost%</lred> 才能传送到该地标!</lgray>
+        NoPermission:
+        - <output:"titles:20:60:20"><sound:"entity_villager_no">
+        - <lred><b>无权限!</b></lred>
+        - <lgray>你没有访问 <lred>%warp_name%</lred> 地标的权限!</lgray>
+        Cooldown:
+        - <output:"titles:20:60:20"><sound:"entity_villager_no">
+        - <lred><b>冷却中!</b></lred>
+        - <lgray>你需要等待 <lred>%cooldown%</lred> 后才能再次访问 <lred>%warp_name%</lred></lgray>
+        Unreachable:
+        - <output:"titles:20:60:20"><sound:"entity_villager_no">
+        - <lred><b>地标不可用!</b></lred>
+        - <lgray><lred>%warp_name%</lred> 位于一个错误的世界</lgray>
+        Time:
+        - <output:"titles:20:60:20"><sound:"entity_villager_no">
+        - <lred><b>时段错误!</b></lred>
+        - <lgray><lred>%warp_name%</lred> 在当前时段无法访问</lgray>
+  Error:
+    Command:
+      Argument:
+        InvalidWarp: <lgray><lred>%value%</lred> 不是有效的地标!</lgray>
+  Editor:
+    Enter:
+      CostMoney: <lgray>输入 <lgreen>[费用]</lgreen></lgray>
+      Command: <lgray>输入 <lgreen>[命令名称]</lgreen></lgray>
+      Times: <lgray>输入 <lgreen>[时间段] <lgray>></lgray> 10:00 14:00</lgreen></lgray>
+      Cooldown: <lgray>输入 <lgreen>[冷却时间]</lgreen></lgray>
+      Name: <lgray>输入 <lgreen>[显示名称]</lgreen></lgray>
+      Description: <lgray>输入 <lgreen>[描述]</lgreen></lgray>
+  WarpType:
+    SERVER: 服务器
+    PLAYER: 玩家
+  SortType:
+    WARP_NAME: 地标名称
+    WARP_ID: 地标ID
+    WARP_TYPE: 地标类型
+    VISIT_COST: 传送费用
+
+# --------------------------------------------------
+# 聊天模块的语言配置
+# --------------------------------------------------
 Chat:
   Commant:
     Argument:
@@ -691,219 +1745,306 @@ Chat:
       Join:
         Desc: 加入一个频道
       Leave:
-        Desc: 离开一个频道
+        Desc: 离开频道
       Set:
-        Desc: 设置活动频道
+        Desc: 设置默认频道
     Mentions:
-      Desc: 切换提及通知
+      Desc: 切换提及
       Toggle:
-        Notify: "&7提及通知: &b%state%"
-        Target: "&7为 &a%player_name% &7设置提及通知为 &b%state%"
+        Notify: '<lgray>提及通知: <lyellow>%state%</lyellow>.</lgray>'
+        Target: <lgray>设置玩家 <lyellow>%player_name%</lyellow> 的提及通知为 <lyellow>%state%</lyellow></lgray>
     TogglePM:
-      Desc: 切换私人消息
+      Desc: 切换私信
       Toggle:
-        Notify: "&7私人消息: &b%state%"
-        Target: "&7为 &a%player_name% &7设置私人消息为 &b%state%"
+        Notify: '<lgray>私信通知: <lyellow>%state%</lyellow>.</lgray>'
+        Target: <lgray>设置玩家 <lyellow>%player_name%</lyellow> 的私信通知为 <lyellow>%state%</lyellow></lgray>
     ClearChat:
-      Desc: 清除聊天记录
+      Desc: 清空聊天栏
       Done:
-        - <noprefix>
-        - "&7聊天记录已被 &a%name% &7清除"
+      - <noprefix>
+      - <lgray>聊天已经被玩家 <lyellow>%name%</lyellow> 清空</lgray>
     Me:
       Desc: 在聊天中显示动作
     Tell:
-      Desc: 发送私人消息
+      Desc: 发送私信
     Spy:
       Mode:
-        Desc: 切换 %type% 监听模式
+        Desc: 切换监听模式 %type%
         Done:
-          Others: "&7为 &a%player_display_name% &7设置 &e%type% &7监听模式为 &b%state%"
-          Notify: "&e%type% &7监听模式: &b%state%"
+          Others: <lgray>设置玩家 <lyellow>%player_display_name%</lyellow> 的 <lyellow>%type%</lyellow> 监听模式为 <lyellow>%state%</lyellow></lgray>
+          Notify: '<lgray><lyellow>%type%</lyellow> 监听模式: <lyellow>%state%</lyellow></lgray>'
       Logger:
-        Desc: 切换监听日志
-        Done: "&7为 &a%player_display_name% 设置 &e%type% 日志为 &b%state%"
+        Desc: 切换监听记录器
+        Done: <lgray>设置玩家 <lyellow>%player_display_name%</lyellow> 的 <lyellow>%type%</lyellow> 监听记录器为 <lyellow>%state%</lyellow></lgray>
     Reply:
       Desc: 快速回复最近的私信
       Error:
         Empty:
-          - <noprefix>
-          - "&c你未收到任何私人消息"
+        - <noprefix>
+        - <lred>你没有收到任何私信</lred>
   Chat:
     AntiSpam:
       Similar:
         Msg:
-          - <noprefix>
-          - "&c不要刷屏消息！"
+        - <noprefix>
+        - <lred>请不要频繁发送消息!</lred>
         Cmd:
-          - <noprefix>
-          - "&c不要刷屏命令！"
+        - <noprefix>
+        - <lred>请不要频繁使用命令!</lred>
       Delay:
         Msg:
-          - <noprefix>
-          - "&c你必须等待 &a%time% &c才能发送另一条消息"
+        - <noprefix>
+        - <lred>你需要等待 <orange>%time%</orange> 才能发送另一条消息</lred>
         Cmd:
-          - <noprefix>
-          - "&c你必须等待 &a%time% &c才能使用另一条命令"
+        - <noprefix>
+        - <lred>你需要等待 <orange>%time%</orange> 才能发送另一个命令</lred>
     Mention:
       Error:
         Cooldown:
-          - <noprefix>
-          - "&c你可以再过 &a%time% &c提及 &a%name%"
+        - <noprefix>
+        - <lred>你需要等待 <orange>%time%</orange> 才能再次提及 <orange>%name%</orange></lred>
   Channel:
     Join:
       Success:
-        - <noprefix>
-        - "&7你已加入 &b%channel_name% &7聊天频道"
+      - <noprefix>
+      - <lgray>你加入了 <lyellow>%channel_name%</lyellow> 聊天频道</lgray>
       Error:
         NoPermission:
-          - <noprefix>
-          - "&c你没有权限加入这个频道"
+        - <noprefix>
+        - <lred>你没有权限加入该频道</lred>
         AlreadyIn:
-          - <noprefix>
-          - "&c你已加入这个频道！"
+        - <noprefix>
+        - <lred>你已经加入了该频道!</lred>
     Leave:
       Success:
-        - <noprefix>
-        - "&7你已离开 &b%channel_name% &7聊天频道"
+      - <noprefix>
+      - <lgray>你已离开 <lyellow>%channel_name%</lyellow> 聊天频道</lgray>
       Error:
         NotIn:
-          - <noprefix>
-          - "&c你不在这个频道里！"
+        - <noprefix>
+        - <lred>你不在该频道中!</lred>
     Set:
       Success:
-        - <noprefix>
-        - "&7将 &b%channel_name% &7设置为默认聊天频道"
+      - <noprefix>
+      - <lgray>设置 <lyellow>%channel_name%</lyellow> 为默认频道</lgray>
   Mentions:
     Notify:
-      - <output:"titles:20:60:20"><sound:"block_note_block_bell">
-      - "&a被提及！"
-      - "&a%player_display_name% &7在聊天中提及了你"
+    - <output:"titles:20:60:20"><sound:"block_note_block_bell">
+    - <lgreen><b>注意!</b></lgreen>
+    - <lgray><lgreen>%player_display_name%</lgreen> 在聊天中提到了你</lgray>
   PrivateMessage:
     Error:
-      Disabled: "&a%player_display_name% &c不接受消息"
-      Ignorance: "&a%player_display_name% &c不接受你的消息"
+      Disabled: <lgray><lred>%player_display_name%</lred> 不接收消息</lgray>
+      Ignorance: <lgray><lred>%player_display_name%</lred> 不接收你的消息</lgray>
   Error:
     Command:
       Argument:
-        InvalidChannel: "&b%value% &c不是一个有效的频道！"
+        InvalidChannel: <lgray><lred>%value%</lred> 不是有效的频道!</lgray>
   SpyType:
     SOCIAL: 社交
     COMMAND: 命令
     CHAT: 聊天
+
+# --------------------------------------------------
+# 传送模块的语言配置
+# --------------------------------------------------
 PTP:
   Command:
     Teleport:
       Invite:
-        Desc: 请求玩家被召唤
+        Desc: 请求玩家传送到你
         Notify:
           Sender:
-            - <noprefix><sound:"entity_ender_pearl_throw">
-            - "&7已向 &a%player_display_name% &7发送召唤请求"
+          - <noprefix><sound:"entity_ender_pearl_throw">
+          - <lgray>已向 <lyellow>%player_display_name%</lyellow> 发送传送请求</lgray>
           Target:
-            - <noprefix><sound:"entity_ender_pearl_throw">
-            - ""
-            - "&b传送邀请:"
-            - ""
-            - "&7玩家 &a%player_display_name% &7想召唤你到他们那里"
-            - "&7输入 &d/tpyes %player_name% &7接受并被召唤"
-            - "&7或输入 &d/tpno %player_name% &7拒绝召唤"
-            - ""
-            - <hover:show_text:"&7点击接受 &a%player_display_name% &7的召唤"><click:run_command:"/tpyes %player_name%">&a[接受]</click></hover>       <hover:show_text:"&7点击拒绝 &a%player_display_name% &7的召唤"><click:run_command:"/tpno %player_name%">&c[拒绝]</click></hover>
-            - ""
+          - <noprefix><sound:"entity_ender_pearl_throw">
+          - ' '
+          - <lyellow><b>传送邀请:</b></lyellow>
+          - ' '
+          - <lyellow>玩家 <orange>%player_display_name%</orange> 希望你传送到他那里</lyellow>
+          - <lyellow>输入 <lgreen>/tpyes %player_name%</lgreen> 接受传送</lyellow>
+          - <lyellow>或输入 <lred>/tpno %player_name%</lred> 拒绝传送</lyellow>
+          - ' '
+          - <lyellow>            <hover:show_text:'<gray>点击接受 <green>%player_display_name%</green></gray>'><click:run_command:"/tpyes %player_name%"><lgreen><b>[接受]</b></lgreen></click></hover>      <hover:show_text:'<gray>点击拒绝<red>%player_display_name%</red></gray>'><click:run_command:"/tpno %player_name%"><lred><b>[拒绝]</b></lred></click></hover></lyellow>
+          - ' '
       Request:
-        Desc: 请求玩家传送你
+        Desc: 请求传送到玩家
       Accept:
         Desc: 接受传送请求
       Decline:
         Desc: 拒绝传送请求
     Toggle:
       Desc: 切换传送请求/邀请
-      Target: "&7为 &a%player_display_name% &7设置传送请求为 &b%state%"
-      Notify: "&7传送请求: &b%state%"
+      Target: <lgray>设置玩家 <lyellow>%player_display_name%</lyellow> 的传送请求为 <lyellow>%state%</lyellow></lgray>
+      Notify: '<lgray>传送请求: <lyellow>%state%</lyellow></lgray>'
   Request:
     Accept:
       Done:
-        - <sound:"entity_enderman_teleport">
-        - "&7你接受了 &a%player_display_name% &7的传送请求！"
+      - <sound:"entity_enderman_teleport">
+      - <lgray>你接受了 <lgreen>%player_display_name%</lgreen> 的传送请求!</lgray>
       Notify:
-        - <sound:"entity_enderman_teleport">
-        - "&a%player_display_name% &7接受了你的传送请求！"
+      - <sound:"entity_enderman_teleport">
+      - <lgray><lgreen>%player_display_name%</lgreen> 同意了你的传送请求!</lgray>
       Nothing:
-        - <sound:"entity_villager_no">
-        - "&7你没有任何活跃的请求"
+      - <sound:"entity_villager_no">
+      - <lgray>你没有任何活跃的请求</lgray>
     Decline:
       Done:
-        - <sound:"entity_villager_no">
-        - "&c你拒绝了 &a%player_display_name% &c的传送请求"
+      - <sound:"entity_villager_no">
+      - <lgray>你拒绝了 <lred>%player_display_name%</lred> 的传送请求</lgray>
       Notify:
-        - <sound:"entity_villager_no">
-        - "&a%player_display_name% &c拒绝了你的传送请求"
+      - <sound:"entity_villager_no">
+      - <lgray><lred>%player_display_name%</lred> 拒绝了你的传送请求</lgray>
       Nothing:
-        - <sound:"entity_villager_no">
-        - "&7你没有任何活跃的请求"
+      - <sound:"entity_villager_no">
+      - <lgray>你没有任何活跃的请求</lgray>
     Send:
       Error:
         Cooldown:
-          - <sound:"entity_villager_no">
-          - "&7你可以再过 &a%time% &7后发送另一个请求"
+        - <sound:"entity_villager_no">
+        - <lgray>你可以在 <lred>%time%</lred> 后再次发送请求</lgray>
         Disabled:
-          - <sound:"entity_villager_no">
-          - "&c你不能向 &a%player_name% &c发送传送请求"
+        - <sound:"entity_villager_no">
+        - <lgray>你不能向 <lred>%player_name%</lred> 发送传送请求</lgray>
     Sent:
-      - <noprefix><sound:"entity_ender_pearl_throw">
-      - "&7已向 &a%player_display_name% &7发送传送请求"
+    - <noprefix><sound:"entity_ender_pearl_throw">
+    - <lgray>已向 <lyellow>%player_display_name%</lyellow> 发送传送请求</lgray>
     Notify:
-      - <noprefix><sound:"entity_ender_pearl_throw">
-      - ""
-      - "&b传送请求:"
-      - ""
-      - "&7玩家 &a%player_display_name% &7想传送至你这里"
-      - "&7输入 &d/tpyes %player_name% &7接受并召唤他"
-      - "&7或输入 &d/tpno %player_name% &7拒绝召唤"
-      - ""
-      - <hover:show_text:"&7点击传送至 &a%player_display_name%"><click:run_command:"/tpyes %player_name%">&a[接受]</click></hover>       <hover:show_text:"&7点击拒绝 &a%player_display_name% &7的传送"><click:run_command:"/tpno %player_name%">&c[拒绝]</click></hover>
-      - ""
+    - <noprefix><sound:"entity_ender_pearl_throw">
+    - ' '
+    - <lyellow><b>传送请求:</b></lyellow>
+    - ' '
+    - <lyellow>玩家 <orange>%player_display_name%</orange> 想要传送到你这里</lyellow>
+    - <lyellow>输入 <lgreen>/tpyes %player_name%</lgreen> 接受传送</lyellow>
+    - <lyellow>或输入 <lred>/tpno %player_name%</lred> 拒绝传送</lyellow>
+    - ' '
+    - <lyellow>            <hover:show_text:'<gray>点击接受<green>%player_display_name%</green></gray>'><click:run_command:"/tpyes %player_name%"><lgreen><b>[接受]</b></lgreen></click></hover>      <hover:show_text:'<gray>点击拒绝<red>%player_display_name%</red> teleport.</gray>'><click:run_command:"/tpno %player_name%"><lred><b>[拒绝]</b></lred></click></hover></lyellow>
+    - ' '
+
+# --------------------------------------------------
+# 侧边栏模块的语言配置
+# --------------------------------------------------
 Scoreboard:
   Command:
     Scoreboard:
-      Desc: 切换记分板
-      Notify: "&7记分板: &b%state%"
-      Target: "&7为 &a%player_name% &7设置记分板为 &b%state%"
+      Desc: 切换 [玩家] 的侧边栏
+      Notify: '<lgray>侧边栏: <lyellow>%state%</lyellow></lgray>'
+      Target: <lgray>设置玩家 <lyellow>%player_name%</lyellow> 的侧边栏为 <lyellow>%state%</lyellow></lgray>
+
+# --------------------------------------------------
+# 随机传送模块的语言配置
+# --------------------------------------------------
+RTP:
+  Command:
+    RTP:
+      Desc: 传送到一个随机地点
+  Teleport:
+    Error:
+      AlreadyIn: <lred>你已经在随机传送了!</lred>
+      InvalidRange: <lred>此世界不支持随机传送或范围设置无效</lred>
+    Notify:
+      Done:
+      - <output:"titles:20:80:20"><sound:"entity_enderman_teleport">
+      - <lgreen><b>传送成功!</b></lgreen>
+      - '<lgray>位置: <lgreen>%location_x%</lgreen>, <lgreen>%location_y%</lgreen>, <lgreen>%location_z%</lgreen></lgray>'
+      Search:
+      - <output:"titles:20:80:20"><sound:"block_lava_pop">
+      - <lyellow><b>正在寻找位置...</b></lyellow>
+      - '<lgray>进度: <lyellow>%current%</lyellow>/<lyellow>%max%</lyellow></lgray>'
+      Failure:
+      - <output:"titles:20:80:20"><sound:"entity_villager_no">
+      - <lred><b>传送失败</b></lred>
+      - <lgray>无法找到可用的位置</lgray>
+
+# --------------------------------------------------
+# 功能模块的语言配置
+# --------------------------------------------------
+Extras:
+  Command:
+    Chairs:
+      Desc: 切换座椅功能
+      Notify: <lgray>设置 <lyellow>座椅功能</lyellow> 为 <lyellow>%state%</lyellow></lgray>
+      Target: <lgray>设置玩家 <lyellow>%player_display_name%</lyellow> 的 <lyellow>座椅功能</lyellow> 为 <lyellow>%state%</lyellow></lgray>
+    Sit:
+      Desc: 坐在方块上
+      Notify: <lgray>你已坐下</lgray>
+      Target: <lgray>玩家 <lyellow>%player_name%</lyellow> 已坐下</lgray>
+    ChestSort:
+      Desc: 切换箱子整理功能
+      Notify: <lgray>设置 <lyellow>箱子整理功能</lyellow> 为 <lyellow>%state%</lyellow></lgray>
+      Target: <lgray>设置玩家 <lyellow>%player_display_name%</lyellow> 的 <lyellow>箱子整理功能</lyellow> 为 <lyellow>%state%</lyellow></lgray>
+
+# --------------------------------------------------
+# 返回位置模块的语言配置
+# --------------------------------------------------
 BackLocation:
   Command:
     Back:
-      Desc: 返回上一个位置
+      Desc: 返回上个位置
       Others:
-        Done: "&7玩家 &a%player_display_name% &7传送到上一个位置"
-        Nothing: "&c玩家 &a%player_display_name% &c没有上一个位置"
+        Done: <lgray>玩家 <lyellow>%player_display_name%</lyellow> 已返回上个位置</lgray>
+        Nothing: <lgray>玩家 <lred>%player_display_name%</lred> 没有上个位置</lgray>
     DeathBack:
-      Desc: 返回死亡地点
+      Desc: 返回死亡点
       Others:
-        Done: "&7玩家 &a%player_display_name% &7传送到死亡地点"
-        Nothing: "&c玩家 &a%player_display_name% &c没有死亡地点"
+        Done: <lgray>玩家 <lyellow>%player_display_name%</lyellow> 已返回死亡点</lgray>
+        Nothing: <lgray>玩家 <lred>%player_display_name%</lred> 没有死亡点</lgray>
   Previous:
     Teleport:
       Nothing:
-        - <sound:"entity_villager_no">
-        - "&c你没有上一个位置"
+      - <sound:"entity_villager_no">
+      - <lgray>你没有上个位置</lgray>
       Notify:
-        - <output:"action_bar"><sound:"entity_enderman_teleport">
-        - "&a返回上一个位置..."
+      - <output:"action_bar"><sound:"entity_enderman_teleport">
+      - <lyellow>传送到上个位置...</lyellow>
   Death:
     Teleport:
       Nothing:
-        - <sound:"entity_villager_no">
-        - "&c你没有死亡地点"
+      - <sound:"entity_villager_no">
+      - <lgray>你没有死亡点</lgray>
       Notify:
-        - <output:"action_bar"><sound:"entity_enderman_teleport">
-        - "&a返回死亡地点..."
+      - <output:"action_bar"><sound:"entity_enderman_teleport">
+      - <lyellow>传送到死亡点...</lyellow>
+
+# --------------------------------------------------
+# 幻翼模块的语言配置
+# --------------------------------------------------
 NerfPhantoms:
   Command:
     NoPhantom:
       Desc: 切换反幻翼模式
       Toggle:
-        Notify: "&7反幻翼模式: &b%state%"
-        Others: "&7为 &a%player_display_name% &7设置反幻翼模式为 &b%state%"
+        Notify: '<lgray>反幻翼模式: <lyellow>%state%</lyellow></lgray>'
+        Others: '<lgray>设置玩家 <lyellow>%player_display_name%</lyellow> 的反幻翼模式为: <lyellow>%state%</lyellow></lgray>'
+
+# --------------------------------------------------
+# AFK模块的语言配置
+# --------------------------------------------------
+Afk:
+  Command:
+    Afk:
+      Desc: 切换AFK模式
+      Done:
+        Others: '<lgray>设置玩家 <lyellow>%player_display_name%</lyellow> 的AFK模式为: <lyellow>%state%</lyellow></lgray>'
+  Mode:
+    Enter:
+    - <noprefix>
+    - <lgray>玩家 <lyellow>%player_display_name%</lyellow>现在处于AFK模式</lgray>
+    Exit:
+    - <noprefix>
+    - <lgray>玩家 <lyellow>%player_display_name%</lyellow> 过了 <lyellow>%time%</lyellow> 后回来了</lgray>
+  Notify:
+    PrivateMessage:
+    - <noprefix>
+    - <lgray>玩家 <lred>%player_display_name%</lred> 目前处于AFK状态，可能无法回复你的私信</lgray>
+    TeleportRequest:
+    - <noprefix>
+    - <lgray>玩家 <lred>%player_display_name%</lred> 目前处于AFK状态，可能无法接受你的传送请求</lgray>
+
+# --------------------------------------------------
+# 自定义文本模块的语言配置
+# --------------------------------------------------
 CustomText:
   Command:
     Text:
@@ -911,967 +2052,24 @@ CustomText:
   Error:
     Command:
       Argument:
-        InvalidCustomText: "&b%value% &c不是一个有效的自定义文本！"
+        InvalidCustomText: <lgray><lred>%value%</lred> 不是一个有效的自定义文本!</lgray>
+
+# --------------------------------------------------
+# 上帝模式模块的语言配置
+# --------------------------------------------------
 GodMode:
   Command:
     God:
       Desc: 切换上帝模式
-      Notify: "&7上帝模式已设置为 &b%state%"
-      Target: "&7为 &a%player_display_name% &7设置上帝模式为 &b%state%"
+      Notify: <lgray>上帝模式已设置为 <lyellow>%state%</lyellow></lgray>
+      Target: '<lgray>设置玩家 <lyellow>%player_display_name%</lyellow> 的上帝模式为: <lyellow>%state%</lyellow></lgray>'
     FoodGod:
-      Target: "&7为 &a%player_display_name% &7设置食神模式为 &b%state%"
-      Notify: "&7食神模式已设置为 &b%state%"
+      Notify: <lgray>食神模式已设置为 <lyellow>%state%</lyellow></lgray>
+      Target: '<lgray>设置玩家 <lyellow>%player_display_name%</lyellow> 的食神模式为: <lyellow>%state%</lyellow></lgray>'
   Notify:
     DamageDisabled:
-      - <output:"action_bar">
-      - "&c在上帝模式下你无法造成伤害！"
+    - <output:"action_bar">
+    - <lred>在上帝模式下你不能造成伤害!</lred>
     BadWorld:
-      - "&c上帝模式信息: "
-      - "&7在这个世界中上帝模式无效！"
-Bans:
-  Command:
-    History:
-      Ban:
-        Desc: 查看玩家或 IP 的封禁历史
-      Mute:
-        Desc: 查看玩家或 IP 的禁言历史
-      Warn:
-        Desc: 查看玩家或 IP 的警告历史
-    BanList:
-      Desc: 被封禁的玩家和 IP 列表
-    MuteList:
-      Desc: 被禁言的玩家列表
-    WarnList:
-      Desc: 被警告的玩家列表
-    Ban:
-      Desc: 封禁玩家
-      Done:
-        Permanent:
-          - <noprefix>
-          - ""
-          - "&b封禁信息"
-          - "&c| &7你永久封禁了 &a%punishment_user%"
-          - "&c| &7原因: &c%punishment_reason%"
-          - ""
-        Temporary:
-          - <noprefix>
-          - ""
-          - "&b封禁信息"
-          - "&c| &7你封禁了 &a%punishment_user%"
-          - "&c| &7原因: &c%punishment_reason%"
-          - "&c| &7时长: &a%punishment_expires_in%"
-          - ""
-    Banip:
-      Desc: 封禁 IP 地址
-    Mute:
-      Desc: 禁言玩家
-      Done:
-        Permanent:
-          - <noprefix>
-          - ""
-          - "&b禁言信息"
-          - "&c| &7你永久禁言了 &a%punishment_user%"
-          - "&c| &7原因: &c%punishment_reason%"
-          - ""
-        Temporary:
-          - <noprefix>
-          - ""
-          - "&b禁言信息"
-          - "&c| &7你禁言了 &a%punishment_user%"
-          - "&c| &7原因: &c%punishment_reason%"
-          - "&c| &7时长: &a%punishment_expires_in%"
-          - ""
-    Kick:
-      Desc: 踢出玩家
-    Unmute:
-      Desc: 解除禁言玩家
-    Unban:
-      Desc: 解除封禁玩家或 IP 地址
-    Warn:
-      Desc: 警告玩家
-      Done:
-        Permanent:
-          - <noprefix>
-          - ""
-          - "&b警告信息"
-          - "&c| &7你永久警告了 &a%punishment_user%"
-          - "&c| &7原因: &c%punishment_reason%"
-          - ""
-        Temporary:
-          - <noprefix>
-          - ""
-          - "&b警告信息"
-          - "&c| &7你警告了 &a%punishment_user%"
-          - "&c| &7原因: &c%punishment_reason%"
-          - "&c| &7时长: &a%punishment_expires_in%"
-          - ""
-    Unwarn:
-      Desc: 删除玩家最近的一次警告
-    BanIP:
-      Done:
-        Permanent:
-          - <noprefix>
-          - ""
-          - "&b封禁信息"
-          - "&c| &7你永久封禁了 IP: &e%punishment_user%"
-          - "&c| &7原因: &c%punishment_reason%"
-          - ""
-        Temporary:
-          - <noprefix>
-          - ""
-          - "&b封禁信息"
-          - "&c| &7你封禁了 IP: &e%punishment_user%"
-          - "&c| &7原因: &c%punishment_reason%"
-          - "&c| &7时长: &a%punishment_expires_in%"
-          - ""
-  Punishment:
-    Error:
-      RankPriority:
-        - <noprefix>
-        - ""
-        - "&c错误！"
-        - "&c| &7你不能惩罚 &a%punishment_user%！"
-        - ""
-      PunishDuration:
-        - <noprefix>
-        - ""
-        - "&c错误！"
-        - "&c| &7你不能惩罚超过 &a%time%！"
-        - ""
-      UnPunishDuration:
-        - <noprefix>
-        - ""
-        - "&c错误！"
-        - "&c| &7你不能删除时长超过 &a%time% &7的惩罚！"
-        - ""
-      Immune:
-        - <noprefix>
-        - ""
-        - "&c错误！"
-        - "&c| &7玩家 &a%punishment_user% &7不能被惩罚！"
-        - ""
-      PlayerNotBanned:
-        - <noprefix>
-        - ""
-        - "&c错误！"
-        - "&c| &7玩家 &a%punishment_user% &7没有被封禁！"
-        - ""
-      IPNotBanned:
-        - <noprefix>
-        - ""
-        - "&c错误！"
-        - "&c| &7IP 地址 &a%punishment_user% &7没有被封禁！"
-        - ""
-      NotMuted:
-        - <noprefix>
-        - ""
-        - "&c错误！"
-        - "&c| &7玩家 &a%punishment_user% &7没有被禁言！"
-        - ""
-      NotWarned:
-        - <noprefix>
-        - ""
-        - "&c错误！"
-        - "&c| &7玩家 &a%punishment_user% &7没有警告记录！"
-        - ""
-  Kick:
-    Done:
-      - <noprefix>
-      - "&c已踢出 &a%punishment_user%，&7原因: &c%punishment_reason%"
-    Broadcast:
-      - <noprefix>
-      - ""
-      - "&b踢出通知"
-      - "&c| &7玩家 &c%punishment_user% &7已被踢出！"
-      - "&c| &7执行者: &c%punishment_punisher%"
-      - "&c| &7原因: &c%punishment_reason%"
-      - ""
-  Ban:
-    Permanent:
-      Broadcast:
-        - <noprefix>
-        - ""
-        - "&b封禁通知"
-        - "&c| &7玩家 &c%punishment_user% &7已被永久封禁！"
-        - "&c| &7执行者: &c%punishment_punisher%"
-        - "&c| &7原因: &c%punishment_reason%"
-        - ""
-    Temporary:
-      Broadcast:
-        - <noprefix>
-        - ""
-        - "&b封禁通知"
-        - "&c| &7玩家 &c%punishment_user% &7已被封禁！"
-        - "&c| &7执行者: &c%punishment_punisher%"
-        - "&c| &7原因: &c%punishment_reason%"
-        - "&c| &7时长: &c%punishment_expires_in%"
-        - ""
-  BanIP:
-    Permanent:
-      Broadcast:
-        - <noprefix>
-        - ""
-        - "&b封禁通知"
-        - "&c| &7IP 地址 &c%punishment_user% &7已被永久封禁！"
-        - "&c| &7执行者: &c%punishment_punisher%"
-        - "&c| &7原因: &c%punishment_reason%"
-        - ""
-    Temporary:
-      Broadcast:
-        - <noprefix>
-        - ""
-        - "&b封禁通知"
-        - "&c| &7IP 地址 &c%punishment_user% &7已被封禁！"
-        - "&c| &7执行者: &c%punishment_punisher%"
-        - "&c| &7原因: &c%punishment_reason%"
-        - "&c| &7时长: &c%punishment_expires_in%"
-        - ""
-  UnBan:
-    Done:
-      - <noprefix>
-      - ""
-      - "&b封禁信息"
-      - "&a| &7你解除了对 &a%punishment_user% &7的封禁"
-      - ""
-    Broadcast:
-      - <noprefix>
-      - ""
-      - "&b封禁信息"
-      - "&a| &7玩家 &a%punishment_user% &7的封禁已被解除"
-      - "&a| &7执行者: &a%punishment_punisher%"
-      - ""
-  UnBanIP:
-    Done:
-      - <noprefix>
-      - ""
-      - "&b封禁信息"
-      - "&a| &7你解除了对 IP &a%punishment_user% &7的封禁"
-      - ""
-    Broadcast:
-      - <noprefix>
-      - ""
-      - "&b封禁信息"
-      - "&a| &7IP 地址 &a%punishment_user% &7的封禁已被解除"
-      - "&a| &7执行者: &a%punishment_punisher%"
-      - ""
-  Mute:
-    Permanent:
-      Notify:
-        - <noprefix>
-        - ""
-        - "&b禁言通知"
-        - "&c| &7你已被永久禁言！"
-        - "&c| &7执行者: &c%punishment_punisher%"
-        - "&c| &7原因: &c%punishment_reason%"
-        - ""
-      Broadcast:
-        - <noprefix>
-        - ""
-        - "&b禁言通知"
-        - "&c| &7玩家 &c%punishment_user% &7已被永久禁言！"
-        - "&c| &7执行者: &c%punishment_punisher%"
-        - "&c| &7原因: &c%punishment_reason%"
-        - ""
-    Temporary:
-      Notify:
-        - <noprefix>
-        - ""
-        - "&b禁言通知"
-        - "&c| &7你已被禁言！"
-        - "&c| &7执行者: &c%punishment_punisher%"
-        - "&c| &7原因: &c%punishment_reason%"
-        - "&c| &7时长: &c%punishment_expires_in%"
-        - ""
-      Broadcast:
-        - <noprefix>
-        - ""
-        - "&b禁言通知"
-        - "&c| &7玩家 &c%punishment_user% 已被禁言！"
-        - "&c| &7执行者: &c%punishment_punisher%"
-        - "&c| &7原因: &c%punishment_reason%"
-        - "&c| &7时长: &c%punishment_expires_in%"
-        - ""
-  Unmute:
-    Done:
-      - <noprefix>
-      - ""
-      - "&b禁言信息"
-      - "&a| &7你解除了对 &a%punishment_user% &7的禁言"
-      - ""
-    Notify:
-      - <noprefix>
-      - ""
-      - "&b禁言信息"
-      - "&a| &7你的禁言已被解除"
-      - "&a| &7执行者: &a%punishment_punisher%"
-      - ""
-    Broadcast:
-      - <noprefix>
-      - ""
-      - "&b禁言信息"
-      - "&a| &7玩家 &a%punishment_user% &7的禁言已被解除"
-      - "&a| &7执行者: &a%punishment_punisher%"
-      - ""
-  Warn:
-    Permanent:
-      Notify:
-        - <noprefix>
-        - ""
-        - "&b警告通知"
-        - "&c| &7你已被永久警告！"
-        - "&c| &7执行者: &c%punishment_punisher%"
-        - "&c| &7原因: &c%punishment_reason%"
-        - ""
-      Broadcast:
-        - <noprefix>
-        - ""
-        - "&b警告通知"
-        - "&c| &7玩家 &c%punishment_user% &7已被永久警告！"
-        - "&c| &7执行者: &c%punishment_punisher%"
-        - "&c| &7原因: &c%punishment_reason%"
-        - ""
-    Temporary:
-      Notify:
-        - <noprefix>
-        - ""
-        - "&b警告通知"
-        - "&c| &7你已被警告！"
-        - "&c| &7执行者: &c%punishment_punisher%"
-        - "&c| &7原因: &c%punishment_reason%"
-        - "&c| &7时长: &c%punishment_expires_in%"
-        - ""
-      Broadcast:
-        - <noprefix>
-        - ""
-        - "&b警告通知"
-        - "&c| &7玩家 &c%punishment_user% 已被警告！"
-        - "&c| &7执行者: &c%punishment_punisher%"
-        - "&c| &7原因: &c%punishment_reason%"
-        - "&c| &7时长: &c%punishment_expires_in%"
-        - ""
-  Unwarn:
-    Done:
-      - <noprefix>
-      - ""
-      - "&b警告信息"
-      - "&a| &7你从 &a%punishment_user% &7删除了一个警告"
-      - ""
-    Notify:
-      - <noprefix>
-      - ""
-      - "&b警告信息"
-      - "&a| &7你的最新警告已被删除"
-      - "&a| &7执行者: &a%punishment_punisher%"
-      - ""
-    Broadcast:
-      - <noprefix>
-      - ""
-      - "&b警告信息"
-      - "&a| &7最新警告已从 &a%punishment_user% &7删除"
-      - "&a| &7执行者: &a%punishment_punisher%"
-      - ""
-  Other:
-    NoReason: <无理由>
-  SortMode:
-    NAME: 名称
-    DATE: 日期
-    PUNISHER: 执行者
-    REASON: 原因
-Worlds:
-  Command:
-    Worlds:
-      Create:
-        Desc: 创建一个新世界
-        Error: "&c具有相同名称的世界已经存在！"
-        Done: "&7创建了世界数据: &b%world_id%！"
-      Delete:
-        Desc: 删除一个自定义世界
-        Error: "&c无法删除世界: &b%world_id%！"
-        Done: "&7已删除世界: &b%world_id%！"
-      Editor:
-        Desc: 打开世界编辑器
-      Load:
-        Desc: 加载一个自定义世界
-        Error: "&c无法加载世界: &b%world_id%！"
-        Done: "&7已加载世界: &b%world_id%！"
-      Unload:
-        Desc: 卸载一个自定义世界
-        Error: "&c无法卸载世界: &b%world_id%！"
-        Done: "&7已卸载世界: &b%world_id%！"
-  AutoWipe:
-    MoveOut: "&7由于世界卸载，你已被传送出该区域"
-    Notify:
-      - <noprefix>
-      - ""
-      - "&c自动重置警告："
-      - "&7世界将在 &a%time% &7后自动重置"
-  Error:
-    CommandBlocked: "&c你不能在这个世界中使用那个命令！"
-    FlyDisabled: "&c在这个世界中不允许飞行！"
-    Command:
-      Argument:
-        InvalidWorldData: "&b%value% &c不是一个有效的世界！"
-  Editor:
-    Title:
-      List: "&8世界列表"
-      Settings: "&8世界设置"
-      Generation: "&8世界 加载/生成"
-      GameRules: "&8世界游戏规则"
-    World:
-      Rule:
-        Object:
-          Name: "&b规则: &r %name%"
-          Lore:
-            - "&7当前值: &b%value%"
-            - ""
-            - "&a| &7左键点击 &a更改"
-      Difficulty:
-        Name: "&b难度"
-        Lore:
-          - "&7设置世界的难度"
-          - ""
-          - "&7当前: &b%world_difficulty%"
-          - ""
-          - "&e| &7左键点击 &e切换"
-      AutoWipe:
-        Name: "&b自动重置"
-        Lore:
-          - "&7设置是否应以一定间隔自动重置此"
-          - "&7世界"
-          - ""
-          - "&7启用: &b%world_auto_wipe_enabled%"
-          - "&7间隔: &a%world_auto_wipe_interval%"
-          - "&7上次重置: &a%world_auto_wipe_last_wipe%"
-          - "&7下次重置: &a%world_auto_wipe_next_wipe%"
-          - ""
-          - "&a| &7左键点击 &a切换"
-          - "&e| &7右键点击 &e更改间隔"
-          - "&e| &7[Q] 键 &e设置上次时间"
-      GameRules:
-        Name: "&b游戏规则"
-        Lore:
-          - ""
-          - "&a| &7左键点击 &a跳转"
-      Structures:
-        Name: "&b结构生成"
-        Lore:
-          - "&7启用: &b%world_structures%"
-          - ""
-          - "&e| &7左键点击 &e切换"
-      Environment:
-        Name: "&b环境"
-        Lore:
-          - "&7当前: &b%world_environment%"
-          - ""
-          - "&e| &7左键点击 &e切换"
-      Generator:
-        Name: "&b区块生成器"
-        Lore:
-          - "&7当前: &b%world_generator%"
-          - ""
-          - "&e| &7左键点击 &e更改"
-      Delete:
-        Name: "&b删除数据"
-        Lore:
-          - "&c(不可撤销)"
-          - ""
-          - "&c| &7[Q] 键 &c删除世界文件"
-          - "&c| &7右键点击 &c删除配置"
-          - "&c| &7右键 + SHIFT &c同时删除两者"
-      Unload:
-        Name: "&b卸载世界"
-        Lore: []
-      Load:
-        Name: "&b加载世界"
-        Lore: []
-      AutoLoad:
-        Name: "&b自动加载"
-        Lore:
-          - "&7在服务器启动时加载世界"
-          - ""
-          - "&7启用: &b%world_auto_load%"
-          - ""
-          - "&e| &7左键点击 &e切换"
-      Object:
-        Name: "&b世界: &r %world_id%"
-        Lore:
-          - "&7创建: &b%world_is_created%"
-          - "&7加载: &b%world_is_loaded%"
-          - "&7自动加载: &b%world_auto_load%"
-          - ""
-          - "&a| &7左键点击 &a编辑"
-  Difficulty:
-    PEACEFUL: 和平
-    EASY: 容易
-    NORMAL: 普通
-    HARD: 困难
-Spawns:
-  Command:
-    Spawns:
-      Delete:
-        Desc: 删除一个重生点
-        Done:
-          - <output:"titles:20:60:20">
-          - "&c重生点已删除！"
-          - "&7你已删除 &b%spawn_name% &7重生点！"
-      Create:
-        Desc: 设置重生点
-        Done:
-          - <output:"titles:20:60:20">
-          - "&7重生点设置: &b%spawn_name%"
-          - "&7使用 &d/editspawn &7来配置它"
-      Teleport:
-        Desc: 传送到一个重生点
-        Notify: "&7正在将 &a%player_display_name% &7传送到 &b%spawn_name% &7重生点"
-        Done:
-          - <output:"titles:20:60:20">
-          - "&b重生点"
-          - "&7你已传送到 &b%spawn_name% &7重生点"
-      Editor:
-        Desc: 打开重生点编辑器
-    Spawn:
-      Error:
-        NoDefault: "&c你必须指定重生点名称"
-  Spawn:
-    Teleport:
-      Error:
-        World: "&c这个重生点位于当前不可用的世界中"
-    Error:
-      Invalid: "&b%value% &c不是一个有效的重生点！"
-  Editor:
-    Title:
-      List: "&8重生点编辑器"
-      Settings: "&8重生点设置"
-    Enter:
-      Name: "&7输入 &a[重生点名称]"
-      Priority: "&7输入 &a[优先级]"
-      Group: "&7输入 &a[组名]"
-Homes:
-  Command:
-    Argument:
-      Name:
-        Home: 家园
-    Homes:
-      Delete:
-        Desc: 删除一个家园
-      Teleport:
-        Desc: 传送到一个家园
-      Set:
-        Desc: 设置家园点
-      Visit:
-        Desc: 访问一个家园
-      Invite:
-        Desc: 邀请玩家到一个家园
-      List:
-        Desc: 家园列表
-      Invute:
-        Usage: "&7你邀请了 &a%player_name% &7到你的 &b%home_name% &7家园！"
-    HomesAdmin:
-      Delete:
-        Desc: 删除玩家的家园
-        Done:
-          Single: "&7你删除了 &a%player_name% &7的 &b%home_id% &7家园"
-          All: "&7你删除了所有 &a%player_name% &7的家园"
-      Create:
-        Desc: 为玩家创建一个家园
-        Done:
-          Fresh: "&7为 &a%player_name% &7设置了 &b%home_id% &7家园"
-          Edited: "&7更新了 &a%player_name% &7的 &b%home_id% &7家园"
-    Error:
-      Argument:
-        InvalidHome: "&b%value% &c不是一个有效的家园"
-  Home:
-    Teleport:
-      - <output:"titles:20:60:20"><sound:"entity_enderman_teleport">
-      - "&b家园"
-      - "&7你已传送到 &b%home_name% &7家园"
-    Visit:
-      Success:
-        - <output:"titles:20:60:20"><sound:"entity_enderman_teleport">
-        - "&b家园访问"
-        - "&7你访问了 &a%home_owner% &7的 &b%home_name% &7家园"
-      Error:
-        NotPermitted:
-          - <sound:"entity_villager_no">
-          - "&c你没有被邀请到这个家园！"
-        UnsafeLocation:
-          - <output:"titles:20:60:20"><sound:"entity_villager_no">
-          - "&c不安全的位置！"
-          - "&c访问已取消"
-    Set:
-      Error:
-        Limit:
-          - <output:"titles:20:60:20"><sound:"entity_villager_no">
-          - "&c已达上限！"
-          - "&c你不能再创建更多家园"
-        World:
-          - <output:"titles:20:60:20"><sound:"entity_villager_no">
-          - "&c世界错误！"
-          - "&c你不能在此世界中创建家园"
-        UnsafeLocation:
-          - <output:"titles:20:60:20"><sound:"entity_villager_no">
-          - "&c不安全的位置！"
-          - "&c你不能在这里创建家园"
-        Protection:
-          - <output:"titles:20:60:20"><sound:"entity_villager_no">
-          - "&c受保护区域！"
-          - "&c你不能在这里创建家园"
-      Success:
-        - <output:"titles:20:60:20"><sound:"block_wooden_door_open">
-        - "&a家园设置成功！"
-        - "&7使用方法: &d/home %home_id% &8| &7查看家园: &d/homelist"
-      Edited:
-        - <output:"titles:20:60:20"><sound:"block_wooden_door_close">
-        - "&a家园已更新！"
-        - "&7家园位置已更新"
-    Delete:
-      Done:
-        - <output:"titles:20:60:20"><sound:"entity_zombie_break_wooden_door">
-        - "&c家园已删除！"
-        - "&c你删除了 &e%home_name% &c家园"
-  Error:
-    NoHomes: "&c你尚未设置任何家园！"
-  Editor:
-    Enter:
-      PlayerName: "&7输入 &a[玩家名称]"
-      HomeName: "&7输入 &a[家园名称]"
-  HomeType:
-    PUBLIC: 公共
-    PRIVATE: 私有
-Warps:
-  Command:
-    Warps:
-      Delete:
-        Desc: 删除一个传送点
-      Create:
-        Desc: 创建一个新的传送点
-      Teleport:
-        Desc: 传送到一个传送点
-        Others: "&7将 &a%player_display_name% &7传送到了 &b%warp_name% &7传送点"
-      ResetCooldown:
-        Desc: 重置传送点冷却时间
-        Done: "&7为 &a%player_name% &7重置了 &b%warp_name% &7传送点的冷却时间"
-        Notify: "&7您的 &b%warp_name% &7传送点冷却时间已被重置！"
-      SetCooldown:
-        Desc: 设置传送点冷却时间
-        Done: "&7为 &a%player_name% &7设置了 &b%warp_name% &7传送点的冷却时间为 &a%amount%"
-        Notify: "&7您的 &e%warp_name% &7传送点冷却时间已被设置为 &a%amount%！"
-      List:
-        Desc: 打开传送点图形用户界面
-        Others: "&7为 &a%player_display_name% &7打开了传送点GUI"
-  Delete:
-    Done:
-      - <output:"titles:20:60:20"><sound:"block_glass_break">
-      - "&c传送点已删除！"
-      - "&c您删除了 &b%warp_name% &c传送点"
-  Warp:
-    Creation:
-      New:
-        - <output:"titles:20:60:20"><sound:"block_anvil_place">
-        - "&a传送点创建成功！"
-        - "&7传送: &d/warp %warp_id% &8| &7在: &d/warplist &7编辑"
-      Relocate:
-        - <output:"titles:20:60:20"><sound:"block_anvil_place">
-        - "&a传送点已重新定位！"
-        - "&7您移动了 &b%warp_name% &7传送点"
-      Error:
-        Limit:
-          - <output:"titles:20:60:20"><sound:"entity_villager_no">
-          - "&c已达上限！"
-          - "&7您不能再创建更多的传送点！"
-        World:
-          - <output:"titles:20:60:20"><sound:"entity_villager_no">
-          - "&c禁止的世界！"
-          - "&7您不能在此世界中创建传送点！"
-        Exists:
-          - <output:"titles:20:60:20"><sound:"entity_villager_no">
-          - "&c已存在！"
-          - "&7具有相同名称的传送点已经存在"
-        Unsafe:
-          - <output:"titles:20:60:20"><sound:"entity_villager_no">
-          - "&c不安全的位置！"
-          - "&7请选择另一个地方"
-    Teleport:
-      Done:
-        - <output:"titles:20:60:20"><sound:"entity_enderman_teleport">
-        - "&b%warp_name%"
-        - "&7%warp_description%"
-      Error:
-        NotEnoughFunds:
-          - <output:"titles:20:60:20"><sound:"entity_villager_no">
-          - "&c资金不足！"
-          - "&c您需要 &6%warp_visit_cost% &c金币来访问此传送点！"
-        NoPermission:
-          - <output:"titles:20:60:20"><sound:"entity_villager_no">
-          - "&c无权限！"
-          - "&c您没有权限访问 &b%warp_name% &c传送点！"
-        Cooldown:
-          - <output:"titles:20:60:20"><sound:"entity_villager_no">
-          - "&c冷却中！"
-          - "&c您可以在 &a%cooldown% &c后再次访问 &b%warp_name%"
-        Unreachable:
-          - <output:"titles:20:60:20"><sound:"entity_villager_no">
-          - "&c无法到达的传送点！"
-          - "&b%warp_name% &c位于一个不可用的世界"
-        Time:
-          - <output:"titles:20:60:20"><sound:"entity_villager_no">
-          - "&c错误的时间！"
-          - "&b%warp_name% &c当前不可访问"
-  Error:
-    Command:
-      Argument:
-        InvalidWarp: "&b%value% &c不是一个有效的传送点！"
-  Editor:
-    Enter:
-      CostMoney: "&7输入 &a[费用]"
-      Command: "&7输入 &a[命令名称]"
-      Times: "&7输入 &a[时间] &7> 10:00 14:00"
-      Cooldown: "&7输入 &a[冷却时间]"
-      Name: "&7输入 &a[显示名称]"
-      Description: "&7输入 &a[描述]"
-  WarpType:
-    SERVER: 服务器
-    PLAYER: 玩家
-  SortType:
-    WARP_NAME: 传送点名称
-    WARP_ID: 传送点ID
-    WARP_TYPE: 传送点类型
-    VISIT_COST: 访问费用
-RTP:
-  Command:
-    RTP:
-      Desc: 随机传送到一个位置
-  Teleport:
-    Error:
-      AlreadyIn: "&c您已经在随机传送中！"
-      InvalidRange: "&c此世界不支持随机传送或具有无效的范围设置"
-    Notify:
-      Done:
-        - <output:"titles:20:80:20"><sound:"entity_enderman_teleport">
-        - "&a传送成功！"
-        - "&7位置: &e%location_x%&7, &e%location_y%&7, &e%location_z%"
-      Search:
-        - <output:"titles:20:80:20"><sound:"block_lava_pop">
-        - "&e正在搜索位置…"
-        - "&7步骤: &e%current% &8/ &e%max%"
-      Failure:
-        - <output:"titles:20:80:20"><sound:"entity_villager_no">
-        - "&c传送失败"
-        - "&7未能找到一个有效的位置"
-Extras:
-  Command:
-    Chairs:
-      Desc: 开关椅子功能
-      Notify: "&7设置 &b椅子 &7功能为 &b%state%"
-      Target: "&7设置 &a%player_display_name% &7的 &b椅子 &7功能为 &b%state%"
-    Sit:
-      Desc: 坐在方块上
-      Notify: "&7你现在坐着"
-      Target: "&7让 &a%player_name% &7坐下"
-    ChestSort:
-      Desc: 开关箱子排序
-      Notify: "&7设置 &b箱子排序 &7功能为 &b%state%"
-      Target: "&7设置 &a%player_display_name% &7的 &b箱子排序 &7功能为 &b%state%"
-Afk:
-  Command:
-    Afk:
-      Desc: 开关AFK模式
-      Done:
-        Others: "&7设置 &a%player_display_name% &7的AFK模式为: &b%state%"
-  Mode:
-    Enter:
-      - <noprefix>
-      - "&7玩家 &a%player_display_name% &7现在处于AFK状态"
-    Exit:
-      - <noprefix>
-      - "&7玩家 &a%player_display_name% &7在AFK状态持续 &a%time% &7后返回"
-  Notify:
-    PrivateMessage:
-      - <noprefix>
-      - "&7玩家 &c%player_display_name% &7正处于AFK状态，可能不会回应"
-    TeleportRequest:
-      - <noprefix>
-      - "&7玩家 &c%player_display_name% &7正处于AFK状态，可能不会回应"
-Editor:
-  Input:
-    Generic:
-      Value: "&7输入 &a[值]"
-      Seconds: "&7输入 &a[秒数]"
-      Name: "&7输入 &a[名称]"
-  SpawnsEditorType:
-    DeathTeleport:
-      Ranks:
-        Name: "&b死亡组"
-        Lore:
-          - "%spawn_respawn_teleport_groups%"
-          - ""
-          - "&7受死亡传送设置影响的权限组列表"
-          - ""
-          - "&a| &7左SHIFT键 &a添加组"
-          - "&c| &7右SHIFT键 &c清除组"
-      Toggle:
-        Name: "&b死亡传送"
-        Lore:
-          - "&7将列出组内的玩家在死亡后传送到"
-          - "&7此重生点"
-          - ""
-          - "&7启用: %spawn_respawn_teleport_enabled%"
-          - ""
-          - "&e| &7左键点击 &e切换"
-    LoginTeleport:
-      Ranks:
-        Name: "&b登录组"
-        Lore:
-          - "%spawn_login_teleport_groups%"
-          - ""
-          - "&7受登录传送设置影响的权限组列表"
-          - ""
-          - "&a| &7左SHIFT键 &a添加组"
-          - "&c| &7右SHIFT键 &c清除组"
-      Toggle:
-        Name: "&b登录传送"
-        Lore:
-          - "&7将列出组内的玩家在登录时传送到"
-          - "&7此重生点"
-          - ""
-          - "&7启用: %spawn_login_teleport_enabled%"
-          - ""
-          - "&e| &7左键点击 &e切换"
-    SPAWN_CHANGE_PRIORITY:
-      Name: "&b优先级"
-      Lore:
-        - "&7如果多个重生点对玩家在死亡/登录"
-        - "&7时可用，将使用具有最高优先级的"
-        - "&7那个"
-        - ""
-        - "&7当前: %spawn_priority%"
-        - ""
-
-        - "&e| &7左键点击 &a更改"
-    SPAWN_CHANGE_PERMISSION:
-      Name: "&b权限需求"
-      Lore:
-        - "&7启用: %spawn_permission_required%"
-        - "&7权限节点: %spawn_permission_node%"
-        - ""
-        - "&7设置玩家是否必须有权限"
-        - "&7才能使用这个重生点"
-        - ""
-        - "&e| &7左键点击 &e切换"
-    SPAWN_CHANGE_LOCATION:
-      Name: "&b位置"
-      Lore:
-        - "&7当前: 在 &b%spawn_location_world% &e%spawn_location_x%&7, &e%spawn_location_y%&7, &e%spawn_location_z%"
-        - ""
-        - "&a| &7左键点击 &a设置为您的位置"
-        - "&a| &7右键点击 &a设置为世界重生点"
-    SPAWN_CHANGE_NAME:
-      Name: "&b显示名称"
-      Lore:
-        - "&7设置重生点显示名称"
-        - ""
-        - "&7当前: %spawn_name%"
-        - ""
-        - "&e| &7左键点击 &a更改"
-    SPAWN_OBJECT:
-      Name: "&b%spawn_name%&r &7(ID: &f%spawn_id%&7)"
-      Lore:
-        - "&7优先级: %spawn_priority%"
-        - "&7权限: %spawn_permission_required%"
-        - ""
-        - "&a| &7左键点击 &a编辑"
-        - "&c| &7右SHIFT键 &c删除 &7(&c不可撤销&7)"
-  KitsEditorType:
-    KIT_CHANGE_ARMOR:
-      Name: "&b护甲内容"
-      Lore:
-        - ""
-        - "&e槽位 #1: &7靴子"
-        - "&e槽位 #2: &7护腿"
-        - "&e槽位 #3: &7胸甲"
-        - "&e槽位 #4: &7头盔"
-        - "&e槽位 #5: &7副手"
-        - ""
-        - "&a| &7左键点击 &a跳转"
-    KIT_CHANGE_INVENTORY:
-      Name: "&b容器内容"
-      Lore:
-        - ""
-        - "&e行 #1: &7快捷栏"
-        - "&e行 #2+: &7容器"
-        - ""
-        - "&a| &7左键点击 &a跳转"
-    KIT_CHANGE_COMMANDS:
-      Name: "&b命令"
-      Lore:
-        - "%kit_commands%"
-        - ""
-        - "&7列出的命令将在玩家收到礼包时执"
-        - "&7行"
-        - ""
-        - "&a| &7左键点击 &a添加命令"
-        - "&c| &7右键点击 &c清除"
-    KIT_CHANGE_ICON:
-      Name: "&b图标"
-      Lore:
-        - "&a| &7拖放 &a更改"
-    KIT_CHANGE_PRIORITY:
-      Name: "&b优先级"
-      Lore:
-        - "&7具有更高优先级的礼包将在 GUI "
-        - "&7中首先出现"
-        - ""
-        - "&7当前: %kit_priority%"
-        - ""
-        - "&a| &7左键点击 &a更改"
-    KIT_CHANGE_COST:
-      Name: "&b成本"
-      Lore:
-        - "&7当前: %kit_cost_money%"
-        - ""
-        - "&7设置玩家必须支付的金额才能使用"
-        - "&7这个礼包"
-        - ""
-        - "&a| &7左键点击 &a更改"
-        - "&c| &7右键点击 &c禁用"
-    KIT_CHANGE_PERMISSION:
-      Name: "&b权限需求"
-      Lore:
-        - "&7设置玩家是否必须有权限才能使用"
-        - "&7这个礼包"
-        - ""
-        - "&7所需: %kit_permission_required%"
-        - "&7节点: %kit_permission_node%"
-        - ""
-        - "&e| &7左键点击 &e切换"
-    KIT_CHANGE_COOLDOWN:
-      Name: "&b冷却时间"
-      Lore:
-        - "&7当前: %kit_cooldown%"
-        - ""
-        - "&7设置再次使用礼包的冷却时间"
-        - ""
-        - "&e| &7左键点击 &e更改"
-        - "&a| &7[F] 键设置 &a一次性"
-        - "&c| &7[Q] 键 &c禁用"
-    KIT_CHANGE_DESCRIPTION:
-      Name: "&b描述"
-      Lore:
-        - "%kit_description%"
-        - ""
-        - "&a| &7左键点击 &a添加行"
-        - "&c| &7右键点击 &c清除"
-    KIT_CHANGE_NAME:
-      Name: "&b显示名称"
-      Lore:
-        - "&7当前: %kit_name%"
-        - ""
-        - "&e| &7左键点击 &e更改"
-    KIT_OBJECT:
-      Name: "&b%kit_name%&r &7(&f%kit_id%&7)"
-      Lore:
-        - "&7优先级: %kit_priority%"
-        - "&7权限: %kit_permission_required%"
-        - ""
-        - "&e| &7左键点击 &a编辑"
-        - "&e| &7右SHIFT键 &c删除 &7(&c不可撤销&7)"
+    - <lred><b>上帝模式信息:</b></lred>
+    - <lgray>在这个世界中上帝模式没有效果!</lgray>
