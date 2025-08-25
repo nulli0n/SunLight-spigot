@@ -183,12 +183,12 @@ public class DeathMessageManager extends AbstractManager<SunLightPlugin> {
         
         Map<DamageType, DeathMessage> map = new HashMap<>();
 
-        map.put(DamageType.EXPLOSION, DeathMessage.simple(GRAY.enclose(skull + LIGHT_RED.enclose(PLAYER_DISPLAY_NAME) + " blowed up!")));
+        map.put(DamageType.EXPLOSION, DeathMessage.simple(GRAY.enclose(skull + LIGHT_RED.enclose(PLAYER_DISPLAY_NAME) + " blew up!")));
         map.put(DamageType.CACTUS, new DeathMessage(Lists.newList(
-            GRAY.enclose(skull + LIGHT_RED.enclose(PLAYER_DISPLAY_NAME) + " tried to obtain some water from cactus."),
-            GRAY.enclose(skull + LIGHT_RED.enclose(PLAYER_DISPLAY_NAME) + " died when accidiently touch a cactus.")
+            GRAY.enclose(skull + LIGHT_RED.enclose(PLAYER_DISPLAY_NAME) + " tried to obtain water from a cactus."),
+            GRAY.enclose(skull + LIGHT_RED.enclose(PLAYER_DISPLAY_NAME) + " got pricked to death.")
         )));
-        map.put(DamageType.CRAMMING, DeathMessage.simple(GRAY.enclose(skull + LIGHT_RED.enclose(PLAYER_DISPLAY_NAME) + " trampled into the ground by a crowd.")));
+        map.put(DamageType.CRAMMING, DeathMessage.simple(GRAY.enclose(skull + LIGHT_RED.enclose(PLAYER_DISPLAY_NAME) + " trampled to death.")));
         map.put(DamageType.DRAGON_BREATH, DeathMessage.simple(GRAY.enclose(skull + LIGHT_RED.enclose(PLAYER_DISPLAY_NAME) + " was incinerated by a Dragon Breath.")));
         map.put(DamageType.DROWN, new DeathMessage(Lists.newList(
             GRAY.enclose(skull + LIGHT_RED.enclose(PLAYER_DISPLAY_NAME) + " drowned."),
@@ -198,23 +198,23 @@ public class DeathMessageManager extends AbstractManager<SunLightPlugin> {
         map.put(DamageType.MOB_PROJECTILE, DeathMessage.simple(GRAY.enclose(swords + LIGHT_RED.enclose(PLAYER_DISPLAY_NAME) + " was shot by a " + LIGHT_RED.enclose(GENERIC_SOURCE) + ".")));
         map.put(DamageType.ARROW, DeathMessage.simple(GRAY.enclose(swords + LIGHT_RED.enclose(PLAYER_DISPLAY_NAME) + " was shot by a " + LIGHT_RED.enclose(GENERIC_SOURCE) + ".")));
         map.put(DamageType.PLAYER_ATTACK, DeathMessage.simple(GRAY.enclose(swords + LIGHT_RED.enclose(GENERIC_SOURCE) + " killed " + LIGHT_RED.enclose(PLAYER_DISPLAY_NAME) + ".")));
-        map.put(DamageType.FALL, DeathMessage.simple(GRAY.enclose(skull + LIGHT_RED.enclose(PLAYER_DISPLAY_NAME) + " fell from a high spot.")));
+        map.put(DamageType.FALL, DeathMessage.simple(GRAY.enclose(skull + LIGHT_RED.enclose(PLAYER_DISPLAY_NAME) + " fell from a great hight.")));
         map.put(DamageType.FALLING_ANVIL, DeathMessage.simple(GRAY.enclose(skull + LIGHT_RED.enclose(PLAYER_DISPLAY_NAME) + " was unable to hold an Anvil.")));
-        map.put(DamageType.FLY_INTO_WALL, DeathMessage.simple(GRAY.enclose(skull + LIGHT_RED.enclose(PLAYER_DISPLAY_NAME) + " exceeded the speed limit with elytras.")));
-        map.put(DamageType.IN_FIRE, DeathMessage.simple(GRAY.enclose(skull + LIGHT_RED.enclose(PLAYER_DISPLAY_NAME) + " burned to the ground.")));
-        map.put(DamageType.ON_FIRE, DeathMessage.simple(GRAY.enclose(skull + LIGHT_RED.enclose(PLAYER_DISPLAY_NAME) + " burned to the ground.")));
+        map.put(DamageType.FLY_INTO_WALL, DeathMessage.simple(GRAY.enclose(skull + LIGHT_RED.enclose(PLAYER_DISPLAY_NAME) + " experienced kinetic energy.")));
+        map.put(DamageType.IN_FIRE, DeathMessage.simple(GRAY.enclose(skull + LIGHT_RED.enclose(PLAYER_DISPLAY_NAME) + " burned to death.")));
+        map.put(DamageType.ON_FIRE, DeathMessage.simple(GRAY.enclose(skull + LIGHT_RED.enclose(PLAYER_DISPLAY_NAME) + " burned to death.")));
         map.put(DamageType.FREEZE, new DeathMessage(Lists.newList(
-            GRAY.enclose(skull + LIGHT_RED.enclose(PLAYER_DISPLAY_NAME) + " frozen to death."),
+            GRAY.enclose(skull + LIGHT_RED.enclose(PLAYER_DISPLAY_NAME) + " froze to death."),
             GRAY.enclose(skull + LIGHT_RED.enclose(PLAYER_DISPLAY_NAME) + " fell asleep in the snow.")
         )));
-        map.put(DamageType.HOT_FLOOR, DeathMessage.simple(GRAY.enclose(skull + LIGHT_RED.enclose(PLAYER_DISPLAY_NAME) + " walked too long on Magma Blocks.")));
+        map.put(DamageType.HOT_FLOOR, DeathMessage.simple(GRAY.enclose(skull + LIGHT_RED.enclose(PLAYER_DISPLAY_NAME) + " burned to death.")));
         map.put(DamageType.LAVA, DeathMessage.simple(GRAY.enclose(skull + LIGHT_RED.enclose(PLAYER_DISPLAY_NAME) + " tried to swim in lava.")));
-        map.put(DamageType.LIGHTNING_BOLT, DeathMessage.simple(GRAY.enclose(skull + LIGHT_RED.enclose(PLAYER_DISPLAY_NAME) + " was shot by a Lightning.")));
-        map.put(DamageType.MAGIC, DeathMessage.simple(GRAY.enclose(skull + LIGHT_RED.enclose(PLAYER_DISPLAY_NAME) + " killed by a deadly magic.")));
-        map.put(DamageType.SONIC_BOOM, DeathMessage.simple(GRAY.enclose(skull + LIGHT_RED.enclose(PLAYER_DISPLAY_NAME) + "''s eardrums were exploded.")));
+        map.put(DamageType.LIGHTNING_BOLT, DeathMessage.simple(GRAY.enclose(skull + LIGHT_RED.enclose(PLAYER_DISPLAY_NAME) + " was struck by Lightning.")));
+        map.put(DamageType.MAGIC, DeathMessage.simple(GRAY.enclose(skull + LIGHT_RED.enclose(PLAYER_DISPLAY_NAME) + " was killed by a deadly magic.")));
+        map.put(DamageType.SONIC_BOOM, DeathMessage.simple(GRAY.enclose(skull + LIGHT_RED.enclose(PLAYER_DISPLAY_NAME) + "''s eardrums exploded.")));
         map.put(DamageType.STARVE, DeathMessage.simple(GRAY.enclose(skull + LIGHT_RED.enclose(PLAYER_DISPLAY_NAME) + " forgot to eat.")));
         map.put(DamageType.IN_WALL, DeathMessage.simple(GRAY.enclose(skull + LIGHT_RED.enclose(PLAYER_DISPLAY_NAME) + " was buried alive.")));
-        map.put(DamageType.THORNS, DeathMessage.simple(GRAY.enclose(skull + LIGHT_RED.enclose(PLAYER_DISPLAY_NAME) + " died when touching " + LIGHT_RED.enclose(GENERIC_SOURCE) + ".")));
+        map.put(DamageType.THORNS, DeathMessage.simple(GRAY.enclose(skull + LIGHT_RED.enclose(PLAYER_DISPLAY_NAME) + " died whilst touching " + LIGHT_RED.enclose(GENERIC_SOURCE) + ".")));
         
 
         return map;
@@ -227,25 +227,22 @@ public class DeathMessageManager extends AbstractManager<SunLightPlugin> {
         
         Map<EntityType, DeathMessage> map = new HashMap<>();
 
-        map.put(EntityType.TNT, DeathMessage.simple(GRAY.enclose(skull + LIGHT_RED.enclose(PLAYER_DISPLAY_NAME) + " lost his limbs due to TNT explosion!")));
+        map.put(EntityType.TNT, DeathMessage.simple(GRAY.enclose(skull + LIGHT_RED.enclose(PLAYER_DISPLAY_NAME) + " blew up!")));
         map.put(EntityType.BEE, DeathMessage.simple(GRAY.enclose(swords + LIGHT_RED.enclose(PLAYER_DISPLAY_NAME) + " attempted to steal honey from Bees.")));
         map.put(EntityType.BLAZE, new DeathMessage(Lists.newList(
-            GRAY.enclose(swords + LIGHT_RED.enclose(PLAYER_DISPLAY_NAME) + " could not reflect Blaze''s fireball."),
-            GRAY.enclose(swords + LIGHT_RED.enclose(PLAYER_DISPLAY_NAME) + " catched a fireball with his head.")
+            GRAY.enclose(swords + LIGHT_RED.enclose(PLAYER_DISPLAY_NAME) + " could not resist a Blaze''s fireball."),
+            GRAY.enclose(swords + LIGHT_RED.enclose(PLAYER_DISPLAY_NAME) + " caught a fireball.")
         )));
-        map.put(EntityType.CAVE_SPIDER, new DeathMessage(Lists.newList(
-            GRAY.enclose(swords + LIGHT_RED.enclose(PLAYER_DISPLAY_NAME) + " was bited to death by a little spidee."),
-            GRAY.enclose(swords + LIGHT_RED.enclose(PLAYER_DISPLAY_NAME) + " climb down too deep in a cave with Spiders.")
-        )));
-        map.put(EntityType.DROWNED,DeathMessage.simple(GRAY.enclose(swords + LIGHT_RED.enclose(PLAYER_DISPLAY_NAME) + " was drowned by Drowned.")));
+        map.put(EntityType.CAVE_SPIDER, DeathMessage.simple(GRAY.enclose(swords + LIGHT_RED.enclose(PLAYER_DISPLAY_NAME) + " was bitten by a Spider.")));
+        map.put(EntityType.DROWNED,DeathMessage.simple(GRAY.enclose(swords + LIGHT_RED.enclose(PLAYER_DISPLAY_NAME) + " was killed by a Drowned.")));
         map.put(EntityType.GHAST, DeathMessage.simple(GRAY.enclose(swords + LIGHT_RED.enclose(PLAYER_DISPLAY_NAME) + " was fireballed by a Ghast.")));
-        map.put(EntityType.ENDERMAN, DeathMessage.simple(GRAY.enclose(swords + LIGHT_RED.enclose(PLAYER_DISPLAY_NAME) + " looked strange at Enderman.")));
-        map.put(EntityType.ZOMBIE, DeathMessage.simple(GRAY.enclose(swords + LIGHT_RED.enclose(PLAYER_DISPLAY_NAME) + "''s brain was eaten by Zombie.")));
-        map.put(EntityType.ZOMBIE_VILLAGER, DeathMessage.simple(GRAY.enclose(swords + LIGHT_RED.enclose(PLAYER_DISPLAY_NAME) + " tried to talk with Zombie Villager.")));
+        map.put(EntityType.ENDERMAN, DeathMessage.simple(GRAY.enclose(swords + LIGHT_RED.enclose(PLAYER_DISPLAY_NAME) + " looked strange at an Enderman.")));
+        map.put(EntityType.ZOMBIE, DeathMessage.simple(GRAY.enclose(swords + LIGHT_RED.enclose(PLAYER_DISPLAY_NAME) + "''s brain was eaten by a Zombie.")));
+        map.put(EntityType.ZOMBIE_VILLAGER, DeathMessage.simple(GRAY.enclose(swords + LIGHT_RED.enclose(PLAYER_DISPLAY_NAME) + "''s brain was eaten by a Zombie Villager.")));
         map.put(EntityType.PIGLIN, DeathMessage.simple(GRAY.enclose(swords + LIGHT_RED.enclose(PLAYER_DISPLAY_NAME) + " offered a very bad trade to Piglin.")));
-        map.put(EntityType.CREEPER, DeathMessage.simple(GRAY.enclose(swords + LIGHT_RED.enclose(PLAYER_DISPLAY_NAME) + " could not run away from a Creeper in time.")));
-        map.put(EntityType.SKELETON, DeathMessage.simple(GRAY.enclose(swords + LIGHT_RED.enclose(PLAYER_DISPLAY_NAME) + " was shot by a skeleton.")));
-        map.put(EntityType.WITHER, DeathMessage.simple(GRAY.enclose(swords + LIGHT_RED.enclose(PLAYER_DISPLAY_NAME) + " could not beat Wither.")));
+        map.put(EntityType.CREEPER, DeathMessage.simple(GRAY.enclose(swords + LIGHT_RED.enclose(PLAYER_DISPLAY_NAME) + " could not escape from a Creeper.")));
+        map.put(EntityType.SKELETON, DeathMessage.simple(GRAY.enclose(swords + LIGHT_RED.enclose(PLAYER_DISPLAY_NAME) + " was shot by a Skeleton.")));
+        map.put(EntityType.WITHER, DeathMessage.simple(GRAY.enclose(swords + LIGHT_RED.enclose(PLAYER_DISPLAY_NAME) + " was killed by a Wither.")));
 
         return map;
     }
