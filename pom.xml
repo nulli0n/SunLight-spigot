@@ -4,8 +4,8 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>su.nightexpress.sunlight</groupId>
-    <artifactId>SunLight</artifactId>
+    <groupId>su.usernull.modernsunlight</groupId>
+    <artifactId>ModernSunLight</artifactId>
     <packaging>pom</packaging>
     <version>3.14.0</version>
     <modules>
