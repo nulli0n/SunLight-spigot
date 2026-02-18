@@ -1,23 +1,24 @@
 package su.nightexpress.sunlight.module.nerfphantoms.config;
 
-import su.nightexpress.nightcore.core.CoreLang;
-import su.nightexpress.nightcore.language.entry.LangString;
-import su.nightexpress.nightcore.language.entry.LangText;
+import su.nightexpress.nightcore.locale.LangContainer;
+import su.nightexpress.nightcore.locale.LangEntry;
+import su.nightexpress.nightcore.locale.entry.MessageLocale;
+import su.nightexpress.nightcore.locale.entry.TextLocale;
 
-import static su.nightexpress.nightcore.util.text.tag.Tags.*;
-import static su.nightexpress.sunlight.Placeholders.*;
+import static su.nightexpress.nightcore.util.text.night.wrapper.TagWrappers.*;
+import static su.nightexpress.sunlight.SLPlaceholders.*;
 
-public class PhantomsLang extends CoreLang {
+public class PhantomsLang implements LangContainer {
 
-    public static final LangString COMMAND_NO_PHANTOM_DESC = LangString.of("NerfPhantoms.Command.NoPhantom.Desc",
-        "Toggle anti-phantom mode.");
+    public static final TextLocale COMMAND_PHANTOMS_TOGGLE_DESC = LangEntry.builder("NerfPhantoms.Command.NoPhantom.Toggle.Desc").text("Toggle phantoms.");
+    public static final TextLocale COMMAND_PHANTOMS_ROOT_DESC   = LangEntry.builder("NerfPhantoms.Command.NoPhantom.Root.Desc").text("Phantoms commands.");
 
-    public static final LangText COMMAND_NO_PHANTOM_TOGGLE_NOTIFY = LangText.of("NerfPhantoms.Command.NoPhantom.Toggle.Notify",
-        LIGHT_GRAY.wrap("Anti-Phantom mode: " + LIGHT_YELLOW.wrap(GENERIC_STATE) + ".")
+    public static final MessageLocale COMMAND_NO_PHANTOM_TOGGLE_NOTIFY = LangEntry.builder("NerfPhantoms.Command.NoPhantom.Toggle.Notify").chatMessage(
+        GRAY.wrap("Anti-Phantom mode: " + WHITE.wrap(GENERIC_STATE) + ".")
     );
 
-    public static final LangText COMMAND_NO_PHANTOM_TOGGLE_OTHERS = LangText.of("NerfPhantoms.Command.NoPhantom.Toggle.Others",
-        LIGHT_GRAY.wrap("Set Anti-Phantom mode " + LIGHT_YELLOW.wrap(GENERIC_STATE) + " for " + LIGHT_YELLOW.wrap(PLAYER_DISPLAY_NAME) + ".")
+    public static final MessageLocale COMMAND_NO_PHANTOM_TOGGLE_OTHERS = LangEntry.builder("NerfPhantoms.Command.NoPhantom.Toggle.Others").chatMessage(
+        GRAY.wrap("Set Anti-Phantom mode " + WHITE.wrap(GENERIC_STATE) + " for " + ORANGE.wrap(PLAYER_DISPLAY_NAME) + ".")
     );
 
 }

@@ -3,69 +3,53 @@ package su.nightexpress.sunlight.module.chat.mention;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import su.nightexpress.nightcore.config.FileConfig;
+import su.nightexpress.nightcore.config.Writeable;
+import su.nightexpress.nightcore.util.Lists;
 import su.nightexpress.nightcore.util.Players;
-import su.nightexpress.sunlight.module.chat.ChatChannel;
-import su.nightexpress.sunlight.module.chat.config.ChatPerms;
-import su.nightexpress.sunlight.module.chat.util.Placeholders;
+import su.nightexpress.sunlight.SLPlaceholders;
 
 import java.util.Set;
-import java.util.stream.Collectors;
 
-public class GroupMention implements Mention {
+public class GroupMention implements ChatMention, Writeable {
 
-    private final String      id;
     private final String      format;
-    private final Set<String> groups;
+    private final Set<String> ranks;
 
-    public GroupMention(@NotNull String id, @NotNull String format, @NotNull Set<String> groups) {
-        this.id = id.toLowerCase();
+    public GroupMention(@NotNull String format, @NotNull Set<String> ranks) {
         this.format = format;
-        this.groups = groups.stream().map(String::toLowerCase).collect(Collectors.toSet());
+        this.ranks = ranks;
     }
 
     @NotNull
-    public static GroupMention read(@NotNull FileConfig config, @NotNull String path, @NotNull String id) {
+    public static GroupMention read(@NotNull FileConfig config, @NotNull String path) {
         String format = config.getString(path + ".Format", "");
-        Set<String> groups = config.getStringSet(path + ".Affected_Groups");
-        return new GroupMention(id, format, groups);
+        Set<String> groups = Lists.modify(config.getStringSet(path + ".Included-Ranks"), String::toLowerCase);
+
+        return new GroupMention(format, groups);
     }
 
+    @Override
     public void write(@NotNull FileConfig config, @NotNull String path) {
         config.set(path + ".Format", this.format);
-        config.set(path + ".Affected_Groups", this.groups);
+        config.set(path + ".Included-Ranks", this.ranks);
     }
 
     @Override
-    public boolean hasPermission(@NotNull Player player) {
-        return player.hasPermission(ChatPerms.MENTION) || player.hasPermission(ChatPerms.MENTION_SPECIAL + this.getId());
-    }
+    public boolean isApplicable(@NotNull Player player) {
+        if (this.ranks.contains(SLPlaceholders.WILDCARD)) return true;
 
-    @Override
-    @NotNull
-    public Set<Player> getAffectedPlayers(@NotNull ChatChannel channel) {
-        return channel.getPlayers().stream().filter(this::isApplicable).collect(Collectors.toSet());
-    }
-
-    @NotNull
-    public String getId() {
-        return id;
+        Set<String> groups = Players.getInheritanceGroups(player);
+        return this.ranks.stream().anyMatch(groups::contains);
     }
 
     @Override
     @NotNull
     public String getFormat() {
-        return format;
+        return this.format;
     }
 
     @NotNull
-    public Set<String> getGroups() {
-        return groups;
-    }
-
-    public boolean isApplicable(@NotNull Player player) {
-        if (this.groups.contains(Placeholders.WILDCARD)) return true;
-
-        Set<String> groups = Players.getPermissionGroups(player);
-        return this.groups.stream().anyMatch(groups::contains);
+    public Set<String> getRanks() {
+        return this.ranks;
     }
 }

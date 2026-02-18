@@ -34,7 +34,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.jetbrains.annotations.NotNull;
 import su.nightexpress.nightcore.util.Reflex;
-import su.nightexpress.sunlight.api.MenuType;
+import su.nightexpress.sunlight.api.PortableContainer;
 import su.nightexpress.sunlight.nms.SunNMS;
 import su.nightexpress.sunlight.nms.mc_1_21_8.container.PlayerEnderChest;
 import su.nightexpress.sunlight.nms.mc_1_21_8.container.PlayerInventory;
@@ -144,14 +144,14 @@ public class MC_1_21_8 implements SunNMS {
     }
 
     @Override
-    public void openContainer(@NotNull Player player, @NotNull MenuType menuType) {
+    public void openContainer(@NotNull Player player, @NotNull PortableContainer menuType) {
         AbstractContainerMenu menu = this.createContainer(menuType, player);
 
         player.openInventory(menu.getBukkitView());
     }
 
     @NotNull
-    private AbstractContainerMenu createContainer(@NotNull MenuType type, @NotNull Player player) {
+    private AbstractContainerMenu createContainer(@NotNull PortableContainer type, @NotNull Player player) {
         CraftPlayer craftPlayer = (CraftPlayer) player;
         ServerPlayer nmsPlayer = craftPlayer.getHandle();
         int contId = nmsPlayer.nextContainerCounter();
@@ -160,13 +160,13 @@ public class MC_1_21_8 implements SunNMS {
 
         AbstractContainerMenu menu = switch (type) {
             case ANVIL -> new AnvilMenu(contId, inventory, access);
-            case CRAFTING -> new CraftingMenu(contId, inventory, access);
-            case ENCHANTMENT -> new EnchantmentMenu(contId, inventory, access);
+            case WORKBENCH -> new CraftingMenu(contId, inventory, access);
+            case ENCHANTING_TABLE -> new EnchantmentMenu(contId, inventory, access);
             case LOOM -> new LoomMenu(contId, inventory, access);
-            case SMITHING -> new SmithingMenu(contId, inventory, access);
+            case SMITHING_TABLE -> new SmithingMenu(contId, inventory, access);
             case GRINDSTONE -> new GrindstoneMenu(contId, inventory, access);
             case STONECUTTER -> new StonecutterMenu(contId, inventory, access);
-            case CARTOGRAPHY -> new CartographyTableMenu(contId, inventory, access);
+            case CARTOGRAPHY_TABLE -> new CartographyTableMenu(contId, inventory, access);
         };
          menu.checkReachable = false;
 

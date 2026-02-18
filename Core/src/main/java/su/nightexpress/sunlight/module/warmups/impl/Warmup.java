@@ -1,30 +1,33 @@
 package su.nightexpress.sunlight.module.warmups.impl;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.boss.BarColor;
-import org.bukkit.boss.BarStyle;
-import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import su.nightexpress.nightcore.bridge.bossbar.NightBarColor;
+import su.nightexpress.nightcore.bridge.bossbar.NightBarOverlay;
+import su.nightexpress.nightcore.bridge.bossbar.NightBossBar;
+import su.nightexpress.nightcore.util.BossBarUtils;
 import su.nightexpress.nightcore.util.TimeUtil;
-import su.nightexpress.nightcore.util.text.NightMessage;
+import su.nightexpress.nightcore.util.text.night.NightMessage;
 import su.nightexpress.nightcore.util.time.TimeFormats;
-import su.nightexpress.sunlight.Placeholders;
+import su.nightexpress.sunlight.SLPlaceholders;
+import su.nightexpress.sunlight.module.warmups.WarmupsModule;
 import su.nightexpress.sunlight.module.warmups.config.WarmupsConfig;
 
 public abstract class Warmup {
 
-    protected final Player   player;
-    protected final int      value;
-    protected final long     initTime;
-    protected final long     finishTime;
-    protected final Location originLocation;
+    protected final WarmupsModule module;
+    protected final Player        player;
+    protected final int           value;
+    protected final long          initTime;
+    protected final long          finishTime;
+    protected final Location      originLocation;
 
-    protected BossBar indicator;
-    protected long    particleStep;
+    protected NightBossBar indicator;
+    protected long         particleStep;
 
-    public Warmup(@NotNull Player player, int countdown) {
+    public Warmup(@NotNull WarmupsModule module, @NotNull Player player, int countdown) {
+        this.module = module;
         this.player = player;
         this.value = countdown;
         this.initTime = System.currentTimeMillis();
@@ -39,16 +42,16 @@ public abstract class Warmup {
     protected abstract String getIndicatorTitle();
 
     @NotNull
-    protected abstract BarColor getIndicatorColor();
+    protected abstract NightBarColor getIndicatorColor();
 
     @NotNull
-    protected abstract BarStyle getIndicatorStyle();
+    protected abstract NightBarOverlay getIndicatorStyle();
 
     private void createIndicator() {
-        this.indicator = Bukkit.createBossBar("", this.getIndicatorColor(), this.getIndicatorStyle());
-        this.indicator.addPlayer(this.player);
-        this.indicator.setProgress(1D);
-        this.indicator.setVisible(true);
+        this.indicator = BossBarUtils.createBossBar("", this.getIndicatorColor(), this.getIndicatorStyle());
+        this.indicator.addViewer(this.player);
+        this.indicator.setProgress(1F);
+        //this.indicator.setVisible(true);
         this.updateIndicator();
     }
 
@@ -56,25 +59,25 @@ public abstract class Warmup {
         if (this.indicator == null) return;
 
         long current = System.currentTimeMillis();
-        double currentDiff = current - this.initTime;
-        double finishDiff = this.finishTime - this.initTime;
+        float currentDiff = current - this.initTime;
+        float finishDiff = this.finishTime - this.initTime;
 
-        double diff = currentDiff / finishDiff;
+        float diff = currentDiff / finishDiff;
 
-        double progress = Math.max(0, 1D - diff);
+        float progress = Math.max(0, 1F - diff);
         long timeleft = Math.max(0, (this.finishTime - current));
 
-        String title = this.getIndicatorTitle().replace(Placeholders.GENERIC_TIME, TimeFormats.toSeconds(timeleft));
+        String title = this.getIndicatorTitle().replace(SLPlaceholders.GENERIC_TIME, TimeFormats.toSeconds(timeleft));
 
         this.indicator.setProgress(progress);
-        this.indicator.setTitle(NightMessage.asLegacy(title));
+        this.indicator.setName(NightMessage.parse(title));
     }
 
     private void removeIndicator() {
         if (this.indicator == null) return;
 
-        this.indicator.removeAll();
-        this.indicator.setProgress(0D);
+        this.indicator.removeViewers();
+        this.indicator.setProgress(0F);
         this.indicator = null;
     }
 

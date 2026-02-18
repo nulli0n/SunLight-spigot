@@ -1,44 +1,99 @@
 package su.nightexpress.sunlight.data;
 
-import com.google.gson.reflect.TypeToken;
-import su.nightexpress.sunlight.core.cooldown.CooldownInfo;
-import su.nightexpress.sunlight.core.cooldown.CooldownType;
-import su.nightexpress.sunlight.core.user.IgnoredUser;
-import su.nightexpress.sunlight.data.user.SunUser;
-import su.nightexpress.sunlight.data.user.UserSettings;
+import su.nightexpress.nightcore.db.statement.RowMapper;
+import su.nightexpress.nightcore.db.statement.template.InsertStatement;
+import su.nightexpress.nightcore.db.statement.template.SelectStatement;
+import su.nightexpress.nightcore.db.statement.template.UpdateStatement;
+import su.nightexpress.nightcore.user.UserInfo;
+import su.nightexpress.nightcore.user.UserTemplate;
+import su.nightexpress.sunlight.command.CommandKey;
+import su.nightexpress.sunlight.user.SunUser;
 
-import java.sql.ResultSet;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.sql.SQLException;
-import java.util.*;
-import java.util.function.Function;
+import java.util.Map;
+import java.util.UUID;
 
 public class DataQueries {
 
-    public static final Function<ResultSet, SunUser> USER_LOAD = (resultSet) -> {
+    public static final RowMapper<InetAddress> INET_MAPPER = resultSet -> {
         try {
-            UUID uuid = UUID.fromString(resultSet.getString(DataHandler.COLUMN_USER_ID.getName()));
-            String name = resultSet.getString(DataHandler.COLUMN_USER_NAME.getName());
-            long dateCreated = resultSet.getLong(DataHandler.COLUMN_USER_DATE_CREATED.getName());
-            long lastOnline = resultSet.getLong(DataHandler.COLUMN_USER_LAST_ONLINE.getName());
-
-            String ip = resultSet.getString(DataHandler.COLUMN_USER_ADDRESS.getName());
-            //String customName = resultSet.getString(USER_CUSTOM_NAME.getName());
-
-            Map<CooldownType, Set<CooldownInfo>> cooldowns = DataHandler.GSON.fromJson(resultSet.getString(DataHandler.USER_COOLDOWNS.getName()), new TypeToken<Map<CooldownType, Set<CooldownInfo>>>(){}.getType());
-            if (cooldowns == null) cooldowns = new HashMap<>();
-
-            Map<UUID, IgnoredUser> ignoredUsers = DataHandler.GSON.fromJson(resultSet.getString(DataHandler.USER_IGNORE_LIST.getName()), new TypeToken<Map<UUID, IgnoredUser>>() {}.getType());
-            if (ignoredUsers == null) ignoredUsers = new HashMap<>();
-            else ignoredUsers.values().removeIf(Objects::isNull);
-
-            UserSettings settings = DataHandler.GSON.fromJson(resultSet.getString(DataHandler.USER_SETTINGS.getName()), new TypeToken<UserSettings>(){}.getType());
-            if (settings == null) settings = new UserSettings();
-
-            return new SunUser(uuid, name, dateCreated, lastOnline, ip, cooldowns, ignoredUsers, settings);
+            return UserColumns.INET_ADDRESS.read(resultSet).map(string -> {
+                try {
+                    return InetAddress.getByName(string);
+                }
+                catch (UnknownHostException exception) {
+                    exception.printStackTrace();
+                    return null;
+                }
+            }).orElse(null);
         }
-        catch (SQLException ex) {
-            ex.printStackTrace();
+        catch (SQLException exception) {
+            exception.printStackTrace();
             return null;
         }
     };
+
+    public static final RowMapper<UserInfo> PROFILE_MAPPER = resultSet -> {
+        try {
+            UUID uuid = UserColumns.UUID.read(resultSet).orElseThrow();
+            String name = UserColumns.NAME.read(resultSet).orElseThrow();
+
+            return new UserInfo(uuid, name);
+        }
+        catch (SQLException exception) {
+            exception.printStackTrace();
+            return null;
+        }
+    };
+
+    public static final RowMapper<SunUser> USER_MAPPER = (resultSet) -> {
+        try {
+            UUID uuid = UserColumns.UUID.readOrThrow(resultSet);
+            String name = UserColumns.NAME.readOrThrow(resultSet);
+            long dateCreated = UserColumns.DATE_CREATED.readOrThrow(resultSet);
+            long lastOnline = UserColumns.LAST_ONLINE.readOrThrow(resultSet);
+            InetAddress latestAddress = INET_MAPPER.map(resultSet);
+            Map<CommandKey, Long> commandCooldowns = UserColumns.COMMAND_COOLDOWNS.readOrThrow(resultSet);
+            Map<String, Object> properties = UserColumns.PROPERTIES.readOrThrow(resultSet);
+
+            return new SunUser(uuid, name, dateCreated, lastOnline, latestAddress, commandCooldowns, properties);
+        }
+        catch (SQLException exception) {
+            exception.printStackTrace();
+            return null;
+        }
+    };
+
+    public static final UpdateStatement<SunUser> UPDATE_USER = UpdateStatement.builder(SunUser.class)
+        .setUUID(UserColumns.UUID, UserTemplate::getId)
+        .setString(UserColumns.NAME, UserTemplate::getName)
+        .setLong(UserColumns.LAST_ONLINE, SunUser::getLastOnline)
+        .setString(UserColumns.INET_ADDRESS, user -> user.getLatestAddress().map(InetAddress::getHostAddress).orElse("0.0.0.0"))
+        .setString(UserColumns.COMMAND_COOLDOWNS, user -> DataHandler.GSON.toJson(user.getCommandCooldowns()))
+        .setString(UserColumns.PROPERTIES, user -> DataHandler.GSON.toJson(user.getPropertiesToSave()))
+        .build();
+
+    public static final UpdateStatement<SunUser> UPDATE_USER_TINY = UpdateStatement.builder(SunUser.class)
+        .setString(UserColumns.NAME, UserTemplate::getName)
+        .setString(UserColumns.INET_ADDRESS, user -> user.getLatestAddress().map(InetAddress::getHostAddress).orElse("0.0.0.0"))
+        .setLong(UserColumns.LAST_ONLINE, SunUser::getLastOnline)
+        .build();
+
+    public static final InsertStatement<SunUser> INSERT_USER = InsertStatement.builder(SunUser.class)
+        .setUUID(UserColumns.UUID, UserTemplate::getId)
+        .setString(UserColumns.NAME, UserTemplate::getName)
+        .setLong(UserColumns.DATE_CREATED, SunUser::getDateCreated)
+        .setLong(UserColumns.LAST_ONLINE, SunUser::getLastOnline)
+        .setString(UserColumns.INET_ADDRESS, user -> user.getLatestAddress().map(InetAddress::getHostAddress).orElse("0.0.0.0"))
+        .setString(UserColumns.COMMAND_COOLDOWNS, user -> DataHandler.GSON.toJson(user.getCommandCooldowns()))
+        .setString(UserColumns.PROPERTIES, user -> DataHandler.GSON.toJson(user.getPropertiesToSave()))
+        .build();
+
+    public static final SelectStatement<SunUser> SELECT_USER = SelectStatement.builder(USER_MAPPER).build();
+
+    public static final SelectStatement<UserInfo> SELECT_PROFILE = SelectStatement.builder(PROFILE_MAPPER).column(UserColumns.NAME, UserColumns.UUID).build();
+
+    public static final SelectStatement<InetAddress> SELECT_INET = SelectStatement.builder(INET_MAPPER).column(UserColumns.INET_ADDRESS).build();
 }

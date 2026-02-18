@@ -1,7 +1,7 @@
 package su.nightexpress.sunlight.data.serialize;
 
 import com.google.gson.*;
-import su.nightexpress.sunlight.utils.UserInfo;
+import su.nightexpress.nightcore.user.UserInfo;
 
 import java.lang.reflect.Type;
 import java.util.UUID;
@@ -22,8 +22,8 @@ public class UserInfoSerializer implements JsonSerializer<UserInfo>, JsonDeseria
     public JsonElement serialize(UserInfo userInfo, Type typeOfSrc, JsonSerializationContext context) {
         JsonObject object = new JsonObject();
 
-        object.addProperty("id", userInfo.getId().toString());
-        object.addProperty("name", userInfo.getName());
+        object.addProperty("id", userInfo.id().toString());
+        object.addProperty("name", userInfo.name());
 
         return object;
     }

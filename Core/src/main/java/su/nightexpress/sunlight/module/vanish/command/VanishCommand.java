@@ -1,77 +1,70 @@
 package su.nightexpress.sunlight.module.vanish.command;
 
-import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import su.nightexpress.nightcore.command.experimental.CommandContext;
-import su.nightexpress.nightcore.command.experimental.argument.ArgumentTypes;
-import su.nightexpress.nightcore.command.experimental.argument.ParsedArguments;
-import su.nightexpress.nightcore.command.experimental.builder.DirectNodeBuilder;
-import su.nightexpress.nightcore.command.experimental.node.DirectNode;
-import su.nightexpress.nightcore.config.FileConfig;
-import su.nightexpress.sunlight.Placeholders;
+import su.nightexpress.nightcore.commands.Arguments;
+import su.nightexpress.nightcore.commands.context.CommandContext;
+import su.nightexpress.nightcore.commands.context.ParsedArguments;
+import su.nightexpress.nightcore.core.CoreLang;
+import su.nightexpress.sunlight.SLPlaceholders;
 import su.nightexpress.sunlight.SunLightPlugin;
 import su.nightexpress.sunlight.command.CommandArguments;
-import su.nightexpress.sunlight.command.CommandFlags;
-import su.nightexpress.sunlight.command.CommandRegistry;
-import su.nightexpress.sunlight.command.CommandTools;
 import su.nightexpress.sunlight.command.mode.ToggleMode;
-import su.nightexpress.sunlight.command.template.CommandTemplate;
-import su.nightexpress.sunlight.config.Lang;
-import su.nightexpress.sunlight.core.user.settings.Setting;
-import su.nightexpress.sunlight.data.user.SunUser;
+import su.nightexpress.sunlight.command.provider.type.AbstractCommandProvider;
 import su.nightexpress.sunlight.module.vanish.VanishModule;
 import su.nightexpress.sunlight.module.vanish.config.VanishLang;
 import su.nightexpress.sunlight.module.vanish.config.VanishPerms;
+import su.nightexpress.sunlight.user.UserManager;
+import su.nightexpress.sunlight.user.property.UserProperty;
 
-public class VanishCommand {
+public class VanishCommand extends AbstractCommandProvider {
 
-    public static final String NODE = "vanish_toggle";
+    private static final String COMMAND_OFF    = "off";
+    private static final String COMMAND_ON     = "on";
+    private static final String COMMAND_TOGGLE = "toggle";
 
-    public static void load(@NotNull SunLightPlugin plugin, @NotNull VanishModule module) {
-        CommandRegistry.registerDirectExecutor(NODE, (template, config) -> builderMode(plugin, module, template, config));
+    private final VanishModule module;
+    private final UserManager userManager;
 
-        CommandRegistry.addTemplate("vanish", CommandTemplate.direct(new String[]{"vanish"}, NODE));
+    public VanishCommand(@NotNull SunLightPlugin plugin, @NotNull VanishModule module, @NotNull UserManager userManager) {
+        super(plugin);
+        this.module = module;
+        this.userManager = userManager;
     }
 
-    @NotNull
-    public static DirectNodeBuilder builderMode(@NotNull SunLightPlugin plugin, @NotNull VanishModule module, @NotNull CommandTemplate template, @NotNull FileConfig config) {
-        return DirectNode.builder(plugin, template.getAliases())
+    @Override
+    public void registerDefaults() {
+        this.registerLiteral(COMMAND_TOGGLE, true, new String[]{"vanish"}, builder -> builder
             .description(VanishLang.COMMAND_VANISH_DESC)
             .permission(VanishPerms.COMMAND_VANISH)
-            .withArgument(CommandArguments.toggleMode(CommandArguments.MODE))
-            .withArgument(ArgumentTypes.playerName(CommandArguments.PLAYER).permission(VanishPerms.COMMAND_VANISH_OTHERS))
-            .withFlag(CommandFlags.silent().permission(VanishPerms.COMMAND_VANISH_OTHERS))
-            .executes((context, arguments) -> toggleVanish(plugin, module, context, arguments))
-            ;
+            .withArguments(Arguments.playerName(CommandArguments.PLAYER).permission(VanishPerms.COMMAND_VANISH_OTHERS).optional())
+            .withFlags(CommandArguments.FLAG_SILENT)
+            .executes((context, arguments) -> this.toggleVanish(context, arguments, ToggleMode.TOGGLE))
+        );
     }
 
-    public static boolean toggleVanish(@NotNull SunLightPlugin plugin, @NotNull VanishModule module, @NotNull CommandContext context, @NotNull ParsedArguments arguments) {
-        Player target = CommandTools.getTarget(plugin, context, arguments, CommandArguments.PLAYER, false);
-        if (target == null) return false;
+    private boolean toggleVanish(@NotNull CommandContext context, @NotNull ParsedArguments arguments, @NotNull ToggleMode mode) {
+        this.loadPlayerOrSenderWithDataAndRunInMainThread(context, arguments, this.module, this.userManager, (user, target) -> {
+            UserProperty<Boolean> setting = VanishModule.VANISH;
 
-        ToggleMode mode = CommandTools.getToggleMode(plugin, context, arguments, CommandArguments.MODE);
+            boolean state = mode.apply(user.getPropertyOrDefault(setting));
+            user.setProperty(setting, state);
+            user.markDirty();
 
-        SunUser user = plugin.getUserManager().getOrFetch(target);
-        Setting<Boolean> setting = VanishModule.VANISH;
+            module.vanish(target, state);
 
-        boolean state = mode.apply(user.getSettings().get(setting));
-        user.getSettings().set(setting, state);
-        plugin.getUserManager().save(user);
+            if (context.getSender() != target) {
+                VanishLang.COMMAND_VANISH_TARGET.message().send(context.getSender(), replacer -> replacer
+                    .replace(SLPlaceholders.GENERIC_STATE, CoreLang.getEnabledOrDisabled(state))
+                    .replace(SLPlaceholders.forPlayer(target))
+                );
+            }
 
-        module.vanish(target, state);
-
-        if (context.getSender() != target) {
-            VanishLang.COMMAND_VANISH_TARGET.getMessage()
-                .replace(Placeholders.GENERIC_STATE, Lang.getEnabledOrDisabled(state))
-                .replace(Placeholders.forPlayer(target))
-                .send(context.getSender());
-        }
-
-        if (!arguments.hasFlag(CommandFlags.SILENT)) {
-            VanishLang.COMMAND_VANISH_NOTIFY.getMessage()
-                .replace(Placeholders.GENERIC_STATE, Lang.getEnabledOrDisabled(state))
-                .send(target);
-        }
+            if (!context.hasFlag(CommandArguments.FLAG_SILENT)) {
+                VanishLang.COMMAND_VANISH_NOTIFY.message().send(target, replacer -> replacer
+                    .replace(SLPlaceholders.GENERIC_STATE, CoreLang.getEnabledOrDisabled(state))
+                );
+            }
+        });
 
         return true;
     }

@@ -1,53 +1,29 @@
 package su.nightexpress.sunlight.module.kits.config;
 
+import org.bukkit.permissions.Permission;
 import su.nightexpress.nightcore.util.wrapper.UniPermission;
+import su.nightexpress.sunlight.SLPlaceholders;
+import su.nightexpress.sunlight.config.PermissionTree;
 import su.nightexpress.sunlight.config.Perms;
-import su.nightexpress.sunlight.module.ModuleId;
-import su.nightexpress.sunlight.module.kits.util.Placeholders;
 
 public class KitsPerms {
 
-    public static final String PREFIX         = Perms.PREFIX + ModuleId.KITS + ".";
-    public static final String PREFIX_COMMAND = PREFIX + "command.";
-    public static final String PREFIX_BYPASS  = PREFIX + "bypass.";
-    public static final String PREFIX_KIT     = PREFIX + "kit.";
+    public static final PermissionTree ROOT    = Perms.detached("kits");
+    public static final PermissionTree COMMAND = ROOT.branch("command");
+    public static final PermissionTree BYPASS  = ROOT.branch("bypass");
+    public static final PermissionTree KIT     = ROOT.branch("kit");
 
-    public static final UniPermission MODULE  = new UniPermission(PREFIX + Placeholders.WILDCARD);
-    public static final UniPermission COMMAND = new UniPermission(PREFIX_COMMAND + Placeholders.WILDCARD);
-    public static final UniPermission BYPASS  = new UniPermission(PREFIX_BYPASS + Placeholders.WILDCARD);
-    public static final UniPermission KIT     = new UniPermission(PREFIX_KIT + Placeholders.WILDCARD);
+    public static final Permission COMMAND_KITS_ROOT          = COMMAND.permission("kits.root");
+    public static final Permission COMMAND_EDIT_KIT           = COMMAND.permission("kits.editor");
+    public static final Permission COMMAND_PREVIEW_KIT        = COMMAND.permission("kits.preview");
+    public static final Permission COMMAND_PREVIEW_KIT_OTHERS = COMMAND.permission("kits.preview.others");
+    public static final Permission COMMAND_KIT_GET            = COMMAND.permission("kits.get");
+    public static final Permission COMMAND_KIT_GIVE           = COMMAND.permission("kits.give");
+    public static final Permission COMMAND_KIT_LIST           = COMMAND.permission("kits.list");
+    public static final Permission COMMAND_KIT_LIST_OTHERS    = COMMAND.permission("kits.list.others");
+    public static final Permission COMMAND_RESET_KIT_COOLDOWN = COMMAND.permission("kits.resetcooldown");
+    public static final Permission COMMAND_SET_KIT_COOLDOWN   = COMMAND.permission("kits.setcooldown");
 
-    public static final UniPermission COMMAND_EDIT_KIT           = new UniPermission(PREFIX_COMMAND + "kits.editor");
-    public static final UniPermission COMMAND_PREVIEW_KIT        = new UniPermission(PREFIX_COMMAND + "kits.preview");
-    public static final UniPermission COMMAND_PREVIEW_KIT_OTHERS = new UniPermission(PREFIX_COMMAND + "kits.preview.others");
-    public static final UniPermission COMMAND_KIT                = new UniPermission(PREFIX_COMMAND + "kits.get");
-    public static final UniPermission COMMAND_KIT_OTHERS         = new UniPermission(PREFIX_COMMAND + "kits.give");
-    public static final UniPermission COMMAND_KIT_LIST           = new UniPermission(PREFIX_COMMAND + "kits.list");
-    public static final UniPermission COMMAND_KIT_LIST_OTHERS    = new UniPermission(PREFIX_COMMAND + "kits.list.others");
-    public static final UniPermission COMMAND_RESET_KIT_COOLDOWN = new UniPermission(PREFIX_COMMAND + "kits.resetcooldown");
-    public static final UniPermission COMMAND_SET_KIT_COOLDOWN   = new UniPermission(PREFIX_COMMAND + "kits.setcooldown");
-
-    public static final UniPermission BYPASS_COST     = new UniPermission(PREFIX_BYPASS + "cost.money");
-    public static final UniPermission BYPASS_COOLDOWN = new UniPermission(PREFIX_BYPASS + "cooldown");
-
-    static {
-        Perms.PLUGIN.addChildren(MODULE);
-
-        MODULE.addChildren(COMMAND, BYPASS, KIT);
-
-        COMMAND.addChildren(
-            COMMAND_EDIT_KIT,
-            COMMAND_PREVIEW_KIT, COMMAND_PREVIEW_KIT_OTHERS,
-            COMMAND_KIT,
-            COMMAND_KIT_OTHERS,
-            COMMAND_KIT_LIST, COMMAND_KIT_LIST_OTHERS,
-            COMMAND_RESET_KIT_COOLDOWN,
-            COMMAND_SET_KIT_COOLDOWN
-        );
-
-        BYPASS.addChildren(
-            BYPASS_COOLDOWN,
-            BYPASS_COST
-        );
-    }
+    public static final Permission BYPASS_COST     = BYPASS.permission("cost.money");
+    public static final Permission BYPASS_COOLDOWN = BYPASS.permission("cooldown");
 }

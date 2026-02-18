@@ -15,13 +15,14 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import org.jetbrains.annotations.NotNull;
 import su.nightexpress.nightcore.manager.AbstractListener;
 import su.nightexpress.sunlight.SunLightPlugin;
-import su.nightexpress.sunlight.api.event.SunlightTeleportEvent;
-import su.nightexpress.sunlight.api.type.TeleportType;
+import su.nightexpress.sunlight.api.event.SunlightPlayerTeleportEvent;
 import su.nightexpress.sunlight.module.warmups.WarmupsModule;
 import su.nightexpress.sunlight.module.warmups.config.WarmupsConfig;
 import su.nightexpress.sunlight.module.warmups.config.WarmupsPerms;
+import su.nightexpress.sunlight.teleport.TeleportContext;
+import su.nightexpress.sunlight.teleport.TeleportFlag;
+import su.nightexpress.sunlight.teleport.TeleportType;
 
-@SuppressWarnings("UnstableApiUsage")
 public class WarmupsListener extends AbstractListener<SunLightPlugin> {
 
     private final WarmupsModule module;
@@ -31,18 +32,22 @@ public class WarmupsListener extends AbstractListener<SunLightPlugin> {
         this.module = module;
     }
 
-    @EventHandler(priority = EventPriority.MONITOR,ignoreCancelled = true)
-    public void onTeleport(SunlightTeleportEvent event) {
-        if (event.isHandled() || event.isForced()) return;
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onTeleport(SunlightPlayerTeleportEvent event) {
+        TeleportContext context = event.getContext();
 
-        Player player = event.getPlayer();
+        if (context.hasSender()) return;
+        if (context.hasFlag(TeleportFlag.BYPASS_WARMUP)) return;
+
+        Player player = context.getTarget();
         if (player.hasPermission(WarmupsPerms.BYPASS_TELEPORT)) return;
 
-        TeleportType cause = event.getCause();
-        if (!this.module.canHandleTeleport(cause)) return;
+        TeleportType type = event.getType();
+        if (!this.module.canHandleTeleport(type)) return;
 
-        event.handle();
-        this.module.handleTeleport(player, event.getDestination(), cause, event.getCallback());
+        event.setIntercepted(true);
+
+        this.module.handleTeleport(context, type);
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
@@ -60,20 +65,6 @@ public class WarmupsListener extends AbstractListener<SunLightPlugin> {
         this.module.cancelWarmup(event.getPlayer());
     }
 
-//    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-//    public void onWarmupMove(PlayerMoveEvent event) {
-//        if (!WarmupsConfig.WARMUP_CANCEL_ON_MOVE.get()) return;
-//
-//        Player player = event.getPlayer();
-//        if (!this.module.hasWarmup(player)) return;
-//
-//        Location from = event.getFrom();
-//        Location to = event.getTo();
-//        if (to == null || (to.getX() == from.getX() && to.getY() == from.getY() && to.getZ() == from.getZ())) return;
-//
-//        this.module.cancelWarmup(player);
-//    }
-
     @EventHandler(priority = EventPriority.MONITOR)
     public void onWarmupInteract(PlayerInteractEvent event) {
         if (!WarmupsConfig.WARMUP_CANCEL_ON_INTERACT.get()) return;
@@ -82,12 +73,6 @@ public class WarmupsListener extends AbstractListener<SunLightPlugin> {
         if (!this.module.hasWarmup(player)) return;
 
         if (event.useItemInHand() == Event.Result.DENY && event.useInteractedBlock() == Event.Result.DENY) return;
-
-//        ItemStack itemStack = event.getItem();
-//        if (itemStack != null && !itemStack.getType().isAir()) {
-//            this.module.cancelWarmup(player);
-//            return;
-//        }
 
         var action = event.getAction();
         if (action == Action.LEFT_CLICK_AIR || action == Action.LEFT_CLICK_BLOCK) {

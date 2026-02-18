@@ -1,60 +1,58 @@
 package su.nightexpress.sunlight.module.backlocation.config;
 
 import org.bukkit.Sound;
-import su.nightexpress.nightcore.core.CoreLang;
-import su.nightexpress.nightcore.language.entry.LangString;
-import su.nightexpress.nightcore.language.entry.LangText;
-import su.nightexpress.nightcore.language.message.OutputType;
+import su.nightexpress.nightcore.locale.LangContainer;
+import su.nightexpress.nightcore.locale.LangEntry;
+import su.nightexpress.nightcore.locale.entry.MessageLocale;
+import su.nightexpress.nightcore.locale.entry.TextLocale;
 
-import static su.nightexpress.nightcore.util.text.tag.Tags.*;
-import static su.nightexpress.nightcore.language.tag.MessageTags.*;
-import static su.nightexpress.sunlight.Placeholders.*;
+import static su.nightexpress.nightcore.util.text.night.wrapper.TagWrappers.*;
+import static su.nightexpress.sunlight.SLPlaceholders.*;
 
-public class BackLocationLang extends CoreLang {
+public class BackLocationLang implements LangContainer {
 
-    public static final LangString COMMAND_BACK_DESC = LangString.of("BackLocation.Command.Back.Desc",
-        "Return to previous location.");
+    public static final TextLocale COMMAND_BACK_DESC       = LangEntry.builder("BackLocation.Command.Back.Desc").text("Teleport to previous location.");
+    public static final TextLocale COMMAND_DEATH_BACK_DESC = LangEntry.builder("BackLocation.Command.DeathBack.Desc").text("Teleport to death location.");
 
-    public static final LangText COMMAND_BACK_OTHERS_DONE = LangText.of("BackLocation.Command.Back.Others.Done",
-        LIGHT_GRAY.wrap("Player " + LIGHT_YELLOW.wrap(PLAYER_DISPLAY_NAME) + " teleported to previous location.")
+    public static final MessageLocale PREVIOUS_ERROR_NOTHING_FEEDBACK = LangEntry.builder("BackLocation.Command.Back.Others.Nothing").chatMessage(
+        Sound.ENTITY_VILLAGER_NO,
+        GRAY.wrap(ORANGE.wrap(PLAYER_DISPLAY_NAME) + " don't have a location to return to.")
     );
 
-    public static final LangText COMMAND_BACK_OTHERS_NOTHING = LangText.of("BackLocation.Command.Back.Others.Nothing",
-        LIGHT_GRAY.wrap("Player " + LIGHT_RED.wrap(PLAYER_DISPLAY_NAME) + " don't have a previous location.")
+    public static final MessageLocale PREVIOUS_ERROR_NOTHING_NOTIFY = LangEntry.builder("BackLocation.Previous.Teleport.Nothing").chatMessage(
+        Sound.ENTITY_VILLAGER_NO,
+        GRAY.wrap("You don't have a location to return to.")
     );
 
-    public static final LangString COMMAND_DEATH_BACK_DESC = LangString.of("BackLocation.Command.DeathBack.Desc",
-        "Return to death location.");
-
-    public static final LangText COMMAND_DEATH_BACK_OTHERS_DONE = LangText.of("BackLocation.Command.DeathBack.Others.Done",
-        LIGHT_GRAY.wrap("Player " + LIGHT_YELLOW.wrap(PLAYER_DISPLAY_NAME) + " teleported to death location.")
+    public static final MessageLocale PREVIOUS_TELEPORT_FEEDBACK = LangEntry.builder("BackLocation.Command.Back.Others.Done").chatMessage(
+        Sound.ENTITY_ENDERMAN_TELEPORT,
+        GRAY.wrap("You have teleported " + ORANGE.wrap(PLAYER_DISPLAY_NAME) + " to their previous location.")
     );
 
-    public static final LangText COMMAND_DEATH_BACK_OTHERS_NOTHING = LangText.of("BackLocation.Command.DeathBack.Others.Nothing",
-        LIGHT_GRAY.wrap("Player " + LIGHT_RED.wrap(PLAYER_DISPLAY_NAME) + " don't have a death location.")
-    );
-
-
-
-    public static final LangText PREVIOUS_TELEPORT_NOTHING = LangText.of("BackLocation.Previous.Teleport.Nothing",
-        SOUND.wrap(Sound.ENTITY_VILLAGER_NO),
-        LIGHT_GRAY.wrap("You don't have a previous location.")
-    );
-
-    public static final LangText PREVIOUS_TELEPORT_NOTIFY = LangText.of("BackLocation.Previous.Teleport.Notify",
-        OUTPUT.wrap(OutputType.ACTION_BAR) + SOUND.wrap(Sound.ENTITY_ENDERMAN_TELEPORT),
-        LIGHT_YELLOW.wrap("Return to previous location...")
+    public static final MessageLocale PREVIOUS_TELEPORT_NOTIFY = LangEntry.builder("BackLocation.Previous.Teleport.Notify").chatMessage(
+        Sound.ENTITY_ENDERMAN_TELEPORT,
+        GRAY.wrap("You have teleported to your previous location.")
     );
 
 
 
-    public static final LangText DEATH_TELEPORT_NOTHING = LangText.of("BackLocation.Death.Teleport.Nothing",
-        SOUND.wrap(Sound.ENTITY_VILLAGER_NO),
-        LIGHT_GRAY.wrap("You don't have a death location.")
+    public static final MessageLocale DEATH_ERROR_NOTHING_FEEDBACK = LangEntry.builder("BackLocation.Command.DeathBack.Others.Nothing").chatMessage(
+        Sound.ENTITY_VILLAGER_NO,
+        GRAY.wrap(ORANGE.wrap(PLAYER_DISPLAY_NAME) + " don't have a death location.")
     );
 
-    public static final LangText DEATH_TELEPORT_NOTIFY = LangText.of("BackLocation.Death.Teleport.Notify",
-        OUTPUT.wrap(OutputType.ACTION_BAR) + SOUND.wrap(Sound.ENTITY_ENDERMAN_TELEPORT),
-        LIGHT_YELLOW.wrap("Return to death location...")
+    public static final MessageLocale DEATH_ERROR_NOTHING_NOTIFY = LangEntry.builder("BackLocation.Death.Teleport.Nothing").chatMessage(
+        Sound.ENTITY_VILLAGER_NO,
+        GRAY.wrap("You don't have a death location.")
+    );
+
+    public static final MessageLocale DEATH_TELEPORT_FEEDBACK = LangEntry.builder("BackLocation.Command.DeathBack.Others.Done").chatMessage(
+        Sound.ENTITY_ENDERMAN_TELEPORT,
+        GRAY.wrap("You have teleported " + ORANGE.wrap(PLAYER_DISPLAY_NAME) + " to their death location.")
+    );
+
+    public static final MessageLocale DEATH_TELEPORT_NOTIFY = LangEntry.builder("BackLocation.Death.Teleport.Notify").chatMessage(
+        Sound.ENTITY_ENDERMAN_TELEPORT,
+        GRAY.wrap("You have teleported to your death location.")
     );
 }

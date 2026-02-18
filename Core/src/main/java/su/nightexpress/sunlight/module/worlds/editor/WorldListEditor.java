@@ -27,7 +27,7 @@ public class WorldListEditor extends EditorMenu<SunLightPlugin, WorldsModule> im
     private final WorldsModule module;
 
     public WorldListEditor(@NotNull SunLightPlugin plugin, @NotNull WorldsModule module) {
-        super(plugin, WorldsLang.EDITOR_TITLE_LIST.getString(), MenuSize.CHEST_45);
+        super(plugin, WorldsLang.EDITOR_TITLE_LIST.text(), MenuSize.CHEST_45);
         this.module = module;
 
         this.addNextPage(44);

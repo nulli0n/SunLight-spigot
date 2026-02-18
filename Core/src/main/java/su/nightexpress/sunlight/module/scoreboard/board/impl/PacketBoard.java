@@ -8,19 +8,22 @@ import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerRe
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerScoreboardObjective;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerUpdateScore;
 import io.github.retrooper.packetevents.adventure.serializer.gson.GsonComponentSerializer;
+import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import su.nightexpress.nightcore.util.text.NightMessage;
-import su.nightexpress.sunlight.module.scoreboard.ScoreboardModule;
-import su.nightexpress.sunlight.module.scoreboard.board.BoardConfig;
+import su.nightexpress.nightcore.bridge.paper.PaperBridge;
+import su.nightexpress.nightcore.util.Version;
+import su.nightexpress.nightcore.util.bridge.Software;
+import su.nightexpress.nightcore.util.placeholder.PlaceholderContext;
+import su.nightexpress.nightcore.util.text.night.NightMessage;
+import su.nightexpress.sunlight.module.scoreboard.board.BoardDefinition;
 
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class PacketBoard extends AbstractBoard<PacketWrapper<?>> {
 
-    public PacketBoard(@NotNull Player player, @NotNull ScoreboardModule module, @NotNull BoardConfig boardConfig) {
-        super(player, module, boardConfig);
+    public PacketBoard(@NotNull Player player, @NotNull PlaceholderContext placeholderContext, @NotNull BoardDefinition boardDefinition) {
+        super(player, placeholderContext, boardDefinition);
     }
 
     @Override
@@ -35,7 +38,7 @@ public class PacketBoard extends AbstractBoard<PacketWrapper<?>> {
         return new WrapperPlayServerScoreboardObjective(
             this.identifier,
             objectiveMode,
-            GsonComponentSerializer.gson().deserialize(NightMessage.asJson(displayName)),
+            adaptComponent(displayName),
             WrapperPlayServerScoreboardObjective.RenderType.INTEGER,
             ScoreFormat.blankScore()
         );
@@ -57,7 +60,7 @@ public class PacketBoard extends AbstractBoard<PacketWrapper<?>> {
             Optional.of(score)
         );
 
-        scorePacket.setEntityDisplayName(GsonComponentSerializer.gson().deserialize(NightMessage.asJson(text)));
+        scorePacket.setEntityDisplayName(adaptComponent(text));
         scorePacket.setScoreFormat(ScoreFormat.blankScore());
 
         return scorePacket;
@@ -70,19 +73,17 @@ public class PacketBoard extends AbstractBoard<PacketWrapper<?>> {
     }
 
     @Override
-    @NotNull
-    protected PacketWrapper<?> createLegacyTeamPacket(@NotNull String scoreId, int score, @NotNull String text, @NotNull AtomicBoolean result) {
-        throw new UnsupportedOperationException("Not supported!");
-    }
-
-    @Override
-    @NotNull
-    protected PacketWrapper<?> createLegacyTeamRemovePacket(@NotNull String scoreId) {
-        throw new UnsupportedOperationException("Not supported!");
-    }
-
-    @Override
     protected void sendPacket(@NotNull Player player, @NotNull PacketWrapper<?> wrapper) {
         PacketEvents.getAPI().getPlayerManager().sendPacket(player, wrapper);
+    }
+
+    @NotNull
+    private static Component adaptComponent(@NotNull String string) {
+        if (Version.isPaper()) {
+            return ((PaperBridge)Software.get()).getTextComponentAdapter().adaptComponent(NightMessage.parse(string));
+        }
+        else {
+            return GsonComponentSerializer.gson().deserialize(NightMessage.asJson(string));
+        }
     }
 }

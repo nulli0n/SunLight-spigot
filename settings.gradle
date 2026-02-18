@@ -1,0 +1,10 @@
+// Define the name of the root project.
+rootProject.name = 'SunLight'
+
+// Include all the sub-modules that are part of this project.
+include 'Core'
+include 'NMS'
+include 'API'
+include 'MC_1_21_8'
+include 'MC_1_21_10'
+include 'MC_1_21_11'

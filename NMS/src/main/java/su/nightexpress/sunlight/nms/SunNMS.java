@@ -6,7 +6,7 @@ import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.jetbrains.annotations.NotNull;
-import su.nightexpress.sunlight.api.MenuType;
+import su.nightexpress.sunlight.api.PortableContainer;
 
 import java.util.UUID;
 
@@ -26,7 +26,7 @@ public interface SunNMS {
 
     void teleport(@NotNull Player player, @NotNull Location location);
 
-    void openContainer(@NotNull Player player, @NotNull MenuType menuType);
+    void openContainer(@NotNull Player player, @NotNull PortableContainer menuType);
 
     void dropFallingContent(@NotNull FallingBlock fallingBlock);
 }

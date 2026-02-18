@@ -5,9 +5,9 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import su.nightexpress.nightcore.manager.AbstractManager;
 import su.nightexpress.sunlight.SunLightPlugin;
-import su.nightexpress.sunlight.core.user.settings.SettingRegistry;
-import su.nightexpress.sunlight.data.user.SunUser;
-import su.nightexpress.sunlight.core.user.settings.Setting;
+import su.nightexpress.sunlight.user.property.UserPropertyRegistry;
+import su.nightexpress.sunlight.user.SunUser;
+import su.nightexpress.sunlight.user.property.UserProperty;
 import su.nightexpress.sunlight.module.extras.ExtrasModule;
 import su.nightexpress.sunlight.module.extras.config.ExtrasConfig;
 
@@ -17,7 +17,7 @@ import java.util.List;
 
 public class SortManager extends AbstractManager<SunLightPlugin> {
 
-    public static final Setting<Boolean> SETTING_CHEST_SORT = SettingRegistry.register(Setting.create("chest_sort", false, true));
+    public static final UserProperty<Boolean> SETTING_CHEST_SORT = UserProperty.create("chest_sort", Boolean.class, false, true);
 
     //private final ExtrasModule module;
 
@@ -29,6 +29,7 @@ public class SortManager extends AbstractManager<SunLightPlugin> {
     @Override
     protected void onLoad() {
         this.loadCommands();
+        UserPropertyRegistry.register(SETTING_CHEST_SORT);
 
         this.addListener(new SortListener(this.plugin, this));
     }
@@ -39,11 +40,11 @@ public class SortManager extends AbstractManager<SunLightPlugin> {
     }
 
     private void loadCommands() {
-        SortCommand.load(this.plugin, this);
+        // TODO SortCommand.load(this.plugin, this);
     }
 
     public static boolean isChestSortEnabled(@NotNull SunUser user) {
-        return user.getSettings().get(SETTING_CHEST_SORT);
+        return user.getPropertyOrDefault(SETTING_CHEST_SORT);
     }
 
     @NotNull

@@ -1,12 +1,8 @@
 package su.nightexpress.sunlight.module.chat.report;
 
-import org.jetbrains.annotations.NotNull;
-import su.nightexpress.nightcore.manager.SimpleManager;
-import su.nightexpress.sunlight.SunLightPlugin;
+public interface ReportHandler {
 
-public abstract class ReportHandler extends SimpleManager<SunLightPlugin> {
+    void load();
 
-    public ReportHandler(@NotNull SunLightPlugin plugin) {
-        super(plugin);
-    }
+    void unload();
 }

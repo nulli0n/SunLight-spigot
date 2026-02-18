@@ -11,7 +11,6 @@ import java.util.concurrent.TimeUnit;
 public class StoredLocation {
 
     private final String   worldName;
-    //private final BlockPos blockPos;
     private final double x;
     private final double y;
     private final double z;
@@ -44,19 +43,12 @@ public class StoredLocation {
         if (world == null) return null;
 
         return new Location(world, x, y, z);
-
-        //return this.blockPos.toLocation(world);
     }
 
     @NotNull
     public String getWorldName() {
         return worldName;
     }
-
-//    @NotNull
-//    public BlockPos getBlockPos() {
-//        return blockPos;
-//    }
 
     public long getExpireDate() {
         return expireDate;

@@ -1452,7 +1452,7 @@ Kits:
       - <lgray>¡Obtuviste el kit <lyellow>%kit_name%</lyellow>!</lgray>
     Error:
       NoPermission: <lred>¡No tienes permisos para usar este kit!</lred>
-      NotEnoughFunds: <lred>¡No puedes permitirte este kit! Necesitas <lred>$%kit_cost_money%</lred>.</lred>
+      NotEnoughFunds: '<lred>¡No puedes permitirte este kit! Necesitas <lred>$%kit_cost_money%</lred>.</lred>'
       Cooldown:
         Expirable: <lred>Puedes usar este kit de nuevo en <lred>%cooldown%</lred>.</lred>
         OneTimed: <lred>Ya has usado este kit. No puedes usarlo más.</lred>

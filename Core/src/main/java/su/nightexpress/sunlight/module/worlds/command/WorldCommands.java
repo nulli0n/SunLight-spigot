@@ -2,18 +2,16 @@ package su.nightexpress.sunlight.module.worlds.command;
 
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import su.nightexpress.nightcore.command.experimental.CommandContext;
-import su.nightexpress.nightcore.command.experimental.argument.ArgumentTypes;
-import su.nightexpress.nightcore.command.experimental.argument.CommandArgument;
-import su.nightexpress.nightcore.command.experimental.argument.ParsedArguments;
-import su.nightexpress.nightcore.command.experimental.builder.ArgumentBuilder;
-import su.nightexpress.nightcore.command.experimental.builder.DirectNodeBuilder;
-import su.nightexpress.nightcore.command.experimental.node.DirectNode;
-import su.nightexpress.nightcore.config.FileConfig;
+import su.nightexpress.nightcore.commands.Arguments;
+import su.nightexpress.nightcore.commands.Commands;
+import su.nightexpress.nightcore.commands.builder.ArgumentNodeBuilder;
+import su.nightexpress.nightcore.commands.context.CommandContext;
+import su.nightexpress.nightcore.commands.context.ParsedArguments;
+import su.nightexpress.nightcore.commands.exceptions.CommandSyntaxException;
+import su.nightexpress.nightcore.core.config.CoreLang;
 import su.nightexpress.sunlight.SunLightPlugin;
 import su.nightexpress.sunlight.command.CommandArguments;
-import su.nightexpress.sunlight.command.CommandRegistry;
-import su.nightexpress.sunlight.command.template.CommandTemplate;
+import su.nightexpress.sunlight.command.provider.type.AbstractCommandProvider;
 import su.nightexpress.sunlight.module.worlds.WorldsModule;
 import su.nightexpress.sunlight.module.worlds.config.WorldsLang;
 import su.nightexpress.sunlight.module.worlds.config.WorldsPerms;
@@ -22,9 +20,10 @@ import su.nightexpress.sunlight.module.worlds.util.DeletionType;
 import su.nightexpress.sunlight.module.worlds.util.Placeholders;
 
 import java.util.ArrayList;
+import java.util.Optional;
 import java.util.function.Predicate;
 
-public class WorldCommands {
+public class WorldCommands extends AbstractCommandProvider {
 
     public static final String NODE_CREATE = "world_create";
     public static final String NODE_DELETE = "world_delete";
@@ -32,157 +31,127 @@ public class WorldCommands {
     public static final String NODE_LOAD   = "world_load";
     public static final String NODE_UNLOAD = "world_unload";
 
-    public static void load(@NotNull SunLightPlugin plugin, @NotNull WorldsModule module) {
-        CommandRegistry.registerDirectExecutor(NODE_CREATE, (template, config) -> builderCreate(plugin, module, template, config));
-        CommandRegistry.registerDirectExecutor(NODE_DELETE, (template, config) -> builderDelete(plugin, module, template, config));
-        CommandRegistry.registerDirectExecutor(NODE_EDITOR, (template, config) -> builderEditor(plugin, module, template, config));
-        CommandRegistry.registerDirectExecutor(NODE_LOAD, (template, config) -> builderLoad(plugin, module, template, config));
-        CommandRegistry.registerDirectExecutor(NODE_UNLOAD, (template, config) -> builderUnload(plugin, module, template, config));
+    private final WorldsModule module;
 
-        CommandRegistry.addTemplate("worldmanager", CommandTemplate.group(new String[]{"worldmanager"},
-            "World commands.",
-            WorldsPerms.PREFIX_COMMAND + "worldmanager",
-            CommandTemplate.direct(new String[]{"create"}, NODE_CREATE),
-            CommandTemplate.direct(new String[]{"delete"}, NODE_DELETE),
-            CommandTemplate.direct(new String[]{"editor"}, NODE_EDITOR),
-            CommandTemplate.direct(new String[]{"load"}, NODE_LOAD),
-            CommandTemplate.direct(new String[]{"unload"}, NODE_UNLOAD)
-        ));
-
-        CommandRegistry.addTemplate("createworld", CommandTemplate.direct(new String[]{"createworld"}, NODE_CREATE));
-        CommandRegistry.addTemplate("deleteworld", CommandTemplate.direct(new String[]{"deleteworld"}, NODE_DELETE));
-        CommandRegistry.addTemplate("editworld", CommandTemplate.direct(new String[]{"editworld"}, NODE_EDITOR));
-        CommandRegistry.addTemplate("loadworld", CommandTemplate.direct(new String[]{"loadworld"}, NODE_LOAD));
-        CommandRegistry.addTemplate("unloadworld", CommandTemplate.direct(new String[]{"unloadworld"}, NODE_UNLOAD));
+    public WorldCommands(@NotNull SunLightPlugin plugin, @NotNull WorldsModule module) {
+        super(plugin);
+        this.module = module;
     }
 
-    @NotNull
-    private static ArgumentBuilder<WorldData> dataArgument(@NotNull WorldsModule module) {
-        return CommandArgument.builder(CommandArguments.NAME, module::getWorldData)
-            .required()
-            .localized(WorldsLang.COMMAND_ARGUMENT_NAME_NAME)
-            .customFailure(WorldsLang.ERROR_COMMAND_INVALID_WORLD_DATA_ARGUMENT)
-            ;
-    }
-
-    @NotNull
-    public static DirectNodeBuilder builderCreate(@NotNull SunLightPlugin plugin, @NotNull WorldsModule module, @NotNull CommandTemplate template, @NotNull FileConfig config) {
-        return DirectNode.builder(plugin, template.getAliases())
+    @Override
+    public void registerDefaults() {
+        this.registerLiteral(NODE_CREATE, true, new String[]{"createworld"}, builder -> builder
             .description(WorldsLang.COMMAND_CREATE_WORLD_DESC)
             .permission(WorldsPerms.COMMAND_WORLDS_CREATE)
-            .withArgument(ArgumentTypes.string(CommandArguments.NAME).required().localized(WorldsLang.COMMAND_ARGUMENT_NAME_NAME))
-            .executes((context, arguments) -> createWorld(plugin, module, context, arguments))
-            ;
+            .withArguments(Arguments.string(CommandArguments.NAME).localized(CoreLang.COMMAND_ARGUMENT_NAME_NAME))
+            .executes(this::createWorld)
+        );
+
+        this.registerLiteral(NODE_DELETE, true, new String[]{"deleteworld"}, builder -> builder
+            .description(WorldsLang.COMMAND_DELETE_WORLD_DESC)
+            .permission(WorldsPerms.COMMAND_WORLDS_DELETE)
+            .withArguments(dataArgument(module).suggestions((reader, context) -> new ArrayList<>(module.getDataMap().keySet())))
+            .executes(this::deleteWorld)
+        );
+
+        this.registerLiteral(NODE_EDITOR, true, new String[]{"editworld"}, builder -> builder
+            .playerOnly()
+            .description(WorldsLang.COMMAND_EDITOR_DESC)
+            .permission(WorldsPerms.COMMAND_WORLDS_EDITOR)
+            .executes(this::openEditor)
+        );
+
+        this.registerLiteral(NODE_LOAD, true, new String[]{"loadworld"}, builder -> builder
+            .description(WorldsLang.COMMAND_LOAD_WORLD_DESC)
+            .permission(WorldsPerms.COMMAND_WORLDS_LOAD)
+            .withArguments(dataArgument(module).suggestions((reader, context) -> module.getDatas().stream().filter(Predicate.not(WorldData::isLoaded)).map(WorldData::getId).toList()))
+            .executes(this::loadWorld)
+        );
+
+        this.registerLiteral(NODE_UNLOAD, true, new String[]{"unloadworld"}, builder -> builder
+            .description(WorldsLang.COMMAND_UNLOAD_WORLD_DESC)
+            .permission(WorldsPerms.COMMAND_WORLDS_UNLOAD)
+            .withArguments(dataArgument(module).suggestions((reader, context) -> module.getDatas().stream().filter(WorldData::isLoaded).map(WorldData::getId).toList()))
+            .executes(this::unloadWorld)
+        );
+
+        this.registerRoot("world_manager", true, new String[]{"worldmanager"},
+            map -> {
+            map.put(NODE_CREATE, "create");
+            map.put(NODE_DELETE, "delete");
+            map.put(NODE_EDITOR, "editor");
+            map.put(NODE_LOAD, "load");
+            map.put(NODE_UNLOAD, "unload");
+            },
+            builder -> builder.description(WorldsLang.COMMAND_WORLDS_ROOT_DESC).permission(WorldsPerms.COMMAND_WORLDS_ROOT)
+        );
     }
 
-    public static boolean createWorld(@NotNull SunLightPlugin plugin, @NotNull WorldsModule module, @NotNull CommandContext context, @NotNull ParsedArguments arguments) {
-        String name = arguments.getStringArgument(CommandArguments.NAME);
+    @NotNull
+    private static ArgumentNodeBuilder<WorldData> dataArgument(@NotNull WorldsModule module) {
+        return Commands.argument(CommandArguments.NAME, (context, str) ->
+                Optional.ofNullable(module.getWorldData(str)).orElseThrow(() -> CommandSyntaxException.custom(WorldsLang.ERROR_COMMAND_INVALID_WORLD_DATA_ARGUMENT))
+            )
+            .localized(CoreLang.COMMAND_ARGUMENT_NAME_NAME);
+    }
+
+    private boolean createWorld(@NotNull CommandContext context, @NotNull ParsedArguments arguments) {
+        String name = arguments.getString(CommandArguments.NAME);
         WorldData worldData = module.createWorldData(name);
 
         if (worldData == null) {
-            context.send(WorldsLang.COMMAND_CREATE_WORLD_ERROR.getMessage());
+            context.send(WorldsLang.COMMAND_CREATE_WORLD_ERROR);
             return false;
         }
 
-        Player player = context.getExecutor();
+        Player player = context.getPlayer();
         if (player != null) {
             module.openGenerationSettings(player, worldData);
         }
 
-        context.send(WorldsLang.COMMAND_CREATE_WORLD_DONE.getMessage().replace(Placeholders.WORLD_ID, worldData.getId()));
+        context.send(WorldsLang.COMMAND_CREATE_WORLD_DONE, replacer -> replacer.replace(Placeholders.WORLD_ID, worldData.getId()));
         return true;
     }
 
-
-
-
-    @NotNull
-    public static DirectNodeBuilder builderDelete(@NotNull SunLightPlugin plugin, @NotNull WorldsModule module, @NotNull CommandTemplate template, @NotNull FileConfig config) {
-        return DirectNode.builder(plugin, template.getAliases())
-            .description(WorldsLang.COMMAND_DELETE_WORLD_DESC)
-            .permission(WorldsPerms.COMMAND_WORLDS_DELETE)
-            .withArgument(dataArgument(module).withSamples(context -> new ArrayList<>(module.getDataMap().keySet())))
-            .executes((context, arguments) -> deleteWorld(plugin, module, context, arguments))
-            ;
-    }
-
-    public static boolean deleteWorld(@NotNull SunLightPlugin plugin, @NotNull WorldsModule module, @NotNull CommandContext context, @NotNull ParsedArguments arguments) {
-        WorldData worldData = arguments.getArgument(CommandArguments.NAME, WorldData.class);
+    private boolean deleteWorld(@NotNull CommandContext context, @NotNull ParsedArguments arguments) {
+        WorldData worldData = arguments.get(CommandArguments.NAME, WorldData.class);
 
         if (!worldData.delete(DeletionType.FULL)) {
-            context.send(WorldsLang.COMMAND_DELETE_WORLD_ERROR.getMessage().replace(Placeholders.WORLD_ID, worldData.getId()));
+            context.send(WorldsLang.COMMAND_DELETE_WORLD_ERROR, replacer -> replacer.replace(Placeholders.WORLD_ID, worldData.getId()));
             return false;
         }
 
-        context.send(WorldsLang.COMMAND_DELETE_WORLD_DONE.getMessage().replace(Placeholders.WORLD_ID, worldData.getId()));
+        context.send(WorldsLang.COMMAND_DELETE_WORLD_DONE, replacer -> replacer.replace(Placeholders.WORLD_ID, worldData.getId()));
         return true;
     }
 
-
-
-    @NotNull
-    public static DirectNodeBuilder builderEditor(@NotNull SunLightPlugin plugin, @NotNull WorldsModule module, @NotNull CommandTemplate template, @NotNull FileConfig config) {
-        return DirectNode.builder(plugin, template.getAliases())
-            .playerOnly()
-            .description(WorldsLang.COMMAND_EDITOR_DESC)
-            .permission(WorldsPerms.COMMAND_WORLDS_EDITOR)
-            .executes((context, arguments) -> openEditor(plugin, module, context, arguments))
-            ;
-    }
-
-    public static boolean openEditor(@NotNull SunLightPlugin plugin, @NotNull WorldsModule module, @NotNull CommandContext context, @NotNull ParsedArguments arguments) {
-        Player player = context.getExecutor();
-        if (player == null) return false;
-
+    private boolean openEditor(@NotNull CommandContext context, @NotNull ParsedArguments arguments) {
+        Player player = context.getPlayerOrThrow();
         module.openEditor(player);
         return true;
     }
 
-
-
-    @NotNull
-    public static DirectNodeBuilder builderLoad(@NotNull SunLightPlugin plugin, @NotNull WorldsModule module, @NotNull CommandTemplate template, @NotNull FileConfig config) {
-        return DirectNode.builder(plugin, template.getAliases())
-            .description(WorldsLang.COMMAND_LOAD_WORLD_DESC)
-            .permission(WorldsPerms.COMMAND_WORLDS_LOAD)
-            .withArgument(dataArgument(module).withSamples(context -> module.getDatas().stream().filter(Predicate.not(WorldData::isLoaded)).map(WorldData::getId).toList()))
-            .executes((context, arguments) -> loadWorld(plugin, module, context, arguments))
-            ;
-    }
-
-    public static boolean loadWorld(@NotNull SunLightPlugin plugin, @NotNull WorldsModule module, @NotNull CommandContext context, @NotNull ParsedArguments arguments) {
-        WorldData worldData = arguments.getArgument(CommandArguments.NAME, WorldData.class);
+    private boolean loadWorld(@NotNull CommandContext context, @NotNull ParsedArguments arguments) {
+        WorldData worldData = arguments.get(CommandArguments.NAME, WorldData.class);
 
         if (worldData.loadWorld() == null) {
-            context.send(WorldsLang.COMMAND_LOAD_WORLD_ERROR.getMessage().replace(Placeholders.WORLD_ID, worldData.getId()));
+            context.send(WorldsLang.COMMAND_LOAD_WORLD_ERROR, replacer -> replacer.replace(Placeholders.WORLD_ID, worldData.getId()));
             return false;
         }
 
-        context.send(WorldsLang.COMMAND_LOAD_WORLD_DONE.getMessage().replace(Placeholders.WORLD_ID, worldData.getId()));
+        context.send(WorldsLang.COMMAND_LOAD_WORLD_DONE, replacer -> replacer.replace(Placeholders.WORLD_ID, worldData.getId()));
         return true;
     }
 
+    private boolean unloadWorld(@NotNull CommandContext context, @NotNull ParsedArguments arguments) {
+        WorldData worldData = arguments.get(CommandArguments.NAME, WorldData.class);
 
-
-    @NotNull
-    public static DirectNodeBuilder builderUnload(@NotNull SunLightPlugin plugin, @NotNull WorldsModule module, @NotNull CommandTemplate template, @NotNull FileConfig config) {
-        return DirectNode.builder(plugin, template.getAliases())
-            .description(WorldsLang.COMMAND_UNLOAD_WORLD_DESC)
-            .permission(WorldsPerms.COMMAND_WORLDS_UNLOAD)
-            .withArgument(dataArgument(module).withSamples(context -> module.getDatas().stream().filter(WorldData::isLoaded).map(WorldData::getId).toList()))
-            .executes((context, arguments) -> unloadWorld(plugin, module, context, arguments))
-            ;
-    }
-
-    public static boolean unloadWorld(@NotNull SunLightPlugin plugin, @NotNull WorldsModule module, @NotNull CommandContext context, @NotNull ParsedArguments arguments) {
-        WorldData worldData = arguments.getArgument(CommandArguments.NAME, WorldData.class);
-
-        if (!worldData.unloadWorld()) {
-            context.send(WorldsLang.COMMAND_UNLOAD_WORLD_ERROR.getMessage());
+        if (!this.module.unloadWorld(worldData)) {
+            context.send(WorldsLang.COMMAND_UNLOAD_WORLD_ERROR);
             return false;
         }
 
-        context.send(WorldsLang.COMMAND_UNLOAD_WORLD_DONE.getMessage().replace(Placeholders.WORLD_ID, worldData.getId()));
+        context.send(WorldsLang.COMMAND_UNLOAD_WORLD_DONE, replacer -> replacer.replace(Placeholders.WORLD_ID, worldData.getId()));
         return true;
     }
 }

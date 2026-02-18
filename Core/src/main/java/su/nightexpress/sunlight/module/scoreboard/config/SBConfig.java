@@ -1,80 +1,59 @@
 package su.nightexpress.sunlight.module.scoreboard.config;
 
 import org.jetbrains.annotations.NotNull;
-import su.nightexpress.nightcore.config.ConfigValue;
-import su.nightexpress.nightcore.util.Lists;
+import su.nightexpress.nightcore.config.FileConfig;
+import su.nightexpress.nightcore.configuration.AbstractConfig;
+import su.nightexpress.nightcore.configuration.ConfigProperty;
+import su.nightexpress.nightcore.configuration.ConfigType;
+import su.nightexpress.nightcore.configuration.ConfigTypes;
+import su.nightexpress.nightcore.integration.permission.PermissionPlugins;
 import su.nightexpress.nightcore.util.Plugins;
-import su.nightexpress.sunlight.module.scoreboard.board.BoardConfig;
-import su.nightexpress.sunlight.utils.DynamicText;
+import su.nightexpress.sunlight.SLPlaceholders;
+import su.nightexpress.sunlight.module.scoreboard.ScoreboardDefaults;
+import su.nightexpress.sunlight.module.scoreboard.board.BoardDefinition;
 
-import java.util.*;
+import java.util.Map;
 
-import static su.nightexpress.sunlight.Placeholders.*;
-import static su.nightexpress.nightcore.util.text.tag.Tags.*;
+import static su.nightexpress.nightcore.util.placeholder.CommonPlaceholders.*;
 
-public class SBConfig {
+public class SBConfig extends AbstractConfig {
 
-    private static final String DEF_ANIMATION_1 = "store";
-    
-    public static final String FILE_ANIMATIONS = "animations.yml";
+    private static final ConfigType<BoardDefinition> BOARD_DEFINITION_CONFIG_TYPE = ConfigType.of(
+        BoardDefinition::read,
+        FileConfig::set
+    );
 
-    public static final ConfigValue<Map<String, BoardConfig>> BOARD_CONFIGS = ConfigValue.forMap("Boards",
-        (cfg, path, id) -> BoardConfig.read(cfg, path + "." + id, id),
-        (cfg, path, map) -> map.forEach((id, conf) -> conf.write(cfg, path + "." + id)),
-        () -> Map.of(DEFAULT, new BoardConfig(DEFAULT,
-            10,
-            1,
-            Lists.newSet(WILDCARD),
-            Lists.newSet(WILDCARD),
-            GRADIENT.enclose("#84CCFB", "#C9E5FD", BOLD.enclose("SampleSMP")),
-            Lists.newList(
-                GRAY.enclose("      %server_time_MM/dd/yyyy%"),
-                " ",
-                BLUE.enclose(PLAYER_DISPLAY_NAME),
-                BLUE.enclose(" ▎ " + GRAY.enclose("Rank:") + " " + WHITE.enclose("%vault_rank%")),
-                BLUE.enclose(" ▎ " + GRAY.enclose("Balance:") + " " + "$%vault_eco_balance_formatted%"),
-                BLUE.enclose(" ▎ " + GRAY.enclose("Kills:") + " " + WHITE.enclose("%statistic_player_kills%")),
-                BLUE.enclose(" ▎ " + GRAY.enclose("Deaths:") + " " + WHITE.enclose("%statistic_deaths%")),
-                " ",
-                GREEN.enclose("Location"),
-                GREEN.enclose(" ▎ " + GRAY.enclose("Biome:") + " " + WHITE.enclose("%player_biome_capitalized%")),
-                GREEN.enclose(" ▎ " + GRAY.enclose("World:") + " " + WHITE.enclose("%player_world%")),
-                " ",
-                DynamicText.PLACEHOLDER.apply(DEF_ANIMATION_1)
-            ))),
-        "Individual per-player scoreboard format based on player's rank and world.",
-        "[You must have " + Plugins.VAULT + " with compatible Permissions plugins installed for this feature to work properly]",
+    private final ConfigProperty<Map<String, BoardDefinition>> boardDefinitions = this.addProperty(ConfigTypes.forMapWithLowerKeys(BOARD_DEFINITION_CONFIG_TYPE),
+        "Boards",
+        ScoreboardDefaults.getDefaultBoardDefinitions(),
+        "Here you can create your own, custom scoreboard formats.",
         "",
-        "If multiple scoreboards are available for a player, the one with the greatest priority will be used.",
-        "If no scoreboard is available for a player, the one labeled '" + DEFAULT + "' will be used (if present).",
+        "[ SETTINGS DESCRIPTION ]",
+        "├── Update_Interval:",
+        "│     -> Scoreboard update interval (in game ticks).",
+        "├── Priority:",
+        "│     -> Sets format priority. When multiple formats are available, the one with the highest priority is used.",
+        "├── Worlds:",
+        "│     -> List of worlds, where this format is available. Add '%s' to allow all worlds.".formatted(SLPlaceholders.WILDCARD),
+        "├── Groups:",
+        "│     -> List of ranks (permission groups) to which this format is available. Add '%s' to allow all ranks.".formatted(SLPlaceholders.WILDCARD),
+        "└── Title + Lines:",
+        "      -> Sets the text displayed at top (Title) and body (Lines) of the scoreboard.",
+        "      [>] Text Formations: " + SLPlaceholders.URL_WIKI_TEXT,
+        "      [>] Placeholders Available:",
+        "          - %s - include dynamic text (animation) from the '%s'.".formatted(SLPlaceholders.ANIMATION.apply("[name]"), ScoreboardDefaults.FILE_ANIMATIONS),
+        "          - %s - Player name.".formatted(PLAYER_NAME),
+        "          - %s - Player display (custom) name.".formatted(PLAYER_DISPLAY_NAME),
+        "          - %s - Player prefix.".formatted(PLAYER_PREFIX),
+        "          - %s - Player suffix.".formatted(PLAYER_SUFFIX),
+        "          - %s - Player world.".formatted(PLAYER_WORLD),
+        "          - %s - https://wiki.placeholderapi.com/".formatted(Plugins.PLACEHOLDER_API),
         "",
-        "Add '" + WILDCARD + "' to the 'Groups' list to make scoreboard available for any rank.",
-        "Add '" + WILDCARD + "' to the 'Worlds' list to make scoreboard available in any world.",
-        "",
-        "Use '" + DynamicText.PLACEHOLDER.apply("[name]") + "' placeholder to include dynamic text (animation) from the " + FILE_ANIMATIONS + " config file.",
-        "Text and Color Formations: " + WIKI_TEXT_URL,
-        "You can use " + Plugins.PLACEHOLDER_API + " placeholders."
+        "[*] Requires %s OR %s with a compatible Permissions plugin for the feature to work properly.".formatted(PermissionPlugins.LUCK_PERMS, PermissionPlugins.VAULT)
     );
 
     @NotNull
-    public static List<DynamicText> getDefaultAnimations() {
-        List<DynamicText> list = new ArrayList<>();
-
-        list.add(new DynamicText(DEF_ANIMATION_1, Lists.newList(
-            GRAY.enclose("play.servermc.com"),
-            GRAY.enclose(WHITE.enclose("play") + ".servermc.com"),
-            GRAY.enclose("play.servermc.com"),
-            GRAY.enclose("play." + WHITE.enclose("servermc") + ".com"),
-            GRAY.enclose("play.servermc.com"),
-            GRAY.enclose("play.servermc." + WHITE.enclose("com")),
-            GRAY.enclose("play.servermc.com"),
-            GRAY.enclose("play.servermc.com"),
-            GRAY.enclose("play.servermc.com"),
-            GRAY.enclose("play.servermc.com"),
-            GRAY.enclose("play.servermc.com"),
-            GRAY.enclose("play.servermc.com")
-        ), 500));
-        
-        return list;
+    public Map<String, BoardDefinition> getBoardDefinitionMap() {
+        return this.boardDefinitions.get();
     }
 }

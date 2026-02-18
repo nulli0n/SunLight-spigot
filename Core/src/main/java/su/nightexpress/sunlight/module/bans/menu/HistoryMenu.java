@@ -3,334 +3,287 @@ package su.nightexpress.sunlight.module.bans.menu;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.InventoryView;
+import org.bukkit.inventory.MenuType;
 import org.jetbrains.annotations.NotNull;
-import su.nightexpress.nightcore.config.ConfigValue;
 import su.nightexpress.nightcore.config.FileConfig;
-import su.nightexpress.nightcore.menu.MenuOptions;
-import su.nightexpress.nightcore.menu.MenuSize;
-import su.nightexpress.nightcore.menu.MenuViewer;
-import su.nightexpress.nightcore.menu.api.AutoFill;
-import su.nightexpress.nightcore.menu.api.AutoFilled;
-import su.nightexpress.nightcore.menu.impl.ConfigMenu;
-import su.nightexpress.nightcore.menu.item.ItemHandler;
-import su.nightexpress.nightcore.menu.item.MenuItem;
-import su.nightexpress.nightcore.menu.link.Linked;
-import su.nightexpress.nightcore.menu.link.ViewLink;
-import su.nightexpress.nightcore.util.*;
+import su.nightexpress.nightcore.configuration.ConfigProperty;
+import su.nightexpress.nightcore.configuration.ConfigTypes;
+import su.nightexpress.nightcore.core.config.CoreLang;
+import su.nightexpress.nightcore.locale.LangContainer;
+import su.nightexpress.nightcore.locale.LangEntry;
+import su.nightexpress.nightcore.locale.entry.EnumLocale;
+import su.nightexpress.nightcore.locale.entry.IconLocale;
+import su.nightexpress.nightcore.ui.inventory.item.ItemPopulator;
+import su.nightexpress.nightcore.ui.inventory.item.ItemState;
+import su.nightexpress.nightcore.ui.inventory.item.MenuItem;
+import su.nightexpress.nightcore.ui.inventory.menu.AbstractObjectMenu;
+import su.nightexpress.nightcore.ui.inventory.viewer.ViewerContext;
+import su.nightexpress.nightcore.user.UserInfo;
+import su.nightexpress.nightcore.util.Lists;
+import su.nightexpress.nightcore.util.bukkit.NightItem;
+import su.nightexpress.nightcore.util.placeholder.PlaceholderContext;
+import su.nightexpress.sunlight.SLPlaceholders;
 import su.nightexpress.sunlight.SunLightPlugin;
-import su.nightexpress.sunlight.config.Lang;
-import su.nightexpress.sunlight.data.user.SunUser;
 import su.nightexpress.sunlight.module.bans.BansModule;
 import su.nightexpress.sunlight.module.bans.config.BansLang;
 import su.nightexpress.sunlight.module.bans.config.BansPerms;
-import su.nightexpress.sunlight.module.bans.punishment.PunishData;
+import su.nightexpress.sunlight.module.bans.punishment.PlayerPunishment;
 import su.nightexpress.sunlight.module.bans.punishment.PunishmentType;
 
-import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Predicate;
+import java.util.List;
 import java.util.stream.IntStream;
 
-import static su.nightexpress.nightcore.util.text.tag.Tags.*;
-import static su.nightexpress.sunlight.module.bans.util.Placeholders.*;
+import static su.nightexpress.nightcore.util.text.night.wrapper.TagWrappers.*;
+import static su.nightexpress.sunlight.module.bans.BansPlaceholders.*;
 
-public class HistoryMenu extends ConfigMenu<SunLightPlugin> implements AutoFilled<PunishData>, Linked<HistoryMenu.Source<?>> {
+public class HistoryMenu extends AbstractObjectMenu<HistoryMenu.Data> implements LangContainer {
 
-    private static final String FILE_NAME = "history.yml";
+    private static final EnumLocale<PunishmentType> TYPE_LOCALE = LangEntry.builder("Bans.UI.History.TypeName").enumeration(PunishmentType.class);
 
-    private static final String ACTION_EXPIRE = "%action_expire%";
-    private static final String ACTION_DELETE = "%action_delete%";
+    private static final IconLocale LOCALE_ACTIVE = LangEntry.iconBuilder("Bans.UI.History.Icon.Active")
+        .rawName(WHITE.wrap(SLPlaceholders.GENERIC_TYPE) + DARK_GRAY.wrap(" • " + GREEN.wrap("Active")))
+        .rawLore(
+            ITALIC.and(DARK_GRAY).wrap("\"" + PUNISHMENT_REASON + "\""),
+            "",
+            RED.wrap("➥ " + GRAY.wrap("Staff: ") + PUNISHMENT_WHO),
+            RED.wrap("➥ " + GRAY.wrap("Date: ") + PUNISHMENT_CREATION_DATE),
+            RED.wrap("➥ " + GRAY.wrap("Duration: ") + PUNISHMENT_DURATION),
+            "",
+            GOLD.wrap("⌛ " + GRAY.wrap("Expires in: ") + PUNISHMENT_EXPIRES_IN)
+        )
+        .build();
 
-    private final BansModule                      module;
-    private final ViewLink<HistoryMenu.Source<?>> link;
+    private static final IconLocale LOCALE_PAUSED = LangEntry.iconBuilder("Bans.UI.History.Icon.Paused")
+        .rawName(WHITE.wrap(SLPlaceholders.GENERIC_TYPE) + DARK_GRAY.wrap(" • " + YELLOW.wrap("Inactive")))
+        .rawLore(
+            ITALIC.and(DARK_GRAY).wrap("\"" + PUNISHMENT_REASON + "\""),
+            "",
+            RED.wrap("➥ " + GRAY.wrap("Staff: ") + PUNISHMENT_WHO),
+            RED.wrap("➥ " + GRAY.wrap("Date: ") + PUNISHMENT_CREATION_DATE),
+            RED.wrap("➥ " + GRAY.wrap("Duration: ") + PUNISHMENT_DURATION),
+            "",
+            GOLD.wrap("⌛ " + GRAY.wrap("Expires in: ") + PUNISHMENT_EXPIRES_IN)
+        )
+        .build();
 
-    private final ItemHandler showExpiredHandler;
-    private final ItemHandler sortModeHandler;
+    private static final IconLocale LOCALE_EXPIRED = LangEntry.iconBuilder("Bans.UI.History.Icon.Expired")
+        .rawName(WHITE.wrap(SLPlaceholders.GENERIC_TYPE) + DARK_GRAY.wrap(" • " + GREEN.wrap("Expired")))
+        .rawLore(
+            ITALIC.and(DARK_GRAY).wrap("\"" + PUNISHMENT_REASON + "\""),
+            "",
+            RED.wrap("➥ " + GRAY.wrap("Staff: ") + PUNISHMENT_WHO),
+            RED.wrap("➥ " + GRAY.wrap("Date: ") + PUNISHMENT_CREATION_DATE),
+            RED.wrap("➥ " + GRAY.wrap("Duration: ") + PUNISHMENT_DURATION),
+            "",
+            DARK_GREEN.wrap("⌛ " + GRAY.wrap("Expired: ") + PUNISHMENT_EXPIRATION_DATE)
+        )
+        .build();
+    
+    public record Data(@NotNull UserInfo userInfo, @NotNull PunishmentType type, @NotNull SortMode sortMode, boolean showExpired) {}
 
-    private Map<PunishmentType, String> typeNames;
+    private final SunLightPlugin plugin;
+    private final BansModule module;
 
-    private ItemStack activeItem;
-    private ItemStack expiredItem;
+    private NightItem historyActiveIcon;
+    private NightItem historyPausedIcon;
+    private NightItem histroyExpiredIcon;
 
-    private String       nameActive;
-    private List<String> loreActive;
-    private String       nameExpired;
-    private List<String> loreExpired;
-    private int[]        objectSlots;
-
-    private List<String> expireAction;
-    private List<String> deleteAction;
-
-    public abstract static class Source<T> {
-
-        public final T object;
-        public final PunishmentType type;
-
-        public boolean showExpired;
-        public SortMode sortMode;
-
-        public Source(@NotNull T object, @NotNull PunishmentType type) {
-            this.object = object;
-            this.type = type;
-            this.showExpired = true;
-            this.sortMode = SortMode.DATE;
-        }
-    }
-
-    static class PlayerSource extends Source<SunUser> {
-
-        public PlayerSource(@NotNull SunUser object, @NotNull PunishmentType type) {
-            super(object, type);
-        }
-    }
-
-    static class AddressSource extends Source<String> {
-
-        public AddressSource(@NotNull String object, @NotNull PunishmentType type) {
-            super(object, type);
-        }
-    }
+    private ItemPopulator<PlayerPunishment> populator;
 
     public HistoryMenu(@NotNull SunLightPlugin plugin, @NotNull BansModule module) {
-        super(plugin, FileConfig.loadOrExtract(plugin, module.getLocalUIPath(), FILE_NAME));
+        super(MenuType.GENERIC_9X5, BLACK.wrap("[%s] History for %s".formatted(SLPlaceholders.GENERIC_TYPE, SLPlaceholders.GENERIC_TARGET)), Data.class);
+        this.plugin = plugin;
         this.module = module;
-        this.link = new ViewLink<>();
 
-        this.addHandler(this.showExpiredHandler = new ItemHandler("show_expired", (viewer, event) -> {
-            Source<?> source = this.getLink(viewer);
-            source.showExpired = !source.showExpired;
-            this.runNextTick(() -> this.flush(viewer));
-        }));
-
-        this.addHandler(this.sortModeHandler = new ItemHandler("sort_mode", (viewer, event) -> {
-            Source<?> source = this.getLink(viewer);
-            source.sortMode = Lists.next(source.sortMode, sortMode -> sortMode != SortMode.NAME);
-            this.runNextTick(() -> this.flush(viewer));
-        }));
-
-        this.load();
-
-        this.getItems().forEach(menuItem -> {
-            menuItem.getOptions().addDisplayModifier((viewer, itemStack) -> {
-                if (menuItem.getHandler() == this.showExpiredHandler) {
-                    ItemReplacer.replace(itemStack, str -> str.replace(GENERIC_STATE, Lang.getEnabledOrDisabled(this.getLink(viewer).showExpired)));
-                }
-                else if (menuItem.getHandler() == this.sortModeHandler) {
-                    ItemReplacer.replace(itemStack, str -> str.replace(GENERIC_TYPE, BansLang.SORT_MODE.getLocalized(this.getLink(viewer).sortMode)));
-                }
-            });
-        });
+        this.plugin.injectLang(this);
     }
 
+    public boolean show(@NotNull Player player, @NotNull UserInfo userInfo, @NotNull PunishmentType type) {
+        return this.show(player, userInfo, type, SortMode.NEWEST, true);
+    }
+
+    private boolean show(@NotNull Player player, @NotNull UserInfo userInfo, @NotNull PunishmentType type, @NotNull SortMode mode, boolean showExpired) {
+        return this.show(this.plugin, player, new Data(userInfo, type, mode, showExpired));
+    }
+
+    @Override
     @NotNull
-    @Override
-    public ViewLink<HistoryMenu.Source<?>> getLink() {
-        return link;
-    }
+    protected String getRawTitle(@NotNull ViewerContext context) {
+        Data data = this.getObject(context);
 
-    public boolean openForPlayer(@NotNull Player player, @NotNull SunUser userInfo, @NotNull PunishmentType type) {
-        return this.open(player, new PlayerSource(userInfo, type));
-    }
-
-    public boolean openForIPBans(@NotNull Player player, @NotNull String address) {
-        return this.open(player, new AddressSource(address, PunishmentType.BAN));
+        return PlaceholderContext.builder()
+            .with(SLPlaceholders.GENERIC_TYPE, () -> TYPE_LOCALE.getLocalized(data.type))
+            .with(SLPlaceholders.GENERIC_TARGET, data.userInfo::name)
+            .build()
+            .apply(super.getRawTitle(context));
     }
 
     @Override
-    public void onPrepare(@NotNull MenuViewer viewer, @NotNull MenuOptions options) {
-        Source<?> source = this.getLink(viewer);
-        String target = null;
-        if (source instanceof AddressSource addressSource) {
-            target = addressSource.object;
-        }
-        else if (source instanceof PlayerSource playerSource) {
-            target = playerSource.object.getName();
-        }
+    public void registerActions() {
 
-        options.setTitle(options.getTitle()
-            .replace(PUNISHMENT_TARGET, String.valueOf(target))
-            .replace(GENERIC_TYPE, typeNames.getOrDefault(source.type, source.type.name()))
+    }
+
+    @Override
+    public void registerConditions() {
+
+    }
+
+    @Override
+    public void defineDefaultLayout() {
+        this.addNextPageItem(Material.ARROW, 41);
+        this.addPreviousPageItem(Material.ARROW, 39);
+
+        this.addBackgroundItem(Material.BLACK_STAINED_GLASS_PANE, IntStream.range(0, 9).toArray());
+        this.addBackgroundItem(Material.BLACK_STAINED_GLASS_PANE, IntStream.range(36, 45).toArray());
+
+        this.addDefaultButton("sort_mode", MenuItem.builder()
+            .defaultState(ItemState.defaultBuilder()
+                .icon(NightItem.fromType(Material.COMPARATOR)
+                    .setDisplayName(GOLD.wrap("Sorting Mode"))
+                    .setLore(List.of(
+                        DARK_GRAY.wrap("»" + GRAY.wrap(" Selected: ") + WHITE.wrap(SLPlaceholders.GENERIC_MODE)),
+                        "",
+                        GRAY.wrap("Sets display order."),
+                        "",
+                        GOLD.wrap("→ " + UNDERLINED.wrap("Click to toggle"))
+                    ))
+                )
+                .displayModifier((context, item) -> {
+                    item.replace(builder -> builder.with(SLPlaceholders.GENERIC_MODE, () -> BansLang.SORT_MODE.getLocalized(this.getObject(context).sortMode)));
+                })
+                .action(context -> {
+                    Data data = this.getObject(context);
+                    SortMode nextMode = Lists.next(data.sortMode);
+                    this.show(context.getPlayer(), data.userInfo, data.type, nextMode, data.showExpired);
+                })
+                .build()
+            )
+            .slots(43)
+            .build()
         );
 
-        this.autoFill(viewer);
-    }
-
-    @Override
-    protected void onReady(@NotNull MenuViewer viewer, @NotNull Inventory inventory) {
-
-    }
-
-    @Override
-    public void onAutoFill(@NotNull MenuViewer viewer, @NotNull AutoFill<PunishData> autoFill) {
-        Player player = viewer.getPlayer();
-
-        List<PunishData> list = new ArrayList<>();
-        Source<?> source = this.getLink(player);
-        AtomicInteger counter = new AtomicInteger(1);
-
-        if (source instanceof AddressSource addressSource) {
-            list.addAll(this.module.getIPPunishments(addressSource.object));
-        }
-        else if (source instanceof PlayerSource playerSource) {
-            list.addAll(module.getPlayerPunishments(playerSource.object.getId(), playerSource.type));
-        }
-
-        if (!source.showExpired) {
-            list.removeIf(Predicate.not(PunishData::isActive));
-        }
-
-        list.sort(Comparator.comparing(PunishData::isActive).reversed().thenComparing(source.sortMode.getComparator()));
-
-        autoFill.setSlots(this.objectSlots);
-        autoFill.setItems(list);
-        autoFill.setItemCreator(bannedData -> {
-            ItemStack item = new ItemStack(bannedData.isExpired() ? this.expiredItem : this.activeItem);
-
-            List<String> expireLore = !bannedData.isExpired() && player.hasPermission(BansPerms.PUNISHMENT_EXPIRE) ? this.expireAction : Collections.emptyList();
-            List<String> deleteLore = bannedData.isExpired() && player.hasPermission(BansPerms.PUNISHMENT_DELETE) ? this.deleteAction : Collections.emptyList();
-
-            ItemReplacer.create(item).hideFlags().trimmed()
-                .setDisplayName(bannedData.isExpired() ? this.nameExpired : this.nameActive)
-                .setLore(bannedData.isExpired() ? this.loreExpired : this.loreActive)
-                .replaceLoreExact(ACTION_EXPIRE, expireLore)
-                .replaceLoreExact(ACTION_DELETE, deleteLore)
-                .replace(bannedData.replacePlaceholders())
-                .replace(GENERIC_AMOUNT, NumberUtil.format(counter.getAndIncrement()))
-                .writeMeta();
-
-            return item;
-        });
-        autoFill.setClickAction(bannedData -> (viewer1, event) -> {
-            if (event.getClick() == ClickType.DROP && bannedData.isExpired()) {
-                if (!player.hasPermission(BansPerms.PUNISHMENT_DELETE)) return;
-
-                this.module.deletePunishment(bannedData, source.type);
-            }
-            else if (event.isShiftClick() && event.isRightClick() && !bannedData.isExpired()) {
-                if (!player.hasPermission(BansPerms.PUNISHMENT_EXPIRE)) return;
-
-                bannedData.expire();
-                this.plugin.runTaskAsync(task -> {
-                    this.module.getDataHandler().saveData(bannedData, source.type);
-                });
-            }
-            else return;
-
-            this.runNextTick(() -> this.flush(viewer));
-        });
-    }
-
-    @Override
-    @NotNull
-    protected MenuOptions createDefaultOptions() {
-        return new MenuOptions(BLACK.enclose(GENERIC_TYPE + " for " + PUNISHMENT_TARGET), MenuSize.CHEST_54);
-    }
-
-    @Override
-    @NotNull
-    protected List<MenuItem> createDefaultItems() {
-        List<MenuItem> list = new ArrayList<>();
-
-        ItemStack showExpiredItem = new ItemStack(Material.WRITABLE_BOOK);
-        ItemUtil.editMeta(showExpiredItem, meta -> {
-            meta.setDisplayName(LIGHT_YELLOW.enclose(BOLD.enclose("Show Expired")));
-            meta.setLore(Lists.newList(
-                LIGHT_GRAY.enclose("Status: " + LIGHT_YELLOW.enclose(GENERIC_STATE)),
-                "",
-                LIGHT_GRAY.enclose(LIGHT_YELLOW.enclose("[▶]") + " Click to " + LIGHT_YELLOW.enclose("toggle") + ".")
-            ));
-        });
-        list.add(new MenuItem(showExpiredItem).setPriority(10).setSlots(51).setHandler(this.showExpiredHandler));
-
-        ItemStack sortModeItem = new ItemStack(Material.COMPARATOR);
-        ItemUtil.editMeta(sortModeItem, meta -> {
-            meta.setDisplayName(LIGHT_YELLOW.enclose(BOLD.enclose("Sort Mode")));
-            meta.setLore(Lists.newList(
-                LIGHT_GRAY.enclose("Current: " + LIGHT_YELLOW.enclose(GENERIC_TYPE)),
-                "",
-                LIGHT_GRAY.enclose(LIGHT_YELLOW.enclose("[▶]") + " Click to " + LIGHT_YELLOW.enclose("switch") + ".")
-            ));
-        });
-        list.add(new MenuItem(sortModeItem).setPriority(10).setSlots(47).setHandler(this.sortModeHandler));
-
-        ItemStack close = ItemUtil.getSkinHead(SKIN_WRONG_MARK);
-        ItemUtil.editMeta(close, meta -> {
-            meta.setDisplayName(Lang.EDITOR_ITEM_CLOSE.getDefaultName());
-        });
-        list.add(new MenuItem(close).setPriority(10).setSlots(49).setHandler(ItemHandler.forClose(this)));
-
-        ItemStack nextPage = ItemUtil.getSkinHead(SKIN_ARROW_RIGHT);
-        ItemUtil.editMeta(nextPage, meta -> {
-            meta.setDisplayName(Lang.EDITOR_ITEM_NEXT_PAGE.getDefaultName());
-        });
-        list.add(new MenuItem(nextPage).setPriority(10).setSlots(53).setHandler(ItemHandler.forNextPage(this)));
-
-        ItemStack backPage = ItemUtil.getSkinHead(SKIN_ARROW_LEFT);
-        ItemUtil.editMeta(backPage, meta -> {
-            meta.setDisplayName(Lang.EDITOR_ITEM_PREVIOUS_PAGE.getDefaultName());
-        });
-        list.add(new MenuItem(backPage).setPriority(10).setSlots(45).setHandler(ItemHandler.forPreviousPage(this)));
-
-        return list;
-    }
-
-    @Override
-    protected void loadAdditional() {
-        this.typeNames = ConfigValue.forMap("Punishment.TypeName",
-            str -> StringUtil.getEnum(str, PunishmentType.class).orElse(null),
-            (cfg, path, id) -> cfg.getString(path + "." + id, ""),
-            (cfg, path, map) -> map.forEach((type, name) -> cfg.set(path + "." + type.name(), name)),
-            () -> Map.of(
-                PunishmentType.BAN, "Ban history",
-                PunishmentType.MUTE, "Mute history",
-                PunishmentType.WARN, "Warn history"
+        this.addDefaultButton("show_expired", MenuItem.builder()
+            .defaultState(ItemState.defaultBuilder()
+                .icon(NightItem.fromType(Material.CLOCK)
+                    .setDisplayName(YELLOW.wrap("Show Expired"))
+                    .setLore(List.of(
+                        DARK_GRAY.wrap("»" + GRAY.wrap(" Status: ") + WHITE.wrap(SLPlaceholders.GENERIC_STATE)),
+                        "",
+                        GRAY.wrap("Whether to show expired entries."),
+                        "",
+                        YELLOW.wrap("→ " + UNDERLINED.wrap("Click to toggle"))
+                    ))
+                )
+                .displayModifier((context, item) -> {
+                    item.replace(builder -> builder.with(SLPlaceholders.GENERIC_STATE, () -> CoreLang.STATE_ENABLED_DISALBED.get(this.getObject(context).showExpired)));
+                })
+                .action(context -> {
+                    Data data = this.getObject(context);
+                    this.show(context.getPlayer(), data.userInfo, data.type, data.sortMode, !data.showExpired);
+                })
+                .build()
             )
-        ).read(cfg);
+            .slots(37)
+            .build()
+        );
+    }
 
-        this.activeItem = ConfigValue.create("Punishment.Active.Icon",
-            new ItemStack(Material.RED_DYE)
-        ).read(cfg);
+    @Override
+    protected void onLoad(@NotNull FileConfig config) {
+        this.historyActiveIcon = ConfigProperty.of(ConfigTypes.NIGHT_ITEM, "History.Icon.Active", NightItem.fromType(Material.LIME_DYE)).resolveWithDefaults(config);
+        this.historyPausedIcon = ConfigProperty.of(ConfigTypes.NIGHT_ITEM, "History.Icon.Paused", NightItem.fromType(Material.YELLOW_DYE)).resolveWithDefaults(config);
+        this.histroyExpiredIcon = ConfigProperty.of(ConfigTypes.NIGHT_ITEM, "History.Icon.Expired", NightItem.fromType(Material.GRAY_DYE)).resolveWithDefaults(config);
 
-        this.expiredItem = ConfigValue.create("Punishment.Expired.Icon",
-            new ItemStack(Material.GRAY_DYE)
-        ).read(cfg);
+        int[] historySlots = ConfigProperty.of(ConfigTypes.INT_ARRAY, "History.Slots", IntStream.range(9, 36).toArray()).resolveWithDefaults(config);
 
-        this.nameActive = ConfigValue.create("Punishment.Active.Name",
-            LIGHT_RED.enclose(BOLD.enclose("Entry")) + " " + WHITE.enclose("#" + GENERIC_AMOUNT)
-        ).read(cfg);
+        this.populator = ItemPopulator.builder(PlayerPunishment.class)
+            .slots(historySlots)
+            .itemProvider((context, punishment) -> {
+                Data data = this.getObject(context);
+                NightItem icon;
+                IconLocale locale;
 
-        this.nameExpired = ConfigValue.create("Punishment.Expired.Name",
-            LIGHT_YELLOW.enclose(BOLD.enclose("Entry")) + " " + WHITE.enclose("#" + GENERIC_AMOUNT) + " " + DARK_GRAY.enclose("(Expired)")
-        ).read(cfg);
+                if (!punishment.isExpired()) {
+                    icon = punishment.isActive() ? this.historyActiveIcon : this.historyPausedIcon;
+                    locale = punishment.isActive() ? LOCALE_ACTIVE : LOCALE_PAUSED;
+                }
+                else {
+                    icon = this.histroyExpiredIcon;
+                    locale = LOCALE_EXPIRED;
+                }
 
-        this.loreActive = ConfigValue.create("Punishment.Active.Lore", Lists.newList(
-            LIGHT_RED.enclose("▪ " + LIGHT_GRAY.enclose("Punisher: ") + PUNISHMENT_PUNISHER),
-            LIGHT_RED.enclose("▪ " + LIGHT_GRAY.enclose("Reason: ") + PUNISHMENT_REASON),
-            LIGHT_RED.enclose("▪ " + LIGHT_GRAY.enclose("Date: ") + PUNISHMENT_CREATION_DATE),
-            LIGHT_RED.enclose("▪ " + LIGHT_GRAY.enclose("Expires in: ") + PUNISHMENT_EXPIRES_IN),
-            "",
-            ACTION_EXPIRE
-        )).read(cfg);
+                return icon.copy()
+                    .hideAllComponents()
+                    .localized(locale)
+                    .replace(builder -> builder
+                        .with(SLPlaceholders.GENERIC_TYPE, () -> BansLang.PUNISHMENT_TYPE.getLocalized(data.type))
+                        .with(punishment.placeholders())
+                    );
+            })
+            .actionProvider(punishment -> actionContext -> {
+                InventoryClickEvent event = actionContext.getEvent();
+                Player player = actionContext.getPlayer();
+                Data data = this.getObject(actionContext);
 
-        this.loreExpired = ConfigValue.create("Punishment.Expired.Lore", Lists.newList(
-            LIGHT_YELLOW.enclose("▪ " + LIGHT_GRAY.enclose("Punisher: ") + PUNISHMENT_PUNISHER),
-            LIGHT_YELLOW.enclose("▪ " + LIGHT_GRAY.enclose("Reason: ") + PUNISHMENT_REASON),
-            LIGHT_YELLOW.enclose("▪ " + LIGHT_GRAY.enclose("Date: ") + PUNISHMENT_CREATION_DATE),
-            LIGHT_YELLOW.enclose("▪ " + LIGHT_GRAY.enclose("Expired: ") + PUNISHMENT_EXPIRATION_DATE),
-            "",
-            ACTION_DELETE
-        )).read(cfg);
+                if (event.getClick() == ClickType.DROP) {
+                    if (!player.hasPermission(BansPerms.PUNISHMENT_DELETE)) return;
 
-        this.expireAction = ConfigValue.create("Punishment.Action.Expire", Lists.newList(
-            LIGHT_GRAY.enclose(LIGHT_RED.enclose("[▶]") + " Shift-Right to " + LIGHT_RED.enclose("make expired") + ".")
-        )).read(cfg);
+                    this.module.deletePlayerPunishment(punishment);
+                }
+                else if (event.isLeftClick()) {
+                    if (!player.hasPermission(BansPerms.PUNISHMENT_TOGGLE)) return;
+                    if (punishment.isExpired()) return;
 
-        this.deleteAction = ConfigValue.create("Punishment.Action.Delete", Lists.newList(
-            LIGHT_GRAY.enclose(LIGHT_YELLOW.enclose("[▶]") + " [Q/Drop Key] to " + LIGHT_YELLOW.enclose("delete") + ".")
-        )).read(cfg);
+                    punishment.setActive(!punishment.isActive());
+                    punishment.markDirty();
 
-        this.objectSlots = ConfigValue.create("Punishment.Slots", IntStream.range(0, 45).toArray()).read(cfg);
+                    this.module.getPunishmentRepository(data.type).updatePlayerPunishmentReferences(punishment);
+                }
+                else return;
+
+                actionContext.getViewer().refresh();
+            })
+            .build();
+    }
+
+    @Override
+    protected void onClick(@NotNull ViewerContext context, @NotNull InventoryClickEvent event) {
+
+    }
+
+    @Override
+    protected void onDrag(@NotNull ViewerContext context, @NotNull InventoryDragEvent event) {
+
+    }
+
+    @Override
+    protected void onClose(@NotNull ViewerContext context, @NotNull InventoryCloseEvent event) {
+
+    }
+
+    @Override
+    public void onPrepare(@NotNull ViewerContext context, @NotNull InventoryView view, @NotNull Inventory inventory, @NotNull List<MenuItem> list) {
+        Data data = this.getObject(context);
+        List<PlayerPunishment> punishments = this.module.getPunishmentRepository(data.type).getPlayerPunishments(data.userInfo.id()).stream()
+            .filter(punishment -> data.showExpired || !punishment.isExpired())
+            .sorted(data.sortMode.comparator())
+            .toList();
+
+        this.populator.populateTo(context, punishments, list);
+    }
+
+    @Override
+    public void onReady(@NotNull ViewerContext context, @NotNull InventoryView view, @NotNull Inventory inventory) {
+
+    }
+
+    @Override
+    public void onRender(@NotNull ViewerContext context, @NotNull InventoryView view, @NotNull Inventory inventory) {
+
     }
 }

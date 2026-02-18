@@ -1,39 +1,39 @@
 package su.nightexpress.sunlight.module.warmups.impl;
 
 import org.bukkit.Location;
-import org.bukkit.boss.BarColor;
-import org.bukkit.boss.BarStyle;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import su.nightexpress.nightcore.bridge.bossbar.NightBarColor;
+import su.nightexpress.nightcore.bridge.bossbar.NightBarOverlay;
+import su.nightexpress.sunlight.module.warmups.WarmupsModule;
 import su.nightexpress.sunlight.module.warmups.config.WarmupsConfig;
 import su.nightexpress.sunlight.module.warmups.config.WarmupsLang;
-import su.nightexpress.sunlight.utils.SunUtils;
 
 public class TeleportWarmup extends Warmup {
 
     private final Location destination;
-    private final Runnable action;
+    private final Runnable callback;
 
-    public TeleportWarmup(@NotNull Player player, int countdown, @NotNull Location destination, @Nullable Runnable action) {
-        super(player, countdown);
+    public TeleportWarmup(@NotNull WarmupsModule module, @NotNull Player player, int countdown, @NotNull Location destination, @Nullable Runnable callback) {
+        super(module, player, countdown);
         this.destination = destination.clone();
-        this.action = action;
+        this.callback = callback;
     }
 
     @Override
     protected void onInit() {
-        WarmupsLang.WARMUP_TELEPORT_NOTIFY.getMessage().send(this.player);
+        this.module.sendPrefixed(WarmupsLang.WARMUP_TELEPORT_NOTIFY, this.player);
     }
 
     @Override
     protected void onComplete() {
-        SunUtils.teleport(this.player, this.destination, this.action);
+        this.callback.run();
     }
 
     @Override
     protected void onCancel(boolean silent) {
-        if (!silent) WarmupsLang.WARMUP_TELEPORT_CANCEL.getMessage().send(this.player);
+        if (!silent) this.module.sendPrefixed(WarmupsLang.WARMUP_TELEPORT_CANCEL, this.player);
     }
 
     @Override
@@ -50,13 +50,18 @@ public class TeleportWarmup extends Warmup {
 
     @Override
     @NotNull
-    protected BarColor getIndicatorColor() {
+    protected NightBarColor getIndicatorColor() {
         return WarmupsConfig.BAR_INDICATOR_TELEPORT_COLOR.get();
     }
 
     @Override
     @NotNull
-    protected BarStyle getIndicatorStyle() {
+    protected NightBarOverlay getIndicatorStyle() {
         return WarmupsConfig.BAR_INDICATOR_TELEPORT_STYLE.get();
+    }
+
+    @NotNull
+    public Location getDestination() {
+        return this.destination;
     }
 }

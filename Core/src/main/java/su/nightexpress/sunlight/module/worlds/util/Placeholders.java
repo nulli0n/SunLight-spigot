@@ -2,16 +2,17 @@ package su.nightexpress.sunlight.module.worlds.util;
 
 import org.bukkit.World;
 import org.jetbrains.annotations.NotNull;
+import su.nightexpress.nightcore.core.CoreLang;
 import su.nightexpress.nightcore.util.StringUtil;
 import su.nightexpress.nightcore.util.TimeUtil;
 import su.nightexpress.nightcore.util.placeholder.PlaceholderMap;
-import su.nightexpress.sunlight.config.Lang;
+import su.nightexpress.sunlight.SLPlaceholders;
 import su.nightexpress.sunlight.module.worlds.config.WorldsLang;
 import su.nightexpress.sunlight.module.worlds.impl.WorldData;
 import su.nightexpress.sunlight.module.worlds.impl.WrappedWorld;
-import su.nightexpress.sunlight.utils.SunUtils;
+import su.nightexpress.sunlight.SLUtils;
 
-public class Placeholders extends su.nightexpress.sunlight.Placeholders {
+public class Placeholders extends SLPlaceholders {
 
     public static final String WORLD_ID           = "%world_id%";
     public static final String WORLD_IS_AUTO_LOAD = "%world_auto_load%";
@@ -35,17 +36,17 @@ public class Placeholders extends su.nightexpress.sunlight.Placeholders {
 
         return new PlaceholderMap()
             .add(WORLD_ID, () -> isCustom ? worldData.getId() : world.getName())
-            .add(WORLD_IS_LOADED, () -> Lang.getYesOrNo(!isCustom || worldData.isLoaded()))
-            .add(WORLD_IS_CREATED, () -> Lang.getYesOrNo(!isCustom || worldData.hasWorldFiles()))
-            .add(WORLD_IS_AUTO_LOAD, () -> Lang.getYesOrNo(!isCustom || worldData.isAutoLoad()))
+            .add(WORLD_IS_LOADED, () -> CoreLang.getYesOrNo(!isCustom || worldData.isLoaded()))
+            .add(WORLD_IS_CREATED, () -> CoreLang.getYesOrNo(!isCustom || worldData.hasWorldFiles()))
+            .add(WORLD_IS_AUTO_LOAD, () -> CoreLang.getYesOrNo(!isCustom || worldData.isAutoLoad()))
             .add(WORLD_DIFFICULTY, () -> WorldsLang.DIFFICULTY.getLocalized(world.getDifficulty()))
-            .add(WORLD_AUTO_RESET_ENABLED, () -> Lang.getYesOrNo(isCustom && worldData.isAutoReset()))
+            .add(WORLD_AUTO_RESET_ENABLED, () -> CoreLang.getYesOrNo(isCustom && worldData.isAutoReset()))
             .add(WORLD_AUTO_RESET_INTERVAL, () -> TimeUtil.formatTime(worldData.getResetInterval() * 1000L))
             .add(WORLD_LAST_RESET_DATE, () -> {
-                return worldData.getLastResetDate() <= 0L ? Lang.OTHER_NEVER.getString() : SunUtils.formatDate(worldData.getLastResetDate());
+                return worldData.getLastResetDate() <= 0L ? CoreLang.OTHER_NEVER.getString() : SLUtils.formatDate(worldData.getLastResetDate());
             })
             .add(WORLD_NEXT_RESET_DATE, () -> {
-                return worldData.getNextWipe() <= 0L ? Lang.OTHER_NEVER.getString() : SunUtils.formatDate(worldData.getNextWipe());
+                return worldData.getNextWipe() <= 0L ? CoreLang.OTHER_NEVER.getString() : SLUtils.formatDate(worldData.getNextWipe());
             })
             ;
     }
@@ -55,7 +56,7 @@ public class Placeholders extends su.nightexpress.sunlight.Placeholders {
         return new PlaceholderMap()
             .add(WORLD_GENERATOR, () -> worldData.getGenerator() == null ? Placeholders.DEFAULT : worldData.getGenerator())
             .add(WORLD_ENVIRONMENT, () -> StringUtil.capitalizeUnderscored(worldData.getEnvironment().name()))
-            .add(WORLD_STRUCTURES, () -> Lang.getYesOrNo(worldData.isGenerateStructures()))
+            .add(WORLD_STRUCTURES, () -> CoreLang.getYesOrNo(worldData.isGenerateStructures()))
             ;
     }
 }

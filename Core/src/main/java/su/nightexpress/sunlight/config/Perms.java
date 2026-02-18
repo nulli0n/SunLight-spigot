@@ -1,31 +1,20 @@
 package su.nightexpress.sunlight.config;
 
-import su.nightexpress.nightcore.util.wrapper.UniPermission;
-import su.nightexpress.sunlight.Placeholders;
+import org.bukkit.permissions.Permission;
+import org.jetbrains.annotations.NotNull;
 
 public class Perms {
 
-    public static final String PREFIX         = "sunlight.";
-    public static final String PREFIX_COMMAND = PREFIX + "command.";
-    public static final String PREFIX_BYPASS  = PREFIX + "bypass.";
+    public static final PermissionTree ROOT         = PermissionTree.root("sunlight");
+    public static final PermissionTree ROOT_COMMAND = ROOT.branch("command");
+    public static final PermissionTree ROOT_BYPASS  = ROOT.branch("bypass");
 
-    public static final UniPermission PLUGIN  = new UniPermission(PREFIX + Placeholders.WILDCARD);
-    public static final UniPermission COMMAND = new UniPermission(PREFIX_COMMAND + Placeholders.WILDCARD);
-    public static final UniPermission BYPASS  = new UniPermission(PREFIX_BYPASS + Placeholders.WILDCARD);
+    public static final Permission COMMAND_RELOAD = ROOT_COMMAND.permission("reload");
 
-    public static final UniPermission BYPASS_COMMAND_COOLDOWN           = new UniPermission(PREFIX_BYPASS + "command.cooldown");
-    public static final UniPermission BYPASS_TELEPORT_REQUESTS_DISABLED = new UniPermission(PREFIX_BYPASS + "teleport.requests.disabled");
-    public static final UniPermission BYPASS_IGNORE_PM                  = new UniPermission(PREFIX_BYPASS + "ignore.pm");
-    public static final UniPermission BYPASS_IGNORE_TELEPORTS           = new UniPermission(PREFIX_BYPASS + "ignore.teleports");
+    public static final Permission BYPASS_COMMAND_COOLDOWN = ROOT_BYPASS.permission("command.cooldown");
 
-
-    static {
-        PLUGIN.addChildren(COMMAND, BYPASS);
-
-        BYPASS.addChildren(
-            BYPASS_COMMAND_COOLDOWN,
-            BYPASS_TELEPORT_REQUESTS_DISABLED,
-            BYPASS_IGNORE_PM, BYPASS_IGNORE_TELEPORTS
-        );
+    @NotNull
+    public static PermissionTree detached(@NotNull String name) {
+        return ROOT.detached(name);
     }
 }

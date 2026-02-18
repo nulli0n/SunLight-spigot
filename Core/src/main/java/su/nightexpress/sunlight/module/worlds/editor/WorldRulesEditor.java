@@ -15,6 +15,7 @@ import su.nightexpress.nightcore.menu.impl.EditorMenu;
 import su.nightexpress.nightcore.util.ItemReplacer;
 import su.nightexpress.nightcore.util.StringUtil;
 import su.nightexpress.sunlight.SunLightPlugin;
+import su.nightexpress.sunlight.config.Lang;
 import su.nightexpress.sunlight.module.worlds.WorldsModule;
 import su.nightexpress.sunlight.module.worlds.config.WorldsLang;
 import su.nightexpress.sunlight.module.worlds.impl.WrappedWorld;
@@ -30,7 +31,7 @@ import java.util.stream.Stream;
 public class WorldRulesEditor extends EditorMenu<SunLightPlugin, WrappedWorld> implements AutoFilled<GameRule<?>> {
 
     public WorldRulesEditor(@NotNull SunLightPlugin plugin, @NotNull WorldsModule module) {
-        super(plugin, WorldsLang.EDITOR_TITLE_GAME_RULES.getString(), MenuSize.CHEST_45);
+        super(plugin, WorldsLang.EDITOR_TITLE_GAME_RULES.text(), MenuSize.CHEST_45);
 
         this.addNextPage(44);
         this.addPreviousPage(36);
@@ -52,7 +53,8 @@ public class WorldRulesEditor extends EditorMenu<SunLightPlugin, WrappedWorld> i
     @Override
     @SuppressWarnings("unchecked")
     public void onAutoFill(@NotNull MenuViewer viewer, @NotNull AutoFill<GameRule<?>> autoFill) {
-        World world = this.getLink(viewer).getWorld();
+        // TODO
+        /*World world = this.getLink(viewer).getWorld();
 
         autoFill.setSlots(IntStream.range(0, 36).toArray());
         autoFill.setItems(Stream.of(world.getGameRules())
@@ -88,12 +90,12 @@ public class WorldRulesEditor extends EditorMenu<SunLightPlugin, WrappedWorld> i
             }
             else if (gameRule.getType() == Integer.class) {
                 GameRule<Integer> rule = (GameRule<Integer>) gameRule;
-                this.handleInput(viewer, WorldsLang.EDITOR_INPUT_GENERIC_VALUE, (dialog, input) -> {
+                this.handleInput(viewer.getPlayer(), Lang.EDITOR_INPUT_GENERIC_VALUE.text(), (dialog, input) -> {
                     world.setGameRule(rule, input.asInt());
                     return true;
                 });
             }
-        });
+        });*/
     }
 
     @NotNull

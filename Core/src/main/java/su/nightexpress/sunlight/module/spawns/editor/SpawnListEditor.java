@@ -1,74 +1,120 @@
 package su.nightexpress.sunlight.module.spawns.editor;
 
 import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.InventoryView;
+import org.bukkit.inventory.MenuType;
 import org.jetbrains.annotations.NotNull;
-import su.nightexpress.nightcore.menu.MenuOptions;
-import su.nightexpress.nightcore.menu.MenuSize;
-import su.nightexpress.nightcore.menu.MenuViewer;
-import su.nightexpress.nightcore.menu.api.AutoFill;
-import su.nightexpress.nightcore.menu.api.AutoFilled;
-import su.nightexpress.nightcore.menu.impl.EditorMenu;
-import su.nightexpress.nightcore.util.ItemReplacer;
+import su.nightexpress.nightcore.config.FileConfig;
+import su.nightexpress.nightcore.locale.LangContainer;
+import su.nightexpress.nightcore.locale.LangEntry;
+import su.nightexpress.nightcore.locale.entry.IconLocale;
+import su.nightexpress.nightcore.ui.inventory.item.ItemPopulator;
+import su.nightexpress.nightcore.ui.inventory.item.MenuItem;
+import su.nightexpress.nightcore.ui.inventory.menu.AbstractMenu;
+import su.nightexpress.nightcore.ui.inventory.viewer.ViewerContext;
 import su.nightexpress.sunlight.SunLightPlugin;
 import su.nightexpress.sunlight.module.spawns.SpawnsModule;
 import su.nightexpress.sunlight.module.spawns.config.SpawnsLang;
-import su.nightexpress.sunlight.module.spawns.impl.Spawn;
+import su.nightexpress.sunlight.module.spawns.Spawn;
 
 import java.util.Comparator;
+import java.util.List;
 import java.util.stream.IntStream;
 
-public class SpawnListEditor extends EditorMenu<SunLightPlugin, SpawnsModule> implements AutoFilled<Spawn> {
+import static su.nightexpress.nightcore.util.text.night.wrapper.TagWrappers.*;
+import static su.nightexpress.sunlight.module.spawns.SpawnsPlaceholders.SPAWN_ID;
+import static su.nightexpress.sunlight.module.spawns.SpawnsPlaceholders.SPAWN_NAME;
 
-    private final SpawnsModule module;
+public class SpawnListEditor extends AbstractMenu implements LangContainer {
+
+    private static final IconLocale SPAWN_OBJECT = LangEntry.iconBuilder("Spawns.Editor.SpawnsList.Spawn")
+        .accentColor(YELLOW)
+        .name(SPAWN_NAME)
+        .appendCurrent("ID", SPAWN_ID).br()
+        .appendClick("Click to edit")
+        .build();
+
+    private final SpawnsModule         module;
+    private final ItemPopulator<Spawn> spawnPopulator;
 
     public SpawnListEditor(@NotNull SunLightPlugin plugin, @NotNull SpawnsModule module) {
-        super(plugin, SpawnsLang.EDITOR_TITLE_LIST.getString(), MenuSize.CHEST_45);
+        super(MenuType.GENERIC_9X5, SpawnsLang.EDITOR_TITLE_LIST.text());
         this.module = module;
 
-        this.addExit(40);
-        this.addNextPage(44);
-        this.addPreviousPage(36);
+        plugin.injectLang(this);
+
+        this.spawnPopulator = ItemPopulator.builder(Spawn.class)
+            .slots(IntStream.range(0, 36).toArray())
+            .itemProvider((context, spawn) -> {
+                return spawn.getIcon()
+                    .hideAllComponents()
+                    .localized(SPAWN_OBJECT)
+                    .replace(builder -> builder.with(spawn.placeholders()));
+            })
+            .actionProvider(spawn -> context -> {
+                this.module.openSpawnSettings(context.getPlayer(), spawn);
+            })
+            .build();
+
+        this.load(plugin);
     }
 
     @Override
-    public void onPrepare(@NotNull MenuViewer viewer, @NotNull MenuOptions options) {
-        this.autoFill(viewer);
-    }
-
-    @Override
-    protected void onReady(@NotNull MenuViewer viewer, @NotNull Inventory inventory) {
+    public void registerActions() {
 
     }
 
     @Override
-    public void onAutoFill(@NotNull MenuViewer viewer, @NotNull AutoFill<Spawn> autoFill) {
-        autoFill.setSlots(IntStream.range(0, 36).toArray());
-        autoFill.setItems(this.module.getSpawns().stream()
-            .sorted(Comparator.comparingInt(Spawn::getPriority).reversed().thenComparing(Spawn::getName)).toList());
-        autoFill.setItemCreator(spawn -> {
-            ItemStack item = new ItemStack(Material.GRASS_BLOCK);
-            if (spawn.isValid()) {
-                Block block = spawn.getLocation().getBlock().getRelative(BlockFace.DOWN);
-                if (!block.isEmpty()) item.setType(block.getType());
-            }
+    public void registerConditions() {
 
-            ItemReplacer.create(item).hideFlags().trimmed()
-                .readLocale(SpawnsLang.EDITOR_SPAWN_OBJECT)
-                .replace(spawn.getEditorPlaceholders())
-                .writeMeta();
-            return item;
-        });
-        autoFill.setClickAction(spawn -> (viewer1, event) -> {
-            if (event.isShiftClick() && event.isRightClick()) {
-                this.module.deleteSpawn(spawn);
-                this.runNextTick(() -> this.flush(viewer));
-                return;
-            }
-            this.module.openSpawnSettings(viewer.getPlayer(), spawn);
-        });
+    }
+
+    @Override
+    public void defineDefaultLayout() {
+        this.addNextPageItem(Material.ARROW, 44);
+        this.addPreviousPageItem(Material.ARROW, 36);
+    }
+
+    @Override
+    protected void onLoad(@NotNull FileConfig config) {
+
+    }
+
+    @Override
+    protected void onClick(@NotNull ViewerContext context, @NotNull InventoryClickEvent event) {
+
+    }
+
+    @Override
+    protected void onDrag(@NotNull ViewerContext context, @NotNull InventoryDragEvent event) {
+
+    }
+
+    @Override
+    protected void onClose(@NotNull ViewerContext context, @NotNull InventoryCloseEvent event) {
+
+    }
+
+    @Override
+    public void onPrepare(@NotNull ViewerContext context, @NotNull InventoryView view, @NotNull Inventory inventory, @NotNull List<MenuItem> items) {
+        List<Spawn> spawns = this.module.getSpawns().stream()
+            .sorted(Comparator.comparingInt(Spawn::getPriority).reversed().thenComparing(Spawn::getName))
+            .toList();
+
+        this.spawnPopulator.populateTo(context, spawns, items);
+    }
+
+    @Override
+    public void onReady(@NotNull ViewerContext context, @NotNull InventoryView view, @NotNull Inventory inventory) {
+
+    }
+
+    @Override
+    public void onRender(@NotNull ViewerContext context, @NotNull InventoryView view, @NotNull Inventory inventory) {
+
     }
 }

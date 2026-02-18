@@ -3,7 +3,7 @@ package su.nightexpress.sunlight.module.extras.config;
 import org.bukkit.Material;
 import su.nightexpress.nightcore.config.ConfigValue;
 import su.nightexpress.nightcore.util.*;
-import su.nightexpress.sunlight.Placeholders;
+import su.nightexpress.sunlight.SLPlaceholders;
 import su.nightexpress.sunlight.module.extras.chestsort.SortRule;
 
 import java.util.ArrayList;
@@ -31,17 +31,17 @@ public class ExtrasConfig {
         "Sets whether or not Join Commands feature is enabled.");
 
     public static final ConfigValue<List<String>> JOIN_COMMANDS_FIRST = ConfigValue.create("JoinCommands.FirstJoin",
-        Lists.newList("broadcast Welcome new player: " + Placeholders.PLAYER_NAME + "!"),
+        Lists.newList("broadcast Welcome new player: " + SLPlaceholders.PLAYER_NAME + "!"),
         "List of commands to execute when player joined server for the first time.",
         "Use '" + Players.PLAYER_COMMAND_PREFIX + "' prefix to run command by a player.",
-        "Use '" + Placeholders.PLAYER_NAME + "' for a player name.",
+        "Use '" + SLPlaceholders.PLAYER_NAME + "' for a player name.",
         "You can use " + Plugins.PLACEHOLDER_API + " here.");
 
     public static final ConfigValue<List<String>> JOIN_COMMANDS_DEFAULT = ConfigValue.create("JoinCommands.Default",
         Lists.newList(),
         "List of commands to execute when player joins the server and has played before.",
         "Use '" + Players.PLAYER_COMMAND_PREFIX + "' prefix to run command by a player.",
-        "Use '" + Placeholders.PLAYER_NAME + "' for a player name.",
+        "Use '" + SLPlaceholders.PLAYER_NAME + "' for a player name.",
         "You can use " + Plugins.PLACEHOLDER_API + " here.");
 
     public static final ConfigValue<Boolean> ANVIL_COLORS_ENABLED = ConfigValue.create("Anvil_Colors.Enabled",

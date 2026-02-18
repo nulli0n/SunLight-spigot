@@ -21,7 +21,7 @@ import org.jetbrains.annotations.NotNull;
 import su.nightexpress.nightcore.manager.AbstractListener;
 import su.nightexpress.nightcore.util.LocationUtil;
 import su.nightexpress.sunlight.SunLightPlugin;
-import su.nightexpress.sunlight.data.user.SunUser;
+import su.nightexpress.sunlight.user.SunUser;
 
 public class ChairsListener extends AbstractListener<SunLightPlugin> {
 

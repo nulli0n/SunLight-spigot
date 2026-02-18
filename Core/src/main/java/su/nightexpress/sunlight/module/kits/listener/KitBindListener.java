@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import su.nightexpress.nightcore.manager.AbstractListener;
 import su.nightexpress.sunlight.SunLightPlugin;
 import su.nightexpress.sunlight.module.kits.KitsModule;
-import su.nightexpress.sunlight.module.kits.util.KitsUtils;
+import su.nightexpress.sunlight.module.kits.KitsUtils;
 
 public class KitBindListener extends AbstractListener<SunLightPlugin> {
 

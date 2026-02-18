@@ -3,61 +3,61 @@ package su.nightexpress.sunlight.module.nerfphantoms;
 import org.bukkit.Statistic;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import su.nightexpress.sunlight.SunLightPlugin;
-import su.nightexpress.sunlight.core.user.settings.Setting;
-import su.nightexpress.sunlight.core.user.settings.SettingRegistry;
-import su.nightexpress.sunlight.data.user.SunUser;
+import su.nightexpress.nightcore.config.FileConfig;
+import su.nightexpress.nightcore.core.config.CoreLang;
+import su.nightexpress.sunlight.config.PermissionTree;
+import su.nightexpress.sunlight.hook.placeholder.PlaceholderRegistry;
 import su.nightexpress.sunlight.module.Module;
-import su.nightexpress.sunlight.module.ModuleInfo;
-import su.nightexpress.sunlight.module.nerfphantoms.command.NoPhantomCommand;
+import su.nightexpress.sunlight.module.ModuleContext;
+import su.nightexpress.sunlight.module.nerfphantoms.command.PhantomsCommandProvider;
 import su.nightexpress.sunlight.module.nerfphantoms.config.PhantomsConfig;
 import su.nightexpress.sunlight.module.nerfphantoms.config.PhantomsLang;
 import su.nightexpress.sunlight.module.nerfphantoms.config.PhantomsPerms;
 import su.nightexpress.sunlight.module.nerfphantoms.listener.PhantomsListener;
+import su.nightexpress.sunlight.user.SunUser;
+import su.nightexpress.sunlight.user.property.UserPropertyRegistry;
 
 public class PhantomsModule extends Module {
 
-    public static final Setting<Boolean> ANTI_PHANTOM = SettingRegistry.register(Setting.create("anti_phantom", false, true));
-
-    public PhantomsModule(@NotNull SunLightPlugin plugin, @NotNull String id) {
-        super(plugin, id);
+    public PhantomsModule(@NotNull ModuleContext context) {
+        super(context);
     }
 
     @Override
-    protected void gatherInfo(@NotNull ModuleInfo moduleInfo) {
-        moduleInfo.setConfigClass(PhantomsConfig.class);
-        moduleInfo.setLangClass(PhantomsLang.class);
-        moduleInfo.setPermissionsClass(PhantomsPerms.class);
-    }
-
-    @Override
-    protected void onModuleLoad() {
-        this.registerCommands();
+    protected void loadModule(@NotNull FileConfig config) {
+        config.initializeOptions(PhantomsConfig.class);
+        this.plugin.injectLang(PhantomsLang.class);
+        UserPropertyRegistry.register(PhantomsProperties.ANTI_PHANTOM);
 
         this.addListener(new PhantomsListener(this.plugin, this));
-        this.addTask(this.plugin.createTask(this::resetRestTime).setSecondsInterval(600));
+        this.addAsyncTask(this::resetRestTime, 600); // TODO Config
     }
 
     @Override
-    protected void onModuleUnload() {
+    protected void unloadModule() {
 
     }
 
-    private void registerCommands() {
-        NoPhantomCommand.load(this.plugin, this);
+    @Override
+    protected void registerPermissions(@NotNull PermissionTree root) {
+        root.merge(PhantomsPerms.ROOT);
     }
 
+    protected void registerCommands() {
+        this.commandRegistry.addProvider("nophantom", new PhantomsCommandProvider(this.plugin, this, this.userManager));
+    }
 
-    public void setAntiPhantom(@NotNull Player player, boolean state) {
-        SunUser user = plugin.getUserManager().getOrFetch(player);
-        user.getSettings().set(ANTI_PHANTOM, state);
-        this.plugin.getUserManager().save(user);
+    @Override
+    public void registerPlaceholders(@NotNull PlaceholderRegistry registry) {
+        registry.register("nophantom_state", (player, payload) -> {
+            return CoreLang.STATE_YES_NO.get(this.userManager.getOrFetch(player).getPropertyOrDefault(PhantomsProperties.ANTI_PHANTOM));
+        });
     }
 
     private void resetRestTime() {
         for (Player player : plugin.getServer().getOnlinePlayers()) {
             SunUser user = plugin.getUserManager().getOrFetch(player);
-            if (!user.getSettings().get(ANTI_PHANTOM)) continue;
+            if (!user.getPropertyOrDefault(PhantomsProperties.ANTI_PHANTOM)) continue;
 
             player.setStatistic(Statistic.TIME_SINCE_REST, 0);
         }

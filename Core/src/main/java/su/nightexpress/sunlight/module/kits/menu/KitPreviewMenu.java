@@ -1,111 +1,121 @@
 package su.nightexpress.sunlight.module.kits.menu;
 
+import org.bukkit.Material;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.InventoryView;
+import org.bukkit.inventory.MenuType;
 import org.jetbrains.annotations.NotNull;
-import su.nightexpress.nightcore.config.ConfigValue;
 import su.nightexpress.nightcore.config.FileConfig;
-import su.nightexpress.nightcore.menu.MenuOptions;
-import su.nightexpress.nightcore.menu.MenuSize;
-import su.nightexpress.nightcore.menu.MenuViewer;
-import su.nightexpress.nightcore.menu.impl.ConfigMenu;
-import su.nightexpress.nightcore.menu.item.ItemHandler;
-import su.nightexpress.nightcore.menu.item.MenuItem;
-import su.nightexpress.nightcore.menu.link.Linked;
-import su.nightexpress.nightcore.menu.link.ViewLink;
-import su.nightexpress.nightcore.util.ItemUtil;
+import su.nightexpress.nightcore.configuration.ConfigProperty;
+import su.nightexpress.nightcore.configuration.ConfigTypes;
+import su.nightexpress.nightcore.ui.inventory.item.MenuItem;
+import su.nightexpress.nightcore.ui.inventory.menu.AbstractObjectMenu;
+import su.nightexpress.nightcore.ui.inventory.viewer.ViewerContext;
+import su.nightexpress.nightcore.util.bukkit.NightItem;
 import su.nightexpress.sunlight.SunLightPlugin;
-import su.nightexpress.sunlight.config.Lang;
-import su.nightexpress.sunlight.module.kits.Kit;
+import su.nightexpress.sunlight.module.kits.KitFiles;
 import su.nightexpress.sunlight.module.kits.KitsModule;
+import su.nightexpress.sunlight.module.kits.model.Kit;
+import su.nightexpress.sunlight.module.kits.model.KitContent;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 
-import static su.nightexpress.nightcore.util.Placeholders.*;
-import static su.nightexpress.nightcore.util.text.tag.Tags.*;
+import static su.nightexpress.nightcore.util.text.night.wrapper.TagWrappers.*;
 
-public class KitPreviewMenu extends ConfigMenu<SunLightPlugin> implements Linked<Kit> {
+public class KitPreviewMenu extends AbstractObjectMenu<Kit> {
 
-    private static final String FILE_NAME = "kit_preview.yml";
+    private final KitsModule module;
 
-    private int[] itemSlots;
-    private int[] armorSlots;
-    private int[] extraSlots;
-
-    private final ViewLink<Kit> link;
-    private final ItemHandler returnHandler;
+    private List<Integer> fusedSlots;
 
     public KitPreviewMenu(@NotNull SunLightPlugin plugin, @NotNull KitsModule module) {
-        super(plugin, FileConfig.loadOrExtract(plugin, module.getLocalUIPath(), FILE_NAME));
-        this.link = new ViewLink<>();
+        super(MenuType.GENERIC_9X6, "Kit Preview", Kit.class);
+        this.module = module;
 
-        this.addHandler(this.returnHandler = ItemHandler.forReturn(this, (viewer, event) -> {
-            this.runNextTick(() -> module.openKitsMenu(viewer.getPlayer()));
-        }));
-
-        this.load();
-    }
-
-    @NotNull
-    @Override
-    public ViewLink<Kit> getLink() {
-        return link;
+        this.load(plugin, FileConfig.load(module.getLocalUIPath(), KitFiles.FILE_UI_KIT_PREVIEW));
     }
 
     @Override
-    protected void onPrepare(@NotNull MenuViewer viewer, @NotNull MenuOptions options) {
+    public void registerActions() {
 
     }
 
     @Override
-    public void onReady(@NotNull MenuViewer viewer, @NotNull Inventory inventory) {
-        Kit kit = this.getLink(viewer);
+    public void registerConditions() {
 
-        int count = 0;
-        for (ItemStack item : kit.getItems()) {
-            if (count >= itemSlots.length || count >= inventory.getSize()) break;
-            inventory.setItem(itemSlots[count++], item);
-        }
-
-        int armorCount = 0;
-        for (ItemStack armor : kit.getArmor()) {
-            if (armorCount >= armorSlots.length || armorCount >= inventory.getSize()) break;
-            inventory.setItem(armorSlots[armorCount++], armor);
-        }
-
-        for (int index = 0; index < extraSlots.length; index++) {
-            inventory.setItem(extraSlots[index], kit.getExtras()[index]);
-        }
     }
 
     @Override
-    @NotNull
-    protected MenuOptions createDefaultOptions() {
-        return new MenuOptions(BLACK.enclose("Kit Preview"), MenuSize.CHEST_54);
+    public void defineDefaultLayout() {
+        this.addBackgroundItem(Material.GRAY_STAINED_GLASS_PANE, IntStream.range(5, 9).toArray());
+        this.addBackgroundItem(Material.BLACK_STAINED_GLASS_PANE, IntStream.range(9, 18).toArray());
+
+        this.addDefaultButton("return", MenuItem.builder()
+            .defaultState(NightItem.fromType(Material.ARROW).setDisplayName(WHITE.wrap("Back to Kits")), context -> {
+                this.module.openKitsMenu(context.getPlayer());
+            })
+            .slots(8)
+            .build()
+        );
     }
 
     @Override
-    @NotNull
-    protected List<MenuItem> createDefaultItems() {
-        List<MenuItem> list = new ArrayList<>();
+    protected void onLoad(@NotNull FileConfig config) {
+        int[] hotbarSlots = ConfigProperty.of(ConfigTypes.INT_ARRAY, "Content.Hotbar-Slots", IntStream.range(45, 54).toArray()).resolveWithDefaults(config);
+        int[] itemSlots = ConfigProperty.of(ConfigTypes.INT_ARRAY, "Content.Inventory-Slots", IntStream.range(18, 45).toArray()).resolveWithDefaults(config);
+        int[] armorSlots = ConfigProperty.of(ConfigTypes.INT_ARRAY, "Content.Armor-Slots", IntStream.range(0, 4).toArray()).resolveWithDefaults(config);
+        int[] extraSlots = ConfigProperty.of(ConfigTypes.INT_ARRAY, "Content.Extra-Slots", new int[]{4}).resolveWithDefaults(config);
 
-        ItemStack back = ItemUtil.getSkinHead(SKIN_ARROW_DOWN);
-        ItemUtil.editMeta(back, meta -> {
-            meta.setDisplayName(Lang.EDITOR_ITEM_RETURN.getDefaultName());
+        this.fusedSlots = new ArrayList<>();
+        this.fusedSlots.addAll(IntStream.of(hotbarSlots).boxed().toList());
+        this.fusedSlots.addAll(IntStream.of(itemSlots).boxed().toList());
+        this.fusedSlots.addAll(IntStream.of(armorSlots).boxed().toList());
+        this.fusedSlots.addAll(IntStream.of(extraSlots).boxed().toList());
+    }
+
+    @Override
+    protected void onClick(@NotNull ViewerContext context, @NotNull InventoryClickEvent event) {
+
+    }
+
+    @Override
+    protected void onDrag(@NotNull ViewerContext context, @NotNull InventoryDragEvent event) {
+
+    }
+
+    @Override
+    protected void onClose(@NotNull ViewerContext context, @NotNull InventoryCloseEvent event) {
+
+    }
+
+    @Override
+    public void onPrepare(@NotNull ViewerContext context, @NotNull InventoryView view, @NotNull Inventory inventory, @NotNull List<MenuItem> items) {
+        Kit kit = this.getObject(context);
+        KitContent content = kit.definition().getContent();
+
+        content.getItemBySlotMap().forEach((slotIndex, item) -> {
+            if (slotIndex >= this.fusedSlots.size()) return;
+
+            int slot = this.fusedSlots.get(slotIndex);
+
+            item.itemStack().ifPresent(itemStack -> {
+                inventory.setItem(slot, itemStack);
+            });
         });
-        list.add(new MenuItem(back).setPriority(10).setSlots(49).setHandler(this.returnHandler));
-
-        return list;
     }
 
     @Override
-    protected void loadAdditional() {
-        itemSlots = ConfigValue.create("Item_Slots", IntStream.range(9, 45).toArray()).read(cfg);
+    public void onReady(@NotNull ViewerContext context, @NotNull InventoryView view, @NotNull Inventory inventory) {
 
-        armorSlots = ConfigValue.create("Armor_Slots", new int[] {5,4,3,2}).read(cfg);
+    }
 
-        extraSlots = ConfigValue.create("Extra_Slots", new int[] {6}).read(cfg);
+    @Override
+    public void onRender(@NotNull ViewerContext context, @NotNull InventoryView view, @NotNull Inventory inventory) {
+
     }
 }

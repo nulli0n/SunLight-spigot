@@ -1,36 +1,21 @@
 package su.nightexpress.sunlight.module.extras.config;
 
-import su.nightexpress.nightcore.util.wrapper.UniPermission;
+import org.bukkit.permissions.Permission;
+import su.nightexpress.sunlight.config.PermissionTree;
 import su.nightexpress.sunlight.config.Perms;
-import su.nightexpress.sunlight.Placeholders;
 
 public class ExtrasPerms {
 
-    private static final String PREFIX = Perms.PREFIX + "extras.";
-    private static final String PREFIX_COMMAND = PREFIX + "command.";
+    public static final PermissionTree MODULE  = Perms.detached("extras");
+    public static final PermissionTree COMMAND = MODULE.branch("command");
 
-    public static final UniPermission MODULE  = new UniPermission(PREFIX + Placeholders.WILDCARD, "Access to all Extras module functions.");
-    public static final UniPermission COMMAND = new UniPermission(PREFIX_COMMAND + Placeholders.WILDCARD, "Access to all Extras module commands.");
+    public static final Permission COMMAND_CHAIRS            = COMMAND.permission("chairs");
+    public static final Permission COMMAND_CHAIRS_OTHERS     = COMMAND.permission("chairs.others");
+    public static final Permission COMMAND_SIT               = COMMAND.permission("sit");
+    public static final Permission COMMAND_SIT_OTHERS        = COMMAND.permission("sit.others");
+    public static final Permission COMMAND_CHEST_SORT        = COMMAND.permission("chestsort");
+    public static final Permission COMMAND_CHEST_SORT_OTHERS = COMMAND.permission("chestsort.others");
 
-    public static final UniPermission COMMAND_CHAIRS            = new UniPermission(PREFIX_COMMAND + "chairs");
-    public static final UniPermission COMMAND_CHAIRS_OTHERS     = new UniPermission(PREFIX_COMMAND + "chairs.others");
-    public static final UniPermission COMMAND_SIT               = new UniPermission(PREFIX_COMMAND + "sit");
-    public static final UniPermission COMMAND_SIT_OTHERS        = new UniPermission(PREFIX_COMMAND + "sit.others");
-    public static final UniPermission COMMAND_CHEST_SORT        = new UniPermission(PREFIX_COMMAND + "chestsort");
-    public static final UniPermission COMMAND_CHEST_SORT_OTHERS = new UniPermission(PREFIX_COMMAND + "chestsort.others");
-
-    public static final UniPermission SIGNS_COLOR  = new UniPermission(PREFIX + "signs.color");
-    public static final UniPermission ANVILS_COLOR = new UniPermission(PREFIX + "anvils.color");
-
-    static {
-        Perms.PLUGIN.addChildren(MODULE);
-
-        MODULE.addChildren(COMMAND, SIGNS_COLOR, ANVILS_COLOR);
-
-        COMMAND.addChildren(
-            COMMAND_CHAIRS, COMMAND_CHAIRS_OTHERS,
-            COMMAND_CHEST_SORT, COMMAND_CHEST_SORT_OTHERS,
-            COMMAND_SIT, COMMAND_SIT_OTHERS
-        );
-    }
+    public static final Permission SIGNS_COLOR  = MODULE.permission("signs.color");
+    public static final Permission ANVILS_COLOR = MODULE.permission("anvils.color");
 }

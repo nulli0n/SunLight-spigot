@@ -2,28 +2,20 @@ package su.nightexpress.sunlight.utils;
 
 import org.jetbrains.annotations.NotNull;
 import su.nightexpress.nightcore.config.FileConfig;
-import su.nightexpress.nightcore.util.placeholder.Placeholder;
-import su.nightexpress.nightcore.util.placeholder.PlaceholderMap;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Function;
 
-public class DynamicText implements Placeholder {
-
-    public static final Function<String, String> PLACEHOLDER = id -> "%animation:" + id + "%";
+public class DynamicText {
 
     private final String         id;
     private final String[]       lines;
     private final int            interval;
-    private final PlaceholderMap placeholders;
 
     public DynamicText(@NotNull String id, @NotNull List<String> messages, int interval) {
         this.id = id.toLowerCase();
         this.lines = messages.toArray(new String[0]);
         this.interval = Math.max(1, interval);
-
-        this.placeholders = new PlaceholderMap().add(PLACEHOLDER.apply(this.id), this::getMessage);
     }
 
     @NotNull
@@ -40,12 +32,6 @@ public class DynamicText implements Placeholder {
     }
 
     @NotNull
-    @Override
-    public PlaceholderMap getPlaceholders() {
-        return placeholders;
-    }
-
-    @NotNull
     public String getId() {
         return this.id;
     }
@@ -53,11 +39,5 @@ public class DynamicText implements Placeholder {
     @NotNull
     public String getMessage() {
         return this.lines[(int) (System.currentTimeMillis() % (this.lines.length * this.interval) / this.interval)];
-    }
-
-    @NotNull
-    @Deprecated
-    public final String replace(@NotNull String text) {
-        return text.replace(PLACEHOLDER.apply(this.id), this.getMessage());
     }
 }

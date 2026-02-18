@@ -3,8 +3,9 @@ package su.nightexpress.sunlight.module.bans.punishment;
 import org.jetbrains.annotations.NotNull;
 import su.nightexpress.nightcore.config.ConfigValue;
 import su.nightexpress.nightcore.config.FileConfig;
+import su.nightexpress.nightcore.config.Writeable;
 
-public class PunishmentReason {
+public class PunishmentReason implements Writeable {
 
     private String text;
 
@@ -19,13 +20,14 @@ public class PunishmentReason {
         return new PunishmentReason(message);
     }
 
+    @Override
     public void write(@NotNull FileConfig config, @NotNull String path) {
-        config.set(path + ".Message", this.getText());
+        config.set(path + ".Message", this.text);
     }
 
     @NotNull
     public String getText() {
-        return text;
+        return this.text;
     }
 
     public void setText(@NotNull String text) {

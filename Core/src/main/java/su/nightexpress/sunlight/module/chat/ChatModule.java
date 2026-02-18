@@ -1,84 +1,121 @@
 package su.nightexpress.sunlight.module.chat;
 
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import su.nightexpress.nightcore.util.*;
-import su.nightexpress.sunlight.SunLightPlugin;
-import su.nightexpress.sunlight.core.user.settings.Setting;
-import su.nightexpress.sunlight.core.user.settings.SettingRegistry;
+import su.nightexpress.nightcore.bridge.chat.UniversalChatEvent;
+import su.nightexpress.nightcore.bridge.chat.UniversalChatEventHandler;
+import su.nightexpress.nightcore.config.FileConfig;
+import su.nightexpress.nightcore.core.config.CoreLang;
+import su.nightexpress.nightcore.util.FileUtil;
+import su.nightexpress.nightcore.util.Players;
+import su.nightexpress.nightcore.util.Plugins;
+import su.nightexpress.nightcore.util.placeholder.CommonPlaceholders;
+import su.nightexpress.nightcore.util.placeholder.PlaceholderContext;
+import su.nightexpress.nightcore.util.text.night.NightMessage;
+import su.nightexpress.sunlight.SLPlaceholders;
+import su.nightexpress.sunlight.config.PermissionTree;
 import su.nightexpress.sunlight.hook.HookId;
+import su.nightexpress.sunlight.hook.placeholder.PlaceholderRegistry;
 import su.nightexpress.sunlight.module.Module;
-import su.nightexpress.sunlight.module.ModuleInfo;
+import su.nightexpress.sunlight.module.ModuleContext;
+import su.nightexpress.sunlight.module.chat.cache.UserChatCache;
+import su.nightexpress.sunlight.module.chat.channel.ChannelRepository;
+import su.nightexpress.sunlight.module.chat.channel.ChannelSchema;
+import su.nightexpress.sunlight.module.chat.channel.ChatChannel;
 import su.nightexpress.sunlight.module.chat.command.*;
-import su.nightexpress.sunlight.module.chat.command.ChannelCommands;
-import su.nightexpress.sunlight.module.chat.config.ChatConfig;
-import su.nightexpress.sunlight.module.chat.config.ChatLang;
-import su.nightexpress.sunlight.module.chat.config.ChatPerms;
-import su.nightexpress.sunlight.module.chat.event.SunlightPreHandleChatEvent;
-import su.nightexpress.sunlight.module.chat.format.FormatComponent;
-import su.nightexpress.sunlight.module.chat.format.FormatContainer;
-import su.nightexpress.sunlight.module.chat.handler.ChatMessageHandler;
-import su.nightexpress.sunlight.module.chat.handler.CommandHandler;
-import su.nightexpress.sunlight.module.chat.handler.PrivateMessageHandler;
-import su.nightexpress.sunlight.module.chat.listener.ChatListener;
+import su.nightexpress.sunlight.module.chat.context.ChatContext;
+import su.nightexpress.sunlight.module.chat.context.CommandContext;
+import su.nightexpress.sunlight.module.chat.context.ConversationContext;
+import su.nightexpress.sunlight.module.chat.context.MessageContext;
+import su.nightexpress.sunlight.module.chat.core.ChatLang;
+import su.nightexpress.sunlight.module.chat.core.ChatPerms;
+import su.nightexpress.sunlight.module.chat.core.ChatSettings;
 import su.nightexpress.sunlight.module.chat.discord.DiscordHandler;
-import su.nightexpress.sunlight.module.chat.mention.Mention;
-import su.nightexpress.sunlight.module.chat.mention.PlayerMention;
-import su.nightexpress.sunlight.module.chat.module.announcer.AnnounceManager;
-import su.nightexpress.sunlight.module.chat.module.deathmessage.DeathMessageManager;
-import su.nightexpress.sunlight.module.chat.module.joinquit.JoinMessageManager;
-import su.nightexpress.sunlight.module.chat.module.spy.SpyManager;
+import su.nightexpress.sunlight.module.chat.event.PlayerPrivateMessageEvent;
+import su.nightexpress.sunlight.module.chat.format.FormatDefinition;
+import su.nightexpress.sunlight.module.chat.listener.ChatListener;
+import su.nightexpress.sunlight.module.chat.processor.ChatProcessor;
+import su.nightexpress.sunlight.module.chat.processor.chat.ChannelProcessor;
+import su.nightexpress.sunlight.module.chat.processor.chat.DiscordProcessor;
+import su.nightexpress.sunlight.module.chat.processor.chat.FormatProcessor;
+import su.nightexpress.sunlight.module.chat.processor.chat.MentionProcessor;
+import su.nightexpress.sunlight.module.chat.processor.command.CommandCooldownProcessor;
+import su.nightexpress.sunlight.module.chat.processor.conversation.ConversationProcessor;
+import su.nightexpress.sunlight.module.chat.processor.global.*;
 import su.nightexpress.sunlight.module.chat.report.ReportHandler;
 import su.nightexpress.sunlight.module.chat.report.ReportPacketsHandler;
-import su.nightexpress.sunlight.module.chat.rule.RuleManager;
 import su.nightexpress.sunlight.module.chat.report.ReportProtocolHandler;
+import su.nightexpress.sunlight.module.chat.rule.WordFilter;
+import su.nightexpress.sunlight.module.chat.spy.SpyLogger;
+import su.nightexpress.sunlight.module.chat.spy.SpyType;
+import su.nightexpress.sunlight.user.SunUser;
+import su.nightexpress.sunlight.user.property.UserProperty;
+import su.nightexpress.sunlight.user.property.UserPropertyRegistry;
 
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
+import java.util.function.Predicate;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class ChatModule extends Module {
 
-    public static final Setting<Boolean> MENTIONS_SETTING = SettingRegistry.register(Setting.create("mentions", true, true));
+    private final ChatSettings      settings;
+    private final ChannelRepository channelRepository;
+    private final UniversalChatEventHandler chatEventHandler;
 
-    private final Map<UUID, PlayerChatData> chatDataMap;
-
-    private ChannelManager      channelManager;
-    private DeathMessageManager deathManager;
-    private JoinMessageManager  joinManager;
-    private RuleManager         ruleManager;
-    private AnnounceManager     announceManager;
-    private SpyManager          spyManager;
-
+    private Pattern        mentionsPattern;
+    private WordFilter     wordFilter;
+    private SpyLogger      spyLogger;
     private ReportHandler  reportHandler;
     private DiscordHandler discordHandler;
 
-    public ChatModule(@NotNull SunLightPlugin plugin, @NotNull String id) {
-        super(plugin, id);
-        this.chatDataMap = new HashMap<>();
+    public ChatModule(@NotNull ModuleContext context) {
+        super(context);
+        this.settings = new ChatSettings();
+        this.channelRepository = new ChannelRepository();
+        this.chatEventHandler = this::handleChatMessage;
     }
 
     @Override
-    protected void gatherInfo(@NotNull ModuleInfo moduleInfo) {
-        moduleInfo.setConfigClass(ChatConfig.class);
-        moduleInfo.setLangClass(ChatLang.class);
-        moduleInfo.setPermissionsClass(ChatPerms.class);
-    }
+    protected void loadModule(@NotNull FileConfig config) {
+        this.plugin.injectLang(ChatLang.class);
+        this.settings.load(config);
 
-    @Override
-    protected void onModuleLoad() {
-        this.loadManagers();
-        this.loadCommands();
-        this.loadModules();
+        this.loadMentions();
+        this.loadConversations();
+        this.loadChannels();
+        this.loadWordFilter();
+        this.loadSpy();
+        this.loadReportHandler();
+        this.loadDiscordHook();
+
+        this.plugin.addChatHandler(this.settings.getChatEventPriority(), this.chatEventHandler);
+
+        this.plugin.getServer().getOnlinePlayers().forEach(this::autoJoinChannels);
 
         this.addListener(new ChatListener(this.plugin, this));
     }
 
     @Override
-    protected void onModuleUnload() {
-        ChannelCommands.unload(this.plugin, this);
+    protected void unloadModule() {
+        this.plugin.removeChatHandler(this.chatEventHandler);
+
+        this.channelRepository.clear();
+        this.wordFilter = null;
+
+        if (this.spyLogger != null) {
+            this.spyLogger.write();
+            this.spyLogger.shutdown();
+            this.spyLogger = null;
+        }
 
         if (this.discordHandler != null) {
             this.discordHandler.shutdown();
@@ -86,113 +123,232 @@ public class ChatModule extends Module {
         }
 
         if (this.reportHandler != null) {
-            this.reportHandler.shutdown();
+            this.reportHandler.unload();
             this.reportHandler = null;
         }
-
-        if (this.spyManager != null) this.spyManager.shutdown();
-        if (this.announceManager != null) this.announceManager.shutdown();
-        if (this.deathManager != null) this.deathManager.shutdown();
-        if (this.joinManager != null) this.joinManager.shutdown();
-        if (this.ruleManager != null) this.ruleManager.shutdown();
-        if (this.channelManager != null) this.channelManager.shutdown();
     }
 
-    private void loadCommands() {
-        ChannelCommands.load(this.plugin, this);
-        ClearChatCommand.load(this.plugin);
+    @Override
+    protected void registerPermissions(@NotNull PermissionTree root) {
+        // Attach channel-specific permissions.
+        this.channelRepository.getChannels().forEach(channel -> {
+            ChatPerms.CHANNEL_LISTEN.permission(channel.getId());
+            ChatPerms.CHANNEL_SPEAK.permission(channel.getId());
+        });
 
-        if (ChatConfig.PM_ENABLED.get()) {
-            PrivateMessageCommands.load(this.plugin, this);
+        root.merge(ChatPerms.ROOT);
+    }
+
+    @Override
+    protected void registerCommands() {
+        this.commandRegistry.addProvider("chat-clearchat", new ClearChatCommandProvider(this.plugin, this));
+
+        if (this.settings.isChannelsEnabled()) {
+            this.commandRegistry.addProvider("chat-channel", new ChannelCommandsProvider(this.plugin, this));
         }
-        if (ChatConfig.MENTIONS_ENABLED.get()) {
-            MentionsCommand.load(this.plugin);
+
+        if (this.settings.isConversationsEnabled()) {
+            this.commandRegistry.addProvider("chat-conversations", new ConversationCommandProvider(this.plugin, this, this.userManager));
         }
-        if (ChatConfig.ROLEPLAY_COMMANDS_ENABLED.get()) {
-            RoleplayCommands.load(this.plugin);
+
+        if (this.settings.isMentionsEnabled()) {
+            this.commandRegistry.addProvider("chat-mentions", new MentionsCommandProvider(this.plugin, this, this.userManager));
+        }
+
+        if (this.settings.isRoleplayCommandEnabled()) {
+            this.commandRegistry.addProvider("chat-roleplay", new RoleplayCommands(this.plugin, this));
+        }
+
+        if (this.settings.isSpyEnabled()) {
+            this.commandRegistry.addProvider("chat-spy", new SpyCommandProvider(this.plugin, this, this.userManager));
         }
     }
 
-    private void loadManagers() {
-        this.channelManager = new ChannelManager(this.plugin, this);
-        this.channelManager.setup();
+    @Override
+    public void registerPlaceholders(@NotNull PlaceholderRegistry registry) {
+        registry.register("chat_conversations_state", (player, payload) -> {
+            return CoreLang.STATE_ENABLED_DISALBED.get(this.userManager.getOrFetch(player).getPropertyOrDefault(ChatProperties.CONVERSATIONS));
+        });
 
-        this.ruleManager = new RuleManager(this.plugin, this);
-        this.ruleManager.setup();
+        registry.register("chat_conversations_bool", (player, payload) -> {
+            return String.valueOf(this.userManager.getOrFetch(player).getPropertyOrDefault(ChatProperties.CONVERSATIONS));
+        });
     }
 
-    private void loadModules() {
-        if (ChatConfig.SPY_ENABLED.get()) {
-            this.spyManager = new SpyManager(this.plugin, this);
-            this.spyManager.setup();
+    private void loadMentions() {
+        if (!this.settings.isMentionsEnabled()) return;
+
+        UserPropertyRegistry.register(ChatProperties.MENTIONS);
+
+        this.mentionsPattern = Pattern.compile(this.settings.getMentionsPattern());
+        this.settings.getCustomMentions().forEach((id, groupMention) -> {
+            ChatPerms.MENTION.permission(id);
+        });
+    }
+
+    private void loadConversations() {
+        if (!this.settings.isConversationsEnabled()) return;
+
+        UserPropertyRegistry.register(ChatProperties.CONVERSATIONS);
+    }
+
+    private void loadChannels() {
+        Path channelsDir = Path.of(this.getSystemPath() + ChatFiles.DIR_CHANNELS);
+
+        if (!this.settings.isChannelsEnabled()) {
+            this.loadDefaultChannel(channelsDir);
+            return;
         }
 
-        if (ChatConfig.MODULE_JOIN_QUIT_MESSAGES.get()) {
-            this.joinManager = new JoinMessageManager(this.plugin, this);
-            this.joinManager.setup();
+        if (!Files.exists(channelsDir)) {
+            ChannelSchema.getDefaultChannels().forEach(channel -> this.writeChannel(channelsDir, channel));
         }
 
-        if (ChatConfig.MODULE_DEATH_MESSAGES.get()) {
-            if (Version.isAtLeast(Version.MC_1_20_6)) {
-                this.deathManager = new DeathMessageManager(this.plugin, this);
-                this.deathManager.setup();
+        FileUtil.findYamlFiles(channelsDir.toString()).forEach(this::loadChannel);
+
+        String defaultId = this.settings.getChannelDefaultId();
+        ChatChannel defChannel = this.channelRepository.getById(defaultId);
+
+        if (defChannel == null) {
+            this.error("Channel '%s', that is set as default one, does not exist. The '%s' one will be used to keep the chat working.".formatted(defaultId, ChatDefaults.DEFAULT_CHANNEL_ID));
+            this.loadDefaultChannel(channelsDir);
+            return;
+        }
+
+        this.channelRepository.setDefaultChannel(defChannel);
+    }
+
+    private void writeChannel(@NotNull Path channelsDir, @NotNull ChatChannel channel) {
+        Path file = Path.of(channelsDir.toString(), FileConfig.withExtension(channel.getId()));
+        FileConfig config = FileConfig.load(file);
+        config.edit(channel::write);
+    }
+
+    @NotNull
+    private ChatChannel loadChannel(@NotNull Path channelFile) {
+        ChatChannel channel = ChatChannel.fromFile(channelFile);
+        this.channelRepository.add(channel);
+        return channel;
+    }
+
+    private void loadDefaultChannel(@NotNull Path channelsDir) {
+        Path defFile = Path.of(channelsDir.toString(), FileConfig.withExtension(ChatDefaults.DEFAULT_CHANNEL_ID));
+        if (!Files.exists(defFile)) {
+            this.writeChannel(channelsDir, ChannelSchema.createDefaultChannel());
+        }
+
+        ChatChannel channel = this.loadChannel(defFile);
+
+        this.channelRepository.setDefaultChannel(channel);
+    }
+
+    private void loadWordFilter() {
+        if (!this.settings.getProfanityFilterEnabled()) return;
+
+        Path rulesPath = Path.of(this.getSystemPath() + ChatFiles.DIR_RULES);
+        if (!Files.exists(rulesPath)) {
+            try {
+                Files.createDirectories(rulesPath);
+
+                Collection<String> defaultRules = ChatDefaults.getDefaultWordFilterRules(Locale.getDefault());
+                if (!defaultRules.isEmpty()) {
+                    this.writeRules(defaultRules, Path.of(rulesPath.toString(), ChatDefaults.DEFAULT_RULE_FILE_NAME));
+                }
             }
-            else {
-                this.error("Death Messages feature is available only for " + Version.MC_1_20_6.getLocalized() + " and above!");
+            catch (IOException exception) {
+                exception.printStackTrace();
+                return;
             }
         }
 
-        if (ChatConfig.MODULE_ANNOUNCER.get()) {
-            this.announceManager = new AnnounceManager(this.plugin, this);
-            this.announceManager.setup();
+        Set<String> ruleNames = this.settings.getProfanityFilterRules();
+        Set<String> allRules = new HashSet<>();
+
+        FileUtil.findFiles(rulesPath.toString(), file -> ruleNames.contains(file.getFileName().toString())).forEach(file -> {
+            allRules.addAll(this.readRules(file));
+        });
+
+        this.wordFilter = new WordFilter(allRules);
+    }
+
+    private void writeRules(@NotNull Collection<String> rules, @NotNull Path file) {
+        try (BufferedWriter writer = Files.newBufferedWriter(file, StandardCharsets.UTF_8)) {
+            for (String rule : rules) {
+                writer.append(rule);
+                writer.newLine();
+            }
+        }
+        catch (IOException exception) {
+            exception.printStackTrace();
+        }
+    }
+
+    @NotNull
+    private Collection<String> readRules(@NotNull Path file) {
+        Set<String> rules = new HashSet<>();
+
+        try (Stream<String> stream = Files.lines(file)) {
+            stream.filter(Predicate.not(String::isBlank)).forEach(rules::add);
+        }
+        catch (IOException exception) {
+            exception.printStackTrace();
         }
 
-        if (ChatConfig.DISABLE_REPORTS.get() && Version.isAtLeast(Version.V1_19_R3)) {
+        return rules;
+    }
+
+    private void loadSpy() {
+        if (!this.settings.isSpyEnabled()) return;
+
+        for (SpyType spyType : SpyType.values()) {
+            UserPropertyRegistry.register(ChatProperties.getSpyInfoProperty(spyType));
+            UserPropertyRegistry.register(ChatProperties.getSpyLogProperty(spyType));
+        }
+
+        try {
+            this.spyLogger = new SpyLogger(this.plugin, Path.of(this.getSystemPath(), ChatFiles.FILE_SPY_LOG));
+            this.addAsyncTask(this.spyLogger::write, 60);
+        }
+        catch (IOException exception) {
+            exception.printStackTrace();
+        }
+    }
+
+    private void loadReportHandler() {
+        if (this.settings.getReportsDisable()) {
             if (Plugins.isInstalled(HookId.PACKET_EVENTS)) {
-                this.reportHandler = new ReportPacketsHandler(this.plugin);
+                this.reportHandler = new ReportPacketsHandler();
             }
             else if (Plugins.isInstalled(HookId.PROTOCOL_LIB)) {
                 this.reportHandler = new ReportProtocolHandler(this.plugin);
             }
 
             if (this.reportHandler != null) {
-                this.reportHandler.setup();
+                this.reportHandler.load();
             }
         }
+    }
 
-        if (ChatConfig.DISCORD_HOOK_ENABLED.get() && HookId.hasDiscordSRV()) {
+    private void loadDiscordHook() {
+        if (this.settings.isDiscordHookEnabled() && HookId.hasDiscordSRV()) {
             this.discordHandler = new DiscordHandler(this.plugin, this);
             this.discordHandler.setup();
         }
     }
 
     @NotNull
-    public PlayerChatData getChatData(@NotNull Player player) {
-        return this.chatDataMap.computeIfAbsent(player.getUniqueId(), k -> new PlayerChatData(player));
-    }
-
-    public void clearChatData(@NotNull UUID playerId) {
-        this.chatDataMap.remove(playerId);
+    public ChatSettings getSettings() {
+        return this.settings;
     }
 
     @NotNull
-    public ChannelManager getChannelManager() {
-        return this.channelManager;
+    public UserChatCache getChatCache(@NotNull Player player) {
+        return this.userManager.getOrFetch(player).getCacheOrCreate(UserChatCache.class, UserChatCache::new);
     }
 
     @NotNull
-    public RuleManager getRuleManager() {
-        return this.ruleManager;
-    }
-
-    @Nullable
-    public AnnounceManager getAnnounceManager() {
-        return this.announceManager;
-    }
-
-    @Nullable
-    public SpyManager getSpyManager() {
-        return this.spyManager;
+    public ChannelRepository getChannelRepository() {
+        return this.channelRepository;
     }
 
     @Nullable
@@ -201,47 +357,286 @@ public class ChatModule extends Module {
     }
 
     @NotNull
-    public Set<FormatComponent> getFormatComponents() {
-        return new HashSet<>(ChatConfig.FORMAT_COMPONENTS.get().values());
+    public Set<ChatChannel> getChannelsAllowedToListen(@NotNull Player player) {
+        return this.channelRepository.getChannels().stream().filter(channel -> channel.canListenHere(player)).collect(Collectors.toSet());
     }
 
-    @Nullable
-    public FormatContainer getFormatContainer(@NotNull Player player) {
-        var map = ChatConfig.FORMAT_LIST.get();
-        return map.values().stream().filter(container -> container.isApplicable(player)).max(Comparator.comparingInt(FormatContainer::getPriority)).orElse(null);
+    @NotNull
+    public String getEffectiveChatFormat(@NotNull Player player) {
+        return this.settings.getFormatDefinitions()
+            .values()
+            .stream()
+            .filter(container -> container.isApplicable(player))
+            .max(Comparator.comparingInt(FormatDefinition::getPriority))
+            .map(FormatDefinition::getFormat)
+            .orElse(this.settings.getFormatFallback());
     }
 
-    @Nullable
-    public Mention getMention(@NotNull String name) {
-        Mention mention = ChatConfig.getSpecialMention(name);
-        if (mention != null) return mention;
-
-        Player player = this.plugin.getServer().getPlayerExact(name);
-        if (player == null) return null;
-
-        return new PlayerMention(player);
-    }
-
-    public void handleChatEvent(@NotNull AsyncPlayerChatEvent event) {
-        ChatMessageHandler handler = new ChatMessageHandler(this.plugin, this, event);
-        SunlightPreHandleChatEvent handleChatEvent = new SunlightPreHandleChatEvent(this, handler);
-        this.plugin.getPluginManager().callEvent(handleChatEvent);
-
-        if (handleChatEvent.isCancelled() || !handler.handle()) {
-            event.setCancelled(true);
+    @NotNull
+    public ChatChannel getEffectiveChannel(@NotNull Player player, @Nullable Character prefix) {
+        if (prefix != null) {
+            ChatChannel byPrefix = this.channelRepository.getByPrefix(prefix);
+            if (byPrefix != null && byPrefix.canSpeakHere(player)) {
+                return byPrefix;
+            }
         }
+
+        return this.channelRepository.getDefaultChannel();
+    }
+
+    public boolean joinChannel(@NotNull Player player, @NotNull ChatChannel channel) {
+        return this.joinChannel(player, channel, false);
+    }
+
+    public boolean joinChannel(@NotNull Player player, @NotNull ChatChannel channel, boolean isSilent) {
+        if (!channel.canListenOrSpeakHere(player)) {
+            if (!isSilent) {
+                this.sendPrefixed(ChatLang.CHANNEL_JOIN_ERROR_NO_PERMISSION, player, builder -> builder.with(channel.placeholders()));
+            }
+            return false;
+        }
+
+        if (channel.addPlayer(player)) {
+            if (!isSilent) {
+                this.sendPrefixed(ChatLang.CHANNEL_JOIN_SUCCESS, player, builder -> builder.with(channel.placeholders()));
+            }
+            return true;
+        }
+
+        if (!isSilent) {
+            this.sendPrefixed(ChatLang.CHANNEL_JOIN_ERROR_ALREADY_IN, player, builder -> builder.with(channel.placeholders()));
+        }
+
+        return false;
+    }
+
+    public boolean leaveChannel(@NotNull Player player, @NotNull ChatChannel channel) {
+        if (channel.removePlayer(player)) {
+            this.sendPrefixed(ChatLang.CHANNEL_LEAVE_SUCCESS, player, builder -> builder.with(channel.placeholders()));
+            return true;
+        }
+
+        this.sendPrefixed(ChatLang.CHANNEL_LEAVE_ERROR_NOT_IN, player, builder -> builder.with(channel.placeholders()));
+        return false;
+    }
+
+    public void autoJoinChannels(@NotNull Player player) {
+        this.getChannelsAllowedToListen(player).stream().filter(channel -> channel.getAccessibility().autoJoin()).forEach(channel -> {
+            this.joinChannel(player, channel, true);
+        });
+    }
+
+    public void removeFromAllChannels(@NotNull Player player) {
+        this.channelRepository.getChannels().forEach(channel -> channel.removePlayer(player));
+    }
+
+    @NotNull
+    public Set<Player> getSpies(@NotNull SpyType type) {
+        UserProperty<Boolean> property = ChatProperties.getSpyInfoProperty(type);
+
+        return this.plugin.getServer().getOnlinePlayers().stream()
+            .filter(player -> this.userManager.getOrFetch(player).getPropertyOrDefault(property))
+            .collect(Collectors.toSet());
+    }
+
+    public void sendSpyInfo(@NotNull Player player, @NotNull String message, @NotNull String format, @NotNull SpyType spyType) {
+        PlaceholderContext context = PlaceholderContext.builder()
+            .with(CommonPlaceholders.PLAYER.resolver(player))
+            .with(SLPlaceholders.GENERIC_MESSAGE, () -> message)
+            .build();
+
+        String formatted = context.apply(format);
+
+        this.getSpies(spyType).forEach(spy -> Players.sendMessage(spy, formatted));
+
+        SunUser user = this.userManager.getOrFetch(player);
+        if (this.spyLogger != null && user.getPropertyOrDefault(ChatProperties.getSpyLogProperty(spyType))) {
+            this.spyLogger.addEntry(formatted);
+        }
+    }
+
+    public void handleChatMessage(@NotNull UniversalChatEvent event) {
+        if (event.isCancelled()) return;
+
+        Player player = event.getPlayer();
+        String originalMessage = event.message();
+
+        UserChatCache data = this.getChatCache(player);
+        String format = this.getEffectiveChatFormat(player);
+        ChatChannel channel = this.getEffectiveChannel(player, originalMessage.charAt(0));
+
+
+        MessageContext context = new MessageContext(player, data, originalMessage, format, channel, event.viewers());
+        List<ChatProcessor<? super MessageContext>> processors = new ArrayList<>();
+
+        processors.add(new ColorProcessor());
+
+        processors.add(new ChannelProcessor(this.plugin)); // Check channel cooldown, remove channel prefix from message.
+
+        if (this.settings.isAntiFloodEnabled() && !player.hasPermission(ChatPerms.BYPASS_ANTI_FLOOD)) {
+            processors.add(new AntiFloodProcessor()); // Check message similarity only after all modifications are done.
+        }
+
+        if (this.settings.isAntiCapsEnabled() && !player.hasPermission(ChatPerms.BYPASS_ANTI_CAPS)) {
+            processors.add(new AntiCapsProcessor()); // Check CAPS usage and adjust to lower case if needed.
+        }
+
+        if (this.settings.getProfanityFilterEnabled() && !player.hasPermission(ChatPerms.BYPASS_PROFANITY_FILTER)) {
+            if (this.wordFilter != null) {
+                processors.add(new FilterProcessor(this.wordFilter)); // Check custom regex rules and adjust/cancel if needed.
+            }
+        }
+
+        processors.add(new FormatProcessor()); // Replace format placeholders in postProcess
+
+        if (this.settings.isItemShowEnabled()) {
+            processors.add(new ItemDisplayProcessor()); // Inject item display in postProcess in prepared format.
+        }
+
+        if (this.settings.isMentionsEnabled()) {
+            processors.add(new MentionProcessor(this.mentionsPattern, this.userManager)); // Inject mentions in postProcess in prepared format.
+        }
+
+        if (this.settings.isSpyEnabled() && !player.hasPermission(ChatPerms.BYPASS_SPY)) {
+            processors.add(new SpyProcessor());
+        }
+
+        if (this.discordHandler != null) {
+            processors.add(new DiscordProcessor(this.discordHandler));
+        }
+
+        if (!this.process(processors, context)) {
+            event.setCancelled(true);
+            return;
+        }
+
+        event.editViewers(viewers -> {
+            viewers.clear();
+            viewers.addAll(context.getViewers());
+        });
+        event.message(NightMessage.parse(context.getMessage()));
+        event.renderer((source, sourceDisplayName, message, viewer) -> {
+            return NightMessage.parse(context.getFormat());
+        });
     }
 
     public void handleCommandEvent(@NotNull PlayerCommandPreprocessEvent event) {
-        CommandHandler handler = new CommandHandler(this.plugin, this, event);
-        if (!handler.handle()) {
-            event.setCancelled(true);
+        Player player = event.getPlayer();
+        UserChatCache cache = this.getChatCache(player);
+        String originalMessage = event.getMessage();
+
+        CommandContext context = new CommandContext(player, cache, originalMessage);
+        List<ChatProcessor<? super CommandContext>> processors = new ArrayList<>();
+
+        String commandName = context.getCommandName();
+
+        if (this.settings.isAntiFloodEnabled() && !this.settings.isAntiFloodWhitelistedCommand(commandName) && !player.hasPermission(ChatPerms.BYPASS_ANTI_FLOOD)) {
+            processors.add(new CommandCooldownProcessor()); // Check general commands cooldown.
+            processors.add(new AntiFloodProcessor()); // Check message similarity only after all modifications are done.
         }
+
+        if (this.settings.isAntiCapsEnabled() && this.settings.isAntiCapsBlacklistedCommand(commandName) && !player.hasPermission(ChatPerms.BYPASS_ANTI_CAPS)) {
+            processors.add(new AntiCapsProcessor()); // Check CAPS usage and adjust to lower case if needed.
+        }
+
+        if (this.settings.getProfanityFilterEnabled() && this.settings.isProfanityFilterAffectedCommand(commandName) && !player.hasPermission(ChatPerms.BYPASS_PROFANITY_FILTER)) {
+            if (this.wordFilter != null) {
+                processors.add(new FilterProcessor(this.wordFilter)); // Check custom regex rules and adjust/cancel if needed.
+            }
+        }
+
+        if (this.settings.isSpyEnabled() && !player.hasPermission(ChatPerms.BYPASS_SPY)) {
+            processors.add(new SpyProcessor());
+        }
+
+        if (!this.process(processors, context)) {
+            event.setCancelled(true);
+            return;
+        }
+
+        event.setMessage(context.getMessage());
     }
 
-    public boolean handlePrivateMessage(@NotNull CommandSender sender, @NotNull CommandSender receiver, @NotNull String message) {
-        PrivateMessageHandler handler = new PrivateMessageHandler(this.plugin, this, sender, receiver, message);
-        return handler.handle();
+    public boolean sendPrivateMessage(@NotNull Player player, @NotNull Player target, @NotNull String message) {
+        if (player == target) {
+            this.sendPrefixed(ChatLang.CONVERSATIONS_SEND_YOURSELF, player);
+            return false;
+        }
+
+        SunUser targetUser = this.userManager.getOrFetch(target);
+        if (!targetUser.getPropertyOrDefault(ChatProperties.CONVERSATIONS) && !player.hasPermission(ChatPerms.BYPASS_CONVERSATIONS_DISABLED)) {
+            this.sendPrefixed(ChatLang.CONVERSATIONS_SEND_DENIED, player, replacer -> replacer.with(CommonPlaceholders.PLAYER.resolver(target)));
+            return false;
+        }
+
+        PlayerPrivateMessageEvent event = new PlayerPrivateMessageEvent(player, target, message);
+        this.plugin.getPluginManager().callEvent(event);
+        if (event.isCancelled()) return false;
+
+        if (!this.handlePrivateMessage(event)) {
+            return false;
+        }
+
+        if (this.plugin.afkProvider().map(afkProvider -> afkProvider.isAfk(target)).orElse(false)) {
+            this.sendPrefixed(ChatLang.CONVERSATIONS_TARGET_AFK, player, builder -> builder
+                .with(CommonPlaceholders.PLAYER.resolver(target))
+            );
+        }
+
+        return true;
+    }
+
+    public boolean handlePrivateMessage(@NotNull PlayerPrivateMessageEvent event) {
+        Player player = event.getSender();
+        Player target = event.getTarget();
+        String originalMessage = event.getMessage();
+        String proxyFormat = this.settings.getConversationProxyFormat();
+
+        UserChatCache cache = this.getChatCache(player);
+        ConversationContext context = new ConversationContext(player, cache, originalMessage, proxyFormat, target);
+
+        List<ChatProcessor<? super ConversationContext>> processors = new ArrayList<>();
+
+        processors.add(new ColorProcessor());
+
+        if (this.settings.isAntiFloodEnabled() && !player.hasPermission(ChatPerms.BYPASS_ANTI_FLOOD)) {
+            processors.add(new AntiFloodProcessor()); // Check message similarity only after all modifications are done.
+        }
+
+        if (this.settings.isAntiCapsEnabled() && !player.hasPermission(ChatPerms.BYPASS_ANTI_CAPS)) {
+            processors.add(new AntiCapsProcessor()); // Check CAPS usage and adjust to lower case if needed.
+        }
+
+        if (this.settings.getProfanityFilterEnabled() && !player.hasPermission(ChatPerms.BYPASS_PROFANITY_FILTER)) {
+            if (this.wordFilter != null) {
+                processors.add(new FilterProcessor(this.wordFilter)); // Check custom regex rules and adjust/cancel if needed.
+            }
+        }
+
+        if (this.settings.isItemShowEnabled()) {
+            processors.add(new ItemDisplayProcessor()); // Inject item display in postProcess in prepared format.
+        }
+
+        if (this.settings.isSpyEnabled() && !player.hasPermission(ChatPerms.BYPASS_SPY)) {
+            processors.add(new SpyProcessor());
+        }
+
+        processors.add(new ConversationProcessor()); // Format and send messages.
+
+        return this.process(processors, context);
+    }
+
+    private <T extends ChatContext> boolean process(@NotNull List<ChatProcessor<? super T>> processors, @NotNull T context) {
+        for (var processor : processors) {
+            processor.preProcess(this, context);
+
+            if (context.isCancelled()) {
+                return false;
+            }
+        }
+
+        processors.forEach(messageProcessor -> messageProcessor.postProcess(this, context));
+        return true;
     }
 }
 

@@ -2,9 +2,11 @@ package su.nightexpress.sunlight.module.extras;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import su.nightexpress.sunlight.SunLightPlugin;
+import su.nightexpress.nightcore.config.FileConfig;
+import su.nightexpress.sunlight.config.PermissionTree;
+import su.nightexpress.sunlight.hook.placeholder.PlaceholderRegistry;
 import su.nightexpress.sunlight.module.Module;
-import su.nightexpress.sunlight.module.ModuleInfo;
+import su.nightexpress.sunlight.module.ModuleContext;
 import su.nightexpress.sunlight.module.extras.chairs.ChairsManager;
 import su.nightexpress.sunlight.module.extras.chestsort.SortManager;
 import su.nightexpress.sunlight.module.extras.config.ExtrasConfig;
@@ -18,19 +20,15 @@ public class ExtrasModule extends Module {
     private ChairsManager  chairsManager;
     private SortManager    sortManager;
 
-    public ExtrasModule(@NotNull SunLightPlugin plugin, @NotNull String id) {
-        super(plugin, id);
+    public ExtrasModule(@NotNull ModuleContext context) {
+        super(context);
     }
 
     @Override
-    protected void gatherInfo(@NotNull ModuleInfo moduleInfo) {
-        moduleInfo.setConfigClass(ExtrasConfig.class);
-        moduleInfo.setLangClass(ExtrasLang.class);
-        moduleInfo.setPermissionsClass(ExtrasPerms.class);
-    }
+    protected void loadModule(@NotNull FileConfig config) {
+        config.initializeOptions(ExtrasConfig.class);
+        this.plugin.injectLang(ExtrasLang.class);
 
-    @Override
-    protected void onModuleLoad() {
         if (ExtrasConfig.CHAIRS_ENABLED.get()) {
             this.chairsManager = new ChairsManager(this.plugin, this);
             this.chairsManager.setup();
@@ -46,9 +44,30 @@ public class ExtrasModule extends Module {
     }
 
     @Override
-    protected void onModuleUnload() {
+    protected void unloadModule() {
         if (this.chairsManager != null) this.chairsManager.shutdown();
         if (this.sortManager != null) this.sortManager.shutdown();
+    }
+
+    @Override
+    protected void registerPermissions(@NotNull PermissionTree root) {
+        root.merge(ExtrasPerms.MODULE);
+    }
+
+    @Override
+    protected void registerCommands() {
+
+    }
+
+    @Override
+    public void registerPlaceholders(@NotNull PlaceholderRegistry registry) {
+        // TODO
+        /*if (params.equalsIgnoreCase("chairs_state")) {
+            return CoreLang.getYesOrNo(user.getSettings().get(ChairsManager.SETTING_CHAIRS));
+        }
+        if (params.equalsIgnoreCase("chestsort_state")) {
+            return CoreLang.getYesOrNo(user.getSettings().get(SortManager.SETTING_CHEST_SORT));
+        }*/
     }
 
     @Nullable

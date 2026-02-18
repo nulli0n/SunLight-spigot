@@ -1,28 +1,16 @@
 package su.nightexpress.sunlight.module.nerfphantoms.config;
 
-import su.nightexpress.nightcore.util.wrapper.UniPermission;
-import su.nightexpress.sunlight.Placeholders;
+import org.bukkit.permissions.Permission;
+import su.nightexpress.sunlight.config.PermissionTree;
 import su.nightexpress.sunlight.config.Perms;
 
 public class PhantomsPerms {
 
-    public static final String PREFIX         = Perms.PREFIX + "nerfphantoms.";
-    public static final String PREFIX_COMMAND = PREFIX + "command.";
+    public static final PermissionTree ROOT    = Perms.detached("nerfphantoms");
+    public static final PermissionTree COMMAND = ROOT.branch("command");
 
-    public static final UniPermission MODULE  = new UniPermission(PREFIX + Placeholders.WILDCARD);
-    public static final UniPermission COMMAND = new UniPermission(PREFIX_COMMAND + Placeholders.WILDCARD);
+    public static final Permission COMMAND_PHANTOMS_ROOT          = COMMAND.permission("phantoms.root");
+    public static final Permission COMMAND_PHANTOMS_TOGGLE        = COMMAND.permission("phantoms.toggle");
+    public static final Permission COMMAND_PHANTOMS_TOGGLE_OTHERS = COMMAND.permission("phantoms.toggle.others");
 
-    public static final UniPermission COMMAND_NO_PHANTOM        = new UniPermission(PREFIX_COMMAND + "nophantom");
-    public static final UniPermission COMMAND_NO_PHANTOM_OTHERS = new UniPermission(PREFIX_COMMAND + "nophantom.others");
-
-    static {
-        Perms.PLUGIN.addChildren(MODULE);
-
-        MODULE.addChildren(COMMAND);
-
-        COMMAND.addChildren(
-            COMMAND_NO_PHANTOM,
-            COMMAND_NO_PHANTOM_OTHERS
-        );
-    }
 }

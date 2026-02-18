@@ -2,70 +2,78 @@ package su.nightexpress.sunlight.module.extras.chestsort;
 
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import su.nightexpress.nightcore.command.experimental.CommandContext;
-import su.nightexpress.nightcore.command.experimental.argument.ArgumentTypes;
-import su.nightexpress.nightcore.command.experimental.argument.ParsedArguments;
-import su.nightexpress.nightcore.command.experimental.builder.DirectNodeBuilder;
-import su.nightexpress.nightcore.command.experimental.node.DirectNode;
-import su.nightexpress.nightcore.config.FileConfig;
-import su.nightexpress.sunlight.Placeholders;
+import su.nightexpress.nightcore.commands.Arguments;
+import su.nightexpress.nightcore.commands.context.CommandContext;
+import su.nightexpress.nightcore.commands.context.ParsedArguments;
+import su.nightexpress.nightcore.core.CoreLang;
+import su.nightexpress.sunlight.SLPlaceholders;
 import su.nightexpress.sunlight.SunLightPlugin;
 import su.nightexpress.sunlight.command.CommandArguments;
-import su.nightexpress.sunlight.command.CommandFlags;
-import su.nightexpress.sunlight.command.CommandRegistry;
-import su.nightexpress.sunlight.command.CommandTools;
 import su.nightexpress.sunlight.command.mode.ToggleMode;
-import su.nightexpress.sunlight.command.template.CommandTemplate;
-import su.nightexpress.sunlight.config.Lang;
-import su.nightexpress.sunlight.data.user.SunUser;
+import su.nightexpress.sunlight.command.provider.type.AbstractCommandProvider;
 import su.nightexpress.sunlight.module.extras.config.ExtrasLang;
 import su.nightexpress.sunlight.module.extras.config.ExtrasPerms;
+import su.nightexpress.sunlight.user.SunUser;
 
-public class SortCommand {
+import java.util.Map;
 
-    public static final String NODE = "chestsort_toggle";
+public class SortCommand extends AbstractCommandProvider {
 
-    public static void load(@NotNull SunLightPlugin plugin, @NotNull SortManager manager) {
-        CommandRegistry.registerDirectExecutor(NODE, (template, config) -> builderToggle(plugin, manager, template, config));
+    private static final String COMMAND_OFF    = "off";
+    private static final String COMMAND_ON     = "on";
+    private static final String COMMAND_TOGGLE = "toggle";
 
-        CommandRegistry.addTemplate("chestsort", CommandTemplate.direct(new String[]{"chestsort"}, NODE));
+    private final SortManager manager;
+
+    public SortCommand(@NotNull SunLightPlugin plugin, @NotNull SortManager manager) {
+        super(plugin);
+        this.manager = manager;
     }
 
-    @NotNull
-    public static DirectNodeBuilder builderToggle(@NotNull SunLightPlugin plugin, @NotNull SortManager manager, @NotNull CommandTemplate template, @NotNull FileConfig config) {
-        return DirectNode.builder(plugin, template.getAliases())
+    @Override
+    public void registerDefaults() {
+        this.registerLiteral("chestsort", true, new String[]{"chestsort"}, builder -> builder
             .description(ExtrasLang.COMMAND_CHEST_SORT_DESC)
             .permission(ExtrasPerms.COMMAND_CHEST_SORT)
-            .withArgument(CommandArguments.toggleMode(CommandArguments.MODE))
-            .withArgument(ArgumentTypes.playerName(CommandArguments.PLAYER).permission(ExtrasPerms.COMMAND_CHEST_SORT_OTHERS))
-            .withFlag(CommandFlags.silent().permission(ExtrasPerms.COMMAND_CHEST_SORT_OTHERS))
-            .executes((context, arguments) -> toggle(plugin, manager, context, arguments))
-            ;
+            .withArguments(Arguments.playerName(CommandArguments.PLAYER).permission(ExtrasPerms.COMMAND_CHEST_SORT_OTHERS).optional())
+            .withFlags(CommandArguments.FLAG_SILENT)
+            .executes((context, arguments) -> this.toggleSorting(context, arguments, ToggleMode.TOGGLE))
+        );
+
+        this.registerRoot("mode", true, new String[]{"sortmode"},
+            Map.of(
+                COMMAND_OFF, "off",
+                COMMAND_ON, "on",
+                COMMAND_TOGGLE, "toggle"
+            ),
+            builder -> builder.description("TODO").permission("TODO") // TODO
+        );
     }
 
-    public static boolean toggle(@NotNull SunLightPlugin plugin, @NotNull SortManager manager, @NotNull CommandContext context, @NotNull ParsedArguments arguments) {
-        Player target = CommandTools.getTarget(plugin, context, arguments, CommandArguments.PLAYER, true);
+    private boolean toggleSorting(@NotNull CommandContext context, @NotNull ParsedArguments arguments, @NotNull ToggleMode mode) {
+        // TODO
+        /*Player target = this.getTargetOrSender(context, arguments, CommandArguments.PLAYER, true);
         if (target == null) return false;
 
-        ToggleMode mode = CommandTools.getToggleMode(plugin, context, arguments, CommandArguments.MODE);
         SunUser user = plugin.getUserManager().getOrFetch(target);
         boolean state = mode.apply(SortManager.isChestSortEnabled(user));
 
-        user.getSettings().set(SortManager.SETTING_CHEST_SORT, state);
-        plugin.getUserManager().save(user);
+        user.setProperty(SortManager.SETTING_CHEST_SORT, state);
+        //this.plugin.getUserManager().save(user);
+        user.markDirty();
 
         if (context.getSender() != target) {
-            ExtrasLang.COMMAND_CHEST_SORT_TARGET.getMessage()
-                .replace(Placeholders.forPlayer(target))
-                .replace(Placeholders.GENERIC_STATE, Lang.getEnabledOrDisabled(state))
-                .send(context.getSender());
+            context.send(ExtrasLang.COMMAND_CHEST_SORT_TARGET, replacer -> replacer
+                .replace(SLPlaceholders.forPlayer(target))
+                .replace(SLPlaceholders.GENERIC_STATE, CoreLang.getEnabledOrDisabled(state))
+            );
         }
 
-        if (!arguments.hasFlag(CommandFlags.SILENT)) {
-            ExtrasLang.COMMAND_CHEST_SORT_NOTIFY.getMessage()
-                .replace(Placeholders.GENERIC_STATE, Lang.getEnabledOrDisabled(state))
-                .send(target);
-        }
+        if (!context.hasFlag(CommandArguments.FLAG_SILENT)) {
+            ExtrasLang.COMMAND_CHEST_SORT_NOTIFY.message().send(target, replacer -> replacer
+                .replace(SLPlaceholders.GENERIC_STATE, CoreLang.getEnabledOrDisabled(state))
+            );
+        }*/
 
         return true;
     }

@@ -13,6 +13,7 @@ import su.nightexpress.nightcore.util.ItemReplacer;
 import su.nightexpress.nightcore.util.ItemUtil;
 import su.nightexpress.nightcore.util.Lists;
 import su.nightexpress.sunlight.SunLightPlugin;
+import su.nightexpress.sunlight.config.Lang;
 import su.nightexpress.sunlight.module.worlds.WorldsModule;
 import su.nightexpress.sunlight.module.worlds.config.WorldsLang;
 import su.nightexpress.sunlight.module.worlds.impl.WorldData;
@@ -27,7 +28,7 @@ public class WorldMainEditor extends EditorMenu<SunLightPlugin, WrappedWorld> {
     private static final String TEXTURE_AUTO_LOAD_ON  = "629b19ad3c51edad643e44dd5da6b9d731754c15a9ffbf81c32c2886c9290577";
 
     public WorldMainEditor(@NotNull SunLightPlugin plugin, @NotNull WorldsModule module) {
-        super(plugin, WorldsLang.EDITOR_TITLE_SETTINGS.getString(), MenuSize.CHEST_18);
+        super(plugin, WorldsLang.EDITOR_TITLE_SETTINGS.text(), MenuSize.CHEST_18);
 
         this.addReturn(13, (viewer, event, wrappedWorld) -> {
             this.runNextTick(() -> module.openEditor(viewer.getPlayer()));
@@ -44,7 +45,7 @@ public class WorldMainEditor extends EditorMenu<SunLightPlugin, WrappedWorld> {
         }).setVisibilityPolicy(this.visibility(WrappedWorld::isCustom));
 
         this.addItem(ItemUtil.getSkinHead(TEXTURE_UNLOAD), WorldsLang.EDITOR_WORLD_UNLOAD, 7, (viewer, event, wrappedWorld) -> {
-            wrappedWorld.getData().unloadWorld();
+            module.unloadWorld(wrappedWorld.getData());
             this.runNextTick(() -> module.openGenerationSettings(viewer.getPlayer(), wrappedWorld.getData()));
         }).getOptions().setVisibilityPolicy(this.visibility(WrappedWorld::isCustom));
 
@@ -64,7 +65,7 @@ public class WorldMainEditor extends EditorMenu<SunLightPlugin, WrappedWorld> {
                 return;
             }
             if (event.isRightClick()) {
-                this.handleInput(viewer, WorldsLang.EDITOR_INPUT_GENERIC_SECONDS, (dialog, wrapper) -> {
+                this.handleInput(viewer.getPlayer(), Lang.EDITOR_INPUT_GENERIC_SECONDS.text(), (dialog, wrapper) -> {
                     data.setResetInterval(wrapper.asAnyInt(-1));
                     data.save();
                     return true;

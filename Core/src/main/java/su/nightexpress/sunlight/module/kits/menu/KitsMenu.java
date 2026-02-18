@@ -1,229 +1,195 @@
 package su.nightexpress.sunlight.module.kits.menu;
 
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.InventoryView;
+import org.bukkit.inventory.MenuType;
 import org.jetbrains.annotations.NotNull;
-import su.nightexpress.nightcore.config.ConfigValue;
 import su.nightexpress.nightcore.config.FileConfig;
-import su.nightexpress.nightcore.menu.MenuOptions;
-import su.nightexpress.nightcore.menu.MenuSize;
-import su.nightexpress.nightcore.menu.MenuViewer;
-import su.nightexpress.nightcore.menu.api.AutoFill;
-import su.nightexpress.nightcore.menu.api.AutoFilled;
-import su.nightexpress.nightcore.menu.impl.ConfigMenu;
-import su.nightexpress.nightcore.menu.item.ItemHandler;
-import su.nightexpress.nightcore.menu.item.MenuItem;
-import su.nightexpress.nightcore.util.*;
-import su.nightexpress.nightcore.util.placeholder.PlaceholderMap;
+import su.nightexpress.nightcore.configuration.ConfigProperty;
+import su.nightexpress.nightcore.configuration.ConfigTypes;
+import su.nightexpress.nightcore.integration.currency.EconomyBridge;
+import su.nightexpress.nightcore.locale.LangContainer;
+import su.nightexpress.nightcore.locale.LangEntry;
+import su.nightexpress.nightcore.locale.entry.EnumLocale;
+import su.nightexpress.nightcore.locale.entry.IconLocale;
+import su.nightexpress.nightcore.ui.inventory.item.ItemPopulator;
+import su.nightexpress.nightcore.ui.inventory.item.MenuItem;
+import su.nightexpress.nightcore.ui.inventory.menu.AbstractMenu;
+import su.nightexpress.nightcore.ui.inventory.viewer.ViewerContext;
 import su.nightexpress.sunlight.SunLightPlugin;
-import su.nightexpress.sunlight.config.Lang;
-import su.nightexpress.sunlight.data.user.SunUser;
-import su.nightexpress.sunlight.module.kits.Kit;
+import su.nightexpress.sunlight.module.kits.KitFiles;
 import su.nightexpress.sunlight.module.kits.KitsModule;
-import su.nightexpress.sunlight.module.kits.config.KitsConfig;
-import su.nightexpress.sunlight.module.kits.util.Placeholders;
+import su.nightexpress.sunlight.module.kits.config.KitsPerms;
+import su.nightexpress.sunlight.module.kits.data.KitData;
+import su.nightexpress.sunlight.module.kits.model.Kit;
 
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.IntStream;
 
-import static su.nightexpress.sunlight.module.kits.util.Placeholders.*;
-import static su.nightexpress.nightcore.util.text.tag.Tags.*;
+import static su.nightexpress.nightcore.util.text.night.wrapper.TagWrappers.*;
+import static su.nightexpress.sunlight.SLPlaceholders.*;
+import static su.nightexpress.sunlight.module.kits.KitsPlaceholders.*;
 
-public class KitsMenu extends ConfigMenu<SunLightPlugin> implements AutoFilled<Kit> {
+public class KitsMenu extends AbstractMenu implements LangContainer {
 
-    private static final String FILE_NAME = "kit_list.yml";
+    private static final EnumLocale<KitStatus> KIT_STATUS_LOCALE = LangEntry.builder("Kits.UI.KitBrowser.KitStatus")
+        .enumeration(KitStatus.class, KitStatus::getDefaultText);
 
-    private static final String NO_MONEY       = "%no_money%";
-    private static final String NO_PERMISSION  = "%no_permission%";
-    private static final String COOLDOWN       = "%cooldown%";
-    private static final String INFO_COST      = "%info_cost%";
-    private static final String INFO_COOLDOWN  = "%info_cooldown%";
-    private static final String ACTION_GET     = "%action_get%";
-    private static final String ACTION_PREVIEW = "%action_preview%";
+    private static final IconLocale KIT_ICON = LangEntry.iconBuilder("Kits.UI.KitBrowser.KitIcon")
+        .accentColor(WHITE)
+        .rawName(YELLOW.and(BOLD).wrap("Kit: ") + WHITE.wrap(KIT_NAME))
+        .rawLore(KIT_DESCRIPTION)
+        .rawLore(EMPTY_IF_ABOVE)
+        .appendCurrent("Cost", KIT_COST)
+        .appendCurrent("Cooldown", KIT_COOLDOWN).br()
+        .rawLore(GENERIC_STATUS)
+        .build();
+
+    enum KitStatus {
+        NO_PERMISSION(RED.wrap("✘ " + UNDERLINED.wrap("You aren't allowed to use this kit."))),
+        TOO_EXPENSIVE(RED.wrap("✘ " + UNDERLINED.wrap("You can't afford this kit."))),
+        ON_COOLDOWN(ORANGE.wrap("⌛ " + UNDERLINED.wrap("The kit is on cooldown."))),
+        AVAILABLE(GREEN.wrap("→ " + UNDERLINED.wrap("Click to get this kit!")));
+
+        private final String defaultText;
+
+        KitStatus(@NotNull String defaultText) {
+            this.defaultText = defaultText;
+        }
+
+        @NotNull
+        public String getDefaultText() {
+            return this.defaultText;
+        }
+    }
 
     private final KitsModule module;
 
-    private String       kitName;
-    private List<String> kitLore;
-    private int[]        kitSlots;
-
-    private List<String> loreNoPerm;
-    private List<String> loreNoMoney;
-    private List<String> loreCooldown;
-    private List<String> loreInfoCost;
-    private List<String> loreInfoCooldown;
-    private List<String> loreGet;
-    private List<String> lorePreview;
+    private ItemPopulator<Kit> kitPopulator;
 
     public KitsMenu(@NotNull SunLightPlugin plugin, @NotNull KitsModule module) {
-        super(plugin, FileConfig.loadOrExtract(plugin, module.getLocalUIPath(), FILE_NAME));
+        super(MenuType.GENERIC_9X4, "Kits");
         this.module = module;
 
-        this.load();
+        plugin.injectLang(this);
+        this.load(plugin, FileConfig.load(module.getLocalUIPath(), KitFiles.FILE_UI_KIT_LIST));
     }
 
     @Override
-    public void onPrepare(@NotNull MenuViewer viewer, @NotNull MenuOptions options) {
-        this.autoFill(viewer);
-    }
-
-    @Override
-    protected void onReady(@NotNull MenuViewer viewer, @NotNull Inventory inventory) {
+    public void registerActions() {
 
     }
 
     @Override
-    public void onAutoFill(@NotNull MenuViewer viewer, @NotNull AutoFill<Kit> autoFill) {
-        Player player = viewer.getPlayer();
+    public void registerConditions() {
 
-        autoFill.setSlots(this.kitSlots);
-        autoFill.setItems(this.module.getKits().stream()
-            .filter(kit -> !KitsConfig.GUI_HIDE_NO_PERMISSION.get() || kit.hasPermission(player))
-            .sorted(Comparator.comparingInt(Kit::getPriority).reversed())
-            .toList()
-        );
-        autoFill.setItemCreator(kit -> {
-            ItemStack item = kit.getIcon();
-            PlaceholderMap placeholders = new PlaceholderMap();
+    }
 
-            List<String> noPermLore = new ArrayList<>();
-            List<String> noMoneyLore = new ArrayList<>();
-            List<String> cooldownLore = new ArrayList<>();
-            List<String> infoCostLore = new ArrayList<>();
-            List<String> infoCooldownLore = new ArrayList<>();
-            List<String> getLore = new ArrayList<>();
-            List<String> previewLore = new ArrayList<>();
+    @Override
+    public void defineDefaultLayout() {
+        this.addBackgroundItem(Material.GRAY_STAINED_GLASS_PANE, IntStream.range(0, 27).toArray());
+        this.addBackgroundItem(Material.BLACK_STAINED_GLASS_PANE, IntStream.range(27, 36).toArray());
 
-            if (kit.hasCooldown()) {
-                infoCooldownLore.addAll(this.loreInfoCooldown);
-            }
-            if (kit.hasCost()) {
-                infoCostLore.addAll(this.loreInfoCost);
-            }
+        this.addNextPageItem(Material.ARROW, 35);
+        this.addPreviousPageItem(Material.ARROW, 27);
+    }
 
-            if (!kit.hasPermission(player)) {
-                noPermLore.addAll(this.loreNoPerm);
-            }
-            else {
-                SunUser user = plugin.getUserManager().getOrFetch(player);
-                user.getCooldown(kit).ifPresent(info -> {
-                    cooldownLore.addAll(this.loreCooldown);
-                    placeholders.add(Placeholders.GENERIC_COOLDOWN, info.isPermanent() ? Lang.OTHER_NEVER.getString() : TimeUtil.formatDuration(info.getExpireDate()));
-                });
+    @Override
+    protected void onLoad(@NotNull FileConfig config) {
+        int[] kitSlots = ConfigProperty.of(ConfigTypes.INT_ARRAY, "Kit.Slots", new int[] {10,11,12,13,14,15,16}).resolveWithDefaults(config);
 
-                if (!kit.canAfford(player)) {
-                    noMoneyLore.addAll(this.loreNoMoney);
+        this.kitPopulator = ItemPopulator.builder(Kit.class)
+            .actionProvider(kit -> context -> {
+                Player player = context.getPlayer();
+
+                if (context.getEvent().isRightClick()) {
+                    this.module.previewKit(player, kit);
+                    return;
                 }
 
-                if (noMoneyLore.isEmpty() && cooldownLore.isEmpty()) {
-                    getLore.addAll(this.loreGet);
-                    previewLore.addAll(this.lorePreview);
-                }
-            }
+                KitStatus status = this.getKitStatus(player, kit);
+                if (status != KitStatus.AVAILABLE) return;
 
-            ItemReplacer.create(item).hideFlags().trimmed()
-                .setDisplayName(this.kitName)
-                .setLore(this.kitLore)
-                .replace(INFO_COOLDOWN, infoCooldownLore)
-                .replace(INFO_COST, infoCostLore)
-                .replace(NO_PERMISSION, noPermLore)
-                .replace(NO_MONEY, noMoneyLore)
-                .replace(COOLDOWN, cooldownLore)
-                .replace(ACTION_GET, getLore)
-                .replace(ACTION_PREVIEW, previewLore)
-                .replace(placeholders)
-                .replace(kit.getPlaceholders())
-                .writeMeta();
+                this.module.giveKit(kit, player, false, false);
 
-            return item;
-        });
-        autoFill.setClickAction(kit -> (viewer1, event) -> {
-            if (event.isLeftClick()) {
-                kit.give(player, false, false);
-                this.runNextTick(player::closeInventory);
-            }
-            else if (event.isRightClick()) {
-                this.runNextTick(() -> this.module.openKitPreview(player, kit));
-            }
-        });
+                context.getViewer().refresh();
+            })
+            .itemProvider((context, kit) -> {
+                return kit.definition().getIcon()
+                    .hideAllComponents()
+                    .localized(KIT_ICON)
+                    .replace(builder -> builder
+                        .with(kit.placeholders())
+                        .with(GENERIC_STATUS, () -> KIT_STATUS_LOCALE.getLocalized(this.getKitStatus(context.getPlayer(), kit)))
+                    );
+            })
+            .slots(kitSlots)
+            .build();
     }
 
     @Override
+    protected void onClick(@NotNull ViewerContext context, @NotNull InventoryClickEvent event) {
+
+    }
+
+    @Override
+    protected void onDrag(@NotNull ViewerContext context, @NotNull InventoryDragEvent event) {
+
+    }
+
+    @Override
+    protected void onClose(@NotNull ViewerContext context, @NotNull InventoryCloseEvent event) {
+
+    }
+
+    @Override
+    public void onPrepare(@NotNull ViewerContext context, @NotNull InventoryView view, @NotNull Inventory inventory, @NotNull List<MenuItem> items) {
+        Collection<Kit> availableKits;
+        if (this.module.getSettings().isHideNoPermKits()) {
+            availableKits = this.module.getKits(context.getPlayer());
+        }
+        else {
+            availableKits = this.module.getKits();
+        }
+
+        List<Kit> kits = availableKits.stream().sorted(Comparator.comparingInt(kit -> kit.definition().getPriority())).toList();
+
+        this.kitPopulator.populateTo(context, kits, items);
+    }
+
+    @Override
+    public void onReady(@NotNull ViewerContext context, @NotNull InventoryView view, @NotNull Inventory inventory) {
+
+    }
+
+    @Override
+    public void onRender(@NotNull ViewerContext context, @NotNull InventoryView view, @NotNull Inventory inventory) {
+
+    }
+
     @NotNull
-    protected MenuOptions createDefaultOptions() {
-        return new MenuOptions(BLACK.enclose("Kits"), MenuSize.CHEST_27);
-    }
+    private KitStatus getKitStatus(@NotNull Player player, @NotNull Kit kit) {
+        if (!kit.hasPermission(player)) return KitStatus.NO_PERMISSION;
 
-    @Override
-    @NotNull
-    protected List<MenuItem> createDefaultItems() {
-        List<MenuItem> list = new ArrayList<>();
+        if (kit.hasCost() && !player.hasPermission(KitsPerms.BYPASS_COST)) {
+            double cost = kit.definition().getCost();
+            double balance = EconomyBridge.getEconomyBalance(player);
+            if (balance < cost) return KitStatus.TOO_EXPENSIVE;
+        }
 
-        ItemStack nextPage = ItemUtil.getSkinHead(SKIN_ARROW_RIGHT);
-        ItemUtil.editMeta(nextPage, meta -> {
-            meta.setDisplayName(Lang.EDITOR_ITEM_NEXT_PAGE.getDefaultName());
-        });
-        list.add(new MenuItem(nextPage).setPriority(10).setSlots(26).setHandler(ItemHandler.forNextPage(this)));
+        if (kit.hasCooldown() && !player.hasPermission(KitsPerms.BYPASS_COOLDOWN)) {
+            KitData data = this.module.getKitData(player.getUniqueId(), kit.getId());
+            if (data != null && !data.isCooldownExpired()) return KitStatus.ON_COOLDOWN;
+        }
 
-        ItemStack backPage = ItemUtil.getSkinHead(SKIN_ARROW_LEFT);
-        ItemUtil.editMeta(backPage, meta -> {
-            meta.setDisplayName(Lang.EDITOR_ITEM_PREVIOUS_PAGE.getDefaultName());
-        });
-        list.add(new MenuItem(backPage).setPriority(10).setSlots(18).setHandler(ItemHandler.forPreviousPage(this)));
 
-        return list;
-    }
-
-    @Override
-    protected void loadAdditional() {
-        this.kitName = ConfigValue.create("Kit.Name",
-            LIGHT_YELLOW.enclose(BOLD.enclose("Kit: ")) + WHITE.enclose(KIT_NAME)
-        ).read(cfg);
-
-        this.kitLore = ConfigValue.create("Kit.Lore.Default", Lists.newList(
-            INFO_COST,
-            INFO_COOLDOWN,
-            "",
-            KIT_DESCRIPTION,
-            "",
-            NO_PERMISSION,
-            NO_MONEY,
-            COOLDOWN,
-            "",
-            ACTION_GET,
-            ACTION_PREVIEW
-        )).read(cfg);
-
-        this.loreGet = ConfigValue.create("Kit.Lore.Get", Lists.newList(
-            LIGHT_GRAY.enclose(LIGHT_YELLOW.enclose("[▶]") + " Left-Click to " + LIGHT_YELLOW.enclose("get") + ".")
-        )).read(cfg);
-
-        this.lorePreview = ConfigValue.create("Kit.Lore.Preview", Lists.newList(
-            LIGHT_GRAY.enclose(LIGHT_YELLOW.enclose("[▶]") + " Right-Click to " + LIGHT_YELLOW.enclose("preview") + ".")
-        )).read(cfg);
-
-        this.loreInfoCost = ConfigValue.create("Kit.Lore.InfoCost", Lists.newList(
-            DARK_GRAY.enclose("Cost: " + ORANGE.enclose("$" + KIT_COST))
-        )).read(cfg);
-
-        this.loreInfoCooldown = ConfigValue.create("Kit.Lore.InfoCooldown", Lists.newList(
-            DARK_GRAY.enclose("Cooldown: " + ORANGE.enclose(KIT_COOLDOWN))
-        )).read(cfg);
-
-        this.loreNoPerm = ConfigValue.create("Kit.Lore.No_Permission", Lists.newList(
-            LIGHT_GRAY.enclose(LIGHT_RED.enclose("[❗]") + " You don't have " + LIGHT_RED.enclose("permission") + " to use this kit.")
-        )).read(cfg);
-        
-        this.loreNoMoney = ConfigValue.create("Kit.Lore.No_Money", Lists.newList(
-            LIGHT_GRAY.enclose(LIGHT_RED.enclose("[❗]") + " You need " + LIGHT_RED.enclose("$" + KIT_COST) + " to use this kit.")
-        )).read(cfg);
-        
-        this.loreCooldown = ConfigValue.create("Kit.Lore.Cooldown", Lists.newList(
-            LIGHT_GRAY.enclose(LIGHT_RED.enclose("[❗]") + " You can use this kit again in " + LIGHT_RED.enclose(GENERIC_COOLDOWN) + ".")
-        )).read(cfg);
-        
-        this.kitSlots = ConfigValue.create("Kit.Slots", new int[] {10,11,12,13,14,15,16}).read(cfg);
+        return KitStatus.AVAILABLE;
     }
 }

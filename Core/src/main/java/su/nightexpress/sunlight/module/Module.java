@@ -1,89 +1,138 @@
 package su.nightexpress.sunlight.module;
 
+import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import su.nightexpress.nightcore.config.FileConfig;
+import su.nightexpress.nightcore.locale.entry.MessageLocale;
+import su.nightexpress.nightcore.locale.message.LangMessage;
 import su.nightexpress.nightcore.manager.AbstractManager;
-import su.nightexpress.nightcore.util.StringUtil;
+import su.nightexpress.nightcore.util.placeholder.PlaceholderContext;
+import su.nightexpress.sunlight.SLFiles;
 import su.nightexpress.sunlight.SunLightPlugin;
+import su.nightexpress.sunlight.command.CommandRegistry;
 import su.nightexpress.sunlight.config.Config;
+import su.nightexpress.sunlight.config.PermissionTree;
+import su.nightexpress.sunlight.config.Perms;
+import su.nightexpress.sunlight.data.DataHandler;
+import su.nightexpress.sunlight.dialog.DialogRegistry;
+import su.nightexpress.sunlight.user.UserManager;
+import su.nightexpress.sunlight.exception.ModuleLoadException;
+import su.nightexpress.sunlight.hook.placeholder.PlaceholderRegistry;
+
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Collection;
+import java.util.function.Consumer;
 
 public abstract class Module extends AbstractManager<SunLightPlugin> {
 
-    protected static final String CONFIG_NAME = "settings.yml";
+    private final   String           id;
+    protected final Path             path;
+    protected final ModuleDefinition definition;
 
-    private final String     id;
-    private final String     name;
-    private final FileConfig config;
+    protected final DataHandler     dataHandler;
+    protected final UserManager     userManager;
+    protected final CommandRegistry commandRegistry;
+    protected final DialogRegistry dialogRegistry;
 
-    public Module(@NotNull SunLightPlugin plugin, @NotNull String id) {
-        super(plugin);
-        this.id = id.toLowerCase();
-        this.name = StringUtil.capitalizeUnderscored(id);
-        this.config = FileConfig.loadOrExtract(this.plugin, this.getLocalPath(), CONFIG_NAME);
+    private final String logPrefix;
+
+    public Module(@NotNull ModuleContext context) {
+        super(context.plugin());
+        this.id = context.id();
+        this.path = context.path();
+        this.definition = context.definition();
+
+        this.dataHandler = context.dataHandler();
+        this.userManager = context.userManager();
+        this.commandRegistry = context.commandRegistry();
+        this.dialogRegistry = context.dialogRegistry();
+
+        this.logPrefix = "[" + this.definition.name() + "] ";
+    }
+
+    public void init() {
+        this.initModule();
+
     }
 
     @Override
-    protected final void onLoad() {
-        ModuleInfo moduleInfo = new ModuleInfo();
-        this.gatherInfo(moduleInfo);
+    protected final void onLoad() throws ModuleLoadException {
+        long loadTook = System.currentTimeMillis();
 
-        if (moduleInfo.getConfigClass() != null) this.config.initializeOptions(moduleInfo.getConfigClass());
-        if (moduleInfo.getLangClass() != null) this.plugin.getLangManager().loadEntries(moduleInfo.getLangClass());
-        if (moduleInfo.getPermissionsClass() != null) this.plugin.registerPermissions(moduleInfo.getPermissionsClass());
+        FileConfig config = this.getConfig();
 
-        this.onModuleLoad();
+        this.loadModule(config);
+        this.registerCommands();
+        this.registerPermissions(Perms.ROOT);
 
-        this.config.saveChanges();
+        config.saveChanges();
+
+        loadTook = System.currentTimeMillis() - loadTook;
+        this.info("Loaded in %s ms.".formatted(loadTook));
     }
 
     @Override
     protected final void onShutdown() {
-        this.onModuleUnload();
+        this.unloadModule();
     }
 
-    protected abstract void gatherInfo(@NotNull ModuleInfo moduleInfo);
+    protected void initModule() {
 
-    protected abstract void onModuleLoad();
+    }
 
-    protected abstract void onModuleUnload();
+    protected abstract void loadModule(@NotNull FileConfig config) throws ModuleLoadException;
 
-    public boolean canLoad() {
-        return true;
+    protected abstract void unloadModule();
+
+    protected abstract void registerPermissions(@NotNull PermissionTree root);
+
+    protected abstract void registerCommands();
+
+    public abstract void registerPlaceholders(@NotNull PlaceholderRegistry registry);
+
+    @NotNull
+    public final FileConfig getConfig() {
+        return FileConfig.load(this.path.toString(), SLFiles.FILE_MODULE_SETTINGS);
     }
 
     @NotNull
-    public FileConfig getConfig() {
-        return this.config;
-    }
-
-    @NotNull
-    public String getId() {
+    public final String getId() {
         return this.id;
     }
 
     @NotNull
     public final String getName() {
-        return this.name;
+        return this.definition.name();
     }
 
     @NotNull
-    public String getLocalPath() {
-        return ModuleManager.DIR_MODULES + this.getId();
+    public final String getSystemPath() {
+        return this.path.toString();
     }
 
     @NotNull
-    public String getLocalUIPath() {
-        return ModuleManager.DIR_MODULES + this.getId() + Config.DIR_MENU;
+    @Deprecated
+    public final String getLocalPath() {
+        return this.path.toString();
     }
 
     @NotNull
+    public final String getLocalUIPath() {
+        return Paths.get(this.getLocalPath(), Config.DIR_MENU).toString();
+    }
+
+    @NotNull
+    @Deprecated
     public final String getAbsolutePath() {
-        return this.plugin.getDataFolder() + this.getLocalPath();
+        return this.getSystemPath();
+        //return this.plugin.getDataFolder() + this.getLocalPath();
     }
 
     @NotNull
     private String buildLog(@NotNull String msg) {
-        return "[" + this.getName() + "] " + msg;
+        return this.logPrefix + msg;
     }
 
     public final void info(@NotNull String msg) {
@@ -96,5 +145,46 @@ public abstract class Module extends AbstractManager<SunLightPlugin> {
 
     public final void error(@NotNull String msg) {
         this.plugin.error(this.buildLog(msg));
+    }
+
+    @NotNull
+    public LangMessage getPrefixed(@NotNull MessageLocale locale) {
+        return locale.withPrefix(this.definition.prefix());
+    }
+
+    public void sendPrefixed(@NotNull MessageLocale locale, @NotNull CommandSender sender) {
+        this.getPrefixed(locale).send(sender);
+    }
+
+    public void sendPrefixed(@NotNull MessageLocale locale, @NotNull CommandSender sender, @Nullable Consumer<PlaceholderContext.Builder> consumer) {
+        this.getPrefixed(locale).sendWith(sender, consumer);
+    }
+
+    public void sendPrefixed(@NotNull MessageLocale locale, @NotNull CommandSender sender, @Nullable PlaceholderContext context) {
+        this.getPrefixed(locale).sendWith(sender, context);
+    }
+
+    public void sendPrefixed(@NotNull MessageLocale locale, @NotNull Collection<? extends CommandSender> receivers) {
+        this.getPrefixed(locale).send(receivers);
+    }
+
+    public void sendPrefixed(@NotNull MessageLocale locale, @NotNull Collection<? extends CommandSender> receivers, @Nullable Consumer<PlaceholderContext.Builder> consumer) {
+        this.getPrefixed(locale).sendWith(receivers, consumer);
+    }
+
+    public void sendPrefixed(@NotNull MessageLocale locale, @NotNull Collection<? extends CommandSender> receivers, @Nullable PlaceholderContext context) {
+        this.getPrefixed(locale).sendWith(receivers, context);
+    }
+
+    public void broadcastPrefixed(@NotNull MessageLocale locale) {
+        this.getPrefixed(locale).broadcast();
+    }
+
+    public void broadcastPrefixed(@NotNull MessageLocale locale, @Nullable Consumer<PlaceholderContext.Builder> consumer) {
+        this.getPrefixed(locale).broadcastWith(consumer);
+    }
+
+    public void broadcastPrefixed(@NotNull MessageLocale locale, @Nullable PlaceholderContext context) {
+        this.getPrefixed(locale).broadcastWith(context);
     }
 }

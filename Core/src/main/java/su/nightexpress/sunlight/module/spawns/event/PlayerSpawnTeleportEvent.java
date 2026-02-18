@@ -5,7 +5,7 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
-import su.nightexpress.sunlight.module.spawns.impl.Spawn;
+import su.nightexpress.sunlight.module.spawns.Spawn;
 
 public class PlayerSpawnTeleportEvent extends Event implements Cancellable {
 

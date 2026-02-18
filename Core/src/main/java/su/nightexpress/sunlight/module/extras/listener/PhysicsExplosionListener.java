@@ -59,7 +59,7 @@ public class PhysicsExplosionListener extends AbstractListener<SunLightPlugin> {
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onBlockPhysLand(EntityChangeBlockEvent event) {
         if (event.getEntity() instanceof FallingBlock fallingBlock && PDCUtil.getBoolean(fallingBlock, this.physx).isPresent()) {
-            plugin.getSunNMS().dropFallingContent(fallingBlock);
+            plugin.getInternals().dropFallingContent(fallingBlock);
             event.setCancelled(true);
         }
     }

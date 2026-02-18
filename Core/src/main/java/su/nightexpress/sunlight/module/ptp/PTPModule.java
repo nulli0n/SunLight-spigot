@@ -4,65 +4,70 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import su.nightexpress.nightcore.util.TimeUtil;
-import su.nightexpress.sunlight.Placeholders;
-import su.nightexpress.sunlight.SunLightPlugin;
+import su.nightexpress.nightcore.config.FileConfig;
+import su.nightexpress.nightcore.core.config.CoreLang;
+import su.nightexpress.nightcore.util.placeholder.CommonPlaceholders;
+import su.nightexpress.nightcore.util.time.TimeFormatType;
+import su.nightexpress.nightcore.util.time.TimeFormats;
+import su.nightexpress.sunlight.SLPlaceholders;
 import su.nightexpress.sunlight.api.event.PlayerTeleportRequestEvent;
-import su.nightexpress.sunlight.api.type.TeleportType;
-import su.nightexpress.sunlight.config.Perms;
-import su.nightexpress.sunlight.core.user.IgnoredUser;
-import su.nightexpress.sunlight.core.user.settings.Setting;
-import su.nightexpress.sunlight.core.user.settings.SettingRegistry;
-import su.nightexpress.sunlight.data.user.SunUser;
+import su.nightexpress.sunlight.config.PermissionTree;
+import su.nightexpress.sunlight.hook.placeholder.PlaceholderRegistry;
 import su.nightexpress.sunlight.module.Module;
-import su.nightexpress.sunlight.module.ModuleInfo;
-import su.nightexpress.sunlight.module.ptp.command.AcceptCommands;
-import su.nightexpress.sunlight.module.ptp.command.PTPCommand;
-import su.nightexpress.sunlight.module.ptp.command.RequestCommands;
-import su.nightexpress.sunlight.module.ptp.command.ToggleCommand;
-import su.nightexpress.sunlight.module.ptp.config.PTPConfig;
+import su.nightexpress.sunlight.module.ModuleContext;
+import su.nightexpress.sunlight.module.ptp.command.PTPCommands;
+import su.nightexpress.sunlight.module.ptp.config.PTPSettings;
 import su.nightexpress.sunlight.module.ptp.config.PTPLang;
 import su.nightexpress.sunlight.module.ptp.config.PTPPerms;
 import su.nightexpress.sunlight.module.ptp.listener.PTPListener;
-import su.nightexpress.sunlight.utils.teleport.Teleporter;
+import su.nightexpress.sunlight.module.ptp.request.TeleportMode;
+import su.nightexpress.sunlight.module.ptp.request.TeleportRequest;
+import su.nightexpress.sunlight.teleport.*;
+import su.nightexpress.sunlight.user.property.UserPropertyRegistry;
 
 import java.util.*;
 
 public class PTPModule extends Module {
 
-    public static final Setting<Boolean> TELEPORT_REQUESTS = SettingRegistry.register(Setting.create("teleport_requests", true, true));
-
+    private final TeleportManager teleportManager;
+    private final PTPSettings                      settings;
     private final Map<UUID, List<TeleportRequest>> requestsMap;
 
-    public PTPModule(@NotNull SunLightPlugin plugin, @NotNull String id) {
-        super(plugin, id);
+    public PTPModule(@NotNull ModuleContext context, @NotNull TeleportManager teleportManager) {
+        super(context);
+        this.teleportManager = teleportManager;
+        this.settings = new PTPSettings();
         this.requestsMap = new HashMap<>();
     }
 
     @Override
-    protected void gatherInfo(@NotNull ModuleInfo moduleInfo) {
-        moduleInfo.setConfigClass(PTPConfig.class);
-        moduleInfo.setLangClass(PTPLang.class);
-        moduleInfo.setPermissionsClass(PTPPerms.class);
-    }
-
-    @Override
-    protected void onModuleLoad() {
-        this.registerCommands();
+    protected void loadModule(@NotNull FileConfig config) {
+        this.settings.load(config);
+        this.plugin.injectLang(PTPLang.class);
+        UserPropertyRegistry.register(PTPProperties.TELEPORT_REQUESTS);
 
         this.addListener(new PTPListener(this.plugin, this));
     }
 
     @Override
-    protected void onModuleUnload() {
+    protected void unloadModule() {
         this.requestsMap.clear();
     }
 
-    private void registerCommands() {
-        PTPCommand.load(this.plugin, this);
-        RequestCommands.load(this.plugin, this);
-        AcceptCommands.load(this.plugin, this);
-        ToggleCommand.load(this.plugin, this);
+    @Override
+    protected void registerPermissions(@NotNull PermissionTree root) {
+        root.merge(PTPPerms.MODULE);
+    }
+
+    protected void registerCommands() {
+        this.commandRegistry.addProvider("ptp", new PTPCommands(this.plugin, this, this.userManager));
+    }
+
+    @Override
+    public void registerPlaceholders(@NotNull PlaceholderRegistry registry) {
+        registry.register("ptp_requests_enabled", (player, payload) -> {
+            return CoreLang.STATE_YES_NO.get(this.isRequestsEnabled(player));
+        });
     }
 
     @NotNull
@@ -101,7 +106,7 @@ public class PTPModule extends Module {
     @Nullable
     public TeleportRequest getLatest(@NotNull UUID playerId) {
         List<TeleportRequest> requests = this.getRequests(playerId);
-        return requests.isEmpty() ? null : requests.get(requests.size() - 1);
+        return requests.isEmpty() ? null : requests.getLast();
     }
 
     public void clearRequests(@NotNull Player player) {
@@ -114,37 +119,28 @@ public class PTPModule extends Module {
 
 
     public boolean isRequestsEnabled(@NotNull Player player) {
-        return this.plugin.getUserManager().getOrFetch(player).getSettings().get(TELEPORT_REQUESTS);
+        return this.userManager.getOrFetch(player).getPropertyOrDefault(PTPProperties.TELEPORT_REQUESTS);
     }
 
 
-    public boolean sendRequest(@NotNull Player player, @NotNull Player target, @NotNull Mode mode) {
-        SunUser targetUser = plugin.getUserManager().getOrFetch(target);
-
+    public boolean sendRequest(@NotNull Player sender, @NotNull Player target, @NotNull TeleportMode mode) {
         // Check if 'accepter' disaled requests so request should be declined.
-        if (!this.isRequestsEnabled(target) && !player.hasPermission(Perms.BYPASS_TELEPORT_REQUESTS_DISABLED)) {
-            PTPLang.REQUEST_SEND_ERROR_DISABLED.getMessage().replace(Placeholders.forPlayer(target)).send(player);
-            return false;
-        }
-
-        // Check if 'accepter' is ignoring 'sended' so request should be declined.
-        IgnoredUser ignoredUser = targetUser.getIgnoredUser(player);
-        if (ignoredUser != null && ignoredUser.isDenyTeleports() && !player.hasPermission(Perms.BYPASS_IGNORE_TELEPORTS)) {
-            PTPLang.REQUEST_SEND_ERROR_DISABLED.getMessage().replace(Placeholders.forPlayer(target)).send(player);
+        if (!this.isRequestsEnabled(target) && !sender.hasPermission(PTPPerms.BYPASS_REQUESTS_DISABLED)) {
+            this.sendPrefixed(PTPLang.REQUEST_SEND_ERROR_DISABLED, sender, builder -> builder.with(CommonPlaceholders.PLAYER.resolver(target)));
             return false;
         }
 
         // Check if user already sent request to this player and it's not expired yet.
         // So players can't spam requests while there is active one.
-        TeleportRequest requestHas = this.getPlayerRequest(target, player.getName());
+        TeleportRequest requestHas = this.getPlayerRequest(target, sender.getName());
         if (requestHas != null && !requestHas.isExpired()) {
-            PTPLang.REQUEST_SEND_ERROR_COOLDOWN.getMessage()
-                .replace(Placeholders.GENERIC_TIME, TimeUtil.formatDuration(requestHas.getExpireDate()))
-                .send(player);
+            this.sendPrefixed(PTPLang.REQUEST_SEND_ERROR_COOLDOWN, sender, builder -> builder
+                .with(SLPlaceholders.GENERIC_TIME, () -> TimeFormats.formatDuration(requestHas.getExpireDate(), TimeFormatType.LITERAL))
+            );
             return false;
         }
 
-        TeleportRequest request = new TeleportRequest(player, target, mode, PTPConfig.REQUEST_TIMEOUT.get());
+        TeleportRequest request = new TeleportRequest(sender, target, mode, this.settings.getRequestTimeout());
 
         PlayerTeleportRequestEvent eventTeleport = new PlayerTeleportRequestEvent(request);
         plugin.getPluginManager().callEvent(eventTeleport);
@@ -152,66 +148,68 @@ public class PTPModule extends Module {
 
         this.getRequests(target).add(request);
 
-        (mode == Mode.REQUEST ? PTPLang.REQUEST_NOTIFY : PTPLang.INVITE_NOTIFY).getMessage().replace(Placeholders.forPlayer(player)).send(target);
-        (mode == Mode.REQUEST ? PTPLang.REQUEST_SENT : PTPLang.INVITE_SENT).getMessage().replace(Placeholders.forPlayer(target)).send(player);
+        this.sendPrefixed(mode == TeleportMode.REQUEST ? PTPLang.REQUEST_NOTIFY : PTPLang.INVITE_NOTIFY, target, builder -> builder
+            .with(CommonPlaceholders.PLAYER.resolver(sender)));
+
+        this.sendPrefixed(mode == TeleportMode.REQUEST ? PTPLang.REQUEST_SENT : PTPLang.INVITE_SENT, sender, builder -> builder
+            .with(CommonPlaceholders.PLAYER.resolver(target)));
+
+        if (this.plugin.afkProvider().map(afkProvider -> afkProvider.isAfk(target)).orElse(false)) {
+            this.sendPrefixed(PTPLang.REQUEST_SEND_TARGET_AFK, sender, builder -> builder
+                .with(CommonPlaceholders.PLAYER.resolver(target))
+            );
+        }
 
         return true;
     }
 
-    /*public boolean addRequest(@NotNull UUID playerId, @NotNull TeleportRequest request, boolean override) {
-        TeleportRequest has = this.getFrom(playerId, request.getSender());
-        if (has != null) {
-            if (!override) {
-                return false;
-            }
-            this.getRequests(playerId).remove(has);
-        }
-        return this.getRequests(playerId).add(request);
-    }*/
-
-
     public boolean accept(@NotNull Player player, @Nullable String name) {
         TeleportRequest request = name == null ? this.getLatest(player) : this.getPlayerRequest(player, name);
         if (request == null) {
-            PTPLang.REQUEST_ACCEPT_NOTHING.getMessage().send(player);
+            this.sendPrefixed(PTPLang.REQUEST_ACCEPT_NOTHING, player);
             return false;
         }
 
         Player sender = request.getSender();
         if (sender == null) {
-            PTPLang.ERROR_INVALID_PLAYER.getMessage().send(player);
+            this.sendPrefixed(CoreLang.ERROR_INVALID_PLAYER, player);
             return false;
         }
 
-        Player teleporter = request.getMode() == Mode.INVITE ? player : sender;
-        Location destination = request.getMode() == Mode.INVITE ? sender.getLocation() : player.getLocation();
+        Player teleporter = request.getMode() == TeleportMode.INVITE ? player : sender;
+        Location destination = request.getMode() == TeleportMode.INVITE ? sender.getLocation() : player.getLocation();
 
         request.setExpired();
 
-        Teleporter.create(teleporter, destination).teleport(TeleportType.PTP, () -> {
-            PTPLang.REQUEST_ACCEPT_DONE.getMessage().replace(Placeholders.forPlayer(sender)).send(player);
-            PTPLang.REQUEST_ACCEPT_NOTIFY.getMessage().replace(Placeholders.forPlayer(player)).send(sender);
-        });
-        return true;
+        TeleportContext teleportContext = TeleportContext.builder(this, teleporter, destination)
+            .withFlag(TeleportFlag.LOOK_FOR_SURFACE)
+            .withFlag(TeleportFlag.AVOID_LAVA)
+            .callback(() -> {
+                this.sendPrefixed(PTPLang.REQUEST_ACCEPT_DONE, player, builder -> builder.with(CommonPlaceholders.PLAYER.resolver(sender)));
+                this.sendPrefixed(PTPLang.REQUEST_ACCEPT_NOTIFY, sender, builder -> builder.with(CommonPlaceholders.PLAYER.resolver(player)));
+            })
+            .build();
+
+        return this.teleportManager.teleport(teleportContext, TeleportType.PTP);
     }
 
     public boolean decline(@NotNull Player player, @Nullable String name) {
         TeleportRequest request = name == null ? this.getLatest(player) : this.getPlayerRequest(player, name);
         if (request == null) {
-            PTPLang.REQUEST_ACCEPT_NOTHING.getMessage().send(player);
+            this.sendPrefixed(PTPLang.REQUEST_ACCEPT_NOTHING, player);
             return false;
         }
 
         Player sender = request.getSender();
         if (sender == null) {
-            PTPLang.ERROR_INVALID_PLAYER.getMessage().send(player);
+            this.sendPrefixed(CoreLang.ERROR_INVALID_PLAYER, player);
             return false;
         }
 
         request.setExpired();
 
-        PTPLang.REQUEST_DECLINE_DONE.getMessage().replace(Placeholders.forPlayer(sender)).send(player);
-        PTPLang.REQUEST_DECLINE_NOTIFY.getMessage().replace(Placeholders.forPlayer(player)).send(sender);
+        this.sendPrefixed(PTPLang.REQUEST_DECLINE_DONE, player, builder -> builder.with(CommonPlaceholders.PLAYER.resolver(sender)));
+        this.sendPrefixed(PTPLang.REQUEST_DECLINE_NOTIFY, sender, builder -> builder.with(CommonPlaceholders.PLAYER.resolver(player)));
 
         return true;
     }

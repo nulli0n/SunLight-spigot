@@ -1,19 +1,20 @@
 package su.nightexpress.sunlight.module.warmups.config;
 
 import org.bukkit.Color;
-import org.bukkit.boss.BarColor;
-import org.bukkit.boss.BarStyle;
+import su.nightexpress.nightcore.bridge.bossbar.NightBarColor;
+import su.nightexpress.nightcore.bridge.bossbar.NightBarOverlay;
 import su.nightexpress.nightcore.config.ConfigValue;
+import su.nightexpress.nightcore.util.Enums;
 import su.nightexpress.nightcore.util.Lists;
 import su.nightexpress.nightcore.util.StringUtil;
 import su.nightexpress.nightcore.util.rankmap.IntRankMap;
 import su.nightexpress.nightcore.util.wrapper.UniParticle;
-import su.nightexpress.sunlight.api.type.TeleportType;
+import su.nightexpress.sunlight.teleport.TeleportType;
 
 import java.util.Set;
 
-import static su.nightexpress.nightcore.util.text.tag.Tags.*;
-import static su.nightexpress.sunlight.Placeholders.*;
+import static su.nightexpress.nightcore.util.text.night.wrapper.TagWrappers.*;
+import static su.nightexpress.sunlight.SLPlaceholders.GENERIC_TIME;
 
 public class WarmupsConfig {
 
@@ -73,7 +74,7 @@ public class WarmupsConfig {
             return types;
         },
         "The following teleport types will be handled by the Warmups module.",
-        "Available types: [" + StringUtil.inlineEnum(TeleportType.class, ",") + "]",
+        "Available types: [" + Enums.inline(TeleportType.class) + "]",
         "[*] Forced teleports (spawn on join, by admin commands, etc.) won't be handled by Warmups module."
     );
 
@@ -91,17 +92,17 @@ public class WarmupsConfig {
     );
 
     public static final ConfigValue<String> BAR_INDICATOR_TELEPORT_TITLE = ConfigValue.create("BarIndicator.Teleport.Title",
-        WHITE.enclose("Teleporting in " + GREEN.enclose(GENERIC_TIME + "s")),
+        WHITE.wrap("Teleporting in " + GREEN.wrap(GENERIC_TIME + "s")),
         "Sets warmup indicator title for teleport warmups."
     );
 
-    public static final ConfigValue<BarColor> BAR_INDICATOR_TELEPORT_COLOR = ConfigValue.create("BarIndicator.Teleport.Color",
-        BarColor.class, BarColor.GREEN,
+    public static final ConfigValue<NightBarColor> BAR_INDICATOR_TELEPORT_COLOR = ConfigValue.create("BarIndicator.Teleport.Color",
+        NightBarColor.class, NightBarColor.GREEN,
         "Sets warmup indicator color for teleport warmups."
     );
 
-    public static final ConfigValue<BarStyle> BAR_INDICATOR_TELEPORT_STYLE = ConfigValue.create("BarIndicator.Teleport.Style",
-        BarStyle.class, BarStyle.SEGMENTED_10,
+    public static final ConfigValue<NightBarOverlay> BAR_INDICATOR_TELEPORT_STYLE = ConfigValue.create("BarIndicator.Teleport.Style",
+        NightBarOverlay.class, NightBarOverlay.NOTCHED_10,
         "Sets warmup indicator style for teleport warmups."
     );
 }

@@ -1,115 +1,124 @@
 package su.nightexpress.sunlight.module.ptp.config;
 
 import org.bukkit.Sound;
-import su.nightexpress.nightcore.core.CoreLang;
-import su.nightexpress.nightcore.language.entry.LangString;
-import su.nightexpress.nightcore.language.entry.LangText;
-import su.nightexpress.sunlight.module.ptp.command.AcceptCommands;
+import su.nightexpress.nightcore.locale.LangContainer;
+import su.nightexpress.nightcore.locale.LangEntry;
+import su.nightexpress.nightcore.locale.entry.MessageLocale;
+import su.nightexpress.nightcore.locale.entry.TextLocale;
+import su.nightexpress.nightcore.locale.message.MessageData;
+import su.nightexpress.sunlight.module.ptp.command.PTPCommands;
 
-import static su.nightexpress.nightcore.util.text.tag.Tags.*;
-import static su.nightexpress.nightcore.language.tag.MessageTags.*;
-import static su.nightexpress.sunlight.Placeholders.*;
+import static su.nightexpress.nightcore.util.text.night.wrapper.TagWrappers.*;
+import static su.nightexpress.sunlight.SLPlaceholders.*;
 
-public class PTPLang extends CoreLang {
+public class PTPLang implements LangContainer {
 
-    public static final LangString COMMAND_INVITE_DESC  = LangString.of("PTP.Command.Teleport.Invite.Desc", "Ask player to be summoned.");
-    public static final LangString COMMAND_REQUEST_DESC = LangString.of("PTP.Command.Teleport.Request.Desc", "Ask player to teleport you.");
-    public static final LangString COMMAND_ACCEPT_DESC  = LangString.of("PTP.Command.Teleport.Accept.Desc", "Accept teleport request.");
-    public static final LangString COMMAND_DECLINE_DESC = LangString.of("PTP.Command.Teleport.Decline.Desc", "Decline teleport request.");
-    public static final LangString COMMAND_TOGGLE_DESC  = LangString.of("PTP.Command.Toggle.Desc", "Toggle teleport requests/invites.");
+    public static final TextLocale COMMAND_PTP_DESC             = LangEntry.builder("PTP.Command.Root.Desc").text("PTP commands.");
+    public static final TextLocale COMMAND_INVITE_DESC          = LangEntry.builder("PTP.Command.Teleport.Invite.Desc").text("Ask player to be summoned.");
+    public static final TextLocale COMMAND_REQUEST_DESC         = LangEntry.builder("PTP.Command.Teleport.Request.Desc").text("Ask player to teleport you.");
+    public static final TextLocale COMMAND_ACCEPT_DESC          = LangEntry.builder("PTP.Command.Teleport.Accept.Desc").text("Accept teleport request.");
+    public static final TextLocale COMMAND_DECLINE_DESC         = LangEntry.builder("PTP.Command.Teleport.Decline.Desc").text("Decline teleport request.");
+    public static final TextLocale COMMAND_REQUESTS_TOGGLE_DESC = LangEntry.builder("PTP.Command.Requests.Toggle.Desc").text("Toggle teleport requests.");
+    public static final TextLocale COMMAND_REQUESTS_ON_DESC     = LangEntry.builder("PTP.Command.Requests.On.Desc").text("Enable teleport requests.");
+    public static final TextLocale COMMAND_REQUESTS_OFF_DESC    = LangEntry.builder("PTP.Command.Requests.Off.Desc").text("Disable teleport requests.");
 
-    public static final LangText COMMAND_TOGGLE_DONE = LangText.of("PTP.Command.Toggle.Target",
-        LIGHT_GRAY.wrap("Set teleport requests " + LIGHT_YELLOW.wrap(GENERIC_STATE) + " for " + LIGHT_YELLOW.wrap(PLAYER_DISPLAY_NAME) + ".")
+
+
+    public static final MessageLocale REQUESTS_TOGGLE_FEEDBACK = LangEntry.builder("PTP.Command.Toggle.Target").chatMessage(
+        GRAY.wrap("You have set " + ORANGE.wrap("Teleport Requests") + " to " + WHITE.wrap(GENERIC_STATE) + " for " + ORANGE.wrap(PLAYER_DISPLAY_NAME) + ".")
     );
 
-    public static final LangText COMMAND_TOGGLE_NOTIFY = LangText.of("PTP.Command.Toggle.Notify",
-        LIGHT_GRAY.wrap("Teleport requests: " + LIGHT_YELLOW.wrap(GENERIC_STATE) + ".")
-    );
-
-
-    public static final LangText REQUEST_ACCEPT_DONE = LangText.of("PTP.Request.Accept.Done",
-        SOUND.wrap(Sound.ENTITY_ENDERMAN_TELEPORT),
-        LIGHT_GRAY.wrap("You accepted " + LIGHT_GREEN.wrap(PLAYER_DISPLAY_NAME) + "'s teleport request!")
-    );
-
-    public static final LangText REQUEST_ACCEPT_NOTIFY = LangText.of("PTP.Request.Accept.Notify",
-        SOUND.wrap(Sound.ENTITY_ENDERMAN_TELEPORT),
-        LIGHT_GRAY.wrap(LIGHT_GREEN.wrap(PLAYER_DISPLAY_NAME) + " accepted your teleport request!")
-    );
-
-    public static final LangText REQUEST_ACCEPT_NOTHING = LangText.of("PTP.Request.Accept.Nothing",
-        SOUND.wrap(Sound.ENTITY_VILLAGER_NO),
-        LIGHT_GRAY.wrap("You don't have any active requests.")
+    public static final MessageLocale REQUESTS_TOGGLE_NOTIFY = LangEntry.builder("PTP.Command.Toggle.Notify").chatMessage(
+        GRAY.wrap("You have set " + ORANGE.wrap("Teleport Requests") + " to: " + WHITE.wrap(GENERIC_STATE) + ".")
     );
 
 
-    public static final LangText REQUEST_DECLINE_DONE = LangText.of("PTP.Request.Decline.Done",
-        SOUND.wrap(Sound.ENTITY_VILLAGER_NO),
-        LIGHT_GRAY.wrap("You declined " + LIGHT_RED.wrap(PLAYER_DISPLAY_NAME) + "'s teleport request.")
+    public static final MessageLocale REQUEST_ACCEPT_DONE = LangEntry.builder("PTP.Request.Accept.Done").chatMessage(
+        Sound.ENTITY_ENDERMAN_TELEPORT,
+        GRAY.wrap("You accepted " + ORANGE.wrap(PLAYER_DISPLAY_NAME) + "'s teleport request!")
     );
 
-    public static final LangText REQUEST_DECLINE_NOTIFY = LangText.of("PTP.Request.Decline.Notify",
-        SOUND.wrap(Sound.ENTITY_VILLAGER_NO),
-        LIGHT_GRAY.wrap(LIGHT_RED.wrap(PLAYER_DISPLAY_NAME) + " declines your teleport request.")
+    public static final MessageLocale REQUEST_ACCEPT_NOTIFY = LangEntry.builder("PTP.Request.Accept.Notify").chatMessage(
+        Sound.ENTITY_ENDERMAN_TELEPORT,
+        GRAY.wrap(ORANGE.wrap(PLAYER_DISPLAY_NAME) + " accepted your teleport request!")
     );
 
-    public static final LangText REQUEST_DECLINE_NOTHING = LangText.of("PTP.Request.Decline.Nothing",
-        SOUND.wrap(Sound.ENTITY_VILLAGER_NO),
-        LIGHT_GRAY.wrap("You don't have any active requests.")
-    );
-
-
-    public static final LangText REQUEST_SEND_ERROR_COOLDOWN = LangText.of("PTP.Request.Send.Error.Cooldown",
-        SOUND.wrap(Sound.ENTITY_VILLAGER_NO),
-        LIGHT_GRAY.wrap("You can send another request in " + LIGHT_RED.wrap(GENERIC_TIME))
-    );
-
-    public static final LangText REQUEST_SEND_ERROR_DISABLED = LangText.of("PTP.Request.Send.Error.Disabled",
-        SOUND.wrap(Sound.ENTITY_VILLAGER_NO),
-        LIGHT_GRAY.wrap("You can't send teleport requests to " + LIGHT_RED.wrap(PLAYER_NAME) + ".")
+    public static final MessageLocale REQUEST_ACCEPT_NOTHING = LangEntry.builder("PTP.Request.Accept.Nothing").chatMessage(
+        Sound.ENTITY_VILLAGER_NO,
+        GRAY.wrap("You don't have any active requests.")
     );
 
 
-    public static final LangText INVITE_SENT = LangText.of("PTP.Command.Teleport.Invite.Notify.Sender",
-        TAG_NO_PREFIX + SOUND.wrap(Sound.ENTITY_ENDER_PEARL_THROW),
-        LIGHT_GRAY.wrap("Sent summon request to " + LIGHT_YELLOW.wrap(PLAYER_DISPLAY_NAME) + ".")
+    public static final MessageLocale REQUEST_DECLINE_DONE = LangEntry.builder("PTP.Request.Decline.Done").chatMessage(
+        Sound.ENTITY_VILLAGER_NO,
+        GRAY.wrap("You declined " + ORANGE.wrap(PLAYER_DISPLAY_NAME) + "'s teleport request.")
     );
 
-    public static final LangText INVITE_NOTIFY = LangText.of("PTP.Command.Teleport.Invite.Notify.Target",
-        TAG_NO_PREFIX + SOUND.wrap(Sound.ENTITY_ENDER_PEARL_THROW),
+    public static final MessageLocale REQUEST_DECLINE_NOTIFY = LangEntry.builder("PTP.Request.Decline.Notify").chatMessage(
+        Sound.ENTITY_VILLAGER_NO,
+        GRAY.wrap(ORANGE.wrap(PLAYER_DISPLAY_NAME) + " declines your teleport request.")
+    );
+
+    public static final MessageLocale REQUEST_DECLINE_NOTHING = LangEntry.builder("PTP.Request.Decline.Nothing").chatMessage(
+        Sound.ENTITY_VILLAGER_NO,
+        GRAY.wrap("You don't have any active requests.")
+    );
+
+
+    public static final MessageLocale REQUEST_SEND_TARGET_AFK = LangEntry.builder("PTP.Request.Send.TargetAfk").chatMessage(
+        GRAY.wrap(WHITE.wrap(PLAYER_DISPLAY_NAME) + " is AFK and may not respond."));
+
+    public static final MessageLocale REQUEST_SEND_ERROR_COOLDOWN = LangEntry.builder("PTP.Request.Send.Error.Cooldown").chatMessage(
+        Sound.ENTITY_VILLAGER_NO,
+        GRAY.wrap("You can send another request in " + ORANGE.wrap(GENERIC_TIME))
+    );
+
+    public static final MessageLocale REQUEST_SEND_ERROR_DISABLED = LangEntry.builder("PTP.Request.Send.Error.Disabled").chatMessage(
+        Sound.ENTITY_VILLAGER_NO,
+        GRAY.wrap("You can't send teleport requests to " + ORANGE.wrap(PLAYER_NAME) + ".")
+    );
+
+
+    public static final MessageLocale INVITE_SENT = LangEntry.builder("PTP.Command.Teleport.Invite.Notify.Sender").chatMessage(
+        Sound.ENTITY_ENDER_PEARL_THROW,
+        GRAY.wrap("Sent summon request to " + ORANGE.wrap(PLAYER_DISPLAY_NAME) + ".")
+    );
+
+    public static final MessageLocale INVITE_NOTIFY = LangEntry.builder("PTP.Command.Teleport.Invite.Notify.Target").message(
+        MessageData.chat().usePrefix(false).sound(Sound.ENTITY_ENDER_PEARL_THROW).build(),
         " ",
-        LIGHT_YELLOW.wrap(BOLD.wrap("Teleport Invite:")),
+        ORANGE.wrap(BOLD.wrap("Teleport Invite:")),
         " ",
-        LIGHT_YELLOW.wrap("Player " + ORANGE.wrap(PLAYER_DISPLAY_NAME) + " wants summon you to them."),
-        LIGHT_YELLOW.wrap("Type " + LIGHT_GREEN.wrap("/" + AcceptCommands.ACCEPT_NAME + " " + PLAYER_NAME) + " to accept and be summoned."),
-        LIGHT_YELLOW.wrap("or " + LIGHT_RED.wrap("/" + AcceptCommands.DECLINE_NAME + " " + PLAYER_NAME) + " to decline."),
+        ORANGE.wrap("Player " + ORANGE.wrap(PLAYER_DISPLAY_NAME) + " wants summon you to them."),
+        ORANGE.wrap("Type " + ORANGE.wrap("/" + PTPCommands.ACCEPT_NAME + " " + PLAYER_NAME) + " to accept and be summoned."),
+        ORANGE.wrap("or " + ORANGE.wrap("/" + PTPCommands.DECLINE_NAME + " " + PLAYER_NAME) + " to decline."),
         " ",
-        LIGHT_YELLOW.wrap(" ".repeat(12)
-            + HOVER.wrapShowText(CLICK.wrapRunCommand(LIGHT_GREEN.wrap(BOLD.wrap("[Accept]")), "/" + AcceptCommands.ACCEPT_NAME + " " + PLAYER_NAME), GRAY.wrap("Click to be summoned by " + GREEN.wrap(PLAYER_DISPLAY_NAME)))
+        ORANGE.wrap(" ".repeat(12)
+            + SHOW_TEXT.with(GRAY.wrap("Click to be summoned by " + GREEN.wrap(PLAYER_DISPLAY_NAME))).wrap(RUN_COMMAND.with("/" + PTPCommands.ACCEPT_NAME + " " + PLAYER_NAME).wrap(ORANGE.wrap(BOLD.wrap("[Accept]"))))
             + " ".repeat(6)
-            + HOVER.wrapShowText(CLICK.wrapRunCommand(LIGHT_RED.wrap(BOLD.wrap("[Decline]")), "/" + AcceptCommands.DECLINE_NAME + " " + PLAYER_NAME), GRAY.wrap("Click to deny summoning by " + RED.wrap(PLAYER_DISPLAY_NAME)))
+            + SHOW_TEXT.with(GRAY.wrap("Click to deny summoning by " + RED.wrap(PLAYER_DISPLAY_NAME))).wrap(RUN_COMMAND.with("/" + PTPCommands.DECLINE_NAME + " " + PLAYER_NAME).wrap(ORANGE.wrap(BOLD.wrap("[Decline]"))))
         ),
         " "
     );
 
-    public static final LangText REQUEST_SENT = LangText.of("PTP.Request.Sent",
-        TAG_NO_PREFIX + SOUND.wrap(Sound.ENTITY_ENDER_PEARL_THROW),
-        LIGHT_GRAY.wrap("Sent teleport request to " + LIGHT_YELLOW.wrap(PLAYER_DISPLAY_NAME) + ".")
+    public static final MessageLocale REQUEST_SENT = LangEntry.builder("PTP.Request.Sent").chatMessage(
+        Sound.ENTITY_ENDER_PEARL_THROW,
+        GRAY.wrap("Sent teleport request to " + ORANGE.wrap(PLAYER_DISPLAY_NAME) + ".")
     );
 
-    public static final LangText REQUEST_NOTIFY = LangText.of("PTP.Request.Notify",
-        TAG_NO_PREFIX + SOUND.wrap(Sound.ENTITY_ENDER_PEARL_THROW),
+    public static final MessageLocale REQUEST_NOTIFY = LangEntry.builder("PTP.Request.Notify").message(
+        MessageData.chat().usePrefix(false).sound(Sound.ENTITY_ENDER_PEARL_THROW).build(),
         " ",
-        LIGHT_YELLOW.wrap(BOLD.wrap("Teleport Request:")),
+        ORANGE.wrap(BOLD.wrap("Teleport Request:")),
         " ",
-        LIGHT_YELLOW.wrap("Player " + ORANGE.wrap(PLAYER_DISPLAY_NAME) + " wants teleport to you."),
-        LIGHT_YELLOW.wrap("Type " + LIGHT_GREEN.wrap("/" + AcceptCommands.ACCEPT_NAME + " " + PLAYER_NAME) + " to accept and summon him."),
-        LIGHT_YELLOW.wrap("or " + LIGHT_RED.wrap("/" + AcceptCommands.DECLINE_NAME + " " + PLAYER_NAME) + " to decline."),
+        ORANGE.wrap("Player " + ORANGE.wrap(PLAYER_DISPLAY_NAME) + " wants teleport to you."),
+        ORANGE.wrap("Type " + ORANGE.wrap("/" + PTPCommands.ACCEPT_NAME + " " + PLAYER_NAME) + " to accept and summon him."),
+        ORANGE.wrap("or " + ORANGE.wrap("/" + PTPCommands.DECLINE_NAME + " " + PLAYER_NAME) + " to decline."),
         " ",
-        LIGHT_YELLOW.wrap(" ".repeat(12)
-            + HOVER.wrapShowText(CLICK.wrapRunCommand(LIGHT_GREEN.wrap(BOLD.wrap("[Accept]")), "/" + AcceptCommands.ACCEPT_NAME + " " + PLAYER_NAME), GRAY.wrap("Click to teleport " + GREEN.wrap(PLAYER_DISPLAY_NAME)))
+        ORANGE.wrap(" ".repeat(12)
+            + SHOW_TEXT.with(GRAY.wrap("Click to teleport " + GREEN.wrap(PLAYER_DISPLAY_NAME))).wrap(RUN_COMMAND.with("/" + PTPCommands.ACCEPT_NAME + " " + PLAYER_NAME).wrap(ORANGE.wrap(BOLD.wrap("[Accept]"))))
             + " ".repeat(6)
-            + HOVER.wrapShowText(CLICK.wrapRunCommand(LIGHT_RED.wrap(BOLD.wrap("[Decline]")), "/" + AcceptCommands.DECLINE_NAME + " " + PLAYER_NAME), GRAY.wrap("Click to deny " + RED.wrap(PLAYER_DISPLAY_NAME) + " teleport."))
+            + SHOW_TEXT.with(GRAY.wrap("Click to deny " + RED.wrap(PLAYER_DISPLAY_NAME) + " teleport.")).wrap(RUN_COMMAND.with("/" + PTPCommands.DECLINE_NAME + " " + PLAYER_NAME).wrap(ORANGE.wrap(BOLD.wrap("[Decline]"))))
         ),
         " "
     );

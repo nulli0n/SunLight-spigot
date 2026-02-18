@@ -13,27 +13,24 @@ import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerJo
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerServerData;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerSystemChatMessage;
 import net.kyori.adventure.text.Component;
-import org.jetbrains.annotations.NotNull;
-import su.nightexpress.nightcore.util.Version;
-import su.nightexpress.sunlight.SunLightPlugin;
 
-public class ReportPacketsHandler extends ReportHandler {
+public class ReportPacketsHandler implements ReportHandler {
 
     private Listener listener;
 
-    public ReportPacketsHandler(@NotNull SunLightPlugin plugin) {
-        super(plugin);
+    public ReportPacketsHandler() {
+
     }
 
     @Override
-    protected void onLoad() {
+    public void load() {
         if (this.listener == null) {
             PacketEvents.getAPI().getEventManager().registerListener(this.listener = new Listener());
         }
     }
 
     @Override
-    protected void onShutdown() {
+    public void unload() {
         if (this.listener != null) {
             PacketEvents.getAPI().getEventManager().unregisterListener(this.listener);
             this.listener = null;
@@ -50,38 +47,39 @@ public class ReportPacketsHandler extends ReportHandler {
         public void onPacketSend(PacketSendEvent event) {
             PacketTypeCommon type = event.getPacketType();
 
-            if (type == PacketType.Play.Server.JOIN_GAME) {
-                if (Version.isBehind(Version.MC_1_20_6)) return;
+            switch (type) {
+                case PacketType.Play.Server.JOIN_GAME -> {
+                    WrapperPlayServerJoinGame joinGame = new WrapperPlayServerJoinGame(event);
+                    joinGame.setEnforcesSecureChat(true);
 
-                WrapperPlayServerJoinGame joinGame = new WrapperPlayServerJoinGame(event);
-                joinGame.setEnforcesSecureChat(true);
-
-                event.markForReEncode(true);
-            }
-            else if (type == PacketType.Play.Server.SERVER_DATA) {
-                WrapperPlayServerServerData serverData = new WrapperPlayServerServerData(event);
-                serverData.setEnforceSecureChat(true);
-
-                event.markForReEncode(true);
-            }
-            else if (type == PacketType.Play.Server.CHAT_MESSAGE) {
-                WrapperPlayServerChatMessage chatMessage = new WrapperPlayServerChatMessage(event);
-                if (chatMessage.getMessage() instanceof ChatMessage_v1_19_3 message) {
-                    var unsigned = message.getUnsignedChatContent();
-
-                    Component component = unsigned.orElseGet(message::getChatContent);
-                    ChatType.Bound bound = message.getChatFormatting();
-
-                    ChatType chatType = bound.getType();//chatMessage.getMessage().getType();
-
-                    ChatType.Bound decorator = new ChatType.Bound(chatType, bound.getName(), bound.getTargetName());
-                    component = chatType.getChatDecoration().decorate(component, decorator);
-
-                    WrapperPlayServerSystemChatMessage system = new WrapperPlayServerSystemChatMessage(false, component);
-                    event.setCancelled(true);
-
-                    event.getUser().sendPacket(system);
+                    event.markForReEncode(true);
                 }
+                case PacketType.Play.Server.SERVER_DATA -> {
+                    WrapperPlayServerServerData serverData = new WrapperPlayServerServerData(event);
+                    serverData.setEnforceSecureChat(true);
+
+                    event.markForReEncode(true);
+                }
+                case PacketType.Play.Server.CHAT_MESSAGE -> {
+                    WrapperPlayServerChatMessage chatMessage = new WrapperPlayServerChatMessage(event);
+                    if (chatMessage.getMessage() instanceof ChatMessage_v1_19_3 message) {
+                        var unsigned = message.getUnsignedChatContent();
+
+                        Component component = unsigned.orElseGet(message::getChatContent);
+                        ChatType.Bound bound = message.getChatFormatting();
+
+                        ChatType chatType = bound.getType();
+
+                        ChatType.Bound decorator = new ChatType.Bound(chatType, bound.getName(), bound.getTargetName());
+                        component = chatType.getChatDecoration().decorate(component, decorator);
+
+                        WrapperPlayServerSystemChatMessage system = new WrapperPlayServerSystemChatMessage(false, component);
+                        event.setCancelled(true);
+
+                        event.getUser().sendPacket(system);
+                    }
+                }
+                default -> {}
             }
         }
     }

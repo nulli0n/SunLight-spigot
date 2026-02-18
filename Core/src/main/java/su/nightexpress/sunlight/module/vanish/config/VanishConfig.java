@@ -5,7 +5,6 @@ import org.bukkit.boss.BarStyle;
 import su.nightexpress.nightcore.config.ConfigValue;
 
 import static su.nightexpress.nightcore.util.text.tag.Tags.*;
-import static su.nightexpress.sunlight.Placeholders.*;
 
 public class VanishConfig {
 

@@ -1,105 +1,108 @@
 package su.nightexpress.sunlight.module.worlds.config;
 
 import org.bukkit.Difficulty;
-import su.nightexpress.nightcore.language.entry.LangEnum;
 import su.nightexpress.nightcore.language.entry.LangItem;
-import su.nightexpress.nightcore.language.entry.LangString;
-import su.nightexpress.nightcore.language.entry.LangText;
-import su.nightexpress.sunlight.config.Lang;
+import su.nightexpress.nightcore.locale.LangContainer;
+import su.nightexpress.nightcore.locale.LangEntry;
+import su.nightexpress.nightcore.locale.entry.EnumLocale;
+import su.nightexpress.nightcore.locale.entry.MessageLocale;
+import su.nightexpress.nightcore.locale.entry.TextLocale;
+import su.nightexpress.nightcore.locale.message.MessageData;
 import su.nightexpress.sunlight.module.worlds.util.Placeholders;
 
 import static su.nightexpress.nightcore.language.entry.LangItem.builder;
 import static su.nightexpress.nightcore.util.text.tag.Tags.*;
 import static su.nightexpress.sunlight.module.worlds.util.Placeholders.*;
 
-public class WorldsLang extends Lang {
+public class WorldsLang implements LangContainer {
 
-    public static final LangEnum<Difficulty> DIFFICULTY = LangEnum.of("Worlds.Difficulty", Difficulty.class);
+    public static final EnumLocale<Difficulty> DIFFICULTY = LangEntry.builder("Worlds.Difficulty").enumeration(Difficulty.class);
 
 
-    public static final LangString COMMAND_CREATE_WORLD_DESC = LangString.of("Worlds.Command.Worlds.Create.Desc",
+    public static final TextLocale COMMAND_WORLDS_ROOT_DESC = LangEntry.builder("Worlds.Command.Worlds.Root.Desc").text("World Management.");
+
+    public static final TextLocale COMMAND_CREATE_WORLD_DESC = LangEntry.builder("Worlds.Command.Worlds.Create.Desc").text(
         "Create a new world.");
 
-    public static final LangText COMMAND_CREATE_WORLD_ERROR = LangText.of("Worlds.Command.Worlds.Create.Error",
+    public static final MessageLocale COMMAND_CREATE_WORLD_ERROR = LangEntry.builder("Worlds.Command.Worlds.Create.Error").chatMessage(
         LIGHT_RED.wrap("World with such name already exists!")
     );
 
-    public static final LangText COMMAND_CREATE_WORLD_DONE = LangText.of("Worlds.Command.Worlds.Create.Done",
+    public static final MessageLocale COMMAND_CREATE_WORLD_DONE = LangEntry.builder("Worlds.Command.Worlds.Create.Done").chatMessage(
         LIGHT_GRAY.wrap("Created world data: " + LIGHT_YELLOW.wrap(WORLD_ID) + "!")
     );
 
 
-    public static final LangString COMMAND_DELETE_WORLD_DESC = LangString.of("Worlds.Command.Worlds.Delete.Desc",
+    public static final TextLocale COMMAND_DELETE_WORLD_DESC = LangEntry.builder("Worlds.Command.Worlds.Delete.Desc").text(
         "Delete a custom world.");
 
-    public static final LangText COMMAND_DELETE_WORLD_ERROR = LangText.of("Worlds.Command.Worlds.Delete.Error",
+    public static final MessageLocale COMMAND_DELETE_WORLD_ERROR = LangEntry.builder("Worlds.Command.Worlds.Delete.Error").chatMessage(
         LIGHT_GRAY.wrap("Could not delete world: " + LIGHT_RED.wrap(WORLD_ID) + "!")
     );
 
-    public static final LangText COMMAND_DELETE_WORLD_DONE = LangText.of("Worlds.Command.Worlds.Delete.Done",
+    public static final MessageLocale COMMAND_DELETE_WORLD_DONE = LangEntry.builder("Worlds.Command.Worlds.Delete.Done").chatMessage(
         LIGHT_GRAY.wrap("World deleted: " + LIGHT_YELLOW.wrap(WORLD_ID) + "!")
     );
 
 
-    public static final LangString COMMAND_EDITOR_DESC = LangString.of("Worlds.Command.Worlds.Editor.Desc", "Open world editor.");
+    public static final TextLocale COMMAND_EDITOR_DESC = LangEntry.builder("Worlds.Command.Worlds.Editor.Desc").text("Open world editor.");
 
 
-    public static final LangString COMMAND_LOAD_WORLD_DESC = LangString.of("Worlds.Command.Worlds.Load.Desc",
+    public static final TextLocale COMMAND_LOAD_WORLD_DESC = LangEntry.builder("Worlds.Command.Worlds.Load.Desc").text(
         "Load a custom world.");
 
-    public static final LangText COMMAND_LOAD_WORLD_ERROR = LangText.of("Worlds.Command.Worlds.Load.Error",
+    public static final MessageLocale COMMAND_LOAD_WORLD_ERROR = LangEntry.builder("Worlds.Command.Worlds.Load.Error").chatMessage(
         LIGHT_GRAY.wrap("Could not load world: " + LIGHT_RED.wrap(WORLD_ID) + "!")
     );
 
-    public static final LangText COMMAND_LOAD_WORLD_DONE = LangText.of("Worlds.Command.Worlds.Load.Done",
+    public static final MessageLocale COMMAND_LOAD_WORLD_DONE = LangEntry.builder("Worlds.Command.Worlds.Load.Done").chatMessage(
         LIGHT_GRAY.wrap("World loaded: " + LIGHT_YELLOW.wrap(WORLD_ID) + "!")
     );
 
 
-    public static final LangString COMMAND_UNLOAD_WORLD_DESC = LangString.of("Worlds.Command.Worlds.Unload.Desc",
-        "Unload a custom world.");
+    public static final TextLocale COMMAND_UNLOAD_WORLD_DESC = LangEntry.builder("Worlds.Command.Worlds.Unload.Desc").text("Unload a custom world.");
 
-    public static final LangText COMMAND_UNLOAD_WORLD_ERROR = LangText.of("Worlds.Command.Worlds.Unload.Error",
+    public static final MessageLocale COMMAND_UNLOAD_WORLD_ERROR = LangEntry.builder("Worlds.Command.Worlds.Unload.Error").chatMessage(
         LIGHT_GRAY.wrap("Could not unload world: " + LIGHT_RED.wrap(WORLD_ID) + "!")
     );
 
-    public static final LangText COMMAND_UNLOAD_WORLD_DONE = LangText.of("Worlds.Command.Worlds.Unload.Done",
+    public static final MessageLocale COMMAND_UNLOAD_WORLD_DONE = LangEntry.builder("Worlds.Command.Worlds.Unload.Done").chatMessage(
         LIGHT_GRAY.wrap("World unloaded: " + LIGHT_YELLOW.wrap(WORLD_ID) + "!")
     );
 
 
-    public static final LangText UNLOAD_MOVE_OUT_INFO = LangText.of("Worlds.AutoWipe.MoveOut",
+    public static final MessageLocale UNLOAD_MOVE_OUT_INFO = LangEntry.builder("Worlds.AutoWipe.MoveOut").chatMessage(
         LIGHT_GRAY.wrap("You have been teleported due to world unload.")
     );
 
 
-    public static final LangText AUTO_RESET_NOTIFY = LangText.of("Worlds.AutoWipe.Notify",
-        TAG_NO_PREFIX,
+    public static final MessageLocale AUTO_RESET_NOTIFY = LangEntry.builder("Worlds.AutoWipe.Notify").message(
+        MessageData.CHAT_NO_PREFIX,
         "",
         LIGHT_RED.wrap(BOLD.wrap("Auto-Reset Warning:")),
         LIGHT_GRAY.wrap("The world will auto-reset in " + LIGHT_RED.wrap(GENERIC_TIME)),
         ""
     );
 
-    public static final LangText ERROR_COMMAND_BLOCKED = LangText.of("Worlds.Error.CommandBlocked",
+    public static final MessageLocale ERROR_COMMAND_BLOCKED = LangEntry.builder("Worlds.Error.CommandBlocked").chatMessage(
         LIGHT_RED.wrap("You can't use that command in this world!")
     );
 
-    public static final LangText ERROR_FLY_DISABLED = LangText.of("Worlds.Error.FlyDisabled",
+    public static final MessageLocale ERROR_FLY_DISABLED = LangEntry.builder("Worlds.Error.FlyDisabled").chatMessage(
         LIGHT_RED.wrap("Flying is not allowed in this world!")
     );
 
-    public static final LangText ERROR_COMMAND_INVALID_WORLD_DATA_ARGUMENT = LangText.of("Worlds.Error.Command.Argument.InvalidWorldData",
+    public static final MessageLocale ERROR_COMMAND_INVALID_WORLD_DATA_ARGUMENT = LangEntry.builder("Worlds.Error.Command.Argument.InvalidWorldData").chatMessage(
         LIGHT_GRAY.wrap(LIGHT_RED.wrap(GENERIC_VALUE) + " is not a valid world!")
     );
 
-    public static final LangString EDITOR_TITLE_LIST = LangString.of("Worlds.Editor.Title.List", BLACK.wrap("World List"));
+    public static final TextLocale EDITOR_TITLE_LIST = LangEntry.builder("Worlds.Editor.Title.List").text(BLACK.wrap("World List"));
 
-    public static final LangString EDITOR_TITLE_SETTINGS = LangString.of("Worlds.Editor.Title.Settings", BLACK.wrap("World Settings"));
+    public static final TextLocale EDITOR_TITLE_SETTINGS = LangEntry.builder("Worlds.Editor.Title.Settings").text(BLACK.wrap("World Settings"));
 
-    public static final LangString EDITOR_TITLE_GENERATION = LangString.of("Worlds.Editor.Title.Generation", BLACK.wrap("World Loading/Generation"));
+    public static final TextLocale EDITOR_TITLE_GENERATION = LangEntry.builder("Worlds.Editor.Title.Generation").text(BLACK.wrap("World Loading/Generation"));
 
-    public static final LangString EDITOR_TITLE_GAME_RULES = LangString.of("Worlds.Editor.Title.GameRules", BLACK.wrap("World Game Rules"));
+    public static final TextLocale EDITOR_TITLE_GAME_RULES = LangEntry.builder("Worlds.Editor.Title.GameRules").text(BLACK.wrap("World Game Rules"));
 
 
     private static final String PREFIX = "Worlds.Editor.";

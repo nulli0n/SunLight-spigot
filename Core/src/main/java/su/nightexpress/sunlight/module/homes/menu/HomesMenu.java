@@ -1,177 +1,169 @@
 package su.nightexpress.sunlight.module.homes.menu;
 
-import org.bukkit.entity.Player;
+import org.bukkit.Material;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.InventoryView;
+import org.bukkit.inventory.MenuType;
 import org.jetbrains.annotations.NotNull;
+import su.nightexpress.nightcore.bridge.item.AdaptedItem;
 import su.nightexpress.nightcore.config.ConfigValue;
 import su.nightexpress.nightcore.config.FileConfig;
-import su.nightexpress.nightcore.menu.MenuOptions;
-import su.nightexpress.nightcore.menu.MenuSize;
-import su.nightexpress.nightcore.menu.MenuViewer;
-import su.nightexpress.nightcore.menu.api.AutoFill;
-import su.nightexpress.nightcore.menu.api.AutoFilled;
-import su.nightexpress.nightcore.menu.impl.ConfigMenu;
-import su.nightexpress.nightcore.menu.item.ItemHandler;
-import su.nightexpress.nightcore.menu.item.MenuItem;
-import su.nightexpress.nightcore.menu.link.Linked;
-import su.nightexpress.nightcore.menu.link.ViewLink;
-import su.nightexpress.nightcore.util.*;
+import su.nightexpress.nightcore.locale.entry.IconLocale;
+import su.nightexpress.nightcore.ui.inventory.item.ItemPopulator;
+import su.nightexpress.nightcore.ui.inventory.item.MenuItem;
+import su.nightexpress.nightcore.ui.inventory.menu.AbstractObjectMenu;
+import su.nightexpress.nightcore.ui.inventory.viewer.ViewerContext;
+import su.nightexpress.nightcore.util.bukkit.NightItem;
 import su.nightexpress.sunlight.SunLightPlugin;
-import su.nightexpress.sunlight.config.Lang;
+import su.nightexpress.sunlight.module.homes.HomesFiles;
 import su.nightexpress.sunlight.module.homes.HomesModule;
+import su.nightexpress.sunlight.module.homes.config.HomesLang;
 import su.nightexpress.sunlight.module.homes.impl.Home;
 
-import java.util.*;
+import java.util.Comparator;
+import java.util.List;
+import java.util.UUID;
 import java.util.stream.IntStream;
 
-import static su.nightexpress.sunlight.module.homes.util.Placeholders.*;
-import static su.nightexpress.nightcore.util.text.tag.Tags.*;
+import static su.nightexpress.nightcore.util.text.night.wrapper.TagWrappers.*;
 
-public class HomesMenu extends ConfigMenu<SunLightPlugin> implements AutoFilled<Home>, Linked<UUID> {
+public class HomesMenu extends AbstractObjectMenu<UUID> {
 
-    private static final String FILE_NAME = "home_list.yml";
+    private final HomesModule module;
 
-    private static final String IS_RESPAWN = "%respawn%";
-    private static final String IS_DEFAULT = "%is_default%";
+    private int totalSlots;
 
-    private final HomesModule    module;
-    private final ViewLink<UUID> link;
-    
-    private String       homeName;
-    private List<String> homeLore;
-    private int[]        homeSlots;
-
-    private List<String> loreIsRespawn;
-    private List<String> loreIsDefault;
+    private ItemPopulator<Home> homePopulator;
+    private ItemPopulator<Home> teleportPopulator;
+    private ItemPopulator<Integer> lockPopulator;
 
     public HomesMenu(@NotNull SunLightPlugin plugin, @NotNull HomesModule module) {
-        super(plugin, FileConfig.loadOrExtract(plugin, module.getLocalUIPath(), FILE_NAME));
+        super(MenuType.GENERIC_9X6, BLACK.wrap("Homes"), UUID.class);
         this.module = module;
-        this.link = new ViewLink<>();
 
-        this.load();
-    }
-
-    @NotNull
-    @Override
-    public ViewLink<UUID> getLink() {
-        return link;
+        this.load(plugin, FileConfig.load(module.getLocalUIPath(), HomesFiles.FILE_UI_HOME_LIST));
     }
 
     @Override
-    public void onPrepare(@NotNull MenuViewer viewer, @NotNull MenuOptions options) {
-        this.autoFill(viewer);
-    }
-
-    @Override
-    protected void onReady(@NotNull MenuViewer viewer, @NotNull Inventory inventory) {
+    public void registerActions() {
 
     }
 
     @Override
-    public void onAutoFill(@NotNull MenuViewer viewer, @NotNull AutoFill<Home> autoFill) {
-        Player player = viewer.getPlayer();
-        UUID targetId = this.getLink(player);
+    public void registerConditions() {
 
-        autoFill.setSlots(this.homeSlots);
-        autoFill.setItems(this.module.getHomes(targetId).values().stream().sorted(Comparator.comparing(Home::getId)).toList());
-        autoFill.setItemCreator(home -> {
-            ItemStack item = home.getIcon();
-
-            List<String> isDefaultLore = home.isDefault() ? new ArrayList<>(this.loreIsDefault) : Collections.emptyList();
-            List<String> isRespawnLore = home.isRespawnPoint() ? new ArrayList<>(this.loreIsRespawn) : Collections.emptyList();
-
-            ItemReplacer.create(item).hideFlags().trimmed()
-                .setDisplayName(this.homeName)
-                .setLore(this.homeLore)
-                .replace(IS_DEFAULT, isDefaultLore)
-                .replace(IS_RESPAWN, isRespawnLore)
-                .replace(home.replacePlaceholders())
-                .writeMeta();
-
-            return item;
-        });
-        autoFill.setClickAction(home -> (viewer1, event) -> {
-            if (!this.module.isLoaded(targetId)) {
-                this.runNextTick(player::closeInventory);
-                return;
-            }
-
-            if (event.isRightClick()) {
-                if (event.isShiftClick()) {
-                    this.module.removeHome(home);
-                    this.runNextTick(() -> this.open(player, viewer.getPage()));
-                    return;
-                }
-                this.runNextTick(() -> this.module.openHomeSettings(player, home));
-            }
-            else {
-                home.teleport(player);
-            }
-        });
     }
 
     @Override
-    @NotNull
-    protected MenuOptions createDefaultOptions() {
-        return new MenuOptions(BLACK.enclose("Homes"), MenuSize.CHEST_36);
+    public void defineDefaultLayout() {
+        this.addNextPageItem(Material.ARROW, 53);
+        this.addPreviousPageItem(Material.ARROW, 45);
+        this.addBackgroundItem(Material.BLACK_STAINED_GLASS_PANE, IntStream.range(0, 9).toArray());
+        this.addBackgroundItem(Material.BLACK_STAINED_GLASS_PANE, IntStream.range(45, 54).toArray());
     }
 
     @Override
-    @NotNull
-    protected List<MenuItem> createDefaultItems() {
-        List<MenuItem> list = new ArrayList<>();
+    protected void onLoad(@NotNull FileConfig config) {
+        this.totalSlots = ConfigValue.create("Homes.Total-Slots", 14).read(config);
 
-        ItemStack close = ItemUtil.getSkinHead(SKIN_WRONG_MARK);
-        ItemUtil.editMeta(close, meta -> {
-            meta.setDisplayName(Lang.EDITOR_ITEM_CLOSE.getDefaultName());
-        });
-        list.add(new MenuItem(close).setPriority(10).setSlots(31).setHandler(ItemHandler.forClose(this)));
+        int[] homeSlots = ConfigValue.create("Homes.Slots-Homes", IntStream.range(19, 26).toArray()).read(config);
+        int[] teleportSlots = ConfigValue.create("Homes.Slots-Teleport", IntStream.range(28, 35).toArray()).read(config);
 
-        ItemStack nextPage = ItemUtil.getSkinHead(SKIN_ARROW_RIGHT);
-        ItemUtil.editMeta(nextPage, meta -> {
-            meta.setDisplayName(Lang.EDITOR_ITEM_NEXT_PAGE.getDefaultName());
-        });
-        list.add(new MenuItem(nextPage).setPriority(10).setSlots(35).setHandler(ItemHandler.forNextPage(this)));
+        NightItem teleportIcon = ConfigValue.create("Homes.Icon-Teleport", NightItem.fromType(Material.ENDER_PEARL)).read(config);
+        NightItem lockedIcon = ConfigValue.create("Homes.Icon-Locked", NightItem.fromType(Material.IRON_BARS)).read(config);
+        NightItem emptyIcon = ConfigValue.create("Homes.Icon-Empty", NightItem.fromType(Material.GRAY_DYE)).read(config);
 
-        ItemStack backPage = ItemUtil.getSkinHead(SKIN_ARROW_LEFT);
-        ItemUtil.editMeta(backPage, meta -> {
-            meta.setDisplayName(Lang.EDITOR_ITEM_PREVIOUS_PAGE.getDefaultName());
-        });
-        list.add(new MenuItem(backPage).setPriority(10).setSlots(27).setHandler(ItemHandler.forPreviousPage(this)));
+        this.homePopulator = ItemPopulator.builder(Home.class)
+            .actionProvider(home -> context -> {
+                this.module.openHomeSettings(context.getPlayer(), home);
+            })
+            .itemProvider((context, home) -> {
+                AdaptedItem adaptedItem = this.module.getSettings().getIconOrDefault(home.getIconId());
+                NightItem item = adaptedItem.itemStack().map(NightItem::fromItemStack).orElse(NightItem.fromType(Material.RED_BED));
+                IconLocale locale = home.isFavorite() ? HomesLang.UI_HOMES_FAVORITE : HomesLang.UI_HOMES_NORMAL;
 
-        return list;
+                return item
+                    .localized(locale)
+                    .hideAllComponents()
+                    .replace(builder -> builder.with(home.placeholders()));
+            })
+            .slots(homeSlots)
+            .build();
+
+        this.teleportPopulator = ItemPopulator.builder(Home.class)
+            .actionProvider(home -> context -> {
+                context.getPlayer().closeInventory();
+                this.module.teleportToHome(context.getPlayer(), home);
+            })
+            .itemProvider((context, home) -> {
+                if (!home.isActive()) return NightItem.fromType(Material.AIR);
+
+                return teleportIcon
+                    .copy()
+                    .localized(HomesLang.UI_HOMES_TELEPORT)
+                    .hideAllComponents()
+                    .replace(builder -> builder.with(home.placeholders()));
+            })
+            .slots(teleportSlots)
+            .build();
+
+        this.lockPopulator = ItemPopulator.builder(Integer.class)
+            .actionProvider(slot -> context -> {
+                int maxHomes = this.module.getMaxHomesValue(context.getPlayer());
+                int finedSlot = slot + 1;
+                boolean isLocked = maxHomes >= 0 && finedSlot > maxHomes;
+                if (isLocked) return;
+
+                this.module.setHome(context.getPlayer(), String.valueOf(finedSlot), false);
+                context.getViewer().refresh();
+            })
+            .itemProvider((context, slot) -> {
+                int maxHomes = this.module.getMaxHomesValue(context.getPlayer());
+                int finedSlot = slot + 1;
+                boolean isLocked = maxHomes >= 0 && finedSlot > maxHomes;
+                return (isLocked ? lockedIcon : emptyIcon).copy().localized(isLocked ? HomesLang.UI_HOMES_LOCKED : HomesLang.UI_HOMES_EMPTY).hideAllComponents();
+            })
+            .slots(homeSlots)
+            .build();
     }
 
     @Override
-    protected void loadAdditional() {
-        this.homeName = ConfigValue.create("Home.Name", 
-            LIGHT_YELLOW.enclose(BOLD.enclose("Home: ")) + WHITE.enclose(HOME_NAME) + GRAY.enclose(" (ID: " + WHITE.enclose(HOME_ID) + ")")
-        ).read(cfg);
+    protected void onClick(@NotNull ViewerContext context, @NotNull InventoryClickEvent event) {
 
-        this.homeLore = ConfigValue.create("Home.Lore.Default", Lists.newList(
-            LIGHT_YELLOW.enclose("▪ " + LIGHT_GRAY.enclose("World: ") + HOME_LOCATION_WORLD),
-            LIGHT_YELLOW.enclose("▪ " + LIGHT_GRAY.enclose("X: ") + HOME_LOCATION_X),
-            LIGHT_YELLOW.enclose("▪ " + LIGHT_GRAY.enclose("Y: ") + HOME_LOCATION_Y),
-            LIGHT_YELLOW.enclose("▪ " + LIGHT_GRAY.enclose("Z: ") + HOME_LOCATION_Z),
-            "",
-            IS_RESPAWN,
-            IS_DEFAULT,
-            "",
-            LIGHT_GRAY.enclose(LIGHT_YELLOW.enclose("[▶]") + " Left-Click to " + LIGHT_YELLOW.enclose("teleport") + "."),
-            LIGHT_GRAY.enclose(LIGHT_YELLOW.enclose("[▶]") + " Right-Click for " + LIGHT_YELLOW.enclose("settings") + "."),
-            LIGHT_GRAY.enclose(LIGHT_RED.enclose("[▶]") + " Shift-Right to " + LIGHT_RED.enclose("delete") + ".")
-        )).read(cfg);
-        
-        this.loreIsRespawn = ConfigValue.create("Home.Lore.Respawn", Lists.newList(
-            LIGHT_GRAY.enclose(LIGHT_GREEN.enclose("✔") + " This home is set as " + LIGHT_GREEN.enclose("respawn") + " point.")
-        )).read(cfg);
-        
-        this.loreIsDefault = ConfigValue.create("Home.Lore.Is_Default", Lists.newList(
-            LIGHT_GRAY.enclose(LIGHT_GREEN.enclose("✔") + " This home is set as " + LIGHT_GREEN.enclose("default") + " home.")
-        )).read(cfg);
-        
-        this.homeSlots = ConfigValue.create("Home.Slots", IntStream.range(10, 17).toArray()).read(cfg);
+    }
+
+    @Override
+    protected void onDrag(@NotNull ViewerContext context, @NotNull InventoryDragEvent event) {
+
+    }
+
+    @Override
+    protected void onClose(@NotNull ViewerContext context, @NotNull InventoryCloseEvent event) {
+
+    }
+
+    @Override
+    public void onPrepare(@NotNull ViewerContext context, @NotNull InventoryView view, @NotNull Inventory inventory, @NotNull List<MenuItem> items) {
+        UUID targetId = this.getObject(context);
+
+        List<Home> homes = this.module.getHomes(targetId).stream().sorted(Comparator.comparing(Home::getId)).toList();
+        List<Integer> slots = IntStream.range(0, this.totalSlots).boxed().toList();
+
+        this.lockPopulator.populateTo(context, slots, items);
+        this.homePopulator.populateTo(context, homes, items);
+        this.teleportPopulator.populateTo(context, homes, items);
+    }
+
+    @Override
+    public void onReady(@NotNull ViewerContext context, @NotNull InventoryView view, @NotNull Inventory inventory) {
+
+    }
+
+    @Override
+    public void onRender(@NotNull ViewerContext context, @NotNull InventoryView view, @NotNull Inventory inventory) {
+
     }
 }

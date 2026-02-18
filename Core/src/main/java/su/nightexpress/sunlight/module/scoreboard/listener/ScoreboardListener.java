@@ -11,7 +11,7 @@ import su.nightexpress.nightcore.manager.AbstractListener;
 import su.nightexpress.sunlight.SunLightPlugin;
 import su.nightexpress.sunlight.module.scoreboard.ScoreboardModule;
 import su.nightexpress.sunlight.module.scoreboard.board.Board;
-import su.nightexpress.sunlight.module.scoreboard.board.BoardConfig;
+import su.nightexpress.sunlight.module.scoreboard.board.BoardDefinition;
 
 public class ScoreboardListener extends AbstractListener<SunLightPlugin> {
 
@@ -28,8 +28,8 @@ public class ScoreboardListener extends AbstractListener<SunLightPlugin> {
         if (!this.module.isScoreboardEnabled(player)) return;
 
         Board board = this.module.getBoard(player);
-        BoardConfig currentBoard = board != null ? board.getBoardConfig() : null;
-        BoardConfig worldBoard = this.module.getBoardConfig(player);
+        BoardDefinition currentBoard = board != null ? board.getBoardConfig() : null;
+        BoardDefinition worldBoard = this.module.getBoardDefinition(player);
 
         if (currentBoard != null) {
             this.module.removeBoard(player);

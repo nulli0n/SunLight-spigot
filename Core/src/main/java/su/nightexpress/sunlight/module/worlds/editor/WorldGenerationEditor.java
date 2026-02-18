@@ -14,6 +14,7 @@ import su.nightexpress.nightcore.util.ItemReplacer;
 import su.nightexpress.nightcore.util.ItemUtil;
 import su.nightexpress.nightcore.util.Lists;
 import su.nightexpress.sunlight.SunLightPlugin;
+import su.nightexpress.sunlight.config.Lang;
 import su.nightexpress.sunlight.module.worlds.WorldsModule;
 import su.nightexpress.sunlight.module.worlds.config.WorldsLang;
 import su.nightexpress.sunlight.module.worlds.impl.WorldData;
@@ -30,7 +31,7 @@ public class WorldGenerationEditor extends EditorMenu<SunLightPlugin, WorldData>
     private static final String TEXTURE_DELETE = "b465f80bf02b408885987b00957ca5e9eb874c3fa88305099597a333a336ee15";
 
     public WorldGenerationEditor(@NotNull SunLightPlugin plugin, @NotNull WorldsModule module) {
-        super(plugin, WorldsLang.EDITOR_TITLE_GENERATION.getString(), MenuSize.CHEST_18);
+        super(plugin, WorldsLang.EDITOR_TITLE_GENERATION.text(), MenuSize.CHEST_18);
 
         this.addReturn(13, (viewer, event, data) -> {
             this.runNextTick(() -> module.openEditor(viewer.getPlayer()));
@@ -72,7 +73,7 @@ public class WorldGenerationEditor extends EditorMenu<SunLightPlugin, WorldData>
             generators.addAll(module.getGeneratorMap().keySet());
             generators.addAll(WorldUtils.getGeneratorPlugins(data.getId()).stream().map(Plugin::getName).toList());
 
-            this.handleInput(viewer, WorldsLang.EDITOR_INPUT_GENERIC_NAME, (dialog, input) -> {
+            this.handleInput(viewer.getPlayer(), Lang.EDITOR_INPUT_GENERIC_NAME.text(), (dialog, input) -> {
                 data.setGenerator(input.getTextRaw());
                 data.save();
                 return true;

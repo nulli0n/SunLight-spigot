@@ -1,29 +1,14 @@
 package su.nightexpress.sunlight.module.warmups.config;
 
-import su.nightexpress.nightcore.util.wrapper.UniPermission;
-import su.nightexpress.sunlight.Placeholders;
+import org.bukkit.permissions.Permission;
+import su.nightexpress.sunlight.config.PermissionTree;
 import su.nightexpress.sunlight.config.Perms;
 
 public class WarmupsPerms {
 
-    public static final String PREFIX         = Perms.PREFIX + "warmups.";
-    public static final String PREFIX_COMMAND = PREFIX + "command.";
-    public static final String PREFIX_BYPASS  = PREFIX + "bypass.";
+    public static final PermissionTree MODULE = Perms.detached("warmups");
+    public static final PermissionTree BYPASS = MODULE.branch("bypass");
 
-    public static final UniPermission MODULE = new UniPermission(PREFIX + Placeholders.WILDCARD);
-    public static final UniPermission BYPASS = new UniPermission(PREFIX_BYPASS + Placeholders.WILDCARD);
-
-    public static final UniPermission BYPASS_TELEPORT = new UniPermission(PREFIX_BYPASS + "teleport");
-    public static final UniPermission BYPASS_COMMAND  = new UniPermission(PREFIX_BYPASS + "command");
-
-    static {
-        Perms.PLUGIN.addChildren(MODULE);
-
-        MODULE.addChildren(BYPASS);
-
-        BYPASS.addChildren(
-            BYPASS_TELEPORT,
-            BYPASS_COMMAND
-        );
-    }
+    public static final Permission BYPASS_TELEPORT = BYPASS.permission("teleport");
+    public static final Permission BYPASS_COMMAND  = BYPASS.permission("command");
 }

@@ -1,9 +1,7 @@
 package su.nightexpress.sunlight.module.worlds.impl;
 
-import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
-import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import su.nightexpress.nightcore.config.FileConfig;
@@ -11,15 +9,11 @@ import su.nightexpress.nightcore.manager.AbstractFileData;
 import su.nightexpress.nightcore.util.FileUtil;
 import su.nightexpress.nightcore.util.TimeUtil;
 import su.nightexpress.sunlight.SunLightPlugin;
-import su.nightexpress.sunlight.api.type.TeleportType;
-import su.nightexpress.sunlight.module.spawns.SpawnsModule;
-import su.nightexpress.sunlight.module.spawns.impl.Spawn;
 import su.nightexpress.sunlight.module.worlds.WorldsModule;
 import su.nightexpress.sunlight.module.worlds.config.WorldsConfig;
 import su.nightexpress.sunlight.module.worlds.config.WorldsLang;
 import su.nightexpress.sunlight.module.worlds.util.DeletionType;
 import su.nightexpress.sunlight.module.worlds.util.Placeholders;
-import su.nightexpress.sunlight.utils.teleport.Teleporter;
 
 import java.io.File;
 import java.time.LocalDateTime;
@@ -120,7 +114,7 @@ public class WorldData extends AbstractFileData<SunLightPlugin> {
 
     public boolean delete(@NotNull DeletionType type) {
         if (this.isLoaded()) {
-            if (!this.unloadWorld(true)) return false;
+            if (!this.module.unloadWorld(this, true)) return false;
         }
 
         if (type == DeletionType.DATA || type == DeletionType.FULL) {
@@ -139,20 +133,7 @@ public class WorldData extends AbstractFileData<SunLightPlugin> {
         return true;
     }
 
-    public boolean unloadWorld() {
-        return this.unloadWorld(true);
-    }
 
-    public boolean unloadWorld(boolean movePlayers) {
-        World world = this.getWorld();
-        if (world == null) return false;
-
-        if (movePlayers) {
-            this.movePlayersOut();
-        }
-
-        return this.plugin.getServer().unloadWorld(world, true);
-    }
 
     public boolean autoReset() {
         if (!this.isAutoReset()) return false;
@@ -160,7 +141,7 @@ public class WorldData extends AbstractFileData<SunLightPlugin> {
 
         this.module.info("Start Auto-Reset for world '" + this.getId() + "'...");
 
-        if (!this.unloadWorld(true)) {
+        if (!this.module.unloadWorld(this, true)) {
             this.module.warn("Auto-Reset for world '" + this.getId() + "' failed: Unable to unload the world.");
             return false;
         }
@@ -190,9 +171,9 @@ public class WorldData extends AbstractFileData<SunLightPlugin> {
             if (world == null) return false;
 
             world.getPlayers().forEach(player -> {
-                WorldsLang.AUTO_RESET_NOTIFY.getMessage()
+                WorldsLang.AUTO_RESET_NOTIFY.message().send(player, replacer -> replacer
                     .replace(Placeholders.GENERIC_TIME, TimeUtil.formatDuration(this.getNextWipe() + 1000L)) // add 1 second for good formatiing
-                    .send(player);
+                );
             });
             return true;
         }
@@ -200,33 +181,7 @@ public class WorldData extends AbstractFileData<SunLightPlugin> {
         return false;
     }
 
-    public boolean movePlayersOut() {
-        World world = this.getWorld();
-        if (world == null) return false;
 
-        Location location = null;
-        if (WorldsConfig.UNLOAD_MOVE_PLAYERS_TO_SPAWN_ENABLED.get()) {
-            SpawnsModule spawnsModule = this.plugin.getModuleManager().getModule(SpawnsModule.class).orElse(null);
-            Spawn spawn = spawnsModule == null ? null : spawnsModule.getSpawn(WorldsConfig.UNLOAD_MOVE_PLAYERS_TO_SPAWN_NAME.get());
-            if (spawn != null) {
-                location = spawn.getLocation();
-            }
-        }
-        if (location == null) {
-            World target = this.plugin.getServer().getWorlds().stream().filter(w -> w != world).findFirst().orElse(null);
-            if (target == null) return false;
-
-            location = target.getSpawnLocation();
-        }
-
-        for (Player player : world.getPlayers()) {
-            Teleporter.create(player, location).centered().validateFloor().setForced(true).teleport(TeleportType.OTHER, () -> {
-                WorldsLang.UNLOAD_MOVE_OUT_INFO.getMessage().send(player);
-            });
-        }
-
-        return world.getPlayers().isEmpty();
-    }
 
     @Nullable
     public World getWorld() {

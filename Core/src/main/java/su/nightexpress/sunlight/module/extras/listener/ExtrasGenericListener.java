@@ -20,7 +20,7 @@ import su.nightexpress.nightcore.util.Players;
 import su.nightexpress.nightcore.util.text.NightMessage;
 import su.nightexpress.nightcore.util.text.tag.TagPool;
 import su.nightexpress.sunlight.SunLightPlugin;
-import su.nightexpress.sunlight.data.user.SunUser;
+import su.nightexpress.sunlight.user.SunUser;
 import su.nightexpress.sunlight.module.extras.ExtrasModule;
 import su.nightexpress.sunlight.module.extras.config.ExtrasConfig;
 import su.nightexpress.sunlight.module.extras.config.ExtrasPerms;
@@ -41,7 +41,7 @@ public class ExtrasGenericListener extends AbstractListener<SunLightPlugin> {
         Player player = event.getPlayer();
         SunUser user = plugin.getUserManager().getOrFetch(player);
         List<String> commands;
-        if (user.isNewlyCreated()) {
+        if (user.isFirstTimeJoined()) {
             commands = ExtrasConfig.JOIN_COMMANDS_FIRST.get();
         }
         else {

@@ -1,250 +1,202 @@
 package su.nightexpress.sunlight.command;
 
+import org.bukkit.command.Command;
+import org.bukkit.command.PluginIdentifiableCommand;
+import org.bukkit.command.defaults.BukkitCommand;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import su.nightexpress.nightcore.command.experimental.RootCommand;
-import su.nightexpress.nightcore.command.experimental.ServerCommand;
-import su.nightexpress.nightcore.command.experimental.builder.DirectNodeBuilder;
-import su.nightexpress.nightcore.config.ConfigValue;
+import su.nightexpress.nightcore.commands.Commands;
+import su.nightexpress.nightcore.commands.NodeExecutor;
+import su.nightexpress.nightcore.commands.builder.LiteralNodeBuilder;
+import su.nightexpress.nightcore.commands.command.NightCommand;
+import su.nightexpress.nightcore.commands.tree.LiteralNode;
 import su.nightexpress.nightcore.config.FileConfig;
+import su.nightexpress.nightcore.manager.SimpleManager;
 import su.nightexpress.nightcore.util.CommandUtil;
-import su.nightexpress.nightcore.util.Lists;
+import su.nightexpress.nightcore.util.LowerCase;
+import su.nightexpress.nightcore.util.TimeUtil;
+import su.nightexpress.nightcore.util.time.TimeFormatType;
+import su.nightexpress.nightcore.util.time.TimeFormats;
+import su.nightexpress.sunlight.SLFiles;
+import su.nightexpress.sunlight.SLPlaceholders;
 import su.nightexpress.sunlight.SunLightPlugin;
-import su.nightexpress.sunlight.command.cooldown.CommandCooldown;
-import su.nightexpress.sunlight.command.list.*;
-import su.nightexpress.sunlight.command.template.CommandTemplate;
-import su.nightexpress.sunlight.command.template.DirectCommandTemplate;
-import su.nightexpress.sunlight.command.template.GroupCommandTemplate;
+import su.nightexpress.sunlight.command.provider.CommandProvider;
+import su.nightexpress.sunlight.command.provider.definition.HubDefinition;
+import su.nightexpress.sunlight.command.provider.definition.LiteralDefinition;
+import su.nightexpress.sunlight.config.Lang;
+import su.nightexpress.sunlight.config.Perms;
+import su.nightexpress.sunlight.user.SunUser;
 
 import java.util.*;
 
-public class CommandRegistry {
+public class CommandRegistry extends SimpleManager<SunLightPlugin> {
 
-    private static final String FILE_NAME = "command-map.yml";
+    private final CommandSettings settings;
 
-    private static final Map<String, NodeCreator<DirectNodeBuilder>> NODE_BUILDERS = new HashMap<>();
+    private final Map<String, CommandProvider> providers;
+    private final Set<NightCommand>            commands;
 
-    private static final Map<String, CommandCooldown> COOLDOWNS = new HashMap<>();
-    private static final Map<String, CommandTemplate> TEMPLATES  = new LinkedHashMap<>();
-    private static final Set<String>                  REGISTERED = new HashSet<>();
-
-    public static void registerDirectExecutor(@NotNull String name, @NotNull NodeCreator<DirectNodeBuilder> creator) {
-        NODE_BUILDERS.put(name.toLowerCase(), creator);
+    public CommandRegistry(@NotNull SunLightPlugin plugin) {
+        super(plugin);
+        this.settings = new CommandSettings();
+        this.providers = new LinkedHashMap<>();
+        this.commands = new HashSet<>();
     }
 
-    @Nullable
-    public static DirectNodeBuilder getDirectBuilder(@NotNull DirectCommandTemplate template, @NotNull FileConfig config) {
-        NodeCreator<DirectNodeBuilder> creator = NODE_BUILDERS.get(template.getNodeId().toLowerCase());
-        return creator == null ? null : creator.create(template, config);
+    @Override
+    protected void onLoad() {
+        this.settings.load(this.plugin.getConfig());
+        this.registerCommands();
     }
 
-    public static void addTemplate(@NotNull String name, @NotNull CommandTemplate template) {
-        TEMPLATES.put(name.toLowerCase(), template);
+    @Override
+    protected void onShutdown() {
+        this.commands.forEach(NightCommand::unregister);
+        this.commands.clear();
+        this.providers.clear();
     }
 
-    public static void addSimpleTemplate(@NotNull String name) {
-        TEMPLATES.put(name.toLowerCase(), DirectCommandTemplate.create(new String[]{name}, name));
+    public void addProvider(@NotNull String id, @NotNull CommandProvider provider) {
+        this.providers.put(LowerCase.INTERNAL.apply(id), provider);
     }
 
-    public static boolean isExecutorRegistered(@NotNull String name) {
-        return NODE_BUILDERS.containsKey(name.toLowerCase());
-    }
+    private void registerCommands() {
+        this.providers.forEach((providerId, provider) -> {
+            FileConfig config = FileConfig.load(this.plugin.getDataFolder() + SLFiles.DIR_COMMANDS, FileConfig.withExtension(providerId));
 
-    @Nullable
-    public static CommandCooldown getCooldown(@NotNull String name) {
-        Set<String> aliases = CommandUtil.getAliases(name, true);
-        for (String alias : aliases) {
-            CommandCooldown cooldown = COOLDOWNS.get(alias);
-            if (cooldown != null) return cooldown;
-        }
+            this.plugin.injectLang(provider); // Register and load command's locales.
 
-        return null;
-    }
+            provider.registerDefaults();
+            provider.load(config);
 
-    public static void setup(@NotNull SunLightPlugin plugin) {
-        FileConfig config = FileConfig.loadOrExtract(plugin, FILE_NAME);
+            provider.getLiteralBuilders().forEach((nodeId, consumer) -> {
+                LiteralDefinition literalDefinition = provider.getLiteralDefinitions().get(nodeId);
+                if (literalDefinition == null || !literalDefinition.enabled()) return;
 
-        plugin.registerPermissions(CommandPerms.class);
-        config.initializeOptions(CommandConfig.class);
+                this.register(NightCommand.literal(this.plugin, literalDefinition.aliases(), builder -> {
+                    consumer.accept(builder);
 
-        loadCooldowns(plugin, config);
-        loadCoreCommands(plugin, config);
-        checkConfig(plugin, config);
-        registerCommands(plugin, config);
-
-        config.saveChanges();
-    }
-
-    public static void shutdown(@NotNull SunLightPlugin plugin) {
-        new HashSet<>(REGISTERED).forEach(name -> unregister(plugin, name));
-//        REGISTERED.forEach(name -> {
-//            if (plugin.getCommandManager().unregisterServerCommand(name)) {
-//                plugin.info("Unregistered command: " + name);
-//            }
-//        });
-
-        NODE_BUILDERS.clear();
-        TEMPLATES.clear();
-        REGISTERED.clear();
-    }
-
-    private static void checkConfig(@NotNull SunLightPlugin plugin, @NotNull FileConfig config) {
-        Set<String> disabledExecutors = ConfigValue.create("Settings.Disabled_Executors",
-            Lists.newSet(),
-            "Add here names of command executors to disable them completely.",
-            "Disabled executor will result in disabling ALL commands using that executor."
-        ).read(config);
-
-        disabledExecutors.forEach(name -> {
-            name = name.toLowerCase();
-            if (NODE_BUILDERS.remove(name) != null) {
-                plugin.info("Executor disabled: '" + name + "'.");
-            }
-        });
-    }
-
-    private static void loadCooldowns(@NotNull SunLightPlugin plugin, @NotNull FileConfig config) {
-        if (!config.contains("Cooldowns")) {
-            CommandConfig.getDefaultCooldowns().forEach(commandCooldown -> commandCooldown.write(config, "Cooldowns." + commandCooldown.getId()));
-        }
-
-        for (String id : config.getSection("Cooldowns")) {
-            CommandCooldown cooldown = CommandCooldown.read(config, "Cooldowns." + id, id);
-            cooldown.getCommandNames().forEach(name -> {
-                COOLDOWNS.put(name.toLowerCase(), cooldown);
+                    if (this.settings.isCooldownsEnabled()) {
+                        this.wrapExecutorWithCooldown(providerId, nodeId, literalDefinition, builder);
+                    }
+                }));
             });
-        }
-
-        plugin.info("Loaded " + COOLDOWNS.size() + " command cooldowns.");
-    }
-
-    private static void loadCoreCommands(@NotNull SunLightPlugin plugin, @NotNull FileConfig config) {
-        AirCommand.load(plugin);
-        BroadcastCommand.load(plugin);
-        CondenseCommand.load(plugin);
-        ContainerCommands.load(plugin);
-        DimensionCommand.load(plugin);
-        DisposalCommand.load(plugin);
-        EnchantCommand.load(plugin);
-        EnderchestCommand.load(plugin);
-        ExperienceCommand.load(plugin);
-        FireCommands.load(plugin);
-        FlyCommand.load(plugin);
-        FlySpeedCommand.load(plugin);
-        FoodLevelCommand.load(plugin);
-        GameModeCommand.load(plugin);
-        HatCommand.load(plugin);
-        HealthCommand.load(plugin);
-        IgnoreCommands.load(plugin);
-        InventoryCommand.load(plugin);
-        ItemCommands.load(plugin);
-        MobCommand.load(plugin);
-        NearCommand.load(plugin);
-        NickCommand.load(plugin);
-        PlayerInfoCommand.load(plugin);
-        StaffCommand.load(plugin);
-        SkullCommand.load(plugin);
-        SmiteCommand.load(plugin);
-        SpawnerCommand.load(plugin);
-        SpeedCommand.load(plugin);
-        SudoCommand.load(plugin);
-        SuicideCommand.load(plugin);
-        TeleportCommands.load(plugin);
-        TimeCommands.load(plugin, config);
-        WeatherCommands.load(plugin);
-    }
-
-    private static void registerCommands(@NotNull SunLightPlugin plugin, @NotNull FileConfig config) {
-        TEMPLATES.forEach((name, template) -> {
-            String path;
-            if (template instanceof GroupCommandTemplate) {
-                path = "CommandMap.Groups." + name;
-            }
-            else path = "CommandMap.Commands." + name;
-
-            boolean present = config.contains(path);
-
-            config.addMissing(path + ".Enabled", true);
-            if (!present) {
-                template.write(config, path);
-            }
-        });
-        TEMPLATES.clear();
-
-        config.getSection("CommandMap.Commands").forEach(name -> {
-            if (!config.getBoolean("CommandMap.Commands." + name + ".Enabled")) return;
-
-            DirectCommandTemplate template = DirectCommandTemplate.read(config, "CommandMap.Commands." + name);
-            register(plugin, template, config);
-        });
-
-        config.getSection("CommandMap.Groups").forEach(name -> {
-            if (!config.getBoolean("CommandMap.Groups." + name + ".Enabled")) return;
-
-            GroupCommandTemplate template = GroupCommandTemplate.read(config, "CommandMap.Groups." + name);
-            register(plugin, template, config);
-        });
-    }
-
-    public static void register(@NotNull SunLightPlugin plugin, @NotNull DirectCommandTemplate template, @NotNull FileConfig config) {
-        DirectNodeBuilder directBuilder = getDirectBuilder(template, config);
-        if (directBuilder == null) {
-            plugin.error("Could not find executor '" + template.getNodeId() + "'!");
-            return;
-        }
-
-        ServerCommand command = RootCommand.build(plugin, directBuilder);
-
-        register(plugin, command);
-    }
 
 
-    public static void register(@NotNull SunLightPlugin plugin, @NotNull GroupCommandTemplate template, @NotNull FileConfig config) {
-        ServerCommand command = RootCommand.chained(plugin, template.getAliases(), rootBuilder -> {
-            rootBuilder.description(template.getDescription());
-            rootBuilder.permission(template.getPermission());
+            provider.getRootBuilders().forEach((rootId, rootBuilder) -> {
+                HubDefinition rootDefinition = provider.getRootDefinitions().get(rootId);
+                if (rootDefinition == null || !rootDefinition.enabled()) return;
 
-            template.getCommands().forEach(child -> {
-                DirectNodeBuilder directBuilder = getDirectBuilder(child, config);
-                if (directBuilder == null) {
-                    plugin.error("Could not find child executor '" + child.getNodeId() + "'!");
+                List<LiteralNode> childrens = new ArrayList<>();
+
+                provider.getLiteralBuilders().forEach((nodeId, consumer) -> {
+                    String alias = rootDefinition.childrenAliases().get(nodeId);
+                    if (alias == null || alias.isBlank()) return;
+
+                    childrens.add(Commands.literal(alias, consumer));
+                });
+
+                if (childrens.isEmpty()) {
+                    this.plugin.warn("Root command '" + rootDefinition.name() + "' was not registered due to no sub-commands available.");
                     return;
                 }
 
-                rootBuilder.child(directBuilder);
-                if (child.isFallback()) {
-                    rootBuilder.fallback(directBuilder.build());
+                this.register(NightCommand.hub(this.plugin, rootDefinition.aliases(), builder -> {
+                    rootBuilder.accept(builder);
+                    builder.localized(rootDefinition.name());
+                    builder.branch(childrens.toArray(new LiteralNode[0]));
+                }));
+            });
+
+            config.saveChanges();
+        });
+    }
+
+    private void register(@NotNull NightCommand command) {
+        if (this.settings.isConflictUnregisterEnabled()) {
+            this.unregisterConflicts(command);
+        }
+
+        if (!command.register()) {
+            this.plugin.warn("Command '%s' was not registered with the passed in label, which indicates the SunLight's fallback prefix was used one or more time. This usually means that there is a vanilla command with the same label.");
+        }
+
+        this.commands.add(command);
+    }
+
+    @NotNull
+    public Set<CommandProvider> getProviders() {
+        return new HashSet<>(this.providers.values());
+    }
+
+    private void wrapExecutorWithCooldown(@NotNull String providerId, @NotNull String nodeId, @NotNull LiteralDefinition definition, @NotNull LiteralNodeBuilder builder) {
+        NodeExecutor executor = builder.getExecutor(); // Original executor set by the provider implementation.
+
+        int cooldown = definition.cooldown();
+
+        builder.executes((context, arguments) -> {
+            Player player = context.getPlayer();
+            SunUser user = player == null ? null : this.plugin.getUserManager().getOrFetch(player);
+            CommandKey key = new CommandKey(providerId, nodeId);
+
+            if (cooldown != 0 && user != null && !player.hasPermission(Perms.BYPASS_COMMAND_COOLDOWN)) {
+                Long expireDate = user.getCommandCooldown(key);
+                if (expireDate != null && !TimeUtil.isPassed(expireDate)) {
+                    (expireDate < 0 ? Lang.COMMAND_COOLDOWN_ONE_TIME : Lang.COMMAND_COOLDOWN_DEFAULT).message().sendWith(player, replacer -> replacer
+                        .with(SLPlaceholders.GENERIC_TIME, () -> TimeFormats.formatDuration(expireDate, TimeFormatType.LITERAL))
+                        .with(SLPlaceholders.GENERIC_COMMAND, () -> "/" + context.getInput())
+                    );
+                    return false;
+                }
+            }
+
+            boolean result = executor.run(context, arguments);
+            if (result && cooldown != 0 && user != null) {
+                long expireDate = TimeUtil.createFutureTimestamp(cooldown);
+
+                user.setCommandCooldown(key, expireDate);
+                user.markDirty();
+            }
+
+            return result;
+        });
+    }
+
+    private void unregisterConflicts(@NotNull NightCommand command) {
+        Set<String> aliases = new HashSet<>(command.getAliases());
+        aliases.add(command.getName());
+
+        aliases.forEach(alias -> {
+            CommandUtil.getCommand(alias).ifPresent(other -> {
+                boolean result = CommandUtil.unregister(other);
+                String owner = getCommandOwner(other);
+                if (this.settings.getConflictUnregisterBlacklist().contains(LowerCase.INTERNAL.apply(owner))) return;
+
+                if (result) {
+                    this.plugin.info("Unregistered conflicting '%s' (%s) command in favor of SunLight's alternative.".formatted(other.getName(), owner));
+                }
+                else {
+                    this.plugin.warn("Could not unregister conflicting command '%s' (%s) in favor of SunLight's alternative.".formatted(other.getName(), owner));
                 }
             });
         });
-
-        register(plugin, command);
     }
 
-    public static void register(@NotNull SunLightPlugin plugin, @NotNull ServerCommand command) {
-        String name = command.getNode().getName();
-
-        if (CommandConfig.UNREGISTER_CONFLICTS.get()) {
-            CommandUtil.unregister(name);
+    @NotNull
+    private static String getCommandOwner(@NotNull Command command) {
+        if (command instanceof PluginIdentifiableCommand identifiableCommand) {
+            return identifiableCommand.getPlugin().getName();
         }
 
-        plugin.getCommandManager().registerCommand(command);
-        REGISTERED.add(name);
+        if (command instanceof BukkitCommand bukkitCommand) {
+            String permission = bukkitCommand.getPermission();
+            if (permission != null && permission.startsWith("minecraft")) {
+                return "Vanilla";
+            }
 
-        if (CommandConfig.DEBUG_REGISTER_LOG.get()) {
-            plugin.info("Registered command: " + name);
-        }
-    }
-
-    public static boolean unregister(@NotNull SunLightPlugin plugin, @NotNull String name) {
-        if (!plugin.getCommandManager().unregisterServerCommand(name)) return false;
-
-        REGISTERED.remove(name);
-
-        if (CommandConfig.DEBUG_REGISTER_LOG.get()) {
-            plugin.info("Unregistered command: " + name);
+            return "Bukkit";
         }
 
-        return true;
+        return "Unknown";
     }
 }

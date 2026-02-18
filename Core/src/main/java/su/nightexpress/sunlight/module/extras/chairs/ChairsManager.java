@@ -19,18 +19,18 @@ import su.nightexpress.nightcore.manager.AbstractManager;
 import su.nightexpress.nightcore.util.LocationUtil;
 import su.nightexpress.nightcore.util.Version;
 import su.nightexpress.sunlight.SunLightPlugin;
-import su.nightexpress.sunlight.core.user.settings.SettingRegistry;
-import su.nightexpress.sunlight.data.user.SunUser;
-import su.nightexpress.sunlight.core.user.settings.Setting;
 import su.nightexpress.sunlight.module.extras.ExtrasModule;
 import su.nightexpress.sunlight.module.extras.config.ExtrasConfig;
+import su.nightexpress.sunlight.user.SunUser;
+import su.nightexpress.sunlight.user.property.UserProperty;
+import su.nightexpress.sunlight.user.property.UserPropertyRegistry;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class ChairsManager extends AbstractManager<SunLightPlugin> {
 
-    public static final Setting<Boolean> SETTING_CHAIRS = SettingRegistry.register(Setting.create("chairs.enabled", true, true));
+    public static final UserProperty<Boolean> SETTING_CHAIRS = UserProperty.create("chairs.enabled", Boolean.class, true, true);
 
     private static final String SEAT_META = "seat";
 
@@ -46,6 +46,7 @@ public class ChairsManager extends AbstractManager<SunLightPlugin> {
     @Override
     protected void onLoad() {
         this.loadCommands();
+        UserPropertyRegistry.register(SETTING_CHAIRS);
 
         this.addListener(new ChairsListener(this.plugin, this));
     }
@@ -60,11 +61,11 @@ public class ChairsManager extends AbstractManager<SunLightPlugin> {
     }
 
     private void loadCommands() {
-        ChairsCommands.load(this.plugin, this);
+        // TODO ChairsCommands.load(this.plugin, this);
     }
 
     public static boolean isChairsEnabled(@NotNull SunUser user) {
-        return user.getSettings().get(SETTING_CHAIRS);
+        return user.getPropertyOrDefault(SETTING_CHAIRS);
     }
 
     @NotNull

@@ -1,28 +1,14 @@
 package su.nightexpress.sunlight.module.scoreboard.config;
 
-import su.nightexpress.nightcore.util.wrapper.UniPermission;
+import org.bukkit.permissions.Permission;
+import su.nightexpress.sunlight.config.PermissionTree;
 import su.nightexpress.sunlight.config.Perms;
-import su.nightexpress.sunlight.Placeholders;
 
 public class SBPerms {
 
-    private static final String PREFIX         = Perms.PREFIX + "scoreboard.";
-    private static final String PREFIX_COMMAND = PREFIX + "command.";
+    public static final PermissionTree MODULE  = Perms.detached("scoreboard");
+    public static final PermissionTree COMMAND = MODULE.branch("command");
 
-    public static final UniPermission MODULE  = new UniPermission(PREFIX + Placeholders.WILDCARD);
-    public static final UniPermission COMMAND = new UniPermission(PREFIX_COMMAND + Placeholders.WILDCARD);
-
-    public static final UniPermission COMMAND_SCOREBOARD        = new UniPermission(PREFIX_COMMAND + "scoreboard");
-    public static final UniPermission COMMAND_SCOREBOARD_OTHERS = new UniPermission(PREFIX_COMMAND + "scoreboard.others");
-
-    static {
-        Perms.PLUGIN.addChildren(MODULE);
-
-        MODULE.addChildren(COMMAND);
-
-        COMMAND.addChildren(
-            COMMAND_SCOREBOARD,
-            COMMAND_SCOREBOARD_OTHERS
-        );
-    }
+    public static final Permission COMMAND_SCOREBOARD        = COMMAND.permission("scoreboard");
+    public static final Permission COMMAND_SCOREBOARD_OTHERS = COMMAND.permission("scoreboard.others");
 }

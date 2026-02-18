@@ -1,165 +1,142 @@
 package su.nightexpress.sunlight.module.bans.config;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import su.nightexpress.nightcore.language.entry.LangEnum;
-import su.nightexpress.nightcore.language.entry.LangString;
-import su.nightexpress.nightcore.language.entry.LangText;
-import su.nightexpress.sunlight.config.Lang;
+import org.bukkit.Sound;
+import su.nightexpress.nightcore.locale.LangContainer;
+import su.nightexpress.nightcore.locale.LangEntry;
+import su.nightexpress.nightcore.locale.entry.EnumLocale;
+import su.nightexpress.nightcore.locale.entry.MessageLocale;
+import su.nightexpress.nightcore.locale.entry.TextLocale;
+import su.nightexpress.nightcore.locale.message.MessageData;
+import su.nightexpress.nightcore.util.sound.VanillaSound;
+import su.nightexpress.nightcore.util.text.night.wrapper.TagWrapper;
+import su.nightexpress.nightcore.util.text.night.wrapper.TagWrappers;
+import su.nightexpress.sunlight.SLSharedConsts;
 import su.nightexpress.sunlight.module.bans.menu.SortMode;
-import su.nightexpress.sunlight.module.bans.punishment.PunishData;
-import su.nightexpress.sunlight.module.bans.punishment.PunishedIP;
 import su.nightexpress.sunlight.module.bans.punishment.PunishmentType;
 
-import static su.nightexpress.nightcore.util.text.tag.Tags.*;
-import static su.nightexpress.sunlight.module.bans.util.Placeholders.*;
+import static su.nightexpress.nightcore.util.text.night.wrapper.TagWrappers.*;
+import static su.nightexpress.sunlight.module.bans.BansPlaceholders.*;
 
-public class BansLang extends Lang {
+public class BansLang implements LangContainer {
 
-    private static final String INFO = "\uD83D\uDEC8";
+    private static final TagWrapper RED_GRADIENT   = TagWrappers.GRADIENT_3.with("#FF0000", "#D11717", "#B51F1F");
 
-    public static final LangString COMMAND_ARGUMENT_NAME_REASON     = LangString.of("Command.Argument.Name.Reason", "reason");
-    public static final LangString COMMAND_ARGUMENT_NAME_IP_OR_NAME = LangString.of("Command.Argument.Name.IPorName", "name | address");
+    public static final EnumLocale<SortMode>       SORT_MODE       = LangEntry.builder("Bans.SortMode").enumeration(SortMode.class);
+    public static final EnumLocale<PunishmentType> PUNISHMENT_TYPE = LangEntry.builder("Bans.PunishmentType").enumeration(PunishmentType.class);
 
-    public static final LangEnum<SortMode> SORT_MODE = LangEnum.of("Bans.SortMode", SortMode.class);
+    public static final TextLocale COMMAND_ARGUMENT_NAME_REASON    = LangEntry.builder("Bans.Command.Argument.Name.Reason").text("reason");
+    public static final TextLocale COMMAND_ARGUMENT_NAME_TIME_UNIT = LangEntry.builder("Bans.Command.Argument.Name.TimeUnit").text("time unit");
 
-    public static final LangString COMMAND_BAN_HISTORY_DESC  = LangString.of("Bans.Command.History.Ban.Desc", "View bans history of a player or IP.");
-    public static final LangString COMMAND_MUTE_HISTORY_DESC = LangString.of("Bans.Command.History.Mute.Desc", "View mutes history of a player or IP.");
-    public static final LangString COMMAND_WARN_HISTORY_DESC = LangString.of("Bans.Command.History.Warn.Desc", "View warns history of a player or IP.");
-    public static final LangString COMMAND_BAN_LIST_DESC     = LangString.of("Bans.Command.BanList.Desc", "List of banned players and IPs.");
-    public static final LangString COMMAND_MUTE_LIST_DESC    = LangString.of("Bans.Command.MuteList.Desc", "List of muted players.");
-    public static final LangString COMMAND_WARN_LIST_DESC    = LangString.of("Bans.Command.WarnList.Desc", "List of warned players.");
-    public static final LangString COMMAND_BAN_DESC          = LangString.of("Bans.Command.Ban.Desc", "Ban player.");
-    public static final LangString COMMAND_BAN_IP_DESC       = LangString.of("Bans.Command.Banip.Desc", "Ban IP address.");
-    public static final LangString COMMAND_MUTE_DESC         = LangString.of("Bans.Command.Mute.Desc", "Mute player.");
-    public static final LangString COMMAND_KICK_DESC         = LangString.of("Bans.Command.Kick.Desc", "Kick player.");
-    public static final LangString COMMAND_UNMUTE_DESC       = LangString.of("Bans.Command.Unmute.Desc", "Unmute player.");
-    public static final LangString COMMAND_UNBAN_DESC        = LangString.of("Bans.Command.Unban.Desc", "Unban player or IP address.");
-    public static final LangString COMMAND_WARN_DESC         = LangString.of("Bans.Command.Warn.Desc", "Warn player.");
-    public static final LangString COMMAND_UNWARN_DESC       = LangString.of("Bans.Command.Unwarn.Desc", "Remove the most recent warn of player.");
-    public static final LangString COMMAND_ALTS_DESC         = LangString.of("Bans.Command.Alts.Desc", "List players from same IP.");
+    public static final TextLocale COMMAND_BAN_HISTORY_DESC  = LangEntry.builder("Bans.Command.History.Ban.Desc").text("List player's bans history.");
+    public static final TextLocale COMMAND_MUTE_HISTORY_DESC = LangEntry.builder("Bans.Command.History.Mute.Desc").text("List player's mutes history.");
+    public static final TextLocale COMMAND_WARN_HISTORY_DESC = LangEntry.builder("Bans.Command.History.Warn.Desc").text("List player's warns history.");
+    public static final TextLocale COMMAND_BAN_LIST_DESC     = LangEntry.builder("Bans.Command.BanList.Desc").text("List active bans.");
+    public static final TextLocale COMMAND_MUTE_LIST_DESC    = LangEntry.builder("Bans.Command.MuteList.Desc").text("List active mutes.");
+    public static final TextLocale COMMAND_WARN_LIST_DESC    = LangEntry.builder("Bans.Command.WarnList.Desc").text("List active warns.");
+    public static final TextLocale COMMAND_BAN_DESC          = LangEntry.builder("Bans.Command.Ban.Desc").text("Ban player.");
+    public static final TextLocale COMMAND_BAN_IP_DESC       = LangEntry.builder("Bans.Command.Banip.Desc").text("Ban IP address.");
+    public static final TextLocale COMMAND_MUTE_DESC         = LangEntry.builder("Bans.Command.Mute.Desc").text("Mute player.");
+    public static final TextLocale COMMAND_KICK_DESC         = LangEntry.builder("Bans.Command.Kick.Desc").text("Kick player.");
+    public static final TextLocale COMMAND_UNMUTE_DESC       = LangEntry.builder("Bans.Command.Unmute.Desc").text("Unmute player.");
+    public static final TextLocale COMMAND_UNBAN_DESC        = LangEntry.builder("Bans.Command.Unban.Desc").text("Unban player.");
+    public static final TextLocale COMMAND_UNBAN_IP_DESC     = LangEntry.builder("Bans.Command.UnbanIP.Desc").text("Unban IP address.");
+    public static final TextLocale COMMAND_WARN_DESC         = LangEntry.builder("Bans.Command.Warn.Desc").text("Warn player.");
+    public static final TextLocale COMMAND_UNWARN_DESC       = LangEntry.builder("Bans.Command.Unwarn.Desc").text("Remove latest player's warn.");
+    public static final TextLocale COMMAND_ALTS_DESC         = LangEntry.builder("Bans.Command.Alts.Desc").text("List player's alt accounts.");
 
-    // -------------------------------------
+    public static final MessageLocale COMMAND_SYNTAX_INVALID_TIME_UNIT = LangEntry.builder("Bans.Command.Syntax.InvalidTimeUnit").chatMessage(
+        GRAY.wrap(TagWrappers.SOFT_RED.wrap(GENERIC_INPUT) + " is not a valid time unit."));
 
-    public static final LangText ALTS_GLOBAL_NOTHING = LangText.of("Bans.Alts.Global.Nothing",
-        "There are no players with same IPs."
+    public static final MessageLocale COMMAND_SYNTAX_INVALID_REASON = LangEntry.builder("Bans.Error.Command.Argument.InvalidReason").chatMessage(
+        GRAY.wrap(SOFT_RED.wrap(GENERIC_VALUE) + " is not a valid reason."));
+
+
+
+    public static final MessageLocale ALTS_GLOBAL_NOTHING = LangEntry.builder("Bans.Alts.Global.Nothing").chatMessage(
+        GRAY.wrap("Player " + ORANGE.wrap(PLAYER_NAME) + " has no known alt accounts.")
     );
 
-    public static final LangText ALTS_GLOBAL_LIST = LangText.of("Bans.Alts.Global.List",
-        TAG_NO_PREFIX,
-        LIGHT_YELLOW.wrap(BOLD.wrap("Alts List:")),
+    public static final MessageLocale ALTS_GLOBAL_LIST = LangEntry.builder("Bans.Alts.Global.List").message(
+        MessageData.CHAT_NO_PREFIX,
         " ",
+        DARK_GRAY.and(STRIKETHROUGH).wrap("-".repeat(7)) + RED_GRADIENT.and(BOLD).wrap(" ALT DETECTED ") + DARK_GRAY.and(STRIKETHROUGH).wrap("-".repeat(7)),
+        GRAY.wrap("Player " + RED.wrap(PLAYER_NAME) + " (IP: " + WHITE.wrap(GENERIC_ADDRESS) + ")" + " has " + RED.wrap(GENERIC_AMOUNT) + " possible alt account(s):"),
         GENERIC_ENTRY,
+        DARK_GRAY.and(STRIKETHROUGH).wrap("-".repeat(30)),
         " "
     );
 
-    public static final LangString ALTS_GLOBAL_ENTRY = LangString.of("Bans.Alts.Global.Entry",
-        LIGHT_GRAY.wrap(LIGHT_ORANGE.wrap(GENERIC_SOURCE) + ": " + GENERIC_NAME)
+    public static final TextLocale ALTS_GLOBAL_ENTRY = LangEntry.builder("Bans.Alts.Global.Entry").text(
+        DARK_GRAY.wrap("» ") + RUN_COMMAND.with("/" + SLSharedConsts.COMMAND_PLAYER_INFO + " " + GENERIC_NAME).wrap(SHOW_TEXT.with(GRAY.wrap("Click for more details.")).wrap(RED.wrap(GENERIC_NAME)))
     );
 
-    public static final LangText PUNISHMENT_ERROR_RANK_PRIORITY = LangText.of("Bans.Punishment.Error.RankPriority",
-        TAG_NO_PREFIX,
-        " ",
-        LIGHT_RED.wrap(INFO + " " + BOLD.wrap("Error!")),
-        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " You can't punish " + LIGHT_RED.wrap(PUNISHMENT_TARGET) + "!"),
-        " "
-    );
 
-    public static final LangText PUNISHMENT_ERROR_PUNISH_DURATION = LangText.of("Bans.Punishment.Error.PunishDuration",
-        TAG_NO_PREFIX,
-        " ",
-        LIGHT_RED.wrap(INFO + " " + BOLD.wrap("Error!")),
-        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " You can't punish more than " + LIGHT_RED.wrap(GENERIC_TIME) + "!"),
-        " "
-    );
 
-    public static final LangText PUNISHMENT_ERROR_UNPUNISH_DURATION = LangText.of("Bans.Punishment.Error.UnPunishDuration",
-        TAG_NO_PREFIX,
-        " ",
-        LIGHT_RED.wrap(INFO + " " + BOLD.wrap("Error!")),
-        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " You can't remove punishments with duration more than " + LIGHT_RED.wrap(GENERIC_TIME) + "!"),
-        " "
-    );
-
-    public static final LangText PUNISHMENT_ERROR_IMMUNE = LangText.of("Bans.Punishment.Error.Immune",
-        TAG_NO_PREFIX,
-        " ",
-        LIGHT_RED.wrap(INFO + " " + BOLD.wrap("Error!")),
-        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " Player " + LIGHT_RED.wrap(PUNISHMENT_TARGET) + " can't be punished!"),
-        " "
-    );
-
-    public static final LangText PUNISHMENT_ERROR_PLAYER_NOT_BANNED = LangText.of("Bans.Punishment.Error.PlayerNotBanned",
-        TAG_NO_PREFIX,
-        " ",
-        LIGHT_RED.wrap(INFO + " " + BOLD.wrap("Error!")),
-        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " Player " + LIGHT_RED.wrap(PUNISHMENT_TARGET) + " is not banned!"),
-        " "
-    );
-
-    public static final LangText PUNISHMENT_ERROR_IP_NOT_BANNED = LangText.of("Bans.Punishment.Error.IPNotBanned",
-        TAG_NO_PREFIX,
-        " ",
-        LIGHT_RED.wrap(INFO + " " + BOLD.wrap("Error!")),
-        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " IP Address " + LIGHT_RED.wrap(PUNISHMENT_TARGET) + " is not banned!"),
-        " "
-    );
-
-    public static final LangText PUNISHMENT_ERROR_NOT_MUTED = LangText.of("Bans.Punishment.Error.NotMuted",
-        TAG_NO_PREFIX,
-        " ",
-        LIGHT_RED.wrap(INFO + " " + BOLD.wrap("Error!")),
-        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " Player " + LIGHT_RED.wrap(PUNISHMENT_TARGET) + " is not muted!"),
-        " "
-    );
-
-    public static final LangText PUNISHMENT_ERROR_NOT_WARNED = LangText.of("Bans.Punishment.Error.NotWarned",
-        TAG_NO_PREFIX,
-        " ",
-        LIGHT_RED.wrap(INFO + " " + BOLD.wrap("Error!")),
-        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " Player " + LIGHT_RED.wrap(PUNISHMENT_TARGET) + " has no warns!"),
-        " "
+    public static final MessageLocale IMMUNITY_FEEDBACK = LangEntry.builder("Bans.Immunity.Feedback").chatMessage(
+        GRAY.wrap(ORANGE.wrap(GENERIC_TARGET) + " is immune to punishments.")
     );
 
     // -------------------------------------
     // Kicks
     // -------------------------------------
 
-    public static final LangText KICK_DONE = LangText.of("Bans.Kick.Done",
-        TAG_NO_PREFIX,
-        LIGHT_GRAY.wrap(LIGHT_RED.wrap(INFO) + " Kicked " + LIGHT_RED.wrap(PUNISHMENT_TARGET) + " for " + LIGHT_RED.wrap(PUNISHMENT_REASON) + ".")
+    public static final MessageLocale KICK_ERROR_YOURSELF = LangEntry.builder("Bans.Kick.Error.Yourself").chatMessage(
+        GRAY.wrap( "You can't kick " + ORANGE.wrap("yourself") + ".")
     );
 
-    public static final LangText KICK_BROADCAST = LangText.of("Bans.Kick.Broadcast",
-        TAG_NO_PREFIX,
+    public static final MessageLocale KICK_ERROR_LOW_PRIORITY = LangEntry.builder("Bans.Kick.Error.LowPriority").chatMessage(
+        GRAY.wrap( "You're not allowed to kick " + ORANGE.wrap(PLAYER_DISPLAY_NAME) + ".")
+    );
+
+    public static final MessageLocale KICK_FEEDBACK = LangEntry.builder("Bans.Kick.Done").chatMessage(
+        GRAY.wrap("You have kicked " + ORANGE.wrap(PLAYER_DISPLAY_NAME) + " due to " + WHITE.wrap(GENERIC_REASON) + ".")
+    );
+
+    public static final MessageLocale KICK_BROADCAST = LangEntry.builder("Bans.Kick.Broadcast").message(
+        MessageData.CHAT_NO_PREFIX,
         " ",
-        LIGHT_RED.wrap(INFO + " " + BOLD.wrap("Kick Notification")),
-        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " Player " + LIGHT_RED.wrap(PUNISHMENT_TARGET) + " have been kicked!"),
-        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " By: " + LIGHT_RED.wrap(PUNISHMENT_PUNISHER)),
-        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " Reason: " + LIGHT_RED.wrap(PUNISHMENT_REASON)),
+        DARK_GRAY.and(STRIKETHROUGH).wrap("-".repeat(7)) + RED_GRADIENT.and(BOLD).wrap(" PLAYER KICKED ") + DARK_GRAY.and(STRIKETHROUGH).wrap("-".repeat(7)),
+        GRAY.wrap(DARK_GRAY.wrap("»") + " Player " + RED.wrap(PLAYER_DISPLAY_NAME) + " has been kicked."),
+        GRAY.wrap(DARK_GRAY.wrap("»") + " Kicked by: " + WHITE.wrap(GENERIC_EXECUTOR)),
+        GRAY.wrap(DARK_GRAY.wrap("»") + " Reason: " + WHITE.wrap(GENERIC_REASON)),
+        DARK_GRAY.and(STRIKETHROUGH).wrap("-".repeat(30)),
         " "
+    );
+
+
+
+    public static final MessageLocale BAN_ERROR_YOURSELF = LangEntry.builder("Bans.Ban.Error.Yourself").chatMessage(
+        GRAY.wrap( "You can't ban " + ORANGE.wrap("yourself") + ".")
+    );
+
+    public static final MessageLocale BAN_ERROR_LOW_PRIORITY = LangEntry.builder("Bans.Ban.Error.LowPriority").chatMessage(
+        GRAY.wrap( "You're not allowed to ban " + ORANGE.wrap(PLAYER_NAME) + ".")
+    );
+
+    public static final MessageLocale BAN_ERROR_HIGH_DURATION = LangEntry.builder("Bans.Ban.Error.HighDuration").chatMessage(
+        GRAY.wrap("You're not allowed to ban players for more than " + ORANGE.wrap(GENERIC_TIME) + ".")
+    );
+
+    public static final MessageLocale BAN_ERROR_HIGHER_EXISTS = LangEntry.builder("Bans.Ban.Error.HigherExists").chatMessage(
+        GRAY.wrap(ORANGE.wrap(PUNISHMENT_TARGET) + " is already banned for a longer period.")
     );
 
     // -------------------------------------
     // Bans - Permanent
     // -------------------------------------
 
-    public static final LangText COMMAND_BAN_DONE_PERMANENT = LangText.of("Bans.Command.Ban.Done.Permanent",
-        TAG_NO_PREFIX,
-        " ",
-        LIGHT_RED.wrap(INFO + " " + BOLD.wrap("Ban Info")),
-        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " You permanently banned " + LIGHT_RED.wrap(PUNISHMENT_TARGET) + "."),
-        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " Reason: " + LIGHT_RED.wrap(PUNISHMENT_REASON)),
-        " "
+    public static final MessageLocale BAN_PERMANENT_FEEDBACK = LangEntry.builder("Bans.Command.Ban.Done.Permanent").chatMessage(
+        GRAY.wrap("You have banned " + ORANGE.wrap(PUNISHMENT_TARGET) + " permanently due to " + WHITE.wrap(PUNISHMENT_REASON))
     );
 
-    public static final LangText BAN_PERMANENT_BROADCAST = LangText.of("Bans.Ban.Permanent.Broadcast",
-        TAG_NO_PREFIX,
+    public static final MessageLocale BAN_PERMANENT_BROADCAST = LangEntry.builder("Bans.Ban.Permanent.Broadcast").message(
+        MessageData.chat().usePrefix(false).sound(VanillaSound.of(Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 0.5f)).build(),
         " ",
-        LIGHT_RED.wrap(INFO + " " + BOLD.wrap("Ban Notification")),
-        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " Player " + LIGHT_RED.wrap(PUNISHMENT_TARGET) + " have permanently been banned!"),
-        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " By: " + LIGHT_RED.wrap(PUNISHMENT_PUNISHER)),
-        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " Reason: " + LIGHT_RED.wrap(PUNISHMENT_REASON)),
+        DARK_GRAY.and(STRIKETHROUGH).wrap("-".repeat(7)) + RED_GRADIENT.and(BOLD).wrap(" PLAYER BANNED ") + DARK_GRAY.and(STRIKETHROUGH).wrap("-".repeat(7)),
+        GRAY.wrap(DARK_GRAY.wrap("»") + " Player " + RED.wrap(PUNISHMENT_TARGET) + " has been banned permanently."),
+        GRAY.wrap(DARK_GRAY.wrap("»") + " Banned by: " + WHITE.wrap(PUNISHMENT_WHO)),
+        GRAY.wrap(DARK_GRAY.wrap("»") + " Reason: " + WHITE.wrap(PUNISHMENT_REASON)),
+        DARK_GRAY.and(STRIKETHROUGH).wrap("-".repeat(30)),
         " "
     );
 
@@ -167,24 +144,18 @@ public class BansLang extends Lang {
     // Bans - Temporary
     // -------------------------------------
 
-    public static final LangText COMMAND_BAN_DONE_TEMPORARY = LangText.of("Bans.Command.Ban.Done.Temporary",
-        TAG_NO_PREFIX,
-        " ",
-        LIGHT_RED.wrap(INFO + " " + BOLD.wrap("Ban Info")),
-        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " You banned " + LIGHT_RED.wrap(PUNISHMENT_TARGET) + "."),
-        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " Reason: " + LIGHT_RED.wrap(PUNISHMENT_REASON)),
-        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " Duration: " + LIGHT_RED.wrap(PUNISHMENT_EXPIRES_IN)),
-        " "
+    public static final MessageLocale BAN_TEMPORARY_FEEDBACK = LangEntry.builder("Bans.Command.Ban.Done.Temporary").chatMessage(
+        GRAY.wrap("You have banned " + ORANGE.wrap(PUNISHMENT_TARGET) + " for " + WHITE.wrap(PUNISHMENT_DURATION) + " due to " + WHITE.wrap(PUNISHMENT_REASON) + ".")
     );
 
-    public static final LangText BAN_TEMPORARY_BROADCAST = LangText.of("Bans.Ban.Temporary.Broadcast",
-        TAG_NO_PREFIX,
+    public static final MessageLocale BAN_TEMPORARY_BROADCAST = LangEntry.builder("Bans.Ban.Temporary.Broadcast").message(
+        MessageData.chat().usePrefix(false).sound(VanillaSound.of(Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 0.5f)).build(),
         " ",
-        LIGHT_RED.wrap(INFO + " " + BOLD.wrap("Ban Notification")),
-        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " Player " + LIGHT_RED.wrap(PUNISHMENT_TARGET) + " have been banned!"),
-        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " By: " + LIGHT_RED.wrap(PUNISHMENT_PUNISHER)),
-        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " Reason: " + LIGHT_RED.wrap(PUNISHMENT_REASON)),
-        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " Duration: " + LIGHT_RED.wrap(PUNISHMENT_EXPIRES_IN)),
+        DARK_GRAY.and(STRIKETHROUGH).wrap("-".repeat(7)) + RED_GRADIENT.and(BOLD).wrap(" PLAYER BANNED ") + DARK_GRAY.and(STRIKETHROUGH).wrap("-".repeat(7)),
+        GRAY.wrap(DARK_GRAY.wrap("»") + " Player " + RED.wrap(PUNISHMENT_TARGET) + " has been banned for " + WHITE.wrap(PUNISHMENT_DURATION)),
+        GRAY.wrap(DARK_GRAY.wrap("»") + " Banned by: " + WHITE.wrap(PUNISHMENT_WHO)),
+        GRAY.wrap(DARK_GRAY.wrap("»") + " Reason: " + WHITE.wrap(PUNISHMENT_REASON)),
+        DARK_GRAY.and(STRIKETHROUGH).wrap("-".repeat(30)),
         " "
     );
 
@@ -192,22 +163,18 @@ public class BansLang extends Lang {
     // Bans IP - Permanent
     // -------------------------------------
 
-    public static final LangText COMMAND_BAN_IP_DONE_PERMANENT = LangText.of("Bans.Command.BanIP.Done.Permanent",
-        TAG_NO_PREFIX,
-        " ",
-        LIGHT_RED.wrap(INFO + " " + BOLD.wrap("Ban Info")),
-        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " You permanently banned IP: " + LIGHT_RED.wrap(PUNISHMENT_TARGET) + "."),
-        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " Reason: " + LIGHT_RED.wrap(PUNISHMENT_REASON)),
-        " "
+    public static final MessageLocale BAN_INET_PERMANENT_FEEDBACK = LangEntry.builder("Bans.Command.BanIP.Done.Permanent").chatMessage(
+        GRAY.wrap("You have banned " + ORANGE.wrap(PUNISHMENT_TARGET) + " permanently due to " + WHITE.wrap(PUNISHMENT_REASON) + ".")
     );
 
-    public static final LangText BAN_IP_PERMANENT_BROADCAST = LangText.of("Bans.BanIP.Permanent.Broadcast",
-        TAG_NO_PREFIX,
+    public static final MessageLocale BAN_INET_PERMANENT_BROADCAST = LangEntry.builder("Bans.BanIP.Permanent.Broadcast").message(
+        MessageData.chat().usePrefix(false).sound(VanillaSound.of(Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 0.5f)).build(),
         " ",
-        LIGHT_RED.wrap(INFO + " " + BOLD.wrap("Ban Notification")),
-        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " IP Address " + LIGHT_RED.wrap(PUNISHMENT_TARGET) + " have permanently been banned!"),
-        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " By: " + LIGHT_RED.wrap(PUNISHMENT_PUNISHER)),
-        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " Reason: " + LIGHT_RED.wrap(PUNISHMENT_REASON)),
+        DARK_GRAY.and(STRIKETHROUGH).wrap("-".repeat(7)) + RED_GRADIENT.and(BOLD).wrap(" IP BANNED ") + DARK_GRAY.and(STRIKETHROUGH).wrap("-".repeat(7)),
+        GRAY.wrap(DARK_GRAY.wrap("»") + " IP " + WHITE.wrap(PUNISHMENT_TARGET) + " have been banned permanently."),
+        GRAY.wrap(DARK_GRAY.wrap("»") + " Banned by: " + RED.wrap(PUNISHMENT_WHO)),
+        GRAY.wrap(DARK_GRAY.wrap("»") + " Reason: " + RED.wrap(PUNISHMENT_REASON)),
+        DARK_GRAY.and(STRIKETHROUGH).wrap("-".repeat(30)),
         " "
     );
 
@@ -215,24 +182,18 @@ public class BansLang extends Lang {
     // Bans IP - Temporary
     // -------------------------------------
 
-    public static final LangText COMMAND_BAN_IP_DONE_TEMPORARY = LangText.of("Bans.Command.BanIP.Done.Temporary",
-        TAG_NO_PREFIX,
-        " ",
-        LIGHT_RED.wrap(INFO + " " + BOLD.wrap("Ban Info")),
-        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " You banned IP: " + LIGHT_RED.wrap(PUNISHMENT_TARGET) + "."),
-        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " Reason: " + LIGHT_RED.wrap(PUNISHMENT_REASON)),
-        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " Duration: " + LIGHT_RED.wrap(PUNISHMENT_EXPIRES_IN)),
-        " "
+    public static final MessageLocale BAN_INET_TEMPORARY_FEEDBACK = LangEntry.builder("Bans.Command.BanIP.Done.Temporary").chatMessage(
+        GRAY.wrap("You have banned " + ORANGE.wrap(PUNISHMENT_TARGET) + " for " + WHITE.wrap(PUNISHMENT_DURATION) + " due to " + WHITE.wrap(PUNISHMENT_REASON) + ".")
     );
 
-    public static final LangText BAN_IP_TEMPORARY_BROADCAST = LangText.of("Bans.BanIP.Temporary.Broadcast",
-        TAG_NO_PREFIX,
+    public static final MessageLocale BAN_INET_TEMPORARY_BROADCAST = LangEntry.builder("Bans.BanIP.Temporary.Broadcast").message(
+        MessageData.chat().usePrefix(false).sound(VanillaSound.of(Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 0.5f)).build(),
         " ",
-        LIGHT_RED.wrap(INFO + " " + BOLD.wrap("Ban Notification")),
-        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " IP Address " + LIGHT_RED.wrap(PUNISHMENT_TARGET) + " have been banned!"),
-        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " By: " + LIGHT_RED.wrap(PUNISHMENT_PUNISHER)),
-        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " Reason: " + LIGHT_RED.wrap(PUNISHMENT_REASON)),
-        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " Duration: " + LIGHT_RED.wrap(PUNISHMENT_EXPIRES_IN)),
+        DARK_GRAY.and(STRIKETHROUGH).wrap("-".repeat(7)) + RED_GRADIENT.and(BOLD).wrap(" IP BANNED ") + DARK_GRAY.and(STRIKETHROUGH).wrap("-".repeat(7)),
+        GRAY.wrap(DARK_GRAY.wrap("»") + " IP " + WHITE.wrap(PUNISHMENT_TARGET) + " have been banned for " + RED.wrap(PUNISHMENT_DURATION)),
+        GRAY.wrap(DARK_GRAY.wrap("»") + " Banned by: " + RED.wrap(PUNISHMENT_WHO)),
+        GRAY.wrap(DARK_GRAY.wrap("»") + " Reason: " + RED.wrap(PUNISHMENT_REASON)),
+        DARK_GRAY.and(STRIKETHROUGH).wrap("-".repeat(30)),
         " "
     );
 
@@ -240,74 +201,88 @@ public class BansLang extends Lang {
     // Bans - Removal
     // -------------------------------------
 
-    public static final LangText UNBAN_DONE = LangText.of("Bans.UnBan.Done",
-        TAG_NO_PREFIX,
-        " ",
-        LIGHT_GREEN.wrap(INFO + " " + BOLD.wrap("Ban Info")),
-        LIGHT_GRAY.wrap(LIGHT_GREEN.wrap("»") + " You unbanned " + LIGHT_GREEN.wrap(PUNISHMENT_TARGET) + "."),
-        " "
+    public static final MessageLocale UNBAN_ERROR_HIGH_DURATION = LangEntry.builder("Bans.Unban.Error.HighDuration").chatMessage(
+        GRAY.wrap("You're not allowed to unban players whose remaining ban time is greater than " + ORANGE.wrap(GENERIC_TIME) + ".")
     );
 
-    public static final LangText UNBAN_BROADCAST = LangText.of("Bans.UnBan.Broadcast",
-        TAG_NO_PREFIX,
-        " ",
-        LIGHT_GREEN.wrap(INFO + " " + BOLD.wrap("Ban Info")),
-        LIGHT_GRAY.wrap(LIGHT_GREEN.wrap("»") + " Player " + LIGHT_GREEN.wrap(PUNISHMENT_TARGET) + " have been unbanned."),
-        LIGHT_GRAY.wrap(LIGHT_GREEN.wrap("»") + " By: " + LIGHT_GREEN.wrap(PUNISHMENT_PUNISHER)),
-        " "
+    public static final MessageLocale UNBAN_PLAYER_ERROR_NOT_BANNED = LangEntry.builder("Bans.Punishment.Error.PlayerNotBanned").chatMessage(
+        GRAY.wrap("Player " + ORANGE.wrap(PUNISHMENT_TARGET) + " is not banned.")
+    );
+
+    public static final MessageLocale UNBAN_PLAYER_FEEDBACK = LangEntry.builder("Bans.UnBan.Done").chatMessage(
+        GRAY.wrap("You have unbanned " + ORANGE.wrap(PUNISHMENT_TARGET) + ".")
+    );
+
+    public static final MessageLocale UNBAN_PLAYER_BROADCAST = LangEntry.builder("Bans.UnBan.Broadcast").chatMessage(
+        GRAY.wrap(WHITE.wrap(GENERIC_EXECUTOR) + " has unbanned " + ORANGE.wrap(PUNISHMENT_TARGET) + ".")
     );
 
     // -------------------------------------
     // Bans IP - Removal
     // -------------------------------------
 
-    public static final LangText UNBAN_IP_DONE = LangText.of("Bans.UnBanIP.Done",
-        TAG_NO_PREFIX,
-        " ",
-        LIGHT_GREEN.wrap(INFO + " " + BOLD.wrap("Ban Info")),
-        LIGHT_GRAY.wrap(LIGHT_GREEN.wrap("»") + " You unbanned IP " + LIGHT_GREEN.wrap(PUNISHMENT_TARGET) + "."),
-        " "
+    public static final MessageLocale UNBAN_INET_ERROR_NOT_BANNED = LangEntry.builder("Bans.Punishment.Error.IPNotBanned").chatMessage(
+        GRAY.wrap("IP Address " + ORANGE.wrap(GENERIC_TARGET) + " is not banned.")
     );
 
-    public static final LangText UNBAN_IP_BROADCAST = LangText.of("Bans.UnBanIP.Broadcast",
-        TAG_NO_PREFIX,
-        " ",
-        LIGHT_GREEN.wrap(INFO + " " + BOLD.wrap("Ban Info")),
-        LIGHT_GRAY.wrap(LIGHT_GREEN.wrap("»") + " IP Address " + LIGHT_GREEN.wrap(PUNISHMENT_TARGET) + " have been unbanned."),
-        LIGHT_GRAY.wrap(LIGHT_GREEN.wrap("»") + " By: " + LIGHT_GREEN.wrap(PUNISHMENT_PUNISHER)),
-        " "
+    public static final MessageLocale UNBAN_INET_FEEDBACK = LangEntry.builder("Bans.UnBanIP.Done").chatMessage(
+        GRAY.wrap("You have unbanned " + ORANGE.wrap(PUNISHMENT_TARGET) + ".")
+    );
+
+    public static final MessageLocale UNBAN_INET_BROADCAST = LangEntry.builder("Bans.UnBanIP.Broadcast").chatMessage(
+        GRAY.wrap(WHITE.wrap(GENERIC_EXECUTOR) + " has unbanned " + ORANGE.wrap(PUNISHMENT_TARGET) + ".")
+    );
+
+
+
+    public static final MessageLocale MUTE_ERROR_YOURSELF = LangEntry.builder("Bans.Mute.Error.Yourself").chatMessage(
+        GRAY.wrap( "You can't mute " + ORANGE.wrap("yourself") + ".")
+    );
+
+    public static final MessageLocale MUTE_ERROR_LOW_PRIORITY = LangEntry.builder("Bans.Mute.Error.LowPriority").chatMessage(
+        GRAY.wrap( "You're not allowed to mute " + ORANGE.wrap(PLAYER_NAME) + ".")
+    );
+
+    public static final MessageLocale MUTE_ERROR_HIGH_DURATION = LangEntry.builder("Bans.Mute.Error.HighDuration").chatMessage(
+        GRAY.wrap("You're not allowed to mute players for more than " + ORANGE.wrap(GENERIC_TIME) + ".")
+    );
+
+    public static final MessageLocale MUTE_ERROR_HIGHER_EXISTS = LangEntry.builder("Bans.Mute.Error.HigherExists").chatMessage(
+        GRAY.wrap(WHITE.wrap(PUNISHMENT_TARGET) + " is already muted for a longer period.")
+    );
+
+    public static final MessageLocale MUTE_SPEAK_NOTIFY_TEMPORAL = LangEntry.builder("Bans.Mute.Speak.Notify").chatMessage(
+        GRAY.wrap("You're muted. You can speak again in " + ORANGE.wrap(PUNISHMENT_EXPIRES_IN))
+    );
+
+    public static final MessageLocale MUTE_SPEAK_NOTIFY_PERMANENT = LangEntry.builder("Bans.Mute.Speak.Notify").chatMessage(
+        GRAY.wrap("You're permanently muted. You can speak again once a " + ORANGE.wrap("staff member") + " unmutes you manually.")
     );
 
     // -------------------------------------
     // Mutes - Permanent
     // -------------------------------------
 
-    public static final LangText COMMAND_MUTE_DONE_PERMANENT = LangText.of("Bans.Command.Mute.Done.Permanent",
-        TAG_NO_PREFIX,
-        " ",
-        LIGHT_RED.wrap(INFO + " " + BOLD.wrap("Mute Info")),
-        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " You permanently muted " + LIGHT_RED.wrap(PUNISHMENT_TARGET) + "."),
-        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " Reason: " + LIGHT_RED.wrap(PUNISHMENT_REASON)),
-        " "
+    public static final MessageLocale MUTE_PERMANENT_FEEDBACK = LangEntry.builder("Bans.Command.Mute.Done.Permanent").chatMessage(
+        GRAY.wrap("You have muted " + ORANGE.wrap(PUNISHMENT_TARGET) + " permanently due to " + WHITE.wrap(PUNISHMENT_REASON) + ".")
     );
 
-    public static final LangText MUTE_PERMANENT_NOTIFY = LangText.of("Bans.Mute.Permanent.Notify",
-        TAG_NO_PREFIX,
-        " ",
-        LIGHT_RED.wrap(INFO + " " + BOLD.wrap("Mute Notification")),
-        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " You have permanently been muted!"),
-        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " By: " + LIGHT_RED.wrap(PUNISHMENT_PUNISHER)),
-        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " Reason: " + LIGHT_RED.wrap(PUNISHMENT_REASON)),
-        " "
+    public static final MessageLocale MUTE_PERMANENT_NOTIFY = LangEntry.builder("Bans.Mute.Permanent.Notify").chatMessage(
+        GRAY.wrap("You have been muted permanently. " + SHOW_TEXT.with(
+            DARK_GRAY.wrap("»") + GRAY.wrap(" Muted by: ") + WHITE.wrap(PUNISHMENT_WHO)
+                + BR
+                + DARK_GRAY.wrap("»") + GRAY.wrap(" Reason: ") + WHITE.wrap(PUNISHMENT_REASON)
+        ).wrap(ORANGE.and(BOLD).wrap("[HOVER FOR DETAILS]")))
     );
 
-    public static final LangText MUTE_PERMANENT_BROADCAST = LangText.of("Bans.Mute.Permanent.Broadcast",
-        TAG_NO_PREFIX,
+    public static final MessageLocale MUTE_PERMANENT_BROADCAST = LangEntry.builder("Bans.Mute.Permanent.Broadcast").message(
+        MessageData.chat().usePrefix(false).sound(VanillaSound.of(Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 0.5f)).build(),
         " ",
-        LIGHT_RED.wrap(INFO + " " + BOLD.wrap("Mute Notification")),
-        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " Player " + LIGHT_RED.wrap(PUNISHMENT_TARGET) + " have permanently been muted!"),
-        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " By: " + LIGHT_RED.wrap(PUNISHMENT_PUNISHER)),
-        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " Reason: " + LIGHT_RED.wrap(PUNISHMENT_REASON)),
+        DARK_GRAY.and(STRIKETHROUGH).wrap("-".repeat(7)) + RED_GRADIENT.and(BOLD).wrap(" PLAYER MUTED ") + DARK_GRAY.and(STRIKETHROUGH).wrap("-".repeat(7)),
+        GRAY.wrap(DARK_GRAY.wrap("»") + " Player " + RED.wrap(PUNISHMENT_TARGET) + " has been muted permanently."),
+        GRAY.wrap(DARK_GRAY.wrap("»") + " Muted by: " + WHITE.wrap(PUNISHMENT_WHO)),
+        GRAY.wrap(DARK_GRAY.wrap("»") + " Reason: " + WHITE.wrap(PUNISHMENT_REASON)),
+        DARK_GRAY.and(STRIKETHROUGH).wrap("-".repeat(30)),
         " "
     );
 
@@ -315,35 +290,26 @@ public class BansLang extends Lang {
     // Mutes - Temporary
     // -------------------------------------
 
-    public static final LangText COMMAND_MUTE_DONE_TEMPORARY = LangText.of("Bans.Command.Mute.Done.Temporary",
-        TAG_NO_PREFIX,
-        " ",
-        LIGHT_RED.wrap(INFO + " " + BOLD.wrap("Mute Info")),
-        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " You muted " + LIGHT_RED.wrap(PUNISHMENT_TARGET) + "."),
-        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " Reason: " + LIGHT_RED.wrap(PUNISHMENT_REASON)),
-        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " Duration: " + LIGHT_RED.wrap(PUNISHMENT_EXPIRES_IN)),
-        " "
+    public static final MessageLocale MUTE_TEMPORARY_FEEDBACK = LangEntry.builder("Bans.Command.Mute.Done.Temporary").chatMessage(
+        GRAY.wrap("You have muted " + ORANGE.wrap(PUNISHMENT_TARGET) + " for " + WHITE.wrap(PUNISHMENT_DURATION) + " due to " + WHITE.wrap(PUNISHMENT_REASON) + ".")
     );
 
-    public static final LangText MUTE_TEMPORARY_NOTIFY = LangText.of("Bans.Mute.Temporary.Notify",
-        TAG_NO_PREFIX,
-        " ",
-        LIGHT_RED.wrap(INFO + " " + BOLD.wrap("Mute Notification")),
-        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " You have been muted!"),
-        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " By: " + LIGHT_RED.wrap(PUNISHMENT_PUNISHER)),
-        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " Reason: " + LIGHT_RED.wrap(PUNISHMENT_REASON)),
-        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " Duration: " + LIGHT_RED.wrap(PUNISHMENT_EXPIRES_IN)),
-        " "
+    public static final MessageLocale MUTE_TEMPORARY_NOTIFY = LangEntry.builder("Bans.Mute.Temporary.Notify").chatMessage(
+        GRAY.wrap("You have been muted (" + WHITE.wrap(PUNISHMENT_DURATION + "). " + SHOW_TEXT.with(
+            DARK_GRAY.wrap("»") + GRAY.wrap(" Muted by: ") + WHITE.wrap(PUNISHMENT_WHO)
+                + BR
+                + DARK_GRAY.wrap("»") + GRAY.wrap(" Reason: ") + WHITE.wrap(PUNISHMENT_REASON)
+        ).wrap(ORANGE.and(BOLD).wrap("[HOVER FOR DETAILS]"))))
     );
 
-    public static final LangText MUTE_TEMPORARY_BROADCAST = LangText.of("Bans.Mute.Temporary.Broadcast",
-        TAG_NO_PREFIX,
+    public static final MessageLocale MUTE_TEMPORARY_BROADCAST = LangEntry.builder("Bans.Mute.Temporary.Broadcast").message(
+        MessageData.chat().usePrefix(false).sound(VanillaSound.of(Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 0.5f)).build(),
         " ",
-        LIGHT_RED.wrap(INFO + " " + BOLD.wrap("Mute Notification")),
-        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " Player " + LIGHT_RED.wrap(PUNISHMENT_TARGET) + " have been muted!"),
-        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " By: " + LIGHT_RED.wrap(PUNISHMENT_PUNISHER)),
-        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " Reason: " + LIGHT_RED.wrap(PUNISHMENT_REASON)),
-        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " Duration: " + LIGHT_RED.wrap(PUNISHMENT_EXPIRES_IN)),
+        DARK_GRAY.and(STRIKETHROUGH).wrap("-".repeat(7)) + RED_GRADIENT.and(BOLD).wrap(" PLAYER MUTED ") + DARK_GRAY.and(STRIKETHROUGH).wrap("-".repeat(7)),
+        GRAY.wrap(DARK_GRAY.wrap("»") + " Player " + RED.wrap(PUNISHMENT_TARGET) + " have been muted for " + WHITE.wrap(PUNISHMENT_DURATION)),
+        GRAY.wrap(DARK_GRAY.wrap("»") + " Muted by: " + WHITE.wrap(PUNISHMENT_WHO)),
+        GRAY.wrap(DARK_GRAY.wrap("»") + " Reason: " + WHITE.wrap(PUNISHMENT_REASON)),
+        DARK_GRAY.and(STRIKETHROUGH).wrap("-".repeat(30)),
         " "
     );
 
@@ -351,62 +317,65 @@ public class BansLang extends Lang {
     // Mutes - Removal
     // -------------------------------------
 
-    public static final LangText UNMUTE_DONE = LangText.of("Bans.Unmute.Done",
-        TAG_NO_PREFIX,
-        " ",
-        LIGHT_GREEN.wrap(INFO + " " + BOLD.wrap("Mute Info")),
-        LIGHT_GRAY.wrap(LIGHT_GREEN.wrap("»") + " You unmuted " + LIGHT_GREEN.wrap(PUNISHMENT_TARGET) + "."),
-        " "
+    public static final MessageLocale UNMUTE_ERROR_NOT_MUTED = LangEntry.builder("Bans.Punishment.Error.NotMuted").chatMessage(
+        GRAY.wrap("Player " + ORANGE.wrap(PUNISHMENT_TARGET) + " is not muted.")
     );
 
-    public static final LangText UNMUTE_NOTIFY = LangText.of("Bans.Unmute.Notify",
-        TAG_NO_PREFIX,
-        " ",
-        LIGHT_GREEN.wrap(INFO + " " + BOLD.wrap("Mute Info")),
-        LIGHT_GRAY.wrap(LIGHT_GREEN.wrap("»") + " You have been unmuted."),
-        LIGHT_GRAY.wrap(LIGHT_GREEN.wrap("»") + " By: " + LIGHT_GREEN.wrap(PUNISHMENT_PUNISHER)),
-        " "
+    public static final MessageLocale UNMUTE_ERROR_HIGH_DURATION = LangEntry.builder("Bans.Unmute.Error.HighDuration").chatMessage(
+        GRAY.wrap("You're not allowed to unmute players whose remaining mute time is greater than " + ORANGE.wrap(GENERIC_TIME) + ".")
     );
 
-    public static final LangText UNMUTE_BROADCAST = LangText.of("Bans.Unmute.Broadcast",
-        TAG_NO_PREFIX,
-        " ",
-        LIGHT_GREEN.wrap(INFO + " " + BOLD.wrap("Mute Info")),
-        LIGHT_GRAY.wrap(LIGHT_GREEN.wrap("»") + " Player " + LIGHT_GREEN.wrap(PUNISHMENT_TARGET) + " have been unmuted."),
-        LIGHT_GRAY.wrap(LIGHT_GREEN.wrap("»") + " By: " + LIGHT_GREEN.wrap(PUNISHMENT_PUNISHER)),
-        " "
+    public static final MessageLocale UNMUTE_SUCCESS_FEEDBACK = LangEntry.builder("Bans.Unmute.Done").chatMessage(
+        GRAY.wrap("You have unmuted " + ORANGE.wrap(GENERIC_EXECUTOR) + ".")
     );
+
+    public static final MessageLocale UNMUTE_SUCCESS_NOTIFY = LangEntry.builder("Bans.Unmute.Notify").chatMessage(
+        GRAY.wrap("You have been unmuted by " + WHITE.wrap(GENERIC_EXECUTOR) + ".")
+    );
+
+    public static final MessageLocale UNMUTE_SUCCESS_BROADCAST = LangEntry.builder("Bans.Unmute.Broadcast").chatMessage(
+        GRAY.wrap("Player " + ORANGE.wrap(PUNISHMENT_TARGET) + " has been unmuted by " + WHITE.wrap(GENERIC_EXECUTOR) + ".")
+    );
+
+    // ======= WARNS =======
+
+    public static final MessageLocale WARN_ERROR_YOURSELF = LangEntry.builder("Bans.Warn.Error.Yourself").chatMessage(
+        GRAY.wrap( "You can't warn " + ORANGE.wrap("yourself") + ".")
+    );
+
+    public static final MessageLocale WARN_ERROR_LOW_PRIORITY = LangEntry.builder("Bans.Warn.Error.LowPriority").chatMessage(
+        GRAY.wrap( "You're not allowed to warn " + ORANGE.wrap(PLAYER_NAME) + ".")
+    );
+
+    public static final MessageLocale WARN_ERROR_HIGH_DURATION = LangEntry.builder("Bans.Warn.Error.HighDuration").chatMessage(
+        GRAY.wrap("You're not allowed to warn players for more than " + ORANGE.wrap(GENERIC_TIME) + ".")
+    );
+
 
     // -------------------------------------
     // Warns - Permanent
     // -------------------------------------
 
-    public static final LangText COMMAND_WARN_DONE_PERMANENT = LangText.of("Bans.Command.Warn.Done.Permanent",
-        TAG_NO_PREFIX,
-        " ",
-        LIGHT_RED.wrap(INFO + " " + BOLD.wrap("Warn Info")),
-        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " You permanently warned " + LIGHT_RED.wrap(PUNISHMENT_TARGET) + "."),
-        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " Reason: " + LIGHT_RED.wrap(PUNISHMENT_REASON)),
-        " "
+    public static final MessageLocale WARN_PERMANENT_FEEDBACK = LangEntry.builder("Bans.Command.Warn.Done.Permanent").chatMessage(
+        GRAY.wrap("You have warned " + ORANGE.wrap(PUNISHMENT_TARGET) + " permanently due to " + WHITE.wrap(PUNISHMENT_REASON) + ".")
     );
 
-    public static final LangText WARN_PERMANENT_NOTIFY = LangText.of("Bans.Warn.Permanent.Notify",
-        TAG_NO_PREFIX,
-        " ",
-        LIGHT_RED.wrap(INFO + " " + BOLD.wrap("Warn Notification")),
-        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " You have permanently been warned!"),
-        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " By: " + LIGHT_RED.wrap(PUNISHMENT_PUNISHER)),
-        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " Reason: " + LIGHT_RED.wrap(PUNISHMENT_REASON)),
-        " "
+    public static final MessageLocale WARN_PERMANENT_NOTIFY = LangEntry.builder("Bans.Warn.Permanent.Notify").chatMessage(
+        GRAY.wrap("You have been warned permanently. " + SHOW_TEXT.with(
+            DARK_GRAY.wrap("»") + GRAY.wrap(" Warned by: ") + WHITE.wrap(PUNISHMENT_WHO)
+                + BR
+                + DARK_GRAY.wrap("»") + GRAY.wrap(" Reason: ") + WHITE.wrap(PUNISHMENT_REASON)
+        ).wrap(ORANGE.and(BOLD).wrap("[HOVER FOR DETAILS]")))
     );
 
-    public static final LangText WARN_PERMANENT_BROADCAST = LangText.of("Bans.Warn.Permanent.Broadcast",
-        TAG_NO_PREFIX,
+    public static final MessageLocale WARN_PERMANENT_BROADCAST = LangEntry.builder("Bans.Warn.Permanent.Broadcast").message(
+        MessageData.chat().usePrefix(false).sound(VanillaSound.of(Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 0.5f)).build(),
         " ",
-        LIGHT_RED.wrap(INFO + " " + BOLD.wrap("Warn Notification")),
-        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " Player " + LIGHT_RED.wrap(PUNISHMENT_TARGET) + " have permanently been warned!"),
-        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " By: " + LIGHT_RED.wrap(PUNISHMENT_PUNISHER)),
-        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " Reason: " + LIGHT_RED.wrap(PUNISHMENT_REASON)),
+        DARK_GRAY.and(STRIKETHROUGH).wrap("-".repeat(7)) + RED_GRADIENT.and(BOLD).wrap(" PLAYER WARNED ") + DARK_GRAY.and(STRIKETHROUGH).wrap("-".repeat(7)),
+        GRAY.wrap(DARK_GRAY.wrap("»") + " Player " + RED.wrap(PUNISHMENT_TARGET) + " has been warned permanently"),
+        GRAY.wrap(DARK_GRAY.wrap("»") + " By: " + WHITE.wrap(PUNISHMENT_WHO)),
+        GRAY.wrap(DARK_GRAY.wrap("»") + " Reason: " + WHITE.wrap(PUNISHMENT_REASON)),
+        DARK_GRAY.and(STRIKETHROUGH).wrap("-".repeat(30)),
         " "
     );
 
@@ -414,35 +383,26 @@ public class BansLang extends Lang {
     // Warns - Temporary
     // -------------------------------------
 
-    public static final LangText COMMAND_WARN_DONE_TEMPORARY = LangText.of("Bans.Command.Warn.Done.Temporary",
-        TAG_NO_PREFIX,
-        " ",
-        LIGHT_RED.wrap(INFO + " " + BOLD.wrap("Warn Info")),
-        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " You warned " + LIGHT_RED.wrap(PUNISHMENT_TARGET) + "."),
-        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " Reason: " + LIGHT_RED.wrap(PUNISHMENT_REASON)),
-        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " Duration: " + LIGHT_RED.wrap(PUNISHMENT_EXPIRES_IN)),
-        " "
+    public static final MessageLocale WARN_TEMPORARY_FEEDBACK = LangEntry.builder("Bans.Command.Warn.Done.Temporary").chatMessage(
+        GRAY.wrap("You have warned " + ORANGE.wrap(PUNISHMENT_TARGET) + " for " + WHITE.wrap(PUNISHMENT_DURATION) + " due to " + WHITE.wrap(PUNISHMENT_REASON) + ".")
     );
 
-    public static final LangText WARN_TEMPORARY_NOTIFY = LangText.of("Bans.Warn.Temporary.Notify",
-        TAG_NO_PREFIX,
-        " ",
-        LIGHT_RED.wrap(INFO + " " + BOLD.wrap("Warn Notification")),
-        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " You have been warned!"),
-        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " By: " + LIGHT_RED.wrap(PUNISHMENT_PUNISHER)),
-        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " Reason: " + LIGHT_RED.wrap(PUNISHMENT_REASON)),
-        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " Duration: " + LIGHT_RED.wrap(PUNISHMENT_EXPIRES_IN)),
-        " "
+    public static final MessageLocale WARN_TEMPORARY_NOTIFY = LangEntry.builder("Bans.Warn.Temporary.Notify").chatMessage(
+        GRAY.wrap("You have been warned (" + WHITE.wrap(PUNISHMENT_DURATION + "). " + SHOW_TEXT.with(
+            DARK_GRAY.wrap("»") + GRAY.wrap(" Warned by: ") + WHITE.wrap(PUNISHMENT_WHO)
+                + BR
+                + DARK_GRAY.wrap("»") + GRAY.wrap(" Reason: ") + WHITE.wrap(PUNISHMENT_REASON)
+        ).wrap(ORANGE.and(BOLD).wrap("[HOVER FOR DETAILS]"))))
     );
 
-    public static final LangText WARN_TEMPORARY_BROADCAST = LangText.of("Bans.Warn.Temporary.Broadcast",
-        TAG_NO_PREFIX,
+    public static final MessageLocale WARN_TEMPORARY_BROADCAST = LangEntry.builder("Bans.Warn.Temporary.Broadcast").message(
+        MessageData.chat().usePrefix(false).sound(VanillaSound.of(Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 0.5f)).build(),
         " ",
-        LIGHT_RED.wrap(INFO + " " + BOLD.wrap("Warn Notification")),
-        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " Player " + LIGHT_RED.wrap(PUNISHMENT_TARGET) + " have been warned!"),
-        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " By: " + LIGHT_RED.wrap(PUNISHMENT_PUNISHER)),
-        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " Reason: " + LIGHT_RED.wrap(PUNISHMENT_REASON)),
-        LIGHT_GRAY.wrap(LIGHT_RED.wrap("»") + " Duration: " + LIGHT_RED.wrap(PUNISHMENT_EXPIRES_IN)),
+        DARK_GRAY.and(STRIKETHROUGH).wrap("-".repeat(7)) + RED_GRADIENT.and(BOLD).wrap(" PLAYER WARNED ") + DARK_GRAY.and(STRIKETHROUGH).wrap("-".repeat(7)),
+        GRAY.wrap(DARK_GRAY.wrap("»") + " Player " + RED.wrap(PUNISHMENT_TARGET) + " has been warned for " + WHITE.wrap(PUNISHMENT_DURATION)),
+        GRAY.wrap(DARK_GRAY.wrap("»") + " By: " + WHITE.wrap(PUNISHMENT_WHO)),
+        GRAY.wrap(DARK_GRAY.wrap("»") + " Reason: " + WHITE.wrap(PUNISHMENT_REASON)),
+        DARK_GRAY.and(STRIKETHROUGH).wrap("-".repeat(30)),
         " "
     );
 
@@ -450,112 +410,35 @@ public class BansLang extends Lang {
     // Warns - Removal
     // -------------------------------------
 
-    public static final LangText UNWARN_DONE = LangText.of("Bans.Unwarn.Done",
-        TAG_NO_PREFIX,
-        " ",
-        LIGHT_GREEN.wrap(INFO + " " + BOLD.wrap("Warn Info")),
-        LIGHT_GRAY.wrap(LIGHT_GREEN.wrap("»") + " You removed a warn from " + LIGHT_GREEN.wrap(PUNISHMENT_TARGET) + "."),
-        " "
+    public static final MessageLocale UNWARN_ERROR_NOT_WARNED = LangEntry.builder("Bans.Punishment.Error.NotWarned").chatMessage(
+        GRAY.wrap("Player " + ORANGE.wrap(PUNISHMENT_TARGET) + " has no active warns to remove.")
     );
 
-    public static final LangText UNWARN_NOTIFY = LangText.of("Bans.Unwarn.Notify",
-        TAG_NO_PREFIX,
-        " ",
-        LIGHT_GREEN.wrap(INFO + " " + BOLD.wrap("Warn Info")),
-        LIGHT_GRAY.wrap(LIGHT_GREEN.wrap("»") + " Your latest warn has been removed."),
-        LIGHT_GRAY.wrap(LIGHT_GREEN.wrap("»") + " By: " + LIGHT_GREEN.wrap(PUNISHMENT_PUNISHER)),
-        " "
+    public static final MessageLocale UNWARN_ERROR_HIGH_DURATION = LangEntry.builder("Bans.Unwarn.Error.HighDuration").chatMessage(
+        GRAY.wrap("You're not allowed to unwarn players whose remaining warn time is greater than " + ORANGE.wrap(GENERIC_TIME) + ".")
     );
 
-    public static final LangText UNWARN_BROADCAST = LangText.of("Bans.Unwarn.Broadcast",
-        TAG_NO_PREFIX,
-        " ",
-        LIGHT_GREEN.wrap(INFO + " " + BOLD.wrap("Warn Info")),
-        LIGHT_GRAY.wrap(LIGHT_GREEN.wrap("»") + " Latest warn has been removed from " + LIGHT_GREEN.wrap(PUNISHMENT_TARGET) + "."),
-        LIGHT_GRAY.wrap(LIGHT_GREEN.wrap("»") + " By: " + LIGHT_GREEN.wrap(PUNISHMENT_PUNISHER)),
-        " "
+    public static final MessageLocale UNWARN_SUCCESS_FEEDBACK = LangEntry.builder("Bans.Unwarn.Done").chatMessage(
+        GRAY.wrap("You have removed all warns from " + ORANGE.wrap(PUNISHMENT_TARGET) + ".")
+    );
+
+    public static final MessageLocale UNWARN_SUCCESS_NOTIFY = LangEntry.builder("Bans.Unwarn.Notify").chatMessage(
+        GRAY.wrap(WHITE.wrap(GENERIC_EXECUTOR) + " has removed all warns from you.")
+    );
+
+    public static final MessageLocale UNWARN_SUCCESS_BROADCAST = LangEntry.builder("Bans.Unwarn.Broadcast").chatMessage(
+        GRAY.wrap(WHITE.wrap(GENERIC_EXECUTOR) + " has removed all warns from " + ORANGE.wrap(PUNISHMENT_TARGET) + ".")
     );
 
     // -------------------------------------
 
-    public static final LangText ERROR_COMMAND_INVALID_REASON_ARGUMENT = LangText.of("Error.Command.Argument.InvalidReason",
-        LIGHT_GRAY.wrap(LIGHT_RED.wrap(GENERIC_VALUE) + " is not a valid reason!"));
+    public static final MessageLocale ERROR_DATA_NOT_LOADED_USER_FEEDBACK = LangEntry.builder("Bans.Error.DataNotLoaded.UserFeedback").chatMessage(
+        SOFT_RED.wrap("Systems are reloading, please try again later.")
+    );
 
-    public static final LangString OTHER_NO_REASON = LangString.of("Bans.Other.NoReason", "<no reason>");
+    public static final MessageLocale ERROR_DATA_NOT_LOADED_ADMIN_FEEDBACK = LangEntry.builder("Bans.Error.DataNotLoaded.AdminFeedback").chatMessage(
+        SOFT_RED.wrap("Action is unavailable, data is currently loading from the database...")
+    );
 
-    @NotNull
-    public static LangText getNotPunished(@NotNull PunishmentType type) {
-        return switch (type) {
-            case BAN -> PUNISHMENT_ERROR_PLAYER_NOT_BANNED;
-            case MUTE -> PUNISHMENT_ERROR_NOT_MUTED;
-            case WARN -> PUNISHMENT_ERROR_NOT_WARNED;
-        };
-    }
-
-    @Nullable
-    public static LangText getPunishNotify(@NotNull PunishData punishData, @NotNull PunishmentType type) {
-        if (type == PunishmentType.BAN) {
-            return null;
-        }
-        else if (type == PunishmentType.MUTE) {
-            return punishData.isPermanent() ? MUTE_PERMANENT_NOTIFY : MUTE_TEMPORARY_NOTIFY;
-        }
-        else {
-            return punishData.isPermanent() ? WARN_PERMANENT_NOTIFY : WARN_TEMPORARY_NOTIFY;
-        }
-    }
-
-    @NotNull
-    public static LangText getPunishOutput(@NotNull PunishData punishData, @NotNull PunishmentType type) {
-        if (type == PunishmentType.BAN) {
-            if (punishData instanceof PunishedIP) {
-                return punishData.isPermanent() ? COMMAND_BAN_IP_DONE_PERMANENT : COMMAND_BAN_IP_DONE_TEMPORARY;
-            }
-            else {
-                return punishData.isPermanent() ? COMMAND_BAN_DONE_PERMANENT : COMMAND_BAN_DONE_TEMPORARY;
-            }
-        }
-        else if (type == PunishmentType.MUTE) {
-            return punishData.isPermanent() ? COMMAND_MUTE_DONE_PERMANENT : COMMAND_MUTE_DONE_TEMPORARY;
-        }
-        else {
-            return punishData.isPermanent() ? COMMAND_WARN_DONE_PERMANENT : COMMAND_WARN_DONE_TEMPORARY;
-        }
-    }
-
-    @NotNull
-    public static LangText getPunishBroadcast(@NotNull PunishData punishData, @NotNull PunishmentType type) {
-        if (type == PunishmentType.BAN) {
-            if (punishData instanceof PunishedIP) {
-                return punishData.isPermanent() ? BAN_IP_PERMANENT_BROADCAST : BAN_IP_TEMPORARY_BROADCAST;
-            }
-            else {
-                return punishData.isPermanent() ? BAN_PERMANENT_BROADCAST : BAN_TEMPORARY_BROADCAST;
-            }
-        }
-        else if (type == PunishmentType.MUTE) {
-            return punishData.isPermanent() ? MUTE_PERMANENT_BROADCAST : MUTE_TEMPORARY_BROADCAST;
-        }
-        else {
-            return punishData.isPermanent() ? WARN_PERMANENT_BROADCAST : WARN_TEMPORARY_BROADCAST;
-        }
-    }
-
-    @NotNull
-    public static LangText getUnPunishOutput(@NotNull PunishData punishData, @NotNull PunishmentType type) {
-        return switch (type) {
-            case BAN -> punishData instanceof PunishedIP ? UNBAN_IP_DONE : UNBAN_DONE;
-            case MUTE -> UNMUTE_DONE;
-            case WARN -> UNWARN_DONE;
-        };
-    }
-
-    @NotNull
-    public static LangText getUnPunishBroadcast(@NotNull PunishData punishData, @NotNull PunishmentType type) {
-        return switch (type) {
-            case BAN -> punishData instanceof PunishedIP ? UNBAN_IP_BROADCAST : UNBAN_BROADCAST;
-            case MUTE -> UNMUTE_BROADCAST;
-            case WARN -> UNWARN_BROADCAST;
-        };
-    }
+    public static final TextLocale OTHER_NO_REASON = LangEntry.builder("Bans.Other.NoReason").text("<no reason>");
 }

@@ -4,46 +4,68 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import su.nightexpress.sunlight.SunLightPlugin;
+import org.jspecify.annotations.NonNull;
+import su.nightexpress.nightcore.config.FileConfig;
+import su.nightexpress.sunlight.config.PermissionTree;
+import su.nightexpress.sunlight.hook.placeholder.PlaceholderRegistry;
 import su.nightexpress.sunlight.module.Module;
-import su.nightexpress.sunlight.module.ModuleInfo;
+import su.nightexpress.sunlight.module.ModuleContext;
 import su.nightexpress.sunlight.module.warmups.config.WarmupsConfig;
 import su.nightexpress.sunlight.module.warmups.config.WarmupsLang;
 import su.nightexpress.sunlight.module.warmups.config.WarmupsPerms;
 import su.nightexpress.sunlight.module.warmups.impl.TeleportWarmup;
 import su.nightexpress.sunlight.module.warmups.impl.Warmup;
-import su.nightexpress.sunlight.api.type.TeleportType;
 import su.nightexpress.sunlight.module.warmups.listener.WarmupsListener;
+import su.nightexpress.sunlight.teleport.TeleportContext;
+import su.nightexpress.sunlight.teleport.TeleportManager;
+import su.nightexpress.sunlight.teleport.TeleportType;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class WarmupsModule extends Module {
 
+    private final TeleportManager teleportManager;
+
     private final Map<UUID, Warmup> warmupByIdMap;
 
-    public WarmupsModule(@NotNull SunLightPlugin plugin, @NotNull String id) {
-        super(plugin, id);
+    public WarmupsModule(@NotNull ModuleContext context, @NonNull TeleportManager teleportManager) {
+        super(context);
+        this.teleportManager = teleportManager;
         this.warmupByIdMap = new ConcurrentHashMap<>();
     }
 
     @Override
-    protected void gatherInfo(@NotNull ModuleInfo moduleInfo) {
-        moduleInfo.setConfigClass(WarmupsConfig.class);
-        moduleInfo.setLangClass(WarmupsLang.class);
-        moduleInfo.setPermissionsClass(WarmupsPerms.class);
-    }
+    protected void loadModule(@NotNull FileConfig config) {
+        config.initializeOptions(WarmupsConfig.class);
+        this.plugin.injectLang(WarmupsLang.class);
 
-    @Override
-    protected void onModuleLoad() {
         this.addListener(new WarmupsListener(this.plugin, this));
         this.addAsyncTask(this::tickWarmups, WarmupsConfig.WARMUP_TICK_INTERVAL.get());
     }
 
     @Override
-    protected void onModuleUnload() {
+    protected void unloadModule() {
         this.getWarmups().forEach(warmup -> warmup.cancel(true));
         this.warmupByIdMap.clear();
+    }
+
+    @Override
+    protected void registerPermissions(@NotNull PermissionTree root) {
+        root.merge(WarmupsPerms.MODULE);
+    }
+
+    @Override
+    protected void registerCommands() {
+
+    }
+
+    @Override
+    public void registerPlaceholders(@NotNull PlaceholderRegistry registry) {
+
     }
 
     private void tickWarmups() {
@@ -85,6 +107,10 @@ public class WarmupsModule extends Module {
         return WarmupsConfig.TELEPORT_HANDLED_TYPES.get().contains(type);
     }
 
+    public boolean canHandleTeleport(@NotNull Player player, @NotNull TeleportType type) {
+        return !player.hasPermission(WarmupsPerms.BYPASS_TELEPORT) && this.canHandleTeleport(type);
+    }
+
     public void cancelWarmup(@NotNull Player player) {
         this.cancelWarmup(player, false);
     }
@@ -109,9 +135,13 @@ public class WarmupsModule extends Module {
         this.warmupByIdMap.put(player.getUniqueId(), warmup);
     }
 
-    public void handleTeleport(@NotNull Player player, @NotNull Location destination, @NotNull TeleportType type, @Nullable Runnable action) {
+    public void handleTeleport(@NotNull TeleportContext context, @NotNull TeleportType type) {
+        Player player = context.getTarget();
+        Location location = context.getDestination();
         int value = WarmupsConfig.TELEPORT_WARMUPS_BY_RANK.get().getSmallest(player);
-        Warmup warmup = new TeleportWarmup(player, value, destination, action);
+        Runnable callback = () -> this.teleportManager.move(context); // Simply pass the same context into next teleportation "stage" after a delay is passed.
+
+        Warmup warmup = new TeleportWarmup(this, player, value, location, callback);
 
         this.addWarmup(player, warmup);
     }

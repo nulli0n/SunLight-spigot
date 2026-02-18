@@ -1,33 +1,22 @@
 package su.nightexpress.sunlight.module.ptp.config;
 
-import su.nightexpress.nightcore.util.wrapper.UniPermission;
-import su.nightexpress.sunlight.Placeholders;
+import org.bukkit.permissions.Permission;
+import su.nightexpress.sunlight.config.PermissionTree;
 import su.nightexpress.sunlight.config.Perms;
 
 public class PTPPerms {
 
-    public static final String PREFIX = Perms.PREFIX + "ptp.";
-    public static final String PREFIX_COMMAND = PREFIX + "command.";
+    public static final PermissionTree MODULE  = Perms.detached("ptp");
+    public static final PermissionTree COMMAND = MODULE.branch("command");
+    public static final PermissionTree BYPASS  = MODULE.branch("bypass");
 
-    public static final UniPermission MODULE  = new UniPermission(PREFIX + Placeholders.WILDCARD);
-    public static final UniPermission COMMAND = new UniPermission(PREFIX_COMMAND + Placeholders.WILDCARD);
+    public static final Permission COMMAND_ROOT            = COMMAND.permission("root");
+    public static final Permission COMMAND_ACCEPT          = COMMAND.permission("accept");
+    public static final Permission COMMAND_DECLINE         = COMMAND.permission("decline");
+    public static final Permission COMMAND_INVITE          = COMMAND.permission("invite");
+    public static final Permission COMMAND_REQUEST         = COMMAND.permission("request");
+    public static final Permission COMMAND_REQUESTS        = COMMAND.permission("toggle");
+    public static final Permission COMMAND_REQUESTS_OTHERS = COMMAND.permission("toggle.others");
 
-    public static final UniPermission COMMAND_ACCEPT        = new UniPermission(PREFIX_COMMAND + "accept");
-    public static final UniPermission COMMAND_DECLINE       = new UniPermission(PREFIX_COMMAND + "decline");
-    public static final UniPermission COMMAND_INVITE        = new UniPermission(PREFIX_COMMAND + "invite");
-    public static final UniPermission COMMAND_REQUEST       = new UniPermission(PREFIX_COMMAND + "request");
-    public static final UniPermission COMMAND_TOGGLE        = new UniPermission(PREFIX_COMMAND + "toggle");
-    public static final UniPermission COMMAND_TOGGLE_OTHERS = new UniPermission(PREFIX_COMMAND + "toggle.others");
-
-    static {
-        Perms.PLUGIN.addChildren(MODULE);
-
-        MODULE.addChildren(COMMAND);
-
-        COMMAND.addChildren(
-            COMMAND_ACCEPT, COMMAND_DECLINE,
-            COMMAND_INVITE, COMMAND_REQUEST,
-            COMMAND_TOGGLE, COMMAND_TOGGLE_OTHERS
-        );
-    }
+    public static final Permission BYPASS_REQUESTS_DISABLED = BYPASS.permission("requests.disabled");
 }

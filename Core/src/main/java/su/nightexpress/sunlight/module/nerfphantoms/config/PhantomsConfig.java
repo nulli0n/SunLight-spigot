@@ -2,6 +2,7 @@ package su.nightexpress.sunlight.module.nerfphantoms.config;
 
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import su.nightexpress.nightcore.config.ConfigValue;
+import su.nightexpress.nightcore.util.Enums;
 import su.nightexpress.nightcore.util.Lists;
 import su.nightexpress.nightcore.util.StringUtil;
 
@@ -14,7 +15,7 @@ public class PhantomsConfig {
         "Sets whether or not NerfPhantoms feature is enabled.");
 
     public static final ConfigValue<Set<CreatureSpawnEvent.SpawnReason>> DISABLE_SPAWN_REASONS = ConfigValue.forSet("DisableSpawn.Sources",
-        raw -> StringUtil.getEnum(raw, CreatureSpawnEvent.SpawnReason.class).orElse(null),
+        raw -> Enums.get(raw, CreatureSpawnEvent.SpawnReason.class),
         (cfg, path, set) -> cfg.set(path, set.stream().map(Enum::name).toList()),
         Lists.newSet(
             CreatureSpawnEvent.SpawnReason.NATURAL,
