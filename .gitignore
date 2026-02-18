@@ -1,6 +1,7 @@
 /.idea/
 /.paper-nms/
 .gradle
+/gradle/
 **/build/
 !src/**/build/
 **/target/
