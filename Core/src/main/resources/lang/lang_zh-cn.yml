@@ -497,7 +497,7 @@ Command:
         onFalse: <lgreen>[可移动实体]</lgreen>
     Mode:
       Enter: <gray><white>%player_display_name%</white> 现在开始挂机了</gray>
-      Exit: '<gray><white>%player_display_name%</white> 回来了 挂机时间: <orange>%time%</orange></gray>''
+      Exit: '<gray><white>%player_display_name%</white> 回来了 挂机时间: <orange>%time%</orange></gray>'
   Bans:
     SortMode:
       NEWEST: 最新
