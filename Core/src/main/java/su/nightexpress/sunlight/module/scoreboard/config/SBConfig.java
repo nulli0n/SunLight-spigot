@@ -37,6 +37,8 @@ public class SBConfig extends AbstractConfig {
         "│     -> List of worlds, where this format is available. Add '%s' to allow all worlds.".formatted(SLPlaceholders.WILDCARD),
         "├── Groups:",
         "│     -> List of ranks (permission groups) to which this format is available. Add '%s' to allow all ranks.".formatted(SLPlaceholders.WILDCARD),
+        "├── Condition:",
+        "│     -> Boolean expression with placeholders to control availability (optional).",
         "└── Title + Lines:",
         "      -> Sets the text displayed at top (Title) and body (Lines) of the scoreboard.",
         "      [>] Text Formations: " + SLPlaceholders.URL_WIKI_TEXT,

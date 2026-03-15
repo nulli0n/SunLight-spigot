@@ -77,9 +77,9 @@ public class NametagsModule extends Module {
     }
 
     @Nullable
-    public NameTagFormat getPlayerNameTagFormat(@NotNull Player player) {
+    public NameTagFormat getPlayerNameTagFormat(@NotNull Player player, @NotNull PlaceholderContext placeholderContext) {
         return this.settings.getNameTagFormatsMap().values().stream()
-            .filter(entry -> entry.isRankAvailable(player))
+            .filter(entry -> entry.isAvailable(player, placeholderContext, this.plugin.getLogger()))
             .max(Comparator.comparingInt(NameTagFormat::getPriority))
             .orElse(null);
     }
@@ -91,18 +91,22 @@ public class NametagsModule extends Module {
     public void updatePlayerNameTag(@NotNull Player player) {
         if (this.tagHandler == null) return;
 
-        NameTagFormat tag = this.getPlayerNameTagFormat(player);
+        PlaceholderContext placeholderContext = this.createPlaceholderContext(player);
+        NameTagFormat tag = this.getPlayerNameTagFormat(player, placeholderContext);
         if (tag == null) return;
-
-        PlaceholderContext placeholderContext = PlaceholderContext.builder()
-            .with(CommonPlaceholders.PLAYER.resolver(player))
-            .andThen(CommonPlaceholders.forPlaceholderAPI(player))
-            .build();
 
         this.tagHandler.sendTeamPacket(player, tag, placeholderContext);
     }
 
     public void updatePlayerNameTags() {
         Players.getOnline().forEach(this::updatePlayerNameTag);
+    }
+
+    @NotNull
+    private PlaceholderContext createPlaceholderContext(@NotNull Player player) {
+        return PlaceholderContext.builder()
+            .with(CommonPlaceholders.PLAYER.resolver(player))
+            .andThen(CommonPlaceholders.forPlaceholderAPI(player))
+            .build();
     }
 }
