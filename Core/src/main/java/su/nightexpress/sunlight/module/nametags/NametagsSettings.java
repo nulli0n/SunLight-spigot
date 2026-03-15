@@ -52,6 +52,8 @@ public class NametagsSettings extends AbstractConfig {
         "│         - %s - Player suffix.".formatted(PLAYER_SUFFIX),
         "│         - %s - Player world.".formatted(PLAYER_WORLD),
         "│         - %s - https://wiki.placeholderapi.com/".formatted(Plugins.PLACEHOLDER_API),
+        "├── Condition:",
+        "│     -> Boolean expression with placeholders to control availability (optional).",
         "└── Color:",
         "      -> Color of the player name. List of available colors: https://minecraft.wiki/w/Formatting_codes#Color_codes"
     );

@@ -4,6 +4,7 @@ import org.jetbrains.annotations.NotNull;
 import su.nightexpress.nightcore.util.Lists;
 import su.nightexpress.sunlight.SLPlaceholders;
 import su.nightexpress.sunlight.module.scoreboard.board.BoardDefinition;
+import su.nightexpress.sunlight.utils.ConditionExpression;
 import su.nightexpress.sunlight.utils.DynamicText;
 
 import java.util.ArrayList;
@@ -41,7 +42,10 @@ public class ScoreboardDefaults {
                 GREEN.wrap(" ▎ " + GRAY.wrap("World:") + " " + WHITE.wrap("%player_world%")),
                 " ",
                 SLPlaceholders.ANIMATION.apply(DEF_ANIMATION_1)
-            )));
+            ),
+            "",
+            ConditionExpression.of("", "Boards.default")
+        ));
     }
     
     @NotNull

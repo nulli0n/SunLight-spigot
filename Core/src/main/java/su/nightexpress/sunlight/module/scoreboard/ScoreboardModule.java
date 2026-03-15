@@ -119,8 +119,13 @@ public class ScoreboardModule extends Module {
 
     @Nullable
     public BoardDefinition getBoardDefinition(@NotNull Player player) {
+        return this.getBoardDefinition(player, this.createPlaceholderContext(player));
+    }
+
+    @Nullable
+    public BoardDefinition getBoardDefinition(@NotNull Player player, @NotNull PlaceholderContext placeholderContext) {
         return this.settings.getBoardDefinitionMap().values().stream()
-            .filter(board -> board.isAvailable(player))
+            .filter(board -> board.isAvailable(player, placeholderContext, this.plugin.getLogger()))
             .max(Comparator.comparingInt(BoardDefinition::getPriority))
             .orElse(null);
     }
@@ -149,7 +154,24 @@ public class ScoreboardModule extends Module {
     public void updateBoards() {
         if (this.boardMap.isEmpty()) return;
 
-        this.getBoards().forEach(Board::updateIfReady);
+        this.getBoardMap().forEach((player, board) -> {
+            boolean updated = board.updateIfReady();
+            if (!updated) return;
+
+            PlaceholderContext placeholderContext = this.createPlaceholderContext(player);
+            BoardDefinition desiredBoard = this.getBoardDefinition(player, placeholderContext);
+            BoardDefinition currentBoard = board.getBoardConfig();
+
+            if (desiredBoard == null) {
+                this.removeBoard(player);
+                return;
+            }
+
+            if (desiredBoard != currentBoard) {
+                this.removeBoard(player);
+                this.addBoard(player, desiredBoard);
+            }
+        });
     }
 
     public boolean hasBoard(@NotNull Player player) {
