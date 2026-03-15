@@ -10,7 +10,7 @@ public interface Board {
 
     void update();
 
-    boolean updateIfReady();
+    void updateIfReady();
 
     void remove();
 }

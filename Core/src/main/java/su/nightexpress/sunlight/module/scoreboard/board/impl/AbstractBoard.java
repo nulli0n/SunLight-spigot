@@ -82,12 +82,10 @@ public abstract class AbstractBoard<T> implements Board {
     }
 
     @Override
-    public boolean updateIfReady() {
+    public void updateIfReady() {
         if (--this.nextUpdateTicks <= 0L) {
             this.update();
-            return true;
         }
-        return false;
     }
 
     @Override
