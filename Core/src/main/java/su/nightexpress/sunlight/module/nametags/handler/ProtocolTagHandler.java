@@ -8,7 +8,6 @@ import com.comphenix.protocol.wrappers.WrappedChatComponent;
 import com.comphenix.protocol.wrappers.WrappedTeamParameters;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
-import org.bukkit.scoreboard.Team;
 import org.jetbrains.annotations.NotNull;
 import su.nightexpress.nightcore.util.Enums;
 import su.nightexpress.nightcore.util.Lists;
@@ -57,8 +56,8 @@ public class ProtocolTagHandler extends NametagHandler {
                 .prefix(WrappedChatComponent.fromJson(NightMessage.asJson(teamPrefix)))
                 .suffix(WrappedChatComponent.fromJson(NightMessage.asJson(teamSuffix)))
                 .color(EnumWrappers.ChatFormatting.fromBukkit(teamColor))
-                .nametagVisibility(Team.OptionStatus.ALWAYS.name())
-                .collisionRule(Team.OptionStatus.ALWAYS.name())
+                .nametagVisibility(EnumWrappers.TeamVisibility.ALWAYS)
+                .collisionRule(EnumWrappers.TeamCollisionRule.ALWAYS)
                 .options(0)
                 .build();
             packetTeam.getOptionalTeamParameters().write(0, Optional.of(parameters));
