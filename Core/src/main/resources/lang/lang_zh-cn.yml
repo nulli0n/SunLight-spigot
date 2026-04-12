@@ -1,0 +1,1886 @@
+# ---------------------------------------
+# 作者：HelloWorldCoder(-China)[小龙蛇 HWC]
+# 语言：中文简体
+# 使用版本：Sunlight 3.16.0
+# 欢迎使用！如有错字请理解！
+# 关注我的 B 站！https://space.bilibili.com/2089143832
+# ---------------------------------------
+
+# 装备装载点
+EquipmentSlot:
+  OFF_HAND: 副手
+  BODY: 身体
+  CHEST: 胸部
+  HAND: 主手
+  HEAD: 头部
+  LEGS: 腿部
+  FEET: 脚部
+  SADDLE: 鞍
+# 游戏模式
+GameMode:
+  CREATIVE: 创造模式
+  ADVENTURE: 冒险模式
+  SURVIVAL: 生存模式
+  SPECTATOR: 旁观模式
+# 方向
+Direction:
+  NORTH_EAST: 东北
+  SOUTH_EAST: 东南
+  EAST: 正东
+  WEST: 正西
+  NORTH: 正北
+  SOUTH_WEST: 西南
+  NORTH_WEST: 西北
+  SOUTH: 正南
+  HERE: 此处
+# 指令
+Command:
+  Argument:
+    Name:
+      Slot: 槽位
+      Enchant: 附魔
+      Level: 等级
+      Target: 目标
+      Type: 类型
+      Time: 时间
+      Mode: 模式
+      State: 状态
+      IPAddress: IP
+      Radius: 半径
+      Text: 文本
+      Command: 命令
+      Position: 位置
+      X: X
+      Y: Y
+      Z: Z
+  ArgumentName:
+    EntityType: 生物类型
+    Owner: 所有者
+  Syntax:
+    InvalidEquipmentSlot: <gray><soft_red>%input%</soft_red> 不是一个有效的装备槽!</gray>
+    InvalidInetAddress: <gray><soft_red>%input%</soft_red> 不是一个有效的内网地址!</gray>
+    InvalidEntityType: <gray><soft_red>%input%</soft_red> 不是一个有效的生物类型!</gray>
+    InvalidMobEffect: <gray><soft_red>%input%</soft_red> 不是一个有效的药水效果!</gray>
+  Item:
+    Root:
+      Desc: 物品指令
+    Amount:
+      Desc: 更改物品的堆叠数量
+      Done: '[sound="minecraft:entity.item.pickup;0.8;1.0"]<gray>你已将 <white>%item%</white> 的堆叠数量更改为 <soft_yellow>%amount%x</soft_yellow></gray>'
+    Damage:
+      Desc: 更改物品的耐久度
+      Done: '[sound="minecraft:entity.item.break;0.8;1.0"]<gray>你已将 <white>%item%</white> 的耐久度设置为 <soft_yellow>%amount%</soft_yellow></gray>'
+    Enchant:
+      Desc: 为手持物品附魔
+      Error:
+        NotCompatible: '[sound="minecraft:entity.villager.no;0.8;1.0"]<gray><soft_red>%enchantment%</soft_red> 与 <white>%item%</white> 不兼容</gray>'
+        Overpowered: '[sound="minecraft:entity.villager.no;0.8;1.0"]<gray><soft_red>%enchantment%</soft_red> 附魔等级上限为 <soft_red>%level%</soft_red></gray>'
+      Done:
+        Enchanted: '[sound="minecraft:block.enchantment_table.use;0.8;1.0"]<gray>你已为 <white>%item%</white> 打上 <soft_purple>%enchantment% %level%</soft_purple> 附魔</gray>'
+    Disenchant:
+      Desc: 移除手持物品的附魔
+    Get:
+      Desc: 从指定的玩家出获取指定数量的物品
+      Done: '[sound="minecraft:entity.item.pickup;0.8;1.0"]<gray>你已从 <white>%player_display_name%</white> 处获取了 <white>%amount% x %item%</white></gray>'
+    Give:
+      Desc: 给予指定玩家物品
+      Done: '[sound="minecraft:entity.item.pickup;0.8;1.0"]<gray>你已将 <white>%amount% x %item%</white> 给予了 <soft_yellow>%player_display_name%</soft_yellow></gray>'
+      Notify: '[sound="minecraft:entity.item.pickup;0.8;1.0"]<gray>你已被给予 <white>%amount% x %item%</white></gray>'
+    Lore:
+      Root:
+        Desc: 物品属性命令集
+      Add:
+        Desc: 为物品添加一行属性
+        Done: '[sound="minecraft:block.anvil.use;0.8;1.0"]<gray>你已为 <white>%item%</white> 添加了属性 <white>%text%</white></gray>'
+      Insert:
+        Desc: 为手中的物品在指定位置插入一行属性
+      Remove:
+        Desc: 移除手中物品的一行属性
+        Done: '[sound="minecraft:block.anvil.use;0.8;1.0"]<gray>你已从 <white>%item%</white> 的属性中移除了 <white>%text%</white></gray>'
+      Clear:
+        Desc: 清空手中物品的属性
+        Done: '[sound="minecraft:block.anvil.use;0.8;1.0"]<gray>你已清空了 <white>%item%</white> 的属性</gray>'
+    Model:
+      Desc: 更改手中物品的模型数据 (显示的样子等)
+      Done: '[sound="minecraft:block.anvil.use;0.8;1.0"]<gray>已将 <soft_yellow>%amount%</soft_yellow> 设置为 <soft_yellow>%item%</soft_yellow> 的样子!</gray>'
+    Name:
+      Desc: 重命名手中物品
+      Done:
+        Changed: '[sound="minecraft:block.anvil.use;0.8;1.0"]<gray>你已将 <white>%item%</white> 重命名为 <white>%name%</white></gray>'
+    Potion:
+      Add:
+        Desc: 为药水添加一种效果
+        Done: <gray>药水效果已添加!</gray>
+    Repair:
+      Desc: 修复手中的物品
+      Done: '[sound="minecraft:block.anvil.use;0.8;1.0"]<gray>你已修复了 <white>%item%</white>!</gray>'
+    Spawn:
+      Desc: 在指定位置生成物品 (掉落物)
+      Done: '[sound="minecraft:entity.item.pickup;0.8;1.0"]<gray>你已在 <red>%location_x%</red> <green>%location_y%</green> <blue>%location_z%</blue> @ <white>%location_world%</white> 生成 <white>%amount% x %item%</white></gray>'
+    Unbreakable:
+      Desc: 为手中物品设置不可破坏属性
+      Done: '[sound="minecraft:block.anvil.use;0.8;1.0"]<gray>你已将 <white>%item%</white> 的不可破坏属性设置为 <white>%state%</white></gray>'
+  Vanish:
+    Desc: 切换隐身状态
+    Notify: <lgray>隐身状态已设置为 <lyellow>%state%</lyellow></lgray>
+    Target: <lgray>已将玩家 <lyellow>%player_display_name%</lyellow> 的隐身状态设置为 <lyellow>%state%</lyellow></lgray>
+  Staff:
+    Desc: 显示在线工作人员
+    Empty: <gray>没有工作人员在线</gray>
+  Air:
+    Root:
+      Desc: 氧气值设置
+    Add:
+      Desc: 增加氧气值
+    Set:
+      Desc: 设置氧气值
+      Target: <gray>你已将 <soft_yellow>%player_display_name%</soft_yellow> 的氧气值设置为 <yellow>%amount%</yellow>。当前氧气值：<soft_yellow>%current%</soft_yellow>/<soft_yellow>%max%</soft_yellow></gray>
+      Notify: '<gray>你的氧气值已设置为 <soft_yellow>%amount%</soft_yellow>: <soft_yellow>%current%</soft_yellow>/<soft_yellow>%max%</soft_yellow></gray>'
+    Remove:
+      Desc: 减少氧气值
+    Give:
+      Target: <gray>你已为 <soft_yellow>%player_display_name%</soft_yellow> 增加了 <green>%amount%</green> 个氧气值。当前氧气值：<soft_yellow>%current%</soft_yellow>/<soft_yellow>%max%</soft_yellow></gray>
+      Notify: <gray>你获得了 <soft_yellow>%amount%</soft_yellow> 个氧气值：<soft_yellow>%current%</soft_yellow>/<soft_yellow>%max%</soft_yellow></gray>
+    Take:
+      Target: <gray>你已从 <soft_yellow>%player_display_name%</soft_yellow> 处移除了 <red>%amount%</red> 个氧气值。当前氧气值：<soft_yellow>%current%</soft_yellow>/<soft_yellow>%max%</soft_yellow></gray>
+      Notify: <gray>你失去了 <soft_yellow>%amount%</soft_yellow> 个氧气值：<soft_yellow>%current%</soft_yellow>/<soft_yellow>%max%</soft_yellow></gray>
+  Broadcast:
+    Desc: 发布一则公告
+  Condense:
+    Desc: 将物品压缩为方块
+    Error:
+      Nothing: '[sound="minecraft:entity.villager.no;0.8;1.0"]<gray>没有可压缩的物品</gray>'
+      NotEnough: <gray>没有足够的材料将 <red>%source%</red> 压缩为 <red>%result%</red>。至少需要 <red>%amount%</red> 个</gray>
+    Done: <gray>已将 <soft_yellow>x%total% %source%</soft_yellow> 压缩为 <soft_yellow>x%amount% %result%</soft_yellow></gray>
+  Dimension:
+    Desc: 传送到一个维度
+    Target: <gray>你已将玩家 <soft_yellow>%player_display_name%</soft_yellow> 传送到 <soft_yellow>%world%</soft_yellow></gray>
+    Notify: '[sound="minecraft:entity.enderman.teleport;0.8;1.0"]<gray>你已传送到 <orange>%world%</orange></gray>'
+  Disposal:
+    Desc: 打开虚拟回收站。
+    Target: <gray>你已为 <white>%player_display_name%</white> 打开了 <orange>虚拟回收站</orange></gray>
+    Notify: <gray>你已打开了 <orange>虚拟回收站</orange></gray>
+  Enchant:
+    Desc: 附魔槽位中的物品。
+    EmptySlot: <gray><white>%player_display_name%</white> 的 <soft_red>%slot%</soft_red> 槽位中没有物品</gray>
+    Enchanted:
+      Target: '[sound="minecraft:block.enchantment_table.use;0.8;1.0"]<gray>你已将 <white>%player_display_name%</white> 的 <white>%type%</white> 槽位中的 <white>%item%</white> 附魔为 <orange>%name% %amount%</orange></gray>'
+      Notify: '[sound="minecraft:block.enchantment_table.use;0.8;1.0"]<gray>你的 <white>%item%</white> 已附魔为 <orange>%name% %amount%</orange></gray>'
+  Disenchant:
+    Desc: 移除槽位中物品的附魔。
+    NotEnchanted: <gray><white>%player_display_name%</white> 的 <soft_red>%slot%</soft_red> 槽位中的 <soft_red>%item%</soft_red> 物品不包含要移除的 <soft_red>%enchantment%</soft_red> 附魔</gray>
+    Specific:
+      Target: '[sound="minecraft:block.grindstone.use;0.8;1.0"]<gray>你已从 <white>%player_display_name%</white> 的 <white>%type%</white> 槽位中的 <white>%item%</white> 移除了 <orange>%enchantment%</orange></gray>'
+      Notify: '[sound="minecraft:block.grindstone.use;0.8;1.0"]<gray>你的 <white>%item%</white> 已移除附魔 <orange>%enchantment%</orange></gray>'
+    All:
+      Target: '[sound="minecraft:block.grindstone.use;0.8;1.0"]<gray>你已移除 <white>%player_display_name%</white> 的 <white>%type%</white> 槽位中 <white>%item%</white> 的所有附魔</gray>'
+      Notify: '[sound="minecraft:block.grindstone.use;0.8;1.0"]<gray>你的 <white>%item%</white> 已移除所有附魔</gray>'
+  Experience:
+    Root:
+      Desc: 经验值命令。
+    AddLevel:
+      Desc: 增加经验等级。
+      Feedback: '[sound="minecraft:entity.player.levelup;0.8;1.0"]<gray>你已为 <white>%player_display_name%</white> 增加了 <soft_green>%value%</soft_green> 经验等级 (<yellow>%oldvalue%</yellow><dark_gray> → </dark_gray><green>%newvalue%</green>)</gray>'
+      Notify: '[sound="minecraft:entity.player.levelup;0.8;1.0"]<gray>你获得了 <soft_green>%value%</soft_green> 经验等级</gray>'
+    SetLevel:
+      Desc: 设置经验等级。
+      Feedback: '[sound="minecraft:entity.player.levelup;0.8;1.0"]<gray>你已将 <white>%player_display_name%</white> 的经验等级设置为 <soft_yellow>%value%</soft_yellow> (<yellow>%oldvalue%</yellow><dark_gray> → </dark_gray><green>%newvalue%</green>)</gray>'
+      Notify: '[sound="minecraft:entity.player.levelup;0.8;1.0"]<gray>你的经验等级已设置为 <soft_yellow>%value%</soft_yellow></gray>'
+    RemoveLevel:
+      Desc: 移除经验等级。
+      Feedback: '[sound="minecraft:entity.player.levelup;0.8;1.0"]<gray>你已从 <white>%player_display_name%</white> 处移除了 <soft_red>%value%</soft_red> 经验等级 (<yellow>%oldvalue%</yellow><dark_gray> → </dark_gray><green>%newvalue%</green>)</gray>'
+      Notify: '[sound="minecraft:entity.player.levelup;0.8;1.0"]<gray>你被移除了 <soft_red>%value%</soft_red> 经验等级</gray>'
+    AddXP:
+      Desc: 增加经验值。
+      Feedback: '[sound="minecraft:entity.experience_orb.pickup;0.8;1.0"]<gray>你已为 <white>%player_display_name%</white> 增加了 <soft_green>%value%</soft_green> 经验值 (<yellow>%oldvalue%</yellow><dark_gray> → </dark_gray><green>%newvalue%</green>)</gray>'
+      Notify: '[sound="minecraft:entity.experience_orb.pickup;0.8;1.0"]<gray>你获得了 <soft_green>%value%</soft_green> 经验值</gray>'
+    SetXP:
+      Desc: 设置经验值。
+      Feedback: '[sound="minecraft:entity.experience_orb.pickup;0.8;1.0"]<gray>你已将 <white>%player_display_name%</white> 的总经验值设置为 <soft_yellow>%value%</soft_yellow> (<yellow>%oldvalue%</yellow><dark_gray> → </dark_gray><green>%newvalue%</green>)</gray>'
+      Notify: '[sound="minecraft:entity.experience_orb.pickup;0.8;1.0"]<gray>你的总经验值已设置为 <soft_yellow>%value%</soft_yellow></gray>'
+    RemoveXP:
+      Desc: 移除经验值。
+      Feedback: '[sound="minecraft:entity.experience_orb.pickup;0.8;1.0"]<gray>你已从 <white>%player_display_name%</white> 处移除了 <soft_red>%value%</soft_red> 经验值 (<yellow>%oldvalue%</yellow><dark_gray> → </dark_gray><green>%newvalue%</green>)</gray>'
+      Notify: '[sound="minecraft:entity.experience_orb.pickup;0.8;1.0"]<gray>你被移除了 <soft_red>%value%</soft_red> 经验值</gray>'
+  Ignite:
+    Desc: 点燃玩家。
+    Feedback: '[sound="minecraft:entity.player.hurt_on_fire;0.8;1.0"]<gray>你已点燃 <white>%player_display_name%</white>，持续 <soft_yellow>%time%</soft_yellow></gray>'
+    Notify: '[sound="minecraft:entity.player.hurt_on_fire;0.8;1.0"]<gray>你被点燃，持续 <soft_red>%time%</soft_red></gray>'
+  Extinguish:
+    Desc: 熄灭玩家。
+    Feedback: '[sound="minecraft:block.fire.extinguish;0.8;1.0"]<gray>你已熄灭 <white>%player_display_name%</white></gray>'
+    Notify: '[sound="minecraft:block.fire.extinguish;0.8;1.0"]<gray>你被熄灭</gray>'
+  Fly:
+    Root:
+      Desc: 飞行命令。
+    Toggle:
+      Desc: 切换飞行。
+    'On':
+      Desc: 启用飞行。
+    'Off':
+      Desc: 禁用飞行。
+    Target: '[sound="minecraft:item.firecharge.use;0.8;1.0"]<gray>你已将 <white>%player_display_name%</white> 的飞行设置为 <white>%state%</white></gray>'
+    Notify: '[sound="minecraft:item.firecharge.use;0.8;1.0"]<gray>你的飞行已设置为 <white>%state%</white></gray>'
+  FlySpeed:
+    Desc: 更改飞行速度。
+    Done:
+      Notify: <gray>你的飞行速度已设置为 <soft_yellow>%amount%</soft_yellow></gray>
+      Target: <gray>你已将 <white>%player_display_name%</white> 的飞行速度设置为 <soft_yellow>%amount%</soft_yellow></gray>
+  Food:
+    Root:
+      Desc: 食物等级命令。
+    Add:
+      Desc: 增加食物值。
+    Set:
+      Desc: 设置食物等级。
+      Target: <gray>你已将 <white>%player_display_name%</white> 的食物等级设置为 <yellow>%amount%</yellow> (<white>%oldvalue%</white><dark_gray> → </dark_gray><yellow>%newvalue%</yellow>)</gray>
+      Notify: <gray>你的食物等级已设置为 <soft_yellow>%amount%</soft_yellow></gray>
+    Remove:
+      Desc: 减少食物值。
+    Restore:
+      Desc: 恢复食物等级。
+      Notify: '[sound="minecraft:entity.generic.eat;0.8;1.0"]<gray>你已被喂食!</gray>'
+      Info: '[sound="minecraft:entity.generic.eat;0.8;1.0"]<gray>你已喂食 <white>%player_display_name%</white></gray>'
+    Give:
+      Target: <gray>你已为 <white>%player_display_name%</white> <green>增加了 %amount%</green> 食物值 (<white>%oldvalue%</white><dark_gray> → </dark_gray><green>%newvalue%</green>)</gray>
+      Notify: <gray>你的食物等级增加了 <soft_yellow>%amount%</soft_yellow></gray>
+    Take:
+      Target: <gray>你已从 <white>%player_display_name%</white> 处 <red>移除了 %amount%</red> 食物值 (<white>%oldvalue%</white><dark_gray> → </dark_gray><red>%newvalue%</red>)</gray>
+      Notify: <gray>你的食物等级减少了 <soft_yellow>%amount%</soft_yellow></gray>
+  ForceRun:
+    Description: 强制玩家执行命令。
+    Forced:
+      Feedback: <gray>你已强制 <white>%player_display_name%</white> 执行：<soft_yellow>%command%</soft_yellow></gray>
+    Immunity: <gray>玩家 <white>%player_display_name%</white> 对此命令免疫</gray>
+  ForceSay:
+    Description: 强制玩家说话。
+    Forced:
+      Feedback: <gray>你已强制 <white>%player_display_name%</white> 说：<soft_yellow>%text%</soft_yellow></gray>
+    Immunity: <gray>玩家 <white>%player_display_name%</white> 对此命令免疫</gray>
+  GameMode:
+    Root:
+      Desc: 游戏模式命令。
+    Type:
+      Desc: 设置游戏模式为 %type%。
+    Notify: <gray>你的游戏模式已设置为 <soft_yellow>%type%</soft_yellow></gray>
+    Target: <gray>你已将 <white>%player_display_name%</white> 的游戏模式设置为 <soft_yellow>%type%</soft_yellow></gray>
+  Hat:
+    Desc: 将物品戴在头上。
+    Done: '[sound="minecraft:item.armor.equip_leather;0.8;1.0"]<gray>享受你的新帽子!</gray>'
+    EmptyHand: '[sound="minecraft:entity.villager.no;0.8;1.0"]<gray>你必须手持物品才能装备!</gray>'
+  Health:
+    Root:
+      Desc: 生命值命令。
+    Add:
+      Desc: 增加生命值。
+      Target: '[sound="minecraft:entity.witch.drink;0.8;1.0"]<gray>你已 <green>治疗</green> <white>%player_display_name%</white> <green>%amount%❤</green> (<white>%oldvalue%❤</white><dark_gray> → </dark_gray><green>%newvalue%❤</green>)</gray>'
+      Notify: '[sound="minecraft:entity.witch.drink;0.8;1.0"]<gray>你被 <green>治疗</green> 了 <green>%amount%❤</green></gray>'
+    Set:
+      Desc: 设置生命值。
+      Target: '[sound="minecraft:entity.witch.drink;0.8;1.0"]<gray>你已将 <white>%player_display_name%</white> 的生命值设置为 <yellow>%amount%❤</yellow> (<white>%oldvalue%❤</white><dark_gray> → </dark_gray><red>%newvalue%❤</red>)</gray>'
+      Notify: '[sound="minecraft:entity.witch.drink;0.8;1.0"]<gray>你的生命值已设置为 <yellow>%amount%❤</yellow></gray>'
+    Remove:
+      Desc: 减少生命值。
+      Target: '[sound="minecraft:entity.player.hurt;0.8;1.0"]<gray>你已 <red>伤害</red> <white>%player_display_name%</white> <red>%amount%❤</red> (<white>%oldvalue%❤</white><dark_gray> → </dark_gray><red>%newvalue%❤</red>)</gray>'
+      Notify: '[sound="minecraft:entity.player.hurt;0.8;1.0"]<gray>你被 <red>伤害</red> 了 <red>%amount%❤</red></gray>'
+    Restore:
+      Desc: 恢复玩家生命值或复活。
+      Notfiy: '[sound="minecraft:entity.witch.drink;0.8;1.0"]<gray>你已完全治愈</gray>'
+      Info: '[sound="minecraft:entity.witch.drink;0.8;1.0"]<gray>你已恢复 <white>%player_display_name%</white> 的生命值</gray>'
+    Revive:
+      Feedback: '[sound="minecraft:item.totem.use;0.8;1.0"]<gray>你已复活</gray>'
+      Notify: '[sound="minecraft:item.totem.use;0.8;1.0"]<gray>你已复活 <white>%player_display_name%</white></gray>'
+    TargetDead:
+      Feedback: '[sound="minecraft:entity.villager.no;0.8;1.0"]<gray><white>%player_display_name%</white> 的生命值无法修改，因为他们已死亡</gray>'
+      Notify: '[sound="minecraft:entity.villager.no;0.8;1.0"]<gray>你死亡时无法更改生命值</gray>'
+  Near:
+    Desc: 显示附近的玩家。
+    Nothing:
+      Notify: <gray><orange>%radius%</orange> 方块半径内没有玩家</gray>
+      Feedback: <gray><white>%player_display_name%</white> 周围 <orange>%radius%</orange> 方块半径内没有玩家</gray>
+  Nick:
+    Root:
+      Desc: 昵称命令。
+    Clear:
+      Desc: 移除自定义名称。
+      Target: <gray>移除了 <soft_yellow>%player_display_name%</soft_yellow> 的自定义名称</gray>
+      Notify: <gray>你的自定义名称已移除</gray>
+    Set:
+      Desc: 设置玩家自定义名称。
+      Target: <gray>已将 <soft_yellow>%player_name%</soft_yellow> 的自定义名称设置为 <soft_yellow>%name%</soft_yellow></gray>
+      Notify: <gray>你获得了新的自定义名称：<soft_yellow>%name%</soft_yellow></gray>
+    Change:
+      Desc: 设置自定义名称。
+      Done: <gray>你已将自定义名称更改为 <soft_yellow>%name%</soft_yellow></gray>
+    Error:
+      BadWords: <soft_red>不允许使用此名称</soft_red>
+      Regex: <soft_red>名称包含禁止字符</soft_red>
+      TooLong: <gray>名称不能超过 <soft_red>%amount%</soft_red> 个字符</gray>
+      TooShort: <soft_red>名称不能少于 <soft_red>%amount%</soft_red> 个字符</soft_red>
+  PlayerInfo:
+    Desc: 显示玩家信息。
+    Status:
+      onTrue: <green>在线</green>
+      onFalse: <red>离线</red>
+  Skull:
+    Custom:
+      Desc: 获取玩家头颅。
+    GetOwn: <gray>你获得了自己的头颅副本</gray>
+    GetOther: <gray>你获得了 <soft_yellow>%player_name%</soft_yellow> 的头颅</gray>
+    GetCustom: <gray>你获得了自定义 <soft_yellow>%player_name%</soft_yellow> 头颅</gray>
+    InvalidData: <soft_red>提供的头颅数据无效！你必须提供：<soft_yellow>玩家名称</soft_yellow>、<soft_yellow>URL</soft_yellow> 或 <soft_yellow>Base 64</soft_yellow> 值</soft_red>
+  Smite:
+    Desc: 用闪电劈击玩家。
+    Target: <gray>你已劈击 <soft_yellow>%player_name%</soft_yellow>!</gray>
+    Notify: <gray>你被劈击!</gray>
+  Speed:
+    Desc: 更改行走速度。
+    Done:
+      Notify: '[sound="minecraft:item.firecharge.use;0.8;1.0"]<gray>你的行走速度已更改为 <soft_yellow>%amount%</soft_yellow></gray>'
+      Target: '[sound="minecraft:item.firecharge.use;0.8;1.0"]<gray>你已将 <white>%player_display_name%</white> 的行走速度设置为 <soft_yellow>%amount%</soft_yellow></gray>'
+  Suicide:
+    Desc: 自杀。
+    Notify: <gray>你已自杀</gray>
+  Teleport:
+    Location:
+      Desc: 传送到特定位置。
+      Done:
+        Target: '[sound="minecraft:entity.enderman.teleport;0.8;1.0"]<gray>你已将 <white>%player_display_name%</white> 传送到 <red>%location_x%</red> <green>%location_y%</green> <blue>%location_z%</blue> @ <white>%location_world%</white></gray>'
+        Notify: '[sound="minecraft:entity.enderman.teleport;0.8;1.0"]<gray>你已被传送到 <red>%location_x%</red> <green>%location_y%</green> <blue>%location_z%</blue> @ <white>%location_world%</white></gray>'
+    Summon:
+      Desc: 将玩家传送到你的位置。
+      Yourself: '[sound="minecraft:entity.villager.no;0.8;1.0"]<gray>你不能召唤 <red>你自己</red></gray>'
+      Target: '[sound="minecraft:entity.enderman.teleport;0.8;1.0"]<gray>你已召唤 <white>%player_display_name%</white></gray>'
+      Notify: '[sound="minecraft:entity.enderman.teleport;0.8;1.0"]<gray>你已被 <white>%player_display_name%</white> 召唤</gray>'
+    To:
+      Desc: 传送到玩家位置。
+      Yourself: '[sound="minecraft:entity.villager.no;0.8;1.0"]<gray>你不能传送到 <red>你自己</red></gray>'
+      Done: '[sound="minecraft:entity.enderman.teleport;0.8;1.0"]<gray>你已被传送到 <white>%player_display_name%</white></gray>'
+    Send:
+      Desc: 将一个玩家传送到另一个。
+      Target: '[sound="minecraft:entity.enderman.teleport;0.8;1.0"]<gray>你已将 <red>%source%</red> 传送到 <blue>%target%</blue></gray>'
+      Notify: '[sound="minecraft:entity.enderman.teleport;0.8;1.0"]<gray>你已被传送到 <white>%player_display_name%</white></gray>'
+    Top:
+      Desc: 传送到你上方的最高方块。
+      Target: '[sound="minecraft:entity.enderman.teleport;0.8;1.0"]<gray>你已将 <white>%player_display_name%</white> 传送到地表</gray>'
+      Notify: '[sound="minecraft:entity.enderman.teleport;0.8;1.0"]<gray>你已被传送到地表</gray>'
+  Time:
+    Root:
+      Desc: 世界时间命令。
+    Show:
+      Desc: 显示当前世界时间。
+    SetTime:
+      Desc: 设置世界时间为 %s 刻。
+    SetTicks:
+      Desc: 更改世界时间。
+    Set:
+      Done: <gray>你已将 <white>%world%</white> 的时间设置为 <soft_yellow>%time%</soft_yellow> (<white>%total% 刻</white>)</gray>
+    Personal:
+      Set:
+        Target: <gray>你已将 <white>%player_display_name%</white> 的时间设置为 <soft_yellow>%time%</soft_yellow> (<white>%total% 刻</white>)</gray>
+        Notify: <gray>你的个人时间已设置为 <soft_yellow>%time%</soft_yellow> (<white>%total% 刻</white>)</gray>
+      Reset:
+        Target: <gray>你已重置 <soft_yellow>%player_display_name%</soft_yellow> 的时间</gray>
+        Notify: <gray>你的个人时间已重置</gray>
+  PlayerTime:
+    Root:
+      Desc: 玩家时间命令。
+    Set:
+      Desc: 设置独立玩家时间。
+    SetTime:
+      Desc: 设置独立玩家时间为 %s 刻。
+    Reset:
+      Desc: 重置独立玩家时间。
+  Weather:
+    Root:
+      Desc: 天气命令。
+    Type:
+      Desc: 设置世界天气为 %type%。
+    Set: <gray>你已将 <white>%world%</white> 的天气设置为 <soft_yellow>%type%</soft_yellow></gray>
+  Container:
+    Root:
+      Desc: 便携式容器命令。
+    Type:
+      Desc: 打开便携式 %type%。
+    Notify: <gray>你已打开 <soft_aqua>便携式 %type%</soft_aqua></gray>
+    Target: <gray>你已为 <soft_yellow>%player_display_name%.</soft_yellow> 打开了 <soft_yellow>便携式 %type%</soft_yellow></gray>
+  Enderchest:
+    Hub:
+      Desc: 末影箱命令。
+    Clear:
+      Desc: 清空末影箱。
+      Done:
+        Target: '[sound="minecraft:block.fire.extinguish;0.8;1.0"]<gray>你已清空 <white>%player_display_name%</white> 的 <soft_purple>末影箱</soft_purple></gray>'
+        Notify: '[sound="minecraft:block.fire.extinguish;0.8;1.0"]<gray>你的 <soft_purple>末影箱</soft_purple> 已清空</gray>'
+    Copy:
+      Desc: 复制玩家的末影箱。
+      Done:
+        Executor: '[sound="minecraft:item.armor.equip_leather;0.8;1.0"]<gray>你已将 <white>%player_display_name%</white> 的 <soft_purple>末影箱</soft_purple> 内容复制到你的</gray>'
+    Fill:
+      Desc: 用指定物品填充末影箱。
+      Done:
+        Executor: '[sound="minecraft:entity.item.pickup;0.8;1.0"]<gray>你已用 <white>%item%.</white> 填充了 <white>%player_display_name%</white> 的 <soft_purple>末影箱</soft_purple></gray>'
+    Open:
+      Desc: 打开末影箱。
+      Notify: '[sound="minecraft:block.ender_chest.open;0.8;1.0"]<gray>你已打开你的 <soft_purple>末影箱</soft_purple></gray>'
+      Targetted: '[sound="minecraft:block.ender_chest.open;0.8;1.0"]<gray>你已打开 <white>%player_display_name%</white> 的 <soft_purple>末影箱</soft_purple></gray>'
+    Repair:
+      Desc: 修复所有末影箱物品。
+      Notify: '[sound="minecraft:block.anvil.use;0.8;1.0"]<gray>你 <soft_purple>末影箱</soft_purple> 中的所有物品已修复</gray>'
+      Target: '[sound="minecraft:block.anvil.use;0.8;1.0"]<gray>你已修复 <white>%player_display_name%</white> 的 <soft_purple>末影箱</soft_purple> 中的所有物品</gray>'
+  Inventory:
+    Root:
+      Desc: 库存管理命令。
+    Clear:
+      Desc: 清空库存。
+      Done:
+        Target: '[sound="minecraft:block.fire.extinguish;0.8;1.0"]<gray>你已清空 <white>%player_display_name%</white> 的库存</gray>'
+        Notify: '[sound="minecraft:block.fire.extinguish;0.8;1.0"]<gray>你的库存已清空</gray>'
+    Copy:
+      Desc: 复制玩家的库存。
+      Done:
+        Notify: '[sound="minecraft:item.armor.equip_leather;0.8;1.0"]<gray>你已复制 <white>%player_display_name%</white> 的库存内容</gray>'
+    Fill:
+      Desc: 用特定物品填充玩家库存。
+      Done: '[sound="minecraft:entity.item.pickup;0.8;1.0"]<gray>你已用 <soft_yellow>%item%</soft_yellow> 填满了 <white>%player_display_name%</white> 库存中的所有空槽位</gray>'
+    Open:
+      Desc: 打开玩家库存。
+      Done: '[sound="minecraft:block.chest.open;0.8;1.0"]<gray>你已打开 <white>%player_display_name%</white> 的库存</gray>'
+    Repair:
+      Desc: 修复库存中的所有物品。
+      Notify: '[sound="minecraft:block.anvil.use;0.8;1.0"]<gray>你库存中的所有物品已修复</gray>'
+      Target: '[sound="minecraft:block.anvil.use;0.8;1.0"]<gray>你已修复 <white>%player_display_name%</white> 库存中的所有物品</gray>'
+Generic:
+  Command:
+    Cooldown:
+      Default: '[prefix="false"]<soft_red>你必须等待 <white>%time%</white> 才能再次使用 <white>%command%</white></soft_red>'
+      OneTime: '[prefix="false"]<soft_red>此命令是一次性的，你已使用过</soft_red>'
+Teleport:
+  Unsafe:
+    Feedback: <gray>无法传送 <white>%player_display_name%</white>，因为位置无效或不安全</gray>
+    Notify: <gray>传送已取消，因为位置无效或不安全</gray>
+  NoOfflineHandler:
+    Feedback: <gray>无法传送 <white>%player_display_name%</white>，因为没有可用的离线玩家处理器</gray>
+Error:
+  Command:
+    Argument:
+      InvalidType: <gray><soft_red>%input%</soft_red> 不是有效的类型!</gray>
+      InvalidMode: <gray><soft_red>%input%</soft_red> 不是有效的模式!</gray>
+      InvalidIPAddress: <gray><soft_red>%input%</soft_red> 不是 IP 地址!</gray>
+  EmptyHand: '[sound="minecraft:block.anvil.place;0.8;1.0"]<soft_red>你必须手持物品!</soft_red>'
+  NoInternalsHandler: <soft_red>操作失败：缺少服务器内部处理器</soft_red>
+  ItemNotDamageable: '[sound="minecraft:entity.villager.no;0.8;1.0"]<gray><soft_red>%item%</soft_red> 没有耐久度</gray>'
+  ItemNotStackable: '[sound="minecraft:entity.villager.no;0.8;1.0"]<gray><soft_red>%item%</soft_red> 无法堆叠</gray>'
+  ItemHasNoLore: '[sound="minecraft:entity.villager.no;0.8;1.0"]<gray><soft_red>%item%</soft_red> 没有属性</gray>'
+  ItemNotAPotion: <soft_red>你必须手持药水!</soft_red>
+Editor:
+  Input:
+    Generic:
+      Seconds: <gray>输入 <green>[秒数]</green></gray>
+      Name: <gray>输入 <green>[名称]</green></gray>
+Other:
+  Free: <green>免费</green>
+Afk:
+  Command:
+    Afk:
+      'Off':
+        Desc: 退出挂机模式。
+      'On':
+        Desc: 进入挂机模式。
+      Toggle:
+        Desc: 切换挂机模式。
+      Done:
+        Others: <gray>你已将 <orange>%player_display_name%</orange> 的挂机模式设置为 <white>%state%</white></gray>
+  Placeholder:
+    Mode:
+      onTrue: <dark_gray>[植物人]</dark_gray>
+      onFalse: <lgreen>[可移动实体]</lgreen>
+  Mode:
+    Enter: <gray><white>%player_display_name%</white> 现在开始挂机了</gray>
+    Exit: '<gray><white>%player_display_name%</white> 回来了 挂机时间: <orange>%time%</orange></gray>'
+Bans:
+  SortMode:
+    NEWEST: 最新
+    NAME_ASCENT: 名称升序
+    LEAST_DURATION: 最短时长
+    NAME_DESCENT: 名称降序
+    REASON: 原因
+    MOST_DURATION: 最长时长
+    OLDEST: 最旧
+    PUNISHER: 处罚者
+  PunishmentType:
+    WARN: 警告
+    BAN: 封禁
+    MUTE: 禁言
+  Command:
+    Argument:
+      Name:
+        Reason: 原因
+        TimeUnit: 时间单位
+    History:
+      Ban:
+        Desc: 列出玩家的封禁历史。
+      Mute:
+        Desc: 列出玩家的禁言历史。
+      Warn:
+        Desc: 列出玩家的警告历史。
+    BanList:
+      Desc: 列出活跃封禁。
+    MuteList:
+      Desc: 列出活跃禁言。
+    WarnList:
+      Desc: 列出活跃警告。
+    Ban:
+      Desc: 封禁玩家。
+      Done:
+        Permanent: <gray>你已永久封禁 <orange>%punishment_user%</orange>，原因：<white>%punishment_reason%</white></gray>
+        Temporary: <gray>你已封禁 <orange>%punishment_user%</orange>，时长：<white>%punishment_duration%</white>，原因：<white>%punishment_reason%</white></gray>
+    Banip:
+      Desc: 封禁 IP 地址。
+    Mute:
+      Desc: 禁言玩家。
+      Done:
+        Permanent: <gray>你已永久禁言 <orange>%punishment_user%</orange>，原因：<white>%punishment_reason%</white></gray>
+        Temporary: <gray>你已禁言 <orange>%punishment_user%</orange>，时长：<white>%punishment_duration%</white>，原因：<white>%punishment_reason%</white></gray>
+    Kick:
+      Desc: 踢出玩家。
+    Unmute:
+      Desc: 解除禁言。
+    Unban:
+      Desc: 解除封禁。
+    UnbanIP:
+      Desc: 解除 IP 封禁。
+    Warn:
+      Desc: 警告玩家。
+      Done:
+        Permanent: <gray>你已永久警告 <orange>%punishment_user%</orange>，原因：<white>%punishment_reason%</white></gray>
+        Temporary: <gray>你已警告 <orange>%punishment_user%</orange>，时长：<white>%punishment_duration%</white>，原因：<white>%punishment_reason%</white></gray>
+    Unwarn:
+      Desc: 移除玩家最新的警告。
+    Alts:
+      Desc: 列出玩家的别名账户。
+    Syntax:
+      InvalidTimeUnit: <gray><soft_red>%input%</soft_red> 不是有效的时间单位</gray>
+    BanIP:
+      Done:
+        Permanent: <gray>你已永久封禁 <orange>%punishment_user%</orange>，原因：<white>%punishment_reason%</white></gray>
+        Temporary: <gray>你已封禁 <orange>%punishment_user%</orange>，时长：<white>%punishment_duration%</white>，原因：<white>%punishment_reason%</white></gray>
+  Error:
+    Command:
+      Argument:
+        InvalidReason: <gray><soft_red>%value%</soft_red> 不是有效的原因</gray>
+    DataNotLoaded:
+      UserFeedback: <soft_red>系统正在重载，请稍后再试</soft_red>
+      AdminFeedback: <soft_red>操作不可用，数据正在从数据库加载...</soft_red>
+  Alts:
+    Global:
+      Nothing: <gray>玩家 <orange>%player_name%</orange> 没有已知的别名账户</gray>
+      List:
+      - '[prefix="false"]'
+      - ' '
+      - <dark_gray><st>-------</st></dark_gray><gradient:#FF0000:#D11717:#B51F1F><b> 检测到别名 </b></gradient><dark_gray><st>-------</st></dark_gray>
+      - '<gray>玩家 <red>%player_name%</red> (IP: <white>%address%</white>) 有 <red>%amount%</red> 个可能的别名账户:</gray>'
+      - '%entry%'
+      - <dark_gray><st>------------------------------</st></dark_gray>
+      - ' '
+      Entry: <dark_gray>» </dark_gray><click:run_command:"/pinfo %name%"><hover:show_text:"<gray>点击查看详情</gray>"><red>%name%</red></hover></click>
+  Immunity:
+    Feedback: <gray><orange>%target%</orange> 对处罚免疫</gray>
+  Kick:
+    Error:
+      Yourself: <gray>你不能踢出 <orange>你自己</orange></gray>
+      LowPriority: <gray>你不允许踢出 <orange>%player_display_name%</orange></gray>
+    Done: <gray>你已踢出 <orange>%player_display_name%</orange>，原因：<white>%reason%</white></gray>
+    Broadcast:
+    - '[prefix="false"]'
+    - ' '
+    - <dark_gray><st>-------</st></dark_gray><gradient:#FF0000:#D11717:#B51F1F><b> 玩家被踢出 </b></gradient><dark_gray><st>-------</st></dark_gray>
+    - <gray><dark_gray>»</dark_gray> 玩家 <red>%player_display_name%</red> 已被踢出</gray>
+    - <gray><dark_gray>»</dark_gray> 踢出者：<white>%executor%</white></gray>
+    - <gray><dark_gray>»</dark_gray> 原因：<white>%reason%</white></gray>
+    - <dark_gray><st>------------------------------</st></dark_gray>
+    - ' '
+  Ban:
+    Error:
+      Yourself: <gray>你不能封禁 <orange>你自己</orange></gray>
+      LowPriority: <gray>你不允许封禁 <orange>%player_name%</orange></gray>
+      HighDuration: <gray>你不允许封禁玩家超过 <orange>%time%</orange></gray>
+      HigherExists: <gray><orange>%punishment_user%</orange> 已被封禁更长时间</gray>
+    Permanent:
+      Broadcast:
+      - '[prefix="false",sound="minecraft:entity.lightning_bolt.thunder;0.5;1.0"]'
+      - ' '
+      - <dark_gray><st>-------</st></dark_gray><gradient:#FF0000:#D11717:#B51F1F><b> 玩家被封禁 </b></gradient><dark_gray><st>-------</st></dark_gray>
+      - <gray><dark_gray>»</dark_gray> 玩家 <red>%punishment_user%</red> 已被永久封禁</gray>
+      - <gray><dark_gray>»</dark_gray> 封禁者：<white>%punishment_punisher%</white></gray>
+      - <gray><dark_gray>»</dark_gray> 原因：<white>%punishment_reason%</white></gray>
+      - <dark_gray><st>------------------------------</st></dark_gray>
+      - ' '
+    Temporary:
+      Broadcast:
+      - '[prefix="false",sound="minecraft:entity.lightning_bolt.thunder;0.5;1.0"]'
+      - ' '
+      - <dark_gray><st>-------</st></dark_gray><gradient:#FF0000:#D11717:#B51F1F><b> 玩家被封禁 </b></gradient><dark_gray><st>-------</st></dark_gray>
+      - <gray><dark_gray>»</dark_gray> 玩家 <red>%punishment_user%</red> 已被封禁 <white>%punishment_duration%</white></gray>
+      - <gray><dark_gray>»</dark_gray> 封禁者：<white>%punishment_punisher%</white></gray>
+      - <gray><dark_gray>»</dark_gray> 原因：<white>%punishment_reason%</white></gray>
+      - <dark_gray><st>------------------------------</st></dark_gray>
+      - ' '
+  BanIP:
+    Permanent:
+      Broadcast:
+      - '[prefix="false",sound="minecraft:entity.lightning_bolt.thunder;0.5;1.0"]'
+      - ' '
+      - <dark_gray><st>-------</st></dark_gray><gradient:#FF0000:#D11717:#B51F1F><b> IP 被封禁 </b></gradient><dark_gray><st>-------</st></dark_gray>
+      - <gray><dark_gray>»</dark_gray> IP <white>%punishment_user%</white> 已被永久封禁</gray>
+      - <gray><dark_gray>»</dark_gray> 封禁者：<red>%punishment_punisher%</red></gray>
+      - <gray><dark_gray>»</dark_gray> 原因：<red>%punishment_reason%</red></gray>
+      - <dark_gray><st>------------------------------</st></dark_gray>
+      - ' '
+    Temporary:
+      Broadcast:
+      - '[prefix="false",sound="minecraft:entity.lightning_bolt.thunder;0.5;1.0"]'
+      - ' '
+      - <dark_gray><st>-------</st></dark_gray><gradient:#FF0000:#D11717:#B51F1F><b> IP 被封禁 </b></gradient><dark_gray><st>-------</st></dark_gray>
+      - <gray><dark_gray>»</dark_gray> IP <white>%punishment_user%</white> 已被封禁 <red>%punishment_duration%</red></gray>
+      - <gray><dark_gray>»</dark_gray> 封禁者：<red>%punishment_punisher%</red></gray>
+      - <gray><dark_gray>»</dark_gray> 原因：<red>%punishment_reason%</red></gray>
+      - <dark_gray><st>------------------------------</st></dark_gray>
+      - ' '
+  Unban:
+    Error:
+      HighDuration: <gray>你不允许解除封禁剩余封禁时间大于 <orange>%time%</orange> 的玩家</gray>
+  Punishment:
+    Error:
+      PlayerNotBanned: <gray>玩家 <orange>%punishment_user%</orange> 未被封禁</gray>
+      IPNotBanned: <gray>IP 地址 <orange>%target%</orange> 未被封禁</gray>
+      NotMuted: <gray>玩家 <orange>%punishment_user%</orange> 未被禁言</gray>
+      NotWarned: <gray>玩家 <orange>%punishment_user%</orange> 没有活跃警告可移除</gray>
+  UnBan:
+    Done: <gray>你已解除封禁 <orange>%punishment_user%</orange></gray>
+    Broadcast: <gray><white>%executor%</white> 已解除封禁 <orange>%punishment_user%</orange></gray>
+  UnBanIP:
+    Done: <gray>你已解除封禁 <orange>%punishment_user%</orange></gray>
+    Broadcast: <gray><white>%executor%</white> 已解除封禁 <orange>%punishment_user%</orange></gray>
+  Mute:
+    Error:
+      Yourself: <gray>你不能禁言 <orange>你自己</orange></gray>
+      LowPriority: <gray>你不允许禁言 <orange>%player_name%</orange></gray>
+      HighDuration: <gray>你不允许禁言玩家超过 <orange>%time%</orange></gray>
+      HigherExists: <gray><white>%punishment_user%</white> 已被禁言更长时间</gray>
+    Speak:
+      Notify: <gray>你被禁言。你可以在 <orange>%punishment_expires_in%</orange> 后再次说话</gray>
+    Permanent:
+      Notify:
+      - ''
+      - <gray>你已被永久禁言<hover:show_text:"<dark_gray>»</dark_gray><gray> 禁言者：</gray><white>%punishment_punisher%</white>
+      - <dark_gray>»</dark_gray><gray> 原因：</gray><white>%punishment_reason%</white>"><orange><b>[悬停查看详情]</b></orange></hover></gray>
+      Broadcast:
+      - '[prefix="false",sound="minecraft:entity.lightning_bolt.thunder;0.5;1.0"]'
+      - ' '
+      - <dark_gray><st>-------</st></dark_gray><gradient:#FF0000:#D11717:#B51F1F><b> 玩家被禁言 </b></gradient><dark_gray><st>-------</st></dark_gray>
+      - <gray><dark_gray>»</dark_gray> 玩家 <red>%punishment_user%</red> 已被永久禁言</gray>
+      - <gray><dark_gray>»</dark_gray> 禁言者：<white>%punishment_punisher%</white></gray>
+      - <gray><dark_gray>»</dark_gray> 原因：<white>%punishment_reason%</white></gray>
+      - <dark_gray><st>------------------------------</st></dark_gray>
+      - ' '
+    Temporary:
+      Notify:
+      - ''
+      - <gray>你已被禁言 (<white>%punishment_duration%)<hover:show_text:"<dark_gray>»</dark_gray><gray> 禁言者：</gray><white>%punishment_punisher%</white>
+      - <dark_gray>»</dark_gray><gray> 原因：</gray><white>%punishment_reason%</white>"><orange><b>[悬停查看详情]</b></orange></hover></white></gray>
+      Broadcast:
+      - '[prefix="false",sound="minecraft:entity.lightning_bolt.thunder;0.5;1.0"]'
+      - ' '
+      - <dark_gray><st>-------</st></dark_gray><gradient:#FF0000:#D11717:#B51F1F><b> 玩家被禁言 </b></gradient><dark_gray><st>-------</st></dark_gray>
+      - <gray><dark_gray>»</dark_gray> 玩家 <red>%punishment_user%</red> 已被禁言 <white>%punishment_duration%</white></gray>
+      - <gray><dark_gray>»</dark_gray> 禁言者：<white>%punishment_punisher%</white></gray>
+      - <gray><dark_gray>»</dark_gray> 原因：<white>%punishment_reason%</white></gray>
+      - <dark_gray><st>------------------------------</st></dark_gray>
+      - ' '
+  Unmute:
+    Error:
+      HighDuration: <gray>你不允许解除禁言剩余禁言时间大于 <orange>%time%</orange> 的玩家</gray>
+    Done: <gray>你已解除禁言 <orange>%executor%</orange></gray>
+    Notify: <gray>你已被 <white>%executor%</white> 解除禁言</gray>
+    Broadcast: <gray>玩家 <orange>%punishment_user%</orange> 已被 <white>%executor%</white> 解除禁言</gray>
+  Warn:
+    Error:
+      Yourself: <gray>你不能警告 <orange>你自己</orange></gray>
+      LowPriority: <gray>你不允许警告 <orange>%player_name%</orange></gray>
+      HighDuration: <gray>你不允许警告玩家超过 <orange>%time%</orange></gray>
+    Permanent:
+      Notify:
+      - ''
+      - <gray>你已被永久警告<hover:show_text:"<dark_gray>»</dark_gray><gray> 警告者：</gray><white>%punishment_punisher%</white>
+      - <dark_gray>»</dark_gray><gray> 原因：</gray><white>%punishment_reason%</white>"><orange><b>[悬停查看详情]</b></orange></hover></gray>
+      Broadcast:
+      - '[prefix="false",sound="minecraft:entity.lightning_bolt.thunder;0.5;1.0"]'
+      - ' '
+      - <dark_gray><st>-------</st></dark_gray><gradient:#FF0000:#D11717:#B51F1F><b> 玩家被警告 </b></gradient><dark_gray><st>-------</st></dark_gray>
+      - <gray><dark_gray>»</dark_gray> 玩家 <red>%punishment_user%</red> 已被永久警告</gray>
+      - <gray><dark_gray>»</dark_gray> 由：<white>%punishment_punisher%</white></gray>
+      - <gray><dark_gray>»</dark_gray> 原因：<white>%punishment_reason%</white></gray>
+      - <dark_gray><st>------------------------------</st></dark_gray>
+      - ' '
+    Temporary:
+      Notify:
+      - ''
+      - <gray>你已被警告 (<white>%punishment_duration%)<hover:show_text:"<dark_gray>»</dark_gray><gray> 警告者：</gray><white>%punishment_punisher%</white>
+      - <dark_gray>»</dark_gray><gray> 原因：</gray><white>%punishment_reason%</white>"><orange><b>[悬停查看详情]</b></orange></hover></white></gray>
+      Broadcast:
+      - '[prefix="false",sound="minecraft:entity.lightning_bolt.thunder;0.5;1.0"]'
+      - ' '
+      - <dark_gray><st>-------</st></dark_gray><gradient:#FF0000:#D11717:#B51F1F><b> 玩家被警告 </b></gradient><dark_gray><st>-------</st></dark_gray>
+      - <gray><dark_gray>»</dark_gray> 玩家 <red>%punishment_user%</red> 已被警告 <white>%punishment_duration%</white></gray>
+      - <gray><dark_gray>»</dark_gray> 由：<white>%punishment_punisher%</white></gray>
+      - <gray><dark_gray>»</dark_gray> 原因：<white>%punishment_reason%</white></gray>
+      - <dark_gray><st>------------------------------</st></dark_gray>
+      - ' '
+  Unwarn:
+    Error:
+      HighDuration: <gray>你不允许解除警告剩余警告时间大于 <orange>%time%</orange> 的玩家</gray>
+    Done: <gray>你已移除 <orange>%punishment_user%</orange> 的所有警告</gray>
+    Notify: <gray><white>%executor%</white> 已移除你的所有警告</gray>
+    Broadcast: <gray><white>%executor%</white> 已移除 <orange>%punishment_user%</orange> 的所有警告</gray>
+  Other:
+    NoReason: <无原因>
+  UI:
+    History:
+      TypeName:
+        WARN: 警告
+        BAN: 封禁
+        MUTE: 禁言
+      Icon:
+        Active:
+          Name: <white>%type%</white><dark_gray> • <green>活跃</green></dark_gray>
+          Lore:
+          - <i><dark_gray>"%punishment_reason%"</dark_gray></i>
+          - ''
+          - <red>➥ <gray> staff：</gray>%punishment_punisher%</red>
+          - <red>➥ <gray>日期：</gray>%punishment_date_created%</red>
+          - <red>➥ <gray>时长：</gray>%punishment_duration%</red>
+          - ''
+          - <gold>⌛ <gray>过期时间：</gray>%punishment_expires_in%</gold>
+        Paused:
+          Name: <white>%type%</white><dark_gray> • <yellow>未激活</yellow></dark_gray>
+          Lore:
+          - <i><dark_gray>"%punishment_reason%"</dark_gray></i>
+          - ''
+          - <red>➥ <gray> staff：</gray>%punishment_punisher%</red>
+          - <red>➥ <gray>日期：</gray>%punishment_date_created%</red>
+          - <red>➥ <gray>时长：</gray>%punishment_duration%</red>
+          - ''
+          - <gold>⌛ <gray>过期时间：</gray>%punishment_expires_in%</gold>
+        Expired:
+          Name: <white>%type%</white><dark_gray> • <green>已过期</green></dark_gray>
+          Lore:
+          - <i><dark_gray>"%punishment_reason%"</dark_gray></i>
+          - ''
+          - <red>➥ <gray> staff：</gray>%punishment_punisher%</red>
+          - <red>➥ <gray>日期：</gray>%punishment_date_created%</red>
+          - <red>➥ <gray>时长：</gray>%punishment_duration%</red>
+          - ''
+          - <dark_green>⌛ <gray>过期：</gray>%punishment_date_expired%</dark_green>
+    List:
+      TypeName:
+        WARN: 警告
+        BAN: 封禁
+        MUTE: 禁言
+      Icon:
+        Active:
+          Name: <white>%punishment_user%</white><dark_gray> • <green>活跃</green></dark_gray>
+          Lore:
+          - <i><dark_gray>"%punishment_reason%"</dark_gray></i>
+          - ''
+          - <red>➥ <gray> staff：</gray>%punishment_punisher%</red>
+          - <red>➥ <gray>日期：</gray>%punishment_date_created%</red>
+          - <red>➥ <gray>时长：</gray>%punishment_duration%</red>
+          - ''
+          - <gold>⌛ <gray>过期时间：</gray>%punishment_expires_in%</gold>
+        Paused:
+          Name: <white>%punishment_user%</white><dark_gray> • <yellow>未激活</yellow></dark_gray>
+          Lore:
+          - <i><dark_gray>"%punishment_reason%"</dark_gray></i>
+          - ''
+          - <red>➥ <gray> staff：</gray>%punishment_punisher%</red>
+          - <red>➥ <gray>日期：</gray>%punishment_date_created%</red>
+          - <red>➥ <gray>时长：</gray>%punishment_duration%</red>
+          - ''
+          - <gold>⌛ <gray>过期时间：</gray>%punishment_expires_in%</gold>
+        Expired:
+          Name: <white>%punishment_user%</white><dark_gray> • <green>已过期</green></dark_gray>
+          Lore:
+          - <i><dark_gray>"%punishment_reason%"</dark_gray></i>
+          - ''
+          - <red>➥ <gray> staff：</gray>%punishment_punisher%</red>
+          - <red>➥ <gray>日期：</gray>%punishment_date_created%</red>
+          - <red>➥ <gray>时长：</gray>%punishment_duration%</red>
+          - ''
+          - <dark_green>⌛ <gray>过期：</gray>%punishment_date_expired%</dark_green>
+BackLocation:
+  Command:
+    Back:
+      Desc: 传送到上一个位置。
+      Others:
+        Nothing: '[sound="minecraft:entity.villager.no;0.8;1.0"]<gray><orange>%player_display_name%</orange> 没有可返回的位置</gray>'
+        Done: '[sound="minecraft:entity.enderman.teleport;0.8;1.0"]<gray>你已将 <orange>%player_display_name%</orange> 传送到他们上一个位置</gray>'
+    DeathBack:
+      Desc: 传送到死亡位置。
+      Others:
+        Nothing: '[sound="minecraft:entity.villager.no;0.8;1.0"]<gray><orange>%player_display_name%</orange> 没有死亡位置</gray>'
+        Done: '[sound="minecraft:entity.enderman.teleport;0.8;1.0"]<gray>你已将 <orange>%player_display_name%</orange> 传送到他们的死亡位置</gray>'
+  Previous:
+    Teleport:
+      Nothing: '[sound="minecraft:entity.villager.no;0.8;1.0"]<gray>你没有可返回的位置</gray>'
+      Notify: '[sound="minecraft:entity.enderman.teleport;0.8;1.0"]<gray>你已传送到你的上一个位置</gray>'
+  Death:
+    Teleport:
+      Nothing: '[sound="minecraft:entity.villager.no;0.8;1.0"]<gray>你没有死亡位置</gray>'
+      Notify: '[sound="minecraft:entity.enderman.teleport;0.8;1.0"]<gray>你已传送到你的死亡位置</gray>'
+Chat:
+  ChannelDistanceType:
+    SERVER_WIDE: 全服
+    WORLD_WIDE: 全世界
+    RANGE: 范围
+  SpyType:
+    COMMAND: 命令
+    CHAT: 聊天
+    SOCIAL: 社交
+  Commant:
+    Argument:
+      Name:
+        Channel: 频道
+  Command:
+    Channel:
+      Root:
+        Desc: 聊天频道命令。
+      Join:
+        Desc: 加入频道。
+      Leave:
+        Desc: 离开频道。
+    Mentions:
+      Root:
+        Desc: 聊天提及命令。
+      Toggle:
+        Desc: 切换聊天提及。
+        Notify: <gray>你已将聊天提及设置为 <white>%state%</white></gray>
+        Target: <gray>你已将 <orange>%player_display_name%</orange> 的聊天提及设置为 <white>%state%</white></gray>
+      'On':
+        Desc: 启用聊天提及。
+      'Off':
+        Desc: 禁用聊天提及。
+    Conversations:
+      'On':
+        Desc: 对话命令。
+      'Off':
+        Desc: 拒绝来自玩家的私聊。
+      Toggle:
+        Desc: 切换来自玩家的私聊。
+    ClearChat:
+      Desc: 清除聊天。
+      Done: <gray>聊天已被 <orange>%name%</orange> 清除</gray>
+    Me:
+      Desc: 在聊天中显示动作。
+    Tell:
+      Desc: 发送私聊。
+    SpyMode:
+      Toggle:
+        Desc: 切换 %type% 监视。
+      'On':
+        Desc: 启用 %type% 监视。
+      'Off':
+        Desc: 禁用 %type% 监视。
+    SpyLogger:
+      Desc: 切换监视记录器。
+    Reply:
+      Desc: 快速回复最新私聊。
+      Error:
+        Empty: '[prefix="false"]<soft_red>你未收到任何私聊</soft_red>'
+    Spy:
+      Mode:
+        Done:
+          Others: <gray>你已将 <orange>%player_display_name%</orange> 的 <white>%type%</white> 监视模式设置为 <white>%state%</white></gray>
+          Notify: <gray>你的 <orange>%type%</orange> 监视模式已设置为 <white>%state%</white></gray>
+      Logger:
+        Done: <gray>你已为 <orange>%player_display_name%</orange> 设置 <white>%type%</white> 监视记录器为 <white>%state%</white></gray>
+    TogglePM:
+      Toggle:
+        Notify: <gray>你的对话已设置为 <white>%state%</white></gray>
+        Target: <gray>你已将 <orange>%player_display_name%</orange> 的对话设置为 <white>%state%</white></gray>
+  Error:
+    Command:
+      Argument:
+        InvalidChannel: <gray><soft_red>%input%</soft_red> 不是有效的频道</gray>
+  Chat:
+    AntiSpam:
+      Similar:
+        Msg: '[sound="minecraft:entity.villager.no;0.8;1.0"]<gray>请勿发送相同内容</gray>'
+        Cmd: '[sound="minecraft:entity.villager.no;0.8;1.0"]<gray>请勿 spam 命令</gray>'
+      Delay:
+        Msg: '[sound="minecraft:entity.villager.no;0.8;1.0"]<gray>请等待 <orange>%time%</orange> 后再发送消息</gray>'
+    Mention:
+      Error:
+        Cooldown: <gray>你可以在 <orange>%time%</orange> 后再次提及 <white>%name%</white></gray>
+  Channel:
+    Speak:
+      NoPermission: '[sound="minecraft:entity.villager.no;0.8;1.0"]<gray>你没有权限在此频道说话</gray>'
+    Join:
+      Success: '[sound="minecraft:block.wooden_door.open;0.8;1.0"]<gray>你已加入 <white>%channel_name%</white> 频道</gray>'
+      Error:
+        NoPermission: '[sound="minecraft:entity.villager.no;0.8;1.0"]<gray>你没有权限加入此频道</gray>'
+        AlreadyIn: '[sound="minecraft:entity.villager.no;0.8;1.0"]<gray>你已加入此频道!</gray>'
+    Leave:
+      Success: '[sound="minecraft:block.wooden_door.close;0.8;1.0"]<gray>你已离开 <white>%channel_name%</white> 频道</gray>'
+      Error:
+        NotIn: '[prefix="false"]<gray>你不在频道中!</gray>'
+    NobodyHere: <gray>没人听到你</gray>
+  Mentions:
+    Notify:
+    - '[title_times="20:60:20",sound="minecraft:block.note_block.bell;0.8;1.0",type="title"]'
+    - <green><b>被提及!</b></green>
+    - <gray><green>%player_display_name%</green> 在聊天中提及了你</gray>
+  ItemShow:
+    Nothing: '[sound="minecraft:entity.villager.no;0.8;1.0"]<gray>你必须手持物品才能在聊天中展示</gray>'
+  PrivateMessage:
+    Error:
+      Yourself: <gray>你不能发送私聊给 <orange>你自己</orange></gray>
+      Disabled: <gray><orange>%player_display_name%</orange> 已禁用对话</gray>
+      Ignorance: <gray><orange>%player_display_name%</orange> 不接受与你的对话</gray>
+  Conversations:
+    TargetAfk: <gray><white>%player_display_name%</white> 处于挂机状态，可能不会回复</gray>
+Essential:
+  Command:
+    Invulnerability:
+      Desc: 切换无敌。
+  Invulnerability:
+    Toggle:
+      Notify: <gray>你的 <orange>无敌</orange> 已设置为 <white>%state%</white></gray>
+      Feedback: <gray>你已将 <white>%player_display_name%</white> 的 <orange>无敌</orange> 设置为 <white>%state%</white></gray>
+    RestrictedMobDamage: '[type="action_bar"]<gray>无敌时你不能伤害 <red>生物</red>!</gray>'
+    RestrictedPlayerDamage: '[type="action_bar"]<gray>无敌时你不能伤害 <red>玩家</red>!</gray>'
+    RestrictedWorld:
+      Usage: <gray>你不能在此世界使用 <orange>无敌</orange></gray>
+      Notify: <gray>你的 <orange>无敌</orange> 已切换为 <red>关闭</red>，因为此世界不允许</gray>
+Extras:
+  Command:
+    Chairs:
+      Desc: 切换椅子。
+      Notify: <lgray>设置 <lyellow>椅子</lyellow> 为 <lyellow>%state%</lyellow></lgray>
+      Target: <lgray>设置 <lyellow>%player_display_name%</lyellow> 的 <lyellow>椅子</lyellow> 为 <lyellow>%state%</lyellow></lgray>
+    Sit:
+      Desc: 坐在方块上。
+      Notify: <lgray>你现在坐着</lgray>
+      Target: <lgray>让 <lyellow>%player_name%</lyellow> 坐下</lgray>
+    ChestSort:
+      Desc: 切换箱子排序。
+      Notify: <lgray>设置 <lyellow>箱子排序</lyellow> 为 <lyellow>%state%</lyellow></lgray>
+      Target: <lgray>设置 <lyellow>%player_display_name%</lyellow> 的 <lyellow>箱子排序</lyellow> 为 <lyellow>%state%</lyellow></lgray>
+Homes:
+  HomeType:
+    PUBLIC: 公共
+    PRIVATE: 私人
+  Command:
+    Argument:
+      Name:
+        Home: 家
+    Homes:
+      Root:
+        Desc: 家命令。
+      Delete:
+        Desc: 删除一个家。
+      Teleport:
+        Desc: 传送到一个家。
+      Set:
+        Desc: 设置家点。
+      Visit:
+        Desc: 访问一个家。
+      Invite:
+        Desc: 邀请玩家到家。
+        Usage: '[sound="minecraft:entity.villager.no;0.8;1.0"]<gray>你不能邀请你自己!</gray>'
+      List:
+        Desc: 家列表。
+    HomesAdmin:
+      Root:
+        Desc: 家管理命令。
+      Delete:
+        Desc: 删除玩家的家。
+        Done:
+          Single: '[sound="minecraft:entity.zombie.break_wooden_door;0.8;1.0"]<gray>你已删除 <orange>%player_name%</orange> 的 <white>%home_id%</white> 家</gray>'
+          All: '[sound="minecraft:entity.zombie.break_wooden_door;0.8;1.0"]<gray>你已删除 <orange>%player_name%</orange> 的所有家</gray>'
+      Create:
+        Desc: 为玩家创建一个家。
+        Done:
+          Fresh: '[sound="minecraft:block.wooden_door.open;0.8;1.0"]<gray>你已为 <orange>%player_name%</orange> 设置 <white>%home_id%</white> 家</gray>'
+          Edited: '[sound="minecraft:block.wooden_door.open;0.8;1.0"]<gray>你已移动 <orange>%player_name%</orange> 的 <white>%home_id%</white> 家</gray>'
+    Syntax:
+      InvalidHome: <gray><soft_red>%input%</soft_red> 不是有效的家</gray>
+  Data:
+    NotLoaded: '[sound="minecraft:entity.villager.no;0.8;1.0"]<gray>请稍候，数据正在加载...</gray>'
+  Invite:
+    Success:
+      Feedback: '[sound="minecraft:block.wooden_door.open;0.8;1.0"]<gray>你已邀请 <orange>%player_name%</orange> 到你的 <white>%home_name%</white> 家</gray>'
+      Notify: '[sound="minecraft:block.wooden_door.open;0.8;1.0"]<gray>你已被邀请到 <orange>%player_name%</orange> 的 <white>%home_name%</white> 家!</gray>'
+  Admin:
+    Delete:
+      Home:
+        NoHome: '[sound="minecraft:entity.villager.no;0.8;1.0"]<gray>玩家 <orange>%player_name%</orange> 没有 <white>%home_id%</white> 家</gray>'
+  Home:
+    Teleports:
+      Error:
+        Inactive: '[sound="minecraft:entity.villager.no;0.8;1.0"]<gray>家 <orange>%home_name%</orange> 位于当前不可用的世界</gray>'
+      Success:
+      - '[title_times="20:60:20",sound="minecraft:entity.enderman.teleport;0.8;1.0",type="title"]'
+      - <orange><b>家</b></orange>
+      - <gray>你已传送到 <orange>%home_name%</orange> 家</gray>
+    Visit:
+      Success: '[sound="minecraft:entity.enderman.teleport;0.8;1.0"]<gray>你已传送到 <orange>%home_owner%</orange> 的 <white>%home_name%</white> 家</gray>'
+      Error:
+        NotPermitted: '[sound="minecraft:entity.villager.no;0.8;1.0"]<gray>你没有此家的邀请!</gray>'
+    Set:
+      Error:
+        Limit: '[sound="minecraft:entity.villager.no;0.8;1.0"]<gray>你最多创建 <orange>%amount%</orange> 个家，上限 <orange>%max%</orange> 个</gray>'
+        World: '[sound="minecraft:entity.villager.no;0.8;1.0"]<gray>你不能在此世界创建家</gray>'
+        Protection: '[sound="minecraft:entity.villager.no;0.8;1.0"]<gray>你不能在保护区域创建家</gray>'
+      Success:
+      - '[title_times="20:60:20",sound="minecraft:block.wooden_door.open;0.8;1.0",type="title"]'
+      - <green><b>家已设置!</b></green>
+      - <gray>用法：<green>/home %home_id%</green> | 查看家：<green>/homelist</green></gray>
+      Edited:
+      - '[title_times="20:60:20",sound="minecraft:block.wooden_door.close;0.8;1.0",type="title"]'
+      - <yellow><b>家已移动!</b></yellow>
+      - <gray>你已移动你的家</gray>
+    Delete:
+      Done:
+      - '[title_times="20:60:20",sound="minecraft:entity.zombie.break_wooden_door;0.8;1.0",type="title"]'
+      - <red><b>家已移除!</b></red>
+      - <gray>你已移除 <red>%home_name%</red> 家</gray>
+  UI:
+    Homes:
+      Normal:
+        Name: <yellow><b>家:</b></yellow> <white>%home_name%</white>
+        Lore:
+        - '<gray><dark_gray>» </dark_gray>ID: <white>%home_id%</white></gray>'
+        - <gray><dark_gray>» </dark_gray>类型：<white>%home_type%</white></gray>
+        - <gray><dark_gray>» </dark_gray>位置：<white><gray><red>%home_location_x%</red>, <green>%home_location_y%</green>, <blue>%home_location_z%</blue> @ <white>%home_location_world%</white></gray></white></gray>
+        - ' '
+        - <yellow>→ <u>点击配置</u></yellow>
+      Favorite:
+        Name: <green><b>家:</b></green> <white>%home_name%</white>
+        Lore:
+        - <gray><green>✔</green> 这是你的 <green>收藏</green> 家</gray>
+        - ' '
+        - '<gray><dark_gray>» </dark_gray>ID: <white>%home_id%</white></gray>'
+        - <gray><dark_gray>» </dark_gray>类型：<white>%home_type%</white></gray>
+        - <gray><dark_gray>» </dark_gray>位置：<white><gray><red>%home_location_x%</red>, <green>%home_location_y%</green>, <blue>%home_location_z%</blue> @ <white>%home_location_world%</white></gray></white></gray>
+        - ' '
+        - <green>→ <u>点击配置</u></green>
+      Locked:
+        Name: <red><b>锁定槽位</b></red>
+        Lore:
+        - <gray>升级你的 <red>/rank</red> 以解锁更多槽位!</gray>
+      Empty:
+        Name: <white><b>空槽位</b></white>
+        Lore:
+        - <white>→ <u>点击设置家</u></white>
+      Teleport:
+        Name: <green><b>传送</b></green>
+        Lore:
+        - <green>→ <u>点击传送</u></green>
+    IconSelection:
+      Icon:
+        Name: <yellow><b>图标：</b></yellow><white>%name%</white>
+        Lore:
+        - <yellow>→ <u>点击选择</u></yellow>
+    InvitedPlayers:
+      Player:
+        Name: <yellow><b>%player_name%</b></yellow>
+        Lore:
+        - <yellow>→ <u>按 <key:key.drop> 移除</u></yellow>
+  Error:
+    NoHomes: <gray>你没有设置家</gray>
+  Dialog:
+    HomeName:
+      Title: 家名称
+      Body:
+        Contents: 输入家的新名称。
+        Width: 400
+      Input:
+        Name: 名称
+    InvitePlayer:
+      Title: <yellow><b>家</b></yellow><dark_gray> » </dark_gray><white>邀请玩家</white>
+      Body:
+        Contents: 输入你想邀请到家的玩家名称。
+        Width: 400
+      Input:
+        PlayerName: 玩家名称
+Item:
+  Disenchant:
+    Single:
+      Nothing: '[sound="minecraft:entity.villager.no;0.8;1.0"]<gray><white>%item%</white> 不包含 <soft_red>%enchantment%</soft_red> 附魔</gray>'
+      Feedback: '[sound="minecraft:block.enchantment_table.use;0.8;1.0"]<gray>你已从 <white>%item%</white> 移除了 <soft_purple>%enchantment% %level%</soft_purple></gray>'
+    Full:
+      Nothing: '[sound="minecraft:entity.villager.no;0.8;1.0"]<gray><white>%item%</white> 未附魔</gray>'
+      Feedback: '[sound="minecraft:block.enchantment_table.use;0.8;1.0"]<gray>你已移除 <white>%item%</white> 的所有附魔</gray>'
+Kits:
+  Command:
+    Kits:
+      Root:
+        Desc: 礼包命令。
+      Editor:
+        Desc: 打开礼包编辑器。
+      Preview:
+        Desc: 预览礼包。
+        Others: <gray>你已向 <orange>%player_display_name%</orange> 展示了 <white>%kit_name%</white> 礼包预览</gray>
+      Get:
+        Desc: 获取礼包。
+      Give:
+        Desc: 给予礼包。
+        Done: <gray>你已将 <white>%kit_name%</white> 礼包给予 <orange>%player_display_name%</orange></gray>
+      List:
+        Desc: 打开礼包 GUI。
+        Others: <gray>你已向 <orange>%player_display_name%</orange> 展示了礼包 GUI</gray>
+      ResetCooldown:
+        Desc: 重置礼包冷却。
+        Done: <gray>你已重置 <orange>%player_name%</orange> 的 <white>%kit_name%</white> 礼包冷却</gray>
+        Notify: <gray>你的 <white>%kit_name%</white> 礼包冷却已重置!</gray>
+      SetCooldown:
+        Desc: 将礼包设为冷却。
+        Done: <gray>你已将 <orange>%player_name%</orange> 的 <white>%kit_name%</white> 礼包设为 <white>%amount%</white> 冷却</gray>
+        Notify: <gray>你的 <white>%kit_name%</white> 礼包已设为 <orange>%amount%</orange> 冷却</gray>
+    Syntax:
+      InvalidKit: <gray><soft_red>%input%</soft_red> 不是有效的礼包!</gray>
+  Data:
+    Error:
+      NotLoaded: '[sound="minecraft:entity.villager.no;0.8;1.0"]<gray>请稍候。数据正在加载...</gray>'
+  Kit:
+    Error:
+      NoPermission: '[sound="minecraft:entity.villager.no;0.8;1.0"]<gray>你没有权限使用此礼包!</gray>'
+      NotEnoughFunds: '[sound="minecraft:entity.villager.no;0.8;1.0"]<gray>你需要 <soft_red>$%kit_cost_money%</soft_red> 才能装备此礼包</gray>'
+      Cooldown:
+        Expirable: <gray><white>%kit_name%</white> 礼包正在冷却：<orange>%cooldown%</orange></gray>
+        OneTimed: <gray>你已使用过此一次性礼包</gray>
+    Get:
+    - '[title_times="20:60:20",sound="minecraft:item.armor.equip_leather;0.8;1.0",type="title"]'
+    - <green><b>礼包已装备</b></green>
+    - <gray>你已装备 <green>%kit_name%</green> 礼包</gray>
+  KitCreation:
+    Error: <gray>礼包未创建：<soft_red>%message%</soft_red></gray>
+  Editor:
+    Title:
+      List: <black>礼包编辑器</black>
+      Settings: <black>礼包设置</black>
+      Content: <black>礼包内容</black>
+  Dialog:
+    KitCreation:
+      Title: 礼包创建
+      Body:
+        Contents: 输入新礼包的标识符。
+        Width: 400
+      Input:
+        ID: 礼包标识符
+    KitName:
+      Title: 礼包名称
+      Body:
+        Contents: 输入礼包名称。
+        Width: 400
+      Input:
+        Name: 名称
+    KitDescription:
+      Title: 礼包描述
+      Body:
+        Contents: 输入礼包描述。
+        Width: 400
+      Input:
+        Name: 描述
+    KitPriority:
+      Title: 礼包优先级
+      Body:
+        Contents: 输入礼包优先级。
+        Width: 400
+      Input:
+        Name: 优先级
+    KitCost:
+      Title: 礼包成本
+      Body:
+        Contents: 输入礼包成本。
+        Width: 400
+      Input:
+        Name: 成本
+    KitCooldown:
+      Title: 礼包冷却
+      Body:
+        Contents: 输入冷却值。
+        Width: 400
+      Input:
+        Name: 冷却
+    KitCommands:
+      Title: <yellow><b>礼包</b></yellow><dark_gray> » </dark_gray><white>命令</white>
+      Body:
+        Contents:
+        - 输入多达 <soft_yellow>5 个命令</soft_yellow>，当玩家收到礼包时执行。命令将按以下列出的顺序执行。
+        - ''
+        - <soft_yellow>→</soft_yellow> 使用 <soft_yellow>%player_name%</soft_yellow> 占位符插入收到礼包的玩家名称。
+        - ''
+        - <soft_yellow>→</soft_yellow> 你可以使用内部 <soft_yellow>礼包</soft_yellow> 占位符：点击 <click:open_url:"https://nightexpressdev.com/"><soft_green><u>此处</u></soft_green></click> 查看文档。
+        - ''
+        - <soft_yellow>→</soft_yellow> 你可以使用 <soft_yellow>PlaceholderAPI</soft_yellow> 插件的任何占位符。
+        Width: 400
+      Input:
+        Command: 命令 <soft_yellow>#%s</soft_yellow>
+  UI:
+    KitBrowser:
+      KitStatus:
+        ON_COOLDOWN: <orange>⌛ <u>礼包正在冷却</u></orange>
+        AVAILABLE: <green>→ <u>点击获取此礼包!</u></green>
+        TOO_EXPENSIVE: <red>✘ <u>你无法负担此礼包</u></red>
+        NO_PERMISSION: <red>✘ <u>你不允许使用此礼包</u></red>
+      KitIcon:
+        Name: <yellow><b>礼包：</b></yellow><white>%kit_name%</white>
+        Lore:
+        - '%kit_description%'
+        - '%empty-if-above%'
+        - <gray><dark_gray>» </dark_gray>成本：<white>%kit_cost_money%</white></gray>
+        - <gray><dark_gray>» </dark_gray>冷却：<white>%kit_cooldown%</white></gray>
+        - ' '
+        - '%status%'
+    Editor:
+      KitList:
+        Kit:
+          Name: '<yellow><b>礼包：</b></yellow><white>%kit_name%</white> <gray>(ID: %kit_id%)</gray>'
+          Lore:
+          - ' '
+          - <soft_yellow>→ <u>点击编辑</u></soft_yellow>
+        Creation:
+          Name: 创建礼包
+          Lore:
+          - ' '
+          - <green>→ <u>点击创建</u></green>
+      KitSettings:
+        Name:
+          Name: <soft_yellow><b>显示名称</b></soft_yellow>
+          Lore:
+          - <gray><dark_gray>» </dark_gray>当前：<white>%kit_name%</white></gray>
+          - ' '
+          - <soft_yellow>→ <u>点击更改</u></soft_yellow>
+        Description:
+          Name: <soft_yellow><b>描述</b></soft_yellow>
+          Lore:
+          - '%kit_description%'
+          - ' '
+          - <soft_yellow>→ <u>点击更改</u></soft_yellow>
+        Icon:
+          Name: <soft_yellow><b>图标</b></soft_yellow>
+          Lore:
+          - <gray><dark_gray>» </dark_gray>图标模式：<white>%state%</white></gray>
+          - ' '
+          - <gray>启用图标模式</gray>
+          - <gray>并点击库存中的物品</gray>
+          - <gray>以替换礼包图标</gray>
+          - ' '
+          - <soft_yellow>→ <u>点击切换</u></soft_yellow>
+        Permission:
+          Name: <soft_yellow><b>权限要求</b></soft_yellow>
+          Lore:
+          - <gray><dark_gray>» </dark_gray>需要：<white>%state%</white></gray>
+          - <gray><dark_gray>» </dark_gray>节点：<white>%value%</white></gray>
+          - ' '
+          - <gray>是否需要权限</gray>
+          - <gray>才能使用此礼包</gray>
+          - ' '
+          - <soft_yellow>→ <u>点击切换</u></soft_yellow>
+        Cooldown:
+          Name: <soft_yellow><b>冷却</b></soft_yellow>
+          Lore:
+          - <gray><dark_gray>» </dark_gray>当前：<white>%time%</white></gray>
+          - ' '
+          - <gray>设置礼包冷却</gray>
+          - ' '
+          - <soft_yellow>→ <u>点击更改</u></soft_yellow>
+        Cost:
+          Name: <soft_yellow><b>成本</b></soft_yellow>
+          Lore:
+          - <gray><dark_gray>» </dark_gray>当前：<white>%value%</white></gray>
+          - ' '
+          - <gray>设置玩家必须支付</gray>
+          - <gray>多少才能使用此礼包</gray>
+          - ' '
+          - <soft_yellow>→ <u>点击更改</u></soft_yellow>
+        Priority:
+          Name: <soft_yellow><b>优先级</b></soft_yellow>
+          Lore:
+          - <gray><dark_gray>» </dark_gray>当前：<white>%value%</white></gray>
+          - ' '
+          - <gray>优先级较高的礼包</gray>
+          - <gray>在 GUI 中首先显示</gray>
+          - ' '
+          - <soft_yellow>→ <u>点击更改</u></soft_yellow>
+        Commands:
+          Name: <soft_yellow><b>命令</b></soft_yellow>
+          Lore:
+          - '%value%'
+          - ' '
+          - <gray>当</gray>
+          - <gray>玩家收到此礼包时运行列出的命令</gray>
+          - ' '
+          - <soft_yellow>→ <u>点击更改</u></soft_yellow>
+        Inventory:
+          Name: <soft_yellow><b>库存内容</b></soft_yellow>
+          Lore:
+          - <soft_yellow>→ <u>点击编辑</u></soft_yellow>
+        Return:
+          Name: <soft_red><b>返回礼包</b></soft_red>
+          Lore:
+          - <soft_red>→ <u>点击返回</u></soft_red>
+      KitContent:
+        Save:
+          Name: <green><b>保存</b></green>
+          Lore:
+          - ' '
+          - <gray>保存更改</gray>
+          - ' '
+          - <green>→ <u>点击保存</u></green>
+        Cancel:
+          Name: <red><b>取消</b></red>
+          Lore:
+          - ' '
+          - <gray>放弃更改并返回</gray>
+          - ' '
+          - <red>→ <u>点击取消</u></red>
+        CopyInventory:
+          Name: <yellow><b>复制库存</b></yellow>
+          Lore:
+          - ' '
+          - <gray>复制你的整个库存</gray>
+          - ' '
+          - <yellow>→ <u>点击复制</u></yellow>
+NerfPhantoms:
+  Command:
+    NoPhantom:
+      Toggle:
+        Desc: 切换幻翼。
+        Notify: <gray>反幻翼模式：<white>%state%</white></gray>
+        Others: <gray>为 <orange>%player_display_name%</orange> 设置反幻翼模式 <white>%state%</white></gray>
+      Root:
+        Desc: 幻翼命令。
+PlayerWarps:
+  UI:
+    WarpsMenu:
+      SortType:
+        VISITS: 访问次数
+        NAME: 名称
+        DATE_CREATION: 创建日期
+      WarpDefault:
+        Name: '%warp_name%'
+        Lore:
+        - <dark_gray>» </dark_gray><gray>拥有者：<white>%warp_owner_name%</white></gray>
+        - <dark_gray>» </dark_gray><gray>访问次数：<white>%warp_visits%</white></gray>
+        - <dark_gray>» </dark_gray><gray>描述:</gray>
+        - '%warp_description%'
+        - ''
+        - <gold>→ <u>点击传送</u></gold>
+      WarpOwn:
+        Name: '%warp_name%'
+        Lore:
+        - <green>✔ 你拥有此传送点</green>
+        - ''
+        - <dark_gray>» </dark_gray><gray>访问次数：<white>%warp_visits%</white></gray>
+        - <dark_gray>» </dark_gray><gray>描述:</gray>
+        - '%warp_description%'
+        - ''
+        - <gold>→ <u>左键点击传送</u></gold>
+        - <gold>→ <u>右键点击编辑</u></gold>
+      WarpModerate:
+        Name: '%warp_name%'
+        Lore:
+        - <gold>✎ 你可以编辑此传送点</gold>
+        - ''
+        - <dark_gray>» </dark_gray><gray>拥有者：<white>%warp_owner_name%</white></gray>
+        - <dark_gray>» </dark_gray><gray>访问次数：<white>%warp_visits%</white></gray>
+        - <dark_gray>» </dark_gray><gray>描述:</gray>
+        - '%warp_description%'
+        - ''
+        - <gold>→ <u>左键点击传送</u></gold>
+        - <gold>→ <u>右键点击编辑</u></gold>
+    MainMenu:
+      WarpCategory:
+        Name: '%category_name%'
+        Lore:
+        - <dark_gray>» </dark_gray><gray>传送点：<white>%amount%</white></gray>
+        - ''
+        - '%category_description%'
+        - ''
+        - <gold>→ <u>点击浏览</u></gold>
+      FeaturedWarp:
+        Name: <yellow>⭐</yellow> %warp_name% <yellow>⭐</yellow>
+        Lore:
+        - <yellow>特色：%time%</yellow>
+        - ''
+        - <dark_gray>» </dark_gray><gray>拥有者：<white>%warp_owner_name%</white></gray>
+        - <dark_gray>» </dark_gray><gray>访问次数：<white>%warp_visits%</white></gray>
+        - <dark_gray>» </dark_gray><gray>描述:</gray>
+        - '%warp_description%'
+        - ''
+        - <yellow>→ <u>点击传送</u></yellow>
+      PopularWarp:
+        Name: '<soft_aqua>[Top #%value%]</soft_aqua> %warp_name%'
+        Lore:
+        - '<soft_aqua>访问最多的传送点 #%value%</soft_aqua>'
+        - ''
+        - <dark_gray>» </dark_gray><gray>拥有者：<white>%warp_owner_name%</white></gray>
+        - <dark_gray>» </dark_gray><gray>访问次数：<white>%warp_visits%</white></gray>
+        - <dark_gray>» </dark_gray><gray>描述:</gray>
+        - '%warp_description%'
+        - ''
+        - <soft_aqua>→ <u>点击传送</u></soft_aqua>
+  Category:
+    Own:
+      Name: 你自己的
+    All:
+      Name: 全部
+  Command:
+    Warps:
+      Root:
+        Desc: 玩家传送点命令。
+      Delete:
+        Desc: 删除一个传送点。
+      Create:
+        Desc: 创建新传送点。
+      Update:
+        Desc: 更新传送点位置。
+      Jump:
+        Desc: 跳到一个传送点。
+      List:
+        Desc: 打开传送点 GUI。
+    Syntax:
+      InvalidWarp: <gray><red>%input%</red> 不是有效的传送点!</gray>
+  WarpsList:
+    Open:
+      Feedback: <gray>你已为 <white>%player_display_name%</white> 打开传送点 GUI</gray>
+  Warp:
+    Delete:
+      Done: '[sound="minecraft:block.glass.break;0.8;1.0"]<gray>你已成功移除 <white>%warp_name%</white> 传送点</gray>'
+    Update:
+      Notify: '[sound="minecraft:block.anvil.place;0.8;1.0"]<gray>你已成功更新 <white>%warp_name%</white> 的传送点位置</gray>'
+    Creation:
+      Notify: '[sound="minecraft:block.anvil.place;0.8;1.0"]<gray>你已成功创建 <white>%warp_name%</white> 传送点</gray>'
+      LimitReached: '[sound="minecraft:entity.villager.no;0.8;1.0"]<gray>你已创建 <red>%amount%</red>/<red>%max%</red> 个允许的传送点</gray>'
+      BannedWorld: '[sound="minecraft:entity.villager.no;0.8;1.0"]<gray>你不能在此世界创建传送点</gray>'
+      AlreadyExists: '[sound="minecraft:entity.villager.no;0.8;1.0"]<gray>具有此名称的传送点已存在</gray>'
+    Jump:
+      Notify:
+      - '[title_times="20:60:20",sound="minecraft:entity.enderman.teleport;0.8;1.0",type="title"]'
+      - <soft_yellow><b>%warp_name%</b></soft_yellow>
+      - <gray>%warp_description%</gray>
+      Feedback: <gray>你已将 <orange>%player_display_name%</orange> 传送到 <white>%warp_name%</white> 传送点</gray>
+      InsufficientFunds: '[sound="minecraft:entity.villager.no;0.8;1.0"]<gray>你需要 <red>%warp_price%</red> 才能使用 <white>%warp_name%</white> 传送点!</gray>'
+      Inactive: '[sound="minecraft:entity.villager.no;0.8;1.0"]<gray>传送点 <red>%warp_name%</red> 位于当前不可用的世界</gray>'
+  Creation:
+    InvalidId: '[sound="minecraft:entity.villager.no;0.8;1.0"]<gray>传送点 ID 必须为字母</gray>'
+    IdTooLong: '[sound="minecraft:entity.villager.no;0.8;1.0"]<gray>传送点 ID 不能超过 <red>%amount%</red> 个字符</gray>'
+  Feature:
+    Nothing: <gray>你没有可特色的传送点</gray>
+    CantAfford: <gray>你需要 <red>%slot_price%</red> 才能特色传送点</gray>
+    UnexpectedError: <gray>哎呀！所选槽位或传送点不再可用。请重试</gray>
+  Error:
+    NoPrimaryCategory: '[sound="minecraft:entity.villager.no;0.8;1.0"]<gray>无主分类可用!</gray>'
+    NotOwnWarp: '[sound="minecraft:entity.villager.no;0.8;1.0"]<gray>你不拥有 <red>%warp_name%</red> 传送点!</gray>'
+  Dialog:
+    WarpName:
+      Title: <yellow><b>传送点</b></yellow><dark_gray> » </dark_gray><white>名称</white>
+      Body:
+        Contents:
+        - 请输入传送点的名称。
+        - ''
+        - 你可以点击 <click:open_url:"https://nightexpressdev.com/nightcore/configuration/text-formation/"><yellow><b>此处</b></yellow></click> 查看所有可用的格式标签和颜色代码。
+        Width: 400
+      Input:
+        Name: <sprite:"items":"item/name_tag"> 名称
+    WarpDescription:
+      Title: <yellow><b>传送点</b></yellow><dark_gray> » </dark_gray><white>描述</white>
+      Body:
+        Contents:
+        - 请输入传送点的描述。
+        - ''
+        - 你可以点击 <click:open_url:"https://nightexpressdev.com/nightcore/configuration/text-formation/"><yellow><b>此处</b></yellow></click> 查看所有可用的格式标签和颜色代码。
+        Width: 400
+      Input:
+        Name: <sprite:"items":"item/writable_book"> 描述
+    WarpPrice:
+      Title: <yellow><b>传送点</b></yellow><dark_gray> » </dark_gray><white>价格</white>
+      Body:
+        Contents: 请输入传送点的价格。
+        Width: 400
+      Input:
+        Price: <sprite:"items":"item/emerald"> 价格
+    WarpSearch:
+      Title: <yellow><b>玩家传送点</b></yellow><dark_gray> » </dark_gray><white>搜索</white>
+      Body:
+        Contents: 输入文本进行搜索。
+        Width: 400
+      Input:
+        Text: 搜索
+    Featuring:
+      Title: <yellow><b>传送点</b></yellow><dark_gray> » </dark_gray><white>特色</white>
+      Body:
+        Selection:
+          Contents:
+          - 选择一个传送点进行特色推广。
+          - ''
+          - 它将保持特色 <yellow>%slot_duration%</yellow>。成本：<green>%slot_price%</green>。
+          Width: 400
+        Confirmation:
+          Contents:
+          - 请确认特色 <yellow><u>%warp_name%</u></yellow> 传送点。
+          - ''
+          - 它将保持特色 <yellow>%slot_duration%</yellow>。成本：<green>%slot_price%</green>。
+          Width: 400
+      Button:
+        Warp:
+          Label: '%warp_name%'
+          Tooltip: '%warp_description%'
+          Width: 150
+    WarpCategory:
+      Title: <yellow><b>传送点</b></yellow><dark_gray> » </dark_gray><white>分类</white>
+      Body:
+        Selection:
+          Contents: 请选择一个分类用于你的传送点。
+          Width: 400
+      Button:
+        CategoryNormal:
+          Label: '%category_name%'
+          Tooltip: '%category_description%'
+          Width: 150
+        CategorySelected:
+          Label: <green>✔ <u>%category_name%</u></green>
+          Tooltip: '%category_description%'
+          Width: 150
+PTP:
+  Command:
+    Root:
+      Desc: PTP 命令。
+    Teleport:
+      Invite:
+        Desc: 请求玩家召唤。
+        Notify:
+          Sender: '[sound="minecraft:entity.ender_pearl.throw;0.8;1.0"]<gray>已发送召唤请求给 <orange>%player_display_name%</orange></gray>'
+          Target:
+          - '[prefix="false",sound="minecraft:entity.ender_pearl.throw;0.8;1.0"]'
+          - ' '
+          - <orange><b>传送邀请:</b></orange>
+          - ' '
+          - <orange>玩家 <orange>%player_display_name%</orange> 想召唤你到他们那里</orange>
+          - <orange>输入 <orange>/tpyes %player_name%</orange> 接受并被召唤</orange>
+          - <orange>或 <orange>/tpno %player_name%</orange> 拒绝</orange>
+          - ' '
+          - <orange>            <hover:show_text:"<gray>点击被 <green>%player_display_name%</green> 召唤</gray>"><click:run_command:"/tpyes %player_name%"><orange><b>[接受]</b></orange></click></hover>      <hover:show_text:"<gray>点击拒绝 <red>%player_display_name%</red> 召唤</gray>"><click:run_command:"/tpno %player_name%"><orange><b>[拒绝]</b></orange></click></hover></orange>
+          - ' '
+      Request:
+        Desc: 请求玩家传送你。
+      Accept:
+        Desc: 接受传送请求。
+      Decline:
+        Desc: 拒绝传送请求。
+    Requests:
+      Toggle:
+        Desc: 切换传送请求。
+      'On':
+        Desc: 启用传送请求。
+      'Off':
+        Desc: 禁用传送请求。
+    Toggle:
+      Target: <gray>你已为 <orange>%player_display_name%</orange> 设置 <orange>传送请求</orange> 为 <white>%state%</white></gray>
+      Notify: <gray>你已设置 <orange>传送请求</orange> 为：<white>%state%</white></gray>
+  Request:
+    Accept:
+      Done: '[sound="minecraft:entity.enderman.teleport;0.8;1.0"]<gray>你接受了 <orange>%player_display_name%</orange> 的传送请求!</gray>'
+      Notify: '[sound="minecraft:entity.enderman.teleport;0.8;1.0"]<gray><orange>%player_display_name%</orange> 接受了你的传送请求!</gray>'
+      Nothing: '[sound="minecraft:entity.villager.no;0.8;1.0"]<gray>你没有任何活跃请求</gray>'
+    Decline:
+      Done: '[sound="minecraft:entity.villager.no;0.8;1.0"]<gray>你拒绝了 <orange>%player_display_name%</orange> 的传送请求</gray>'
+      Notify: '[sound="minecraft:entity.villager.no;0.8;1.0"]<gray><orange>%player_display_name%</orange> 拒绝了你的传送请求</gray>'
+      Nothing: '[sound="minecraft:entity.villager.no;0.8;1.0"]<gray>你没有任何活跃请求</gray>'
+    Send:
+      TargetAfk: <gray><white>%player_display_name%</white> 处于挂机状态，可能不会回复</gray>
+      Error:
+        Cooldown: '[sound="minecraft:entity.villager.no;0.8;1.0"]<gray>你可以在 <orange>%time%</orange> 后发送另一个请求</gray>'
+        Disabled: '[sound="minecraft:entity.villager.no;0.8;1.0"]<gray>你不能发送传送请求给 <orange>%player_name%</orange></gray>'
+    Sent: '[sound="minecraft:entity.ender_pearl.throw;0.8;1.0"]<gray>已发送传送请求给 <orange>%player_display_name%</orange></gray>'
+    Notify:
+    - '[prefix="false",sound="minecraft:entity.ender_pearl.throw;0.8;1.0"]'
+    - ' '
+    - <orange><b>传送请求:</b></orange>
+    - ' '
+    - <orange>玩家 <orange>%player_display_name%</orange> 想传送到你那里</orange>
+    - <orange>输入 <orange>/tpyes %player_name%</orange> 接受并召唤他</orange>
+    - <orange>或 <orange>/tpno %player_name%</orange> 拒绝</orange>
+    - ' '
+    - <orange>            <hover:show_text:"<gray>点击传送 <green>%player_display_name%</green></gray>"><click:run_command:"/tpyes %player_name%"><orange><b>[接受]</b></orange></click></hover>      <hover:show_text:"<gray>点击拒绝 <red>%player_display_name%</red> 传送</gray>"><click:run_command:"/tpno %player_name%"><orange><b>[拒绝]</b></orange></click></hover></orange>
+    - ' '
+RTP:
+  Command:
+    RTP:
+      Desc: 传送到随机位置。
+  Teleport:
+    Error:
+      InvalidRange: <gray>此世界不支持随机传送或范围设置无效</gray>
+    Notify:
+      Done:
+      - '[title_times="20:60:20",sound="minecraft:entity.enderman.teleport;0.8;1.0",type="title"]'
+      - <green><b>随机位置</b></green>
+      - <gray>你在这里：<red>%location_x%</red>, <green>%location_y%</green>, <blue>%location_z%</blue></gray>
+      Failure: '[sound="minecraft:entity.villager.no;0.8;1.0"]<gray>无法找到有效位置。请重试</gray>'
+Scoreboard:
+  Command:
+    Scoreboard-Toggle:
+      Desc: 切换记分板。
+    Scoreboard-On:
+      Desc: 启用记分板。
+    Scoreboard-Off:
+      Desc: 禁用记分板。
+    Scoreboard:
+      Notify: <gray>你已设置记分板为 <orange>%state%</orange></gray>
+      Target: <gray>你已为 <white>%player_name%</white> 设置记分板为 <orange>%state%</orange></gray>
+Spawns:
+  Command:
+    Spawns:
+      Delete:
+        Desc: 删除一个出生点。
+        Done: <gray>你已删除 <orange>%spawn_name%</orange> 出生点</gray>
+      Create:
+        Desc: 创建一个出生点。
+        Done: <gray>你已设置 <orange>%spawn_name%</orange> 出生点</gray>
+      Teleport:
+        Desc: 传送到一个出生点。
+        Notify: <gray>你已将 <white>%player_display_name%</white> 传送到 <orange>%spawn_name%</orange> 出生点</gray>
+        Done: <gray>你已传送到 <orange>%spawn_name%</orange> 出生点</gray>
+      Editor:
+        Desc: 打开出生点编辑器。
+    Syntax:
+      InvalidSpawn: <gray><red>%input%</red> 不是有效的出生点!</gray>
+    Spawn:
+      Error:
+        NoDefault: <gray>你必须指定出生点名称</gray>
+  Spawn:
+    Teleport:
+      Error:
+        World: <gray>此出生点位于当前不可用的世界</gray>
+  Editor:
+    Title:
+      List: <black>出生点编辑器</black>
+      Settings: <black>出生点设置</black>
+    SpawnsList:
+      Spawn:
+        Name: <yellow><b>%spawn_name%</b></yellow>
+        Lore:
+        - '<gray><dark_gray>» </dark_gray>ID: <white>%spawn_id%</white></gray>'
+        - ' '
+        - <yellow>→ <u>点击编辑</u></yellow>
+    Spawn:
+      Return:
+        Name: <green><b>返回出生点</b></green>
+        Lore: []
+      RespawnRules:
+        Name: <soft_yellow><b>重生规则</b></soft_yellow>
+        Lore:
+        - <gray><dark_gray>» </dark_gray>状态：<white>%state%</white></gray>
+        - ' '
+        - <gray>控制哪些玩家</gray>
+        - <gray>应在重生时移动到此出生点</gray>
+        - <gray>的规则</gray>
+        - ' '
+        - <soft_yellow>→ <u>点击编辑</u></soft_yellow>
+      LoginRules:
+        Name: <soft_yellow><b>登录规则</b></soft_yellow>
+        Lore:
+        - <gray><dark_gray>» </dark_gray>状态：<white>%state%</white></gray>
+        - ' '
+        - <gray>控制哪些玩家</gray>
+        - <gray>应在加入时移动到此出生点</gray>
+        - <gray>的规则</gray>
+        - ' '
+        - <soft_yellow>→ <u>点击编辑</u></soft_yellow>
+      Priority:
+        Name: <soft_yellow><b>优先级</b></soft_yellow>
+        Lore:
+        - <gray><dark_gray>» </dark_gray>当前：<white>%value%</white></gray>
+        - ' '
+        - <gray>优先级较高的出生点</gray>
+        - <gray>将首先显示</gray>
+        - ' '
+        - <soft_yellow>→ <u>点击更改</u></soft_yellow>
+      PermissionRequirement:
+        Name: <soft_yellow><b>权限要求</b></soft_yellow>
+        Lore:
+        - <gray><dark_gray>» </dark_gray>状态：<white>%state%</white></gray>
+        - ' '
+        - <gray>是否需要权限</gray>
+        - <gray>才能访问此出生点</gray>
+        - ' '
+        - <soft_yellow>→ <u>点击切换</u></soft_yellow>
+      Location:
+        Name: <soft_yellow><b>位置</b></soft_yellow>
+        Lore:
+        - <gray><dark_gray>» </dark_gray>当前：<white><red>%spawn_location_x%</red>, <green>%spawn_location_y%</green>, <blue>%spawn_location_z%</blue> @ <white>%spawn_location_world%</white></white></gray>
+        - ' '
+        - <soft_yellow>→ <u>点击覆盖</u></soft_yellow>
+      Name:
+        Name: <soft_yellow><b>名称</b></soft_yellow>
+        Lore:
+        - <gray><dark_gray>» </dark_gray>当前：<white>%name%</white></gray>
+        - ' '
+        - <soft_yellow>→ <u>点击更改</u></soft_yellow>
+  Dialog:
+    SpawnName:
+      Title: <yellow><b>出生点</b></yellow><dark_gray> » </dark_gray><white>名称</white>
+      Body:
+        Contents: 输入出生点名称。
+        Width: 400
+      Input:
+        Name: 名称
+    SpawnPriority:
+      Title: <yellow><b>出生点</b></yellow><dark_gray> » </dark_gray><white>优先级</white>
+      Body:
+        Contents: 输入出生点优先级。
+        Width: 400
+      Input:
+        Priority: 优先级
+    SpawnLoginRules:
+      Title: <yellow><b>出生点</b></yellow><dark_gray> » </dark_gray><white>登录规则</white>
+      Body:
+        Contents: ' '
+        Width: 400
+      Input:
+        Enabled: 启用
+        Ranks: 受影响等级
+Warps:
+  Command:
+    Warps:
+      Root:
+        Desc: 传送点命令。
+      Delete:
+        Desc: 删除一个传送点。
+      Create:
+        Desc: 创建新传送点。
+      Update:
+        Desc: 更新传送点位置。
+      Edit:
+        Desc: 编辑一个传送点。
+      Jump:
+        Desc: 跳到一个传送点。
+      List:
+        Desc: 打开传送点 GUI。
+    Warp:
+      Desc: 前往 %warp_name% 传送点。
+    Syntax:
+      InvalidWarp: <gray><red>%input%</red> 不是有效的传送点!</gray>
+  Creation:
+    InvalidId: '[sound="minecraft:entity.villager.no;0.8;1.0"]<gray>传送点 ID 必须为字母!</gray>'
+    AlreadyExists: '[sound="minecraft:entity.villager.no;0.8;1.0"]<gray>传送点已存在!</gray>'
+    Notfy: '[sound="minecraft:block.anvil.place;0.8;1.0"]<gray>你已创建 <orange>%warp_name%</orange> 传送点</gray>'
+  Update:
+    Notify: '[sound="minecraft:block.anvil.place;0.8;1.0"]<gray>你已更新 <orange>%warp_name%</orange> 传送点的位置</gray>'
+  Delete:
+    Notify: '[sound="minecraft:block.glass.break;0.8;1.0"]<gray>你已移除 <orange>%warp_name%</orange> 传送点</gray>'
+  Warp:
+    Jump:
+      Notify:
+      - '[title_times="20:60:20",sound="minecraft:entity.enderman.teleport;0.8;1.0",type="title"]'
+      - <orange><b>%warp_name%</b></orange>
+      - <gray>%warp_description%</gray>
+      Feedback: <gray>你已将 <orange>%player_display_name%</orange> 传送到 <white>%warp_name%</white> 传送点</gray>
+  Browser:
+    Empty: <gray>没有可用的传送点</gray>
+    Feedback: <gray>你已为 <orange>%player_display_name%</orange> 打开传送点 GUI</gray>
+  Error:
+    NoWarpPermission: '[sound="minecraft:entity.villager.no;0.8;1.0"]<gray>你没有访问 <red>%warp_name%</red> 传送点的权限</gray>'
+    InactiveWarp: '[sound="minecraft:entity.villager.no;0.8;1.0"]<gray><red>%warp_name%</red> 当前不可用</gray>'
+  Dialog:
+    WarpName:
+      Title: <yellow><b>传送点</b></yellow><dark_gray> » </dark_gray><white>名称</white>
+      Body:
+        Contents:
+        - 请输入传送点的名称。
+        - ''
+        - 你可以点击 <click:open_url:"https://nightexpressdev.com/nightcore/configuration/text-formation/"><yellow><b>此处</b></yellow></click> 查看所有可用的格式标签和颜色代码。
+        Width: 400
+      Input:
+        Name: <sprite:"items":"item/name_tag"> 名称
+    WarpDescription:
+      Title: <yellow><b>传送点</b></yellow><dark_gray> » </dark_gray><white>描述</white>
+      Body:
+        Contents:
+        - 请输入传送点的描述。
+        - ''
+        - 你可以点击 <click:open_url:"https://nightexpressdev.com/nightcore/configuration/text-formation/"><yellow><b>此处</b></yellow></click> 查看所有可用的格式标签和颜色代码。
+        Width: 400
+      Input:
+        Name: <sprite:"items":"item/writable_book"> 描述
+    WarpCommand:
+      Title: <yellow><b>传送点</b></yellow><dark_gray> » </dark_gray><white>命令</white>
+      Body:
+        Contents:
+        - 输入一个 <yellow>命令</yellow> 以便快速访问此传送点。
+        - ''
+        - 此命令允许玩家快速传送到此传送点，无需提供额外参数。
+        - ''
+        - 要应用这些更改，我们 <red>强烈建议</red> 重启服务器。
+        - 但是，你可以勾选 <orange>'重建命令'</orange> 框以“实时”应用更改，尽管可能会发生一些轻微的 <orange>副作用</orange>。
+        Width: 400
+      Input:
+        Enabled: 启用
+        Name: <sprite:"items":"item/command_block_minecart"> 命令
+        Rebuild: 重建命令
+    WarpSlots:
+      Title: <yellow><b>传送点</b></yellow><dark_gray> » </dark_gray><white>槽位</white>
+      Body:
+        Contents:
+        - 指定此传送点将在 GUI 中显示的 <yellow>槽位</yellow> 和 <yellow>页码</yellow>。
+        - ''
+        - 槽位编号从 <orange>0</orange> 开始，并用逗号分隔 <gray>(例如：1, 2, 10, 11)</gray>。
+        - ''
+        - GUI 页面的 <yellow>总数</yellow> 由分配给任何传送点的 <yellow>最高</yellow> 页码决定。
+        - ''
+        - 你可以将页码设置为 <red>0</red> 以在 GUI 中隐藏此传送点。
+        Width: 400
+      Input:
+        Page: <sprite:"items":"item/paper"> 页面
+        Name: <sprite:"items":"item/item_frame"> 槽位
+  UI:
+    WarpsMenu:
+      WarpDefault:
+        Name: '%warp_name%'
+        Lore:
+        - '%warp_description%'
+        - '%empty-if-above%'
+        - <gold>→ <u>点击传送</u></gold>
+      WarpModerate:
+        Name: '%warp_name%'
+        Lore:
+        - '%warp_description%'
+        - '%empty-if-above%'
+        - <gold>→ <u>左键点击传送</u></gold>
+        - <gold>→ <u>右键点击编辑</u></gold>
+WeatherType:
+  CLEAR: 晴朗
+  THUNDERSTORM: 雷暴
+  STORM: 风暴
+MenuType:
+  GRINDSTONE: 磨石
+  SMITHING_TABLE: 锻造台
+  CARTOGRAPHY_TABLE: 制图台
+  ENCHANTING_TABLE: 附魔台
+  LOOM: 织布机
+  ANVIL: 铁砧
+  WORKBENCH: 工作台
+  STONECUTTER: 切石机
+Inventories:
+  Command:
+    Enderchest:
+      Copy:
+        NotYourself: '[sound="minecraft:entity.villager.no;0.8;1.0"]<gray>你不能复制自己的 <soft_purple>末影箱</soft_purple></gray>'
+    Inventory:
+      Copy:
+        NotYourself: '[sound="minecraft:entity.villager.no;0.8;1.0"]<gray>你不能复制自己的 <orange>库存</orange></gray>'
+      Open:
+        NotYourself: '[sound="minecraft:entity.villager.no;0.8;1.0"]<gray>你不能使用此命令打开自己的 <orange>库存</orange></gray>'
