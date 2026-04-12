@@ -42,13 +42,16 @@ public class NearCommandProvider extends AbstractCommandProvider {
 
     private static final TextLocale DESCRIPTION = LangEntry.builder("Command.Near.Desc").text("Show nearest players.");
 
-    private static final MessageLocale MESSAGE_NOTHING_NOTIFY = LangEntry.builder("Command.Near.Nothing.Notify").chatMessage(
-        GRAY.wrap("There are no players in a " + ORANGE.wrap(GENERIC_RADIUS) + " block radius.")
-    );
+    private static final MessageLocale MESSAGE_NOTHING_NOTIFY = LangEntry.builder("Command.Near.Nothing.Notify")
+        .chatMessage(
+            GRAY.wrap("There are no players in a " + ORANGE.wrap(GENERIC_RADIUS) + " block radius.")
+        );
 
-    private static final MessageLocale MESSAGE_NOTHING_FEEDBACK = LangEntry.builder("Command.Near.Nothing.Feedback").chatMessage(
-        GRAY.wrap("There are no players around " + WHITE.wrap(PLAYER_DISPLAY_NAME) + " in a " + ORANGE.wrap(GENERIC_RADIUS) + " block radius.")
-    );
+    private static final MessageLocale MESSAGE_NOTHING_FEEDBACK = LangEntry.builder("Command.Near.Nothing.Feedback")
+        .chatMessage(
+            GRAY.wrap("There are no players around " + WHITE.wrap(PLAYER_DISPLAY_NAME) + " in a " + ORANGE.wrap(
+                GENERIC_RADIUS) + " block radius.")
+        );
 
     private final EssentialModule   module;
     private final EssentialSettings settings;
@@ -61,7 +64,8 @@ public class NearCommandProvider extends AbstractCommandProvider {
         this.userManager = userManager;
     }
 
-    private record NearbyPlayer(@NotNull Player player, int distance, @NotNull Direction direction) {}
+    private record NearbyPlayer(@NotNull Player player, int distance, @NotNull Direction direction) {
+    }
 
     @Override
     public void registerDefaults() {
@@ -102,6 +106,7 @@ public class NearCommandProvider extends AbstractCommandProvider {
                 if (executor != null && !executor.canSee(other)) return;
 
                 Location location = other.getLocation();
+                if (location == null) return;
 
                 int delta = (int) location.distanceSquared(sourceLocation);
                 if (delta > distanceLookup) return;
@@ -114,9 +119,10 @@ public class NearCommandProvider extends AbstractCommandProvider {
             });
 
             if (nearbyPlayers.isEmpty()) {
-                this.module.sendPrefixed(isOthers ? MESSAGE_NOTHING_FEEDBACK : MESSAGE_NOTHING_NOTIFY, context.getSender(), replacer -> replacer
-                    .with(GENERIC_RADIUS, () -> String.valueOf(radius))
-                    .with(CommonPlaceholders.PLAYER.resolver(source))
+                this.module.sendPrefixed(isOthers ? MESSAGE_NOTHING_FEEDBACK : MESSAGE_NOTHING_NOTIFY, context
+                    .getSender(), replacer -> replacer
+                        .with(GENERIC_RADIUS, () -> String.valueOf(radius))
+                        .with(CommonPlaceholders.PLAYER.resolver(source))
                 );
                 return;
             }
@@ -126,7 +132,7 @@ public class NearCommandProvider extends AbstractCommandProvider {
                 .map(this::formatEntry)
                 .collect(Collectors.joining(BR));
 
-            String text = String .join("\n", Replacer.create()
+            String text = String.join("\n", Replacer.create()
                 .replace(GENERIC_AMOUNT, () -> String.valueOf(nearbyPlayers.size()))
                 .replace(GENERIC_RADIUS, () -> String.valueOf(radius))
                 .replace(GENERIC_ENTRY, entries)

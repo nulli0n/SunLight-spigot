@@ -3,7 +3,6 @@ package su.nightexpress.sunlight;
 import java.nio.file.Path;
 import java.util.Optional;
 
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jspecify.annotations.NonNull;
 
@@ -87,7 +86,7 @@ public class SunLightPlugin extends NightPlugin implements SunlightAPI, ModuleCo
     }
 
     @Override
-    @NotNull
+    @NonNull
     protected PluginDetails getDefaultDetails() {
         return PluginDetails.create("SunLight", new String[]{"sunlight", "sl"})
             .setConfigClass(Config.class);
@@ -209,12 +208,18 @@ public class SunLightPlugin extends NightPlugin implements SunlightAPI, ModuleCo
     }
 
     @Override
-    @NotNull
-    public ModuleContext createModuleContext(@NotNull String id, @NotNull Path path, @NotNull ModuleDefinition definition) {
+    @NonNull
+    public ModuleContext createModuleContext(@NonNull String id, @NonNull Path path,
+                                             @NonNull ModuleDefinition definition) {
         return new ModuleContext(this, this.dataHandler, this.userManager, this.commandRegistry, this.dialogRegistry, id, path, definition);
     }
 
     private void setupInternalNMS() {
+        if (Version.isBehind(Version.MC_1_21_11)) {
+            this.error("Your server version is not supported. Some of the features will be disabled.");
+            return;
+        }
+
         try {
             this.sunNMS = switch (Version.getCurrent()) {
                 case MC_1_21_11 -> new MC_1_21_11();
@@ -226,7 +231,7 @@ public class SunLightPlugin extends NightPlugin implements SunlightAPI, ModuleCo
         }
 
         if (this.sunNMS == null) {
-            this.warn("Could not load internals handler. Some features will be unvailable.");
+            this.error("Unable to hook into server's internals. Some of the features will be disabled.");
         }
     }
 
@@ -243,7 +248,7 @@ public class SunLightPlugin extends NightPlugin implements SunlightAPI, ModuleCo
         );
     }
 
-    private void registerPermissions(@NotNull PermissionTree tree) {
+    private void registerPermissions(@NonNull PermissionTree tree) {
         tree.toList().forEach(permission -> {
             if (this.getPluginManager().getPermission(permission.getName()) == null) {
                 this.getPluginManager().addPermission(permission);
@@ -251,17 +256,17 @@ public class SunLightPlugin extends NightPlugin implements SunlightAPI, ModuleCo
         });
     }
 
-    @NotNull
+    @NonNull
     public DataHandler getData() {
         return this.dataHandler;
     }
 
-    @NotNull
+    @NonNull
     public UserManager getUserManager() {
         return userManager;
     }
 
-    @NotNull
+    @NonNull
     public ModuleRegistry getModuleRegistry() {
         return this.moduleRegistry;
     }
@@ -271,17 +276,17 @@ public class SunLightPlugin extends NightPlugin implements SunlightAPI, ModuleCo
         return this.sunNMS;
     }
 
-    @NotNull
+    @NonNull
     public Optional<SunNMS> internals() {
         return Optional.ofNullable(this.sunNMS);
     }
 
-    @NotNull
+    @NonNull
     public CommandRegistry getCommandRegistry() {
         return this.commandRegistry;
     }
 
-    @NotNull
+    @NonNull
     public TeleportManager getTeleportManager() {
         return this.teleportManager;
     }

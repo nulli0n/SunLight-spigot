@@ -1,11 +1,12 @@
 package su.nightexpress.sunlight.module;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.nio.file.Path;
+
+import org.jspecify.annotations.NonNull;
 
 @FunctionalInterface
 public interface ModuleContextProvider {
 
-    @NotNull ModuleContext createModuleContext(@NotNull String id, @NotNull Path path, @NotNull ModuleDefinition definition);
+    @NonNull
+    ModuleContext createModuleContext(@NonNull String id, @NonNull Path path, @NonNull ModuleDefinition definition);
 }
