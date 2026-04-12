@@ -1,32 +1,33 @@
 package su.nightexpress.sunlight.module.chat.processor.global;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Stream;
+
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
+
 import su.nightexpress.nightcore.util.LowerCase;
 import su.nightexpress.nightcore.util.Players;
 import su.nightexpress.sunlight.module.chat.ChatModule;
 import su.nightexpress.sunlight.module.chat.context.ChatContext;
 import su.nightexpress.sunlight.module.chat.processor.ChatProcessor;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Stream;
-
 public class AntiCapsProcessor implements ChatProcessor<ChatContext> {
 
     @Override
-    public void preProcess(@NotNull ChatModule module, @NotNull ChatContext context) {
+    public void preProcess(@NonNull ChatModule module, @NonNull ChatContext context) {
         context.setMessage(this.moderateUpperCase(module, context.getMessage()));
     }
 
     @Override
-    public void postProcess(@NotNull ChatModule module, @NotNull ChatContext context) {
+    public void postProcess(@NonNull ChatModule module, @NonNull ChatContext context) {
 
     }
 
-    @NotNull
-    private String moderateUpperCase(@NotNull ChatModule module, @NotNull String message) {
+    @NonNull
+    private String moderateUpperCase(@NonNull ChatModule module, @NonNull String message) {
         String[] words = message.split(" ");
 
         int totalUpperCase = 0;
@@ -74,7 +75,7 @@ public class AntiCapsProcessor implements ChatProcessor<ChatContext> {
         return builder.toString();
     }
 
-    private static int countUpperCaseLetters(@NotNull String string) {
+    private static int countUpperCaseLetters(@NonNull String string) {
         int count = 0;
 
         for (char c : string.toCharArray()) {

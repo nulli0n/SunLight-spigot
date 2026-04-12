@@ -8,6 +8,7 @@ import su.nightexpress.nightcore.config.FileConfig;
 import su.nightexpress.nightcore.core.config.CoreLang;
 import su.nightexpress.nightcore.integration.permission.PermissionBridge;
 import su.nightexpress.nightcore.util.EntityUtil;
+import su.nightexpress.nightcore.util.Players;
 import su.nightexpress.nightcore.util.bridge.wrapper.NightComponent;
 import su.nightexpress.sunlight.config.PermissionTree;
 import su.nightexpress.sunlight.hook.placeholder.PlaceholderRegistry;
@@ -58,36 +59,47 @@ public class EssentialModule extends Module {
 
     protected void registerCommands() {
         if (this.settings.isInvulnerabilityEnabled()) {
-            this.commandRegistry.addProvider("ess-invulnerability", new InvulnerabilityCommandProvider(this.plugin, this, this.settings, this.userManager));
+            this.commandRegistry.addProvider("ess-invulnerability",
+                new InvulnerabilityCommandProvider(this.plugin, this, this.settings, this.userManager));
         }
         if (PermissionBridge.hasProvider()) {
             this.commandRegistry.addProvider("staff", new StaffCommandProvider(this.plugin, this, this.settings));
         }
 
         this.commandRegistry.addProvider("air", new AirCommandProvider(this.plugin, this, this.userManager));
-        this.commandRegistry.addProvider("broadcast", new BroadcastCommandProvider(this.plugin, this.settings.broadcastFormat.get()));
+        this.commandRegistry.addProvider("broadcast",
+            new BroadcastCommandProvider(this.plugin, this.settings.broadcastFormat.get()));
         this.commandRegistry.addProvider("condense", new CondenseCommandProvider(this.plugin, this));
-        this.commandRegistry.addProvider("dimension", new DimensionCommandProvider(this.plugin, this, this.userManager, this.teleportManager));
+        this.commandRegistry.addProvider("dimension",
+            new DimensionCommandProvider(this.plugin, this, this.userManager, this.teleportManager));
         this.commandRegistry.addProvider("disposal", new DisposalCommandProvider(this.plugin, this, this.settings));
         this.commandRegistry.addProvider("enchant", new EnchantCommandsProvider(this.plugin, this, this.userManager));
-        this.commandRegistry.addProvider("experience", new ExperienceCommandsProvider(this.plugin, this, this.userManager));
-        this.commandRegistry.addProvider("fireticks", new FireTicksCommandsProvider(this.plugin, this, this.userManager));
+        this.commandRegistry.addProvider("experience",
+            new ExperienceCommandsProvider(this.plugin, this, this.userManager));
+        this.commandRegistry.addProvider("fireticks",
+            new FireTicksCommandsProvider(this.plugin, this, this.userManager));
         this.commandRegistry.addProvider("fly", new FlyCommandProvider(this.plugin, this, this.userManager));
         this.commandRegistry.addProvider("flyspeed", new FlySpeedCommandProvider(this.plugin, this, this.userManager));
-        this.commandRegistry.addProvider("foodlevel", new FoodLevelCommandProvider(this.plugin, this, this.settings, this.userManager));
+        this.commandRegistry.addProvider("foodlevel",
+            new FoodLevelCommandProvider(this.plugin, this, this.settings, this.userManager));
         this.commandRegistry.addProvider("forcerun", new ForceRunCommandProvider(this.plugin, this));
         this.commandRegistry.addProvider("forcesay", new ForceSayCommandProvider(this.plugin, this));
         this.commandRegistry.addProvider("gamemode", new GamemodeCommandProvider(this.plugin, this, this.userManager));
         this.commandRegistry.addProvider("hat", new HatCommandProvider(this.plugin, this));
-        this.commandRegistry.addProvider("health", new HealthCommandProvider(this.plugin, this, this.settings, this.userManager));
-        this.commandRegistry.addProvider("near", new NearCommandProvider(this.plugin, this, this.settings, this.userManager));
-        this.commandRegistry.addProvider("nickname", new NickCommandsProvider(this.plugin, this, this.settings, this.userManager));
-        this.commandRegistry.addProvider("playerinfo", new PlayerInfoCommandProvider(this.plugin, this, this.settings, this.userManager));
+        this.commandRegistry.addProvider("health",
+            new HealthCommandProvider(this.plugin, this, this.settings, this.userManager));
+        this.commandRegistry.addProvider("near",
+            new NearCommandProvider(this.plugin, this, this.settings, this.userManager));
+        this.commandRegistry.addProvider("nickname",
+            new NickCommandsProvider(this.plugin, this, this.settings, this.userManager));
+        this.commandRegistry.addProvider("playerinfo",
+            new PlayerInfoCommandProvider(this.plugin, this, this.settings, this.userManager));
         this.commandRegistry.addProvider("skull", new SkullCommandProvider(this.plugin, this));
         this.commandRegistry.addProvider("smite", new SmiteCommandProvider(this.plugin, this));
         this.commandRegistry.addProvider("speed", new SpeedCommandProvider(this.plugin, this, this.userManager));
         this.commandRegistry.addProvider("suicide", new SuicideCommandProvider(this.plugin, this));
-        this.commandRegistry.addProvider("teleport", new TeleportCommandsProvider(this.plugin, this, this.userManager, this.teleportManager));
+        this.commandRegistry.addProvider("teleport",
+            new TeleportCommandsProvider(this.plugin, this, this.userManager, this.teleportManager));
         this.commandRegistry.addProvider("time", new TimeCommandProvider(this.plugin, this, this.settings));
         this.commandRegistry.addProvider("playertime", new PlayerTimeCommandProvider(this.plugin, this, this.settings));
         this.commandRegistry.addProvider("weather", new WeatherCommandProvider(this.plugin, this));
@@ -139,10 +151,10 @@ public class EssentialModule extends Module {
 
         if (user.hasProperty(EssentialProperties.CUSTOM_NAME)) {
             String customName = user.getPropertyOrDefault(EssentialProperties.CUSTOM_NAME);
-            EntityUtil.setCustomName(player, customName);
+            Players.setDisplayName(player, customName);
         }
         else {
-            EntityUtil.setCustomName(player, (NightComponent) null);
+            Players.setDisplayName(player, (NightComponent) null);
         }
     }
 }

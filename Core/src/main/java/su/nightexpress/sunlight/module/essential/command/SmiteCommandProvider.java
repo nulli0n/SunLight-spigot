@@ -24,7 +24,8 @@ public class SmiteCommandProvider extends AbstractCommandProvider {
     private static final Permission PERMISSION        = EssentialPerms.COMMAND.permission("smite");
     private static final Permission PERMISSION_OTHERS = EssentialPerms.COMMAND.permission("smite.others");
 
-    private static final TextLocale DESCRIPTION = LangEntry.builder("Command.Smite.Desc").text("Smite player with lightning.");
+    private static final TextLocale DESCRIPTION = LangEntry.builder("Command.Smite.Desc").text(
+        "Smite player with lightning.");
 
     private static final MessageLocale COMMAND_SMITE_TARGET = LangEntry.builder("Command.Smite.Target").chatMessage(
         GRAY.wrap("You have smited " + SOFT_YELLOW.wrap(PLAYER_NAME) + "!")
@@ -46,7 +47,7 @@ public class SmiteCommandProvider extends AbstractCommandProvider {
         this.registerLiteral("smite", true, new String[]{"smite"}, builder -> builder
             .description(DESCRIPTION)
             .permission(PERMISSION)
-            .withArguments(Arguments.player(CommandArguments.PLAYER).permission(PERMISSION_OTHERS))
+            .withArguments(Arguments.playerName(CommandArguments.PLAYER).permission(PERMISSION_OTHERS))
             .withFlags(CommandArguments.FLAG_SILENT)
             .executes(this::execute)
         );
@@ -57,7 +58,8 @@ public class SmiteCommandProvider extends AbstractCommandProvider {
             target.getWorld().strikeLightning(target.getLocation());
 
             if (context.getSender() != target) {
-                this.module.sendPrefixed(COMMAND_SMITE_TARGET, context.getSender(), replacer -> replacer.with(CommonPlaceholders.PLAYER.resolver(target)));
+                this.module.sendPrefixed(COMMAND_SMITE_TARGET, context.getSender(), replacer -> replacer.with(
+                    CommonPlaceholders.PLAYER.resolver(target)));
             }
             if (!context.hasFlag(CommandArguments.FLAG_SILENT)) {
                 this.module.sendPrefixed(COMMAND_SMITE_NOTIFY, target);

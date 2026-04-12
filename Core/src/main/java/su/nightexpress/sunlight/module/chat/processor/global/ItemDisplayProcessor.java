@@ -1,21 +1,22 @@
 package su.nightexpress.sunlight.module.chat.processor.global;
 
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
+
 import su.nightexpress.nightcore.util.ItemTag;
 import su.nightexpress.nightcore.util.ItemUtil;
 import su.nightexpress.nightcore.util.Strings;
 import su.nightexpress.nightcore.util.placeholder.PlaceholderContext;
-import su.nightexpress.sunlight.module.chat.core.ChatLang;
 import su.nightexpress.sunlight.module.chat.ChatModule;
 import su.nightexpress.sunlight.module.chat.ChatPlaceholders;
 import su.nightexpress.sunlight.module.chat.context.FormattedContext;
+import su.nightexpress.sunlight.module.chat.core.ChatLang;
 import su.nightexpress.sunlight.module.chat.processor.ChatProcessor;
 
 public class ItemDisplayProcessor implements ChatProcessor<FormattedContext> {
 
     @Override
-    public void preProcess(@NotNull ChatModule module, @NotNull FormattedContext context) {
+    public void preProcess(@NonNull ChatModule module, @NonNull FormattedContext context) {
         String format = context.getFormat();
 
         String placeholder = module.getSettings().getItemShowPlaceholder();
@@ -41,22 +42,22 @@ public class ItemDisplayProcessor implements ChatProcessor<FormattedContext> {
     }
 
     @Override
-    public void postProcess(@NotNull ChatModule module, @NotNull FormattedContext context) {
+    public void postProcess(@NonNull ChatModule module, @NonNull FormattedContext context) {
 
     }
 
-    /*@NotNull
-    private static ItemStack getLiteCopy(@NotNull ItemStack origin) {
+    /*@NonNull
+    private static ItemStack getLiteCopy(@NonNull ItemStack origin) {
         ItemStack copy = new ItemStack(origin);
-
+    
         ItemMeta meta = copy.getItemMeta();
         if (!(meta instanceof BlockStateMeta blockStateMeta)) return copy;
-
+    
         if (blockStateMeta.getBlockState() instanceof Container container) {
             container.getInventory().clear();
             blockStateMeta.setBlockState(container);
         }
-
+    
         copy.setItemMeta(blockStateMeta);
         return copy;
     }*/

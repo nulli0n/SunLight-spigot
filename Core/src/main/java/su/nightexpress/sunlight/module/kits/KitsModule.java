@@ -112,19 +112,23 @@ public class KitsModule extends Module {
     @Override
     public void registerPlaceholders(@NotNull PlaceholderRegistry registry) {
         registry.register("kits_is_on_cooldown", (player, payload) -> {
-            return CoreLang.STATE_YES_NO.get(this.dataRepository.kitData(player.getUniqueId(), payload).map(KitData::hasCooldown).orElse(false));
+            return CoreLang.STATE_YES_NO.get(this.dataRepository.kitData(player.getUniqueId(), payload).map(
+                KitData::hasCooldown).orElse(false));
         });
 
         registry.register("kits_is_available", (player, payload) -> {
-            return CoreLang.STATE_YES_NO.get(this.dataRepository.kitData(player.getUniqueId(), payload).map(KitData::hasCooldown).orElse(false));
+            return CoreLang.STATE_YES_NO.get(this.dataRepository.kitData(player.getUniqueId(), payload).map(
+                KitData::hasCooldown).orElse(false));
         });
 
         registry.register("kits_cooldown_raw", (player, payload) -> {
-            return String.valueOf(this.dataRepository.kitData(player.getUniqueId(), payload).map(KitData::getCooldownDate).orElse(0L));
+            return String.valueOf(this.dataRepository.kitData(player.getUniqueId(), payload).map(
+                KitData::getCooldownDate).orElse(0L));
         });
 
         registry.register("kits_cooldown", (player, payload) -> {
-            return TimeFormats.formatDuration(this.dataRepository.kitData(player.getUniqueId(), payload).map(KitData::getCooldownDate).orElse(0L), TimeFormatType.LITERAL);
+            return TimeFormats.formatDuration(this.dataRepository.kitData(player.getUniqueId(), payload).map(
+                KitData::getCooldownDate).orElse(0L), TimeFormatType.LITERAL);
         });
     }
 
@@ -150,8 +154,8 @@ public class KitsModule extends Module {
         this.kitsMenu = new KitsMenu(this.plugin, this);
         this.previewMenu = new KitPreviewMenu(this.plugin, this);
 
-        this.editorMenu = new KitsEditorMenu(this.plugin, this, this.dialogRegistry);
-        this.settingsEditorMenu = new KitSettingsEditorMenu(this.plugin, this, this.dialogRegistry);
+        this.editorMenu = new KitsEditorMenu(this.plugin, this);
+        this.settingsEditorMenu = new KitSettingsEditorMenu(this.plugin, this);
         this.contentEditorMenu = new KitContentEditorMenu(this.plugin, this);
     }
 
@@ -165,13 +169,17 @@ public class KitsModule extends Module {
     }
 
     private void saveData() {
-        Set<KitData> dirties = this.dataRepository.getAll().stream().filter(KitData::isDirty).peek(KitData::markClean).collect(Collectors.toSet());
+        Set<KitData> dirties = this.dataRepository.getAll().stream().filter(KitData::isDirty).collect(Collectors
+            .toSet());
+
+        dirties.forEach(KitData::markClean);
 
         this.dataManager.saveData(dirties);
     }
 
     private void saveKits() {
-        this.getKits().stream().filter(Kit::isDirty).peek(Kit::markClean).forEach(kit -> {
+        this.getKits().stream().filter(Kit::isDirty).forEach(kit -> {
+            kit.markClean();
             FileConfig config = FileConfig.load(kit.getPath());
             config.edit(kit::write);
         });
@@ -215,7 +223,8 @@ public class KitsModule extends Module {
     }
 
     public void createKit(@NotNull String name) throws IllegalArgumentException {
-        String id = Strings.varStyle(name).orElseThrow(() -> new IllegalArgumentException("%s is not a valid name".formatted(name)));
+        String id = Strings.varStyle(name).orElseThrow(() -> new IllegalArgumentException("%s is not a valid name"
+            .formatted(name)));
 
         if (this.isKitExists(id)) throw new IllegalArgumentException("Kit %s already exists".formatted(name));
 
@@ -237,7 +246,8 @@ public class KitsModule extends Module {
 
         // Check kit permission.
         if (!force && !kit.hasPermission(player)) {
-            if (!silent) this.sendPrefixed(KitsLang.KIT_GET_ERROR_NO_PERMISSION, player, builder -> builder.with(kit.placeholders()));
+            if (!silent) this.sendPrefixed(KitsLang.KIT_GET_ERROR_NO_PERMISSION, player, builder -> builder.with(kit
+                .placeholders()));
             return false;
         }
 
@@ -245,27 +255,33 @@ public class KitsModule extends Module {
         this.getKitDataOrCreate(player.getUniqueId(), kit.getId()).thenAcceptAsync(kitData -> {
             if (!force && !kitData.isCooldownExpired()) {
                 if (!silent) {
-                    this.sendPrefixed(!kitData.isCooldownExpirable() ? KitsLang.KIT_GET_ERROR_ONE_TIME : KitsLang.KIT_GET_ERROR_COOLDOWN, player, builder -> builder
-                        .with(kit.placeholders())
-                        .with(SLPlaceholders.GENERIC_COOLDOWN, () -> TimeFormats.formatDuration(kitData.getCooldownDate(), TimeFormatType.LITERAL))
+                    this.sendPrefixed(!kitData
+                        .isCooldownExpirable() ? KitsLang.KIT_GET_ERROR_ONE_TIME : KitsLang.KIT_GET_ERROR_COOLDOWN,
+                        player, builder -> builder
+                            .with(kit.placeholders())
+                            .with(SLPlaceholders.GENERIC_COOLDOWN, () -> TimeFormats.formatDuration(kitData
+                                .getCooldownDate(), TimeFormatType.LITERAL))
                     );
                 }
                 return;
             }
 
             // Check kit money cost.
-            if (!force && kit.hasCost() && !player.hasPermission(KitsPerms.BYPASS_COST) && EconomyBridge.hasEconomy()) {
+            if (!force && kit.hasCost() && !player.hasPermission(KitsPerms.BYPASS_COST) && EconomyBridge.api()
+                .hasVaultCurrency()) {
                 double cost = kit.definition().getCost();
-                double balance = EconomyBridge.getEconomyBalance(player);
+                double balance = EconomyBridge.api().queryBalance(player);
                 if (balance < cost) {
-                    if (!silent) this.sendPrefixed(KitsLang.KIT_GET_ERROR_NOT_ENOUGH_FUNDS, player, builder -> builder.with(kit.placeholders()));
+                    if (!silent) this.sendPrefixed(KitsLang.KIT_GET_ERROR_NOT_ENOUGH_FUNDS, player, builder -> builder
+                        .with(kit.placeholders()));
                     return;
                 }
-                EconomyBridge.withdrawEconomy(player, cost);
+                EconomyBridge.api().withdraw(player, cost);
             }
 
             // Give kit content.
             PlayerInventory inventory = player.getInventory();
+            List<ItemStack> leftovers = new ArrayList<>();
 
             kit.definition().getContent().give((slot, itemStack) -> {
                 if (this.settings.isBindToPlayers()) {
@@ -274,11 +290,12 @@ public class KitsModule extends Module {
 
                 ItemStack current = inventory.getItem(slot);
                 if (current != null && !current.getType().isAir()) {
-                    Players.addItem(player, new ItemStack(current));
+                    leftovers.add(new ItemStack(current));
                 }
                 inventory.setItem(slot, itemStack);
             });
 
+            Players.addItem(player, leftovers.toArray(new ItemStack[0]));
             Players.dispatchCommands(player, kit.definition().getCommands());
 
             if (!force && kit.hasCooldown() && !player.hasPermission(KitsPerms.BYPASS_COOLDOWN)) {
@@ -286,7 +303,8 @@ public class KitsModule extends Module {
                 kitData.markDirty();
             }
 
-            if (!silent) this.sendPrefixed(KitsLang.KIT_GET_NOTIFY, player, builder -> builder.with(kit.placeholders()));
+            if (!silent) this.sendPrefixed(KitsLang.KIT_GET_NOTIFY, player, builder -> builder.with(kit
+                .placeholders()));
 
         }, this.plugin::runTask).whenComplete(FutureUtils::printStacktrace);
 

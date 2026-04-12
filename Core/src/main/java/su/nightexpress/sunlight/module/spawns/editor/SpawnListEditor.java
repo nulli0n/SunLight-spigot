@@ -1,13 +1,21 @@
 package su.nightexpress.sunlight.module.spawns.editor;
 
-import org.bukkit.Material;
+import static su.nightexpress.nightcore.util.text.night.wrapper.TagWrappers.YELLOW;
+import static su.nightexpress.sunlight.module.spawns.SpawnsPlaceholders.SPAWN_ID;
+import static su.nightexpress.sunlight.module.spawns.SpawnsPlaceholders.SPAWN_NAME;
+
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.IntStream;
+
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.MenuType;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
+
 import su.nightexpress.nightcore.config.FileConfig;
 import su.nightexpress.nightcore.locale.LangContainer;
 import su.nightexpress.nightcore.locale.LangEntry;
@@ -17,17 +25,9 @@ import su.nightexpress.nightcore.ui.inventory.item.MenuItem;
 import su.nightexpress.nightcore.ui.inventory.menu.AbstractMenu;
 import su.nightexpress.nightcore.ui.inventory.viewer.ViewerContext;
 import su.nightexpress.sunlight.SunLightPlugin;
+import su.nightexpress.sunlight.module.spawns.Spawn;
 import su.nightexpress.sunlight.module.spawns.SpawnsModule;
 import su.nightexpress.sunlight.module.spawns.config.SpawnsLang;
-import su.nightexpress.sunlight.module.spawns.Spawn;
-
-import java.util.Comparator;
-import java.util.List;
-import java.util.stream.IntStream;
-
-import static su.nightexpress.nightcore.util.text.night.wrapper.TagWrappers.*;
-import static su.nightexpress.sunlight.module.spawns.SpawnsPlaceholders.SPAWN_ID;
-import static su.nightexpress.sunlight.module.spawns.SpawnsPlaceholders.SPAWN_NAME;
 
 public class SpawnListEditor extends AbstractMenu implements LangContainer {
 
@@ -41,7 +41,7 @@ public class SpawnListEditor extends AbstractMenu implements LangContainer {
     private final SpawnsModule         module;
     private final ItemPopulator<Spawn> spawnPopulator;
 
-    public SpawnListEditor(@NotNull SunLightPlugin plugin, @NotNull SpawnsModule module) {
+    public SpawnListEditor(@NonNull SunLightPlugin plugin, @NonNull SpawnsModule module) {
         super(MenuType.GENERIC_9X5, SpawnsLang.EDITOR_TITLE_LIST.text());
         this.module = module;
 
@@ -75,32 +75,32 @@ public class SpawnListEditor extends AbstractMenu implements LangContainer {
 
     @Override
     public void defineDefaultLayout() {
-        this.addNextPageItem(Material.ARROW, 44);
-        this.addPreviousPageItem(Material.ARROW, 36);
+        this.addNextPageButton(44);
+        this.addPreviousPageButton(36);
     }
 
     @Override
-    protected void onLoad(@NotNull FileConfig config) {
-
-    }
-
-    @Override
-    protected void onClick(@NotNull ViewerContext context, @NotNull InventoryClickEvent event) {
+    protected void onLoad(@NonNull FileConfig config) {
 
     }
 
     @Override
-    protected void onDrag(@NotNull ViewerContext context, @NotNull InventoryDragEvent event) {
+    protected void onClick(@NonNull ViewerContext context, @NonNull InventoryClickEvent event) {
 
     }
 
     @Override
-    protected void onClose(@NotNull ViewerContext context, @NotNull InventoryCloseEvent event) {
+    protected void onDrag(@NonNull ViewerContext context, @NonNull InventoryDragEvent event) {
 
     }
 
     @Override
-    public void onPrepare(@NotNull ViewerContext context, @NotNull InventoryView view, @NotNull Inventory inventory, @NotNull List<MenuItem> items) {
+    protected void onClose(@NonNull ViewerContext context, @NonNull InventoryCloseEvent event) {
+
+    }
+
+    @Override
+    public void onPrepare(@NonNull ViewerContext context, @NonNull InventoryView view, @NonNull Inventory inventory, @NonNull List<MenuItem> items) {
         List<Spawn> spawns = this.module.getSpawns().stream()
             .sorted(Comparator.comparingInt(Spawn::getPriority).reversed().thenComparing(Spawn::getName))
             .toList();
@@ -109,12 +109,12 @@ public class SpawnListEditor extends AbstractMenu implements LangContainer {
     }
 
     @Override
-    public void onReady(@NotNull ViewerContext context, @NotNull InventoryView view, @NotNull Inventory inventory) {
+    public void onReady(@NonNull ViewerContext context, @NonNull InventoryView view, @NonNull Inventory inventory) {
 
     }
 
     @Override
-    public void onRender(@NotNull ViewerContext context, @NotNull InventoryView view, @NotNull Inventory inventory) {
+    public void onRender(@NonNull ViewerContext context, @NonNull InventoryView view, @NonNull Inventory inventory) {
 
     }
 }

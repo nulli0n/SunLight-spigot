@@ -62,7 +62,7 @@ public abstract class AbstractCommandProvider implements CommandProvider {
     }
 
     /*protected void loadSettings(@NonNull FileConfig config, @NonNull String path) {
-
+    
     }*/
 
     private void loadLiterals(@NonNull FileConfig config, @NonNull String path) {
@@ -101,7 +101,8 @@ public abstract class AbstractCommandProvider implements CommandProvider {
                 config.set(defPath + ".Enabled", definition.enabled());
                 config.setStringArray(defPath + ".Aliases", definition.aliases());
                 config.set(defPath + ".Name", definition.name());
-                definition.childrenAliases().forEach((childName, childAlias) -> config.set(defPath + ".Childrens." + childName, childAlias));
+                definition.childrenAliases().forEach((childName, childAlias) -> config.set(defPath + ".Childrens." +
+                    childName, childAlias));
             }
         });
 
@@ -141,7 +142,8 @@ public abstract class AbstractCommandProvider implements CommandProvider {
     }
 
     protected void registerRoot(@NonNull String name, boolean enabled, @NonNull String[] aliases, @NonNull Map<String, String> childrenAliases, @NonNull Consumer<HubNodeBuilder> consumer) {
-        this.defaultRoot.put(LowerCase.INTERNAL.apply(name), new HubDefinition(enabled, aliases, StringUtil.capitalizeUnderscored(name), childrenAliases));
+        this.defaultRoot.put(LowerCase.INTERNAL.apply(name), new HubDefinition(enabled, aliases, StringUtil
+            .capitalizeUnderscored(name), childrenAliases));
         this.rootBuilder.put(LowerCase.INTERNAL.apply(name), consumer);
     }
 
@@ -183,10 +185,7 @@ public abstract class AbstractCommandProvider implements CommandProvider {
         return context.getPlayerOrThrow().getWorld();
     }
 
-    protected boolean runForOnlinePlayerOrSender(@NonNull CommandContext context,
-                                                 @NonNull ParsedArguments arguments,
-                                                 @NonNull Module module,
-                                                 @NonNull Function<Player, Boolean> consumer) {
+    protected boolean runForOnlinePlayerOrSender(@NonNull CommandContext context, @NonNull ParsedArguments arguments, @NonNull Module module, @NonNull Function<Player, Boolean> consumer) {
         if (!arguments.contains(CommandArguments.PLAYER) && !context.isPlayer()) {
             context.printUsage();
             return false;
@@ -195,26 +194,19 @@ public abstract class AbstractCommandProvider implements CommandProvider {
         return this.runForOnlinePlayer(context, arguments, module, consumer);
     }
 
-    protected boolean runForOnlinePlayer(@NonNull CommandContext context,
-                                         @NonNull ParsedArguments arguments,
-                                         @NonNull Module module,
-                                         @NonNull Function<Player, Boolean> consumer) {
+    protected boolean runForOnlinePlayer(@NonNull CommandContext context, @NonNull ParsedArguments arguments, @NonNull Module module, @NonNull Function<Player, Boolean> consumer) {
         String playerName = arguments.getString(CommandArguments.PLAYER, context.getSender().getName());
         Player target = Players.getPlayer(playerName);
 
         if (target == null || !this.canSee(context, target)) {
-            module.sendPrefixed(CoreLang.ERROR_INVALID_PLAYER, context.getSender()); // Module prefix
+            module.sendPrefixed(CoreLang.ERROR_INVALID_PLAYER, context.getSender());
             return false;
         }
 
         return consumer.apply(target);
     }
 
-    protected boolean loadPlayerOrSenderWithDataAndRunInMainThread(@NonNull CommandContext context,
-                                                                   @NonNull ParsedArguments arguments,
-                                                                   @NonNull Module module,
-                                                                   @NonNull UserManager userManager,
-                                                                   @NonNull BiConsumer<@NonNull SunUser, @NonNull Player> consumer) {
+    protected boolean loadPlayerOrSenderWithDataAndRunInMainThread(@NonNull CommandContext context, @NonNull ParsedArguments arguments, @NonNull Module module, @NonNull UserManager userManager, @NonNull BiConsumer<@NonNull SunUser, @NonNull Player> consumer) {
         if (!arguments.contains(CommandArguments.PLAYER) && !context.isPlayer()) {
             context.printUsage();
             return false;
@@ -223,11 +215,7 @@ public abstract class AbstractCommandProvider implements CommandProvider {
         return this.loadPlayerWithDataAndRunInMainThread(context, arguments, module, userManager, consumer);
     }
 
-    protected boolean loadPlayerWithDataAndRunInMainThread(@NonNull CommandContext context,
-                                                           @NonNull ParsedArguments arguments,
-                                                           @NonNull Module module,
-                                                           @NonNull UserManager userManager,
-                                                           @NonNull BiConsumer<@NonNull SunUser, @NonNull Player> consumer) {
+    protected boolean loadPlayerWithDataAndRunInMainThread(@NonNull CommandContext context, @NonNull ParsedArguments arguments, @NonNull Module module, @NonNull UserManager userManager, @NonNull BiConsumer<@NonNull SunUser, @NonNull Player> consumer) {
 
         CommandSender sender = context.getSender();
         String playerName = arguments.getString(CommandArguments.PLAYER, sender.getName());
@@ -247,7 +235,8 @@ public abstract class AbstractCommandProvider implements CommandProvider {
 
                 consumer.accept(user, target);
 
-                return target.isOnline() ? CompletableFuture.completedFuture(null) : CompletableFuture.runAsync(target::saveData);
+                return target.isOnline() ? CompletableFuture.completedFuture(null) : CompletableFuture.runAsync(
+                    target::saveData);
 
             }, this.plugin::runTask);
         }).whenComplete(FutureUtils::printStacktrace);
@@ -255,11 +244,7 @@ public abstract class AbstractCommandProvider implements CommandProvider {
         return true;
     }
 
-    protected boolean loadPlayerOrSenderAndRunInMainThread(@NonNull CommandContext context,
-                                                           @NonNull ParsedArguments arguments,
-                                                           @NonNull Module module,
-                                                           @NonNull UserManager userManager,
-                                                           @NonNull Consumer<@NonNull Player> consumer) {
+    protected boolean loadPlayerOrSenderAndRunInMainThread(@NonNull CommandContext context, @NonNull ParsedArguments arguments, @NonNull Module module, @NonNull UserManager userManager, @NonNull Consumer<@NonNull Player> consumer) {
         if (!arguments.contains(CommandArguments.PLAYER) && !context.isPlayer()) {
             context.printUsage();
             return false;
@@ -268,21 +253,13 @@ public abstract class AbstractCommandProvider implements CommandProvider {
         return this.loadPlayerAndRunInMainThread(context, arguments, module, userManager, consumer);
     }
 
-    protected boolean loadPlayerAndRunInMainThread(@NonNull CommandContext context,
-                                                   @NonNull ParsedArguments arguments,
-                                                   @NonNull Module module,
-                                                   @NonNull UserManager userManager,
-                                                   @NonNull Consumer<@NonNull Player> consumer) {
+    protected boolean loadPlayerAndRunInMainThread(@NonNull CommandContext context, @NonNull ParsedArguments arguments, @NonNull Module module, @NonNull UserManager userManager, @NonNull Consumer<@NonNull Player> consumer) {
         String playerName = arguments.getString(CommandArguments.PLAYER, context.getSender().getName());
 
         return this.loadPlayerAndRunInMainThread(context, playerName, module, userManager, consumer);
     }
 
-    protected boolean loadPlayerAndRunInMainThread(@NonNull CommandContext context,
-                                                   @NonNull String playerName,
-                                                   @NonNull Module module,
-                                                   @NonNull UserManager userManager,
-                                                   @NonNull Consumer<@NonNull Player> consumer) {
+    protected boolean loadPlayerAndRunInMainThread(@NonNull CommandContext context, @NonNull String playerName, @NonNull Module module, @NonNull UserManager userManager, @NonNull Consumer<@NonNull Player> consumer) {
         userManager.loadTargetPlayer(playerName).thenComposeAsync(target -> {
             if (target == null || !this.canSee(context, target)) {
                 module.sendPrefixed(CoreLang.ERROR_INVALID_PLAYER, context.getSender());
@@ -291,7 +268,8 @@ public abstract class AbstractCommandProvider implements CommandProvider {
 
             consumer.accept(target);
 
-            return target.isOnline() ? CompletableFuture.completedFuture(null) : CompletableFuture.runAsync(target::saveData);
+            return target.isOnline() ? CompletableFuture.completedFuture(null) : CompletableFuture.runAsync(
+                target::saveData);
 
         }, this.plugin::runTask).whenComplete(FutureUtils::printStacktrace);
 

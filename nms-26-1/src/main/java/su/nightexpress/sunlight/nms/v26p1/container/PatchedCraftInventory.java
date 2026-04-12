@@ -1,9 +1,10 @@
-package su.nightexpress.sunlight.nms.mc_1_21_10.container;
+package su.nightexpress.sunlight.nms.v26p1.container;
 
-import net.minecraft.world.Container;
 import org.bukkit.craftbukkit.inventory.CraftInventory;
 import org.bukkit.event.inventory.InventoryType;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
+
+import net.minecraft.world.Container;
 
 public class PatchedCraftInventory extends CraftInventory {
 
@@ -12,7 +13,7 @@ public class PatchedCraftInventory extends CraftInventory {
     }
 
     @Override
-    @NotNull
+    @NonNull
     public InventoryType getType() {
         // Force tell that it's a custom chest and not PLAYER type inventory.
         // Otherwise an error is thrown sometimes due to CraftContainer.getNotchInventoryType in the CraftContainer constructor.

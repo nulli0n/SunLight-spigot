@@ -1,12 +1,27 @@
 package su.nightexpress.sunlight.module.kits.editor;
 
+import static su.nightexpress.nightcore.util.text.night.wrapper.TagWrappers.GREEN;
+import static su.nightexpress.nightcore.util.text.night.wrapper.TagWrappers.RED;
+import static su.nightexpress.nightcore.util.text.night.wrapper.TagWrappers.YELLOW;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.IntStream;
+
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
-import org.bukkit.inventory.*;
-import org.jetbrains.annotations.NotNull;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryView;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.MenuType;
+import org.bukkit.inventory.PlayerInventory;
+import org.jspecify.annotations.NonNull;
+
 import su.nightexpress.nightcore.NightPlugin;
 import su.nightexpress.nightcore.bridge.item.AdaptedItem;
 import su.nightexpress.nightcore.bridge.item.ItemAdapter;
@@ -26,17 +41,10 @@ import su.nightexpress.sunlight.module.kits.config.KitsLang;
 import su.nightexpress.sunlight.module.kits.model.Kit;
 import su.nightexpress.sunlight.module.kits.model.KitContent;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.IntStream;
-
-import static su.nightexpress.nightcore.util.text.night.wrapper.TagWrappers.*;
-
 public class KitContentEditorMenu extends AbstractObjectMenu<KitContentEditorMenu.Data> implements LangContainer {
 
-    public record Data(@NotNull Kit kit, @NotNull KitContent contentCopy){}
+    public record Data(@NonNull Kit kit, @NonNull KitContent contentCopy) {
+    }
 
     private static final IconLocale ICON_SAVE = LangEntry.iconBuilder("Kits.UI.Editor.KitContent.Save")
         .accentColor(GREEN)
@@ -52,7 +60,8 @@ public class KitContentEditorMenu extends AbstractObjectMenu<KitContentEditorMen
         .appendClick("Click to cancel")
         .build();
 
-    private static final IconLocale ICON_COPY_INVENTORY = LangEntry.iconBuilder("Kits.UI.Editor.KitContent.CopyInventory")
+    private static final IconLocale ICON_COPY_INVENTORY = LangEntry.iconBuilder(
+        "Kits.UI.Editor.KitContent.CopyInventory")
         .accentColor(YELLOW)
         .name("Copy Inventory").br()
         .appendInfo("Copies your whole inventory.").br()
@@ -75,7 +84,7 @@ public class KitContentEditorMenu extends AbstractObjectMenu<KitContentEditorMen
 
     private final KitsModule module;
 
-    public KitContentEditorMenu(@NotNull SunLightPlugin plugin, @NotNull KitsModule module) {
+    public KitContentEditorMenu(@NonNull SunLightPlugin plugin, @NonNull KitsModule module) {
         super(MenuType.GENERIC_9X6, KitsLang.EDITOR_TITLE_CONTENT.text(), Data.class);
         this.module = module;
 
@@ -83,7 +92,7 @@ public class KitContentEditorMenu extends AbstractObjectMenu<KitContentEditorMen
         this.load(plugin);
     }
 
-    public boolean show(@NotNull NightPlugin plugin, @NotNull Player player, @NotNull Kit kit) {
+    public boolean show(@NonNull NightPlugin plugin, @NonNull Player player, @NonNull Kit kit) {
         return this.show(plugin, player, new Data(kit, KitContent.copyOf(kit.definition().getContent())));
     }
 
@@ -102,19 +111,19 @@ public class KitContentEditorMenu extends AbstractObjectMenu<KitContentEditorMen
         this.addBackgroundItem(Material.BLACK_STAINED_GLASS_PANE, IntStream.range(9, 18).toArray());
         this.addBackgroundItem(Material.GRAY_STAINED_GLASS_PANE, 5);
 
-        this.addDefaultButton("copy", MenuItem.builder()
+        this.addDefaultButton("copy", MenuItem.button()
             .defaultState(NightItem.fromType(Material.NETHER_STAR).localized(ICON_COPY_INVENTORY), this::copyInventory)
             .slots(6)
             .build()
         );
 
-        this.addDefaultButton("save", MenuItem.builder()
+        this.addDefaultButton("save", MenuItem.button()
             .defaultState(NightItem.fromType(Material.LIME_WOOL).localized(ICON_SAVE), this::save)
             .slots(7)
             .build()
         );
 
-        this.addDefaultButton("cancel", MenuItem.builder()
+        this.addDefaultButton("cancel", MenuItem.button()
             .defaultState(NightItem.fromType(Material.RED_WOOL).localized(ICON_CANCEL), context -> {
                 this.module.openSettingsEditor(context.getPlayer(), this.getObject(context).kit);
             })
@@ -124,12 +133,12 @@ public class KitContentEditorMenu extends AbstractObjectMenu<KitContentEditorMen
     }
 
     @Override
-    protected void onLoad(@NotNull FileConfig config) {
+    protected void onLoad(@NonNull FileConfig config) {
 
     }
 
     @Override
-    protected void onClick(@NotNull ViewerContext context, @NotNull InventoryClickEvent event) {
+    protected void onClick(@NonNull ViewerContext context, @NonNull InventoryClickEvent event) {
         if (event.getRawSlot() > event.getInventory().getSize() || FUSED_SLOTS.contains(event.getRawSlot())) {
             event.setCancelled(false);
             context.getViewer().setNextClickIn(0L); // Remove click cooldown.
@@ -137,17 +146,17 @@ public class KitContentEditorMenu extends AbstractObjectMenu<KitContentEditorMen
     }
 
     @Override
-    protected void onDrag(@NotNull ViewerContext context, @NotNull InventoryDragEvent event) {
+    protected void onDrag(@NonNull ViewerContext context, @NonNull InventoryDragEvent event) {
 
     }
 
     @Override
-    protected void onClose(@NotNull ViewerContext context, @NotNull InventoryCloseEvent event) {
+    protected void onClose(@NonNull ViewerContext context, @NonNull InventoryCloseEvent event) {
 
     }
 
     @Override
-    public void onPrepare(@NotNull ViewerContext context, @NotNull InventoryView view, @NotNull Inventory inventory, @NotNull List<MenuItem> items) {
+    public void onPrepare(@NonNull ViewerContext context, @NonNull InventoryView view, @NonNull Inventory inventory, @NonNull List<MenuItem> items) {
         Data data = this.getObject(context);
         KitContent content = data.contentCopy;
 
@@ -161,16 +170,16 @@ public class KitContentEditorMenu extends AbstractObjectMenu<KitContentEditorMen
     }
 
     @Override
-    public void onReady(@NotNull ViewerContext context, @NotNull InventoryView view, @NotNull Inventory inventory) {
+    public void onReady(@NonNull ViewerContext context, @NonNull InventoryView view, @NonNull Inventory inventory) {
 
     }
 
     @Override
-    public void onRender(@NotNull ViewerContext context, @NotNull InventoryView view, @NotNull Inventory inventory) {
+    public void onRender(@NonNull ViewerContext context, @NonNull InventoryView view, @NonNull Inventory inventory) {
 
     }
 
-    private void save(@NotNull ActionContext context) {
+    private void save(@NonNull ActionContext context) {
         Data data = this.getObject(context);
         Kit kit = data.kit;
         KitContent content = data.contentCopy;
@@ -183,7 +192,7 @@ public class KitContentEditorMenu extends AbstractObjectMenu<KitContentEditorMen
         this.module.openSettingsEditor(context.getPlayer(), kit);
     }
 
-    private void copyInventory(@NotNull ActionContext context) {
+    private void copyInventory(@NonNull ActionContext context) {
         Data data = this.getObject(context);
         KitContent content = data.contentCopy;
         PlayerInventory inventory = context.getPlayer().getInventory();
@@ -193,7 +202,7 @@ public class KitContentEditorMenu extends AbstractObjectMenu<KitContentEditorMen
         context.getViewer().refresh();
     }
 
-    private void transferItems(@NotNull KitContent content, @NotNull Inventory inventory, @NotNull Function<Integer, Integer> slotMapper) {
+    private void transferItems(@NonNull KitContent content, @NonNull Inventory inventory, @NonNull Function<Integer, Integer> slotMapper) {
         Map<Integer, AdaptedItem> itemBySlotMap = content.getItemBySlotMap();
 
         itemBySlotMap.clear();

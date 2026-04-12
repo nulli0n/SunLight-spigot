@@ -2,15 +2,21 @@ package su.nightexpress.sunlight.module.homes.dialog.impl;
 
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+
 import su.nightexpress.nightcore.bridge.dialog.wrap.WrappedDialog;
 import su.nightexpress.nightcore.core.config.CoreLang;
 import su.nightexpress.nightcore.locale.LangEntry;
 import su.nightexpress.nightcore.locale.entry.DialogElementLocale;
 import su.nightexpress.nightcore.locale.entry.TextLocale;
 import su.nightexpress.nightcore.ui.dialog.Dialogs;
-import su.nightexpress.nightcore.ui.dialog.build.*;
+import su.nightexpress.nightcore.ui.dialog.build.DialogActions;
+import su.nightexpress.nightcore.ui.dialog.build.DialogBases;
+import su.nightexpress.nightcore.ui.dialog.build.DialogBodies;
+import su.nightexpress.nightcore.ui.dialog.build.DialogButtons;
+import su.nightexpress.nightcore.ui.dialog.build.DialogInputs;
+import su.nightexpress.nightcore.ui.dialog.build.DialogTypes;
+import su.nightexpress.nightcore.ui.dialog.wrap.Dialog;
 import su.nightexpress.sunlight.SunLightPlugin;
-import su.nightexpress.sunlight.dialog.Dialog;
 import su.nightexpress.sunlight.module.homes.HomesModule;
 import su.nightexpress.sunlight.module.homes.impl.Home;
 import su.nightexpress.sunlight.user.UserManager;
@@ -22,13 +28,16 @@ public class HomeInvitePlayerDialog extends Dialog<Home> {
     private final HomesModule    module;
     private final UserManager    userManager;
 
-    private static final TextLocale TITLE = LangEntry.builder("Homes.Dialog.InvitePlayer.Title").text(title("Home", "Invite Player"));
+    private static final TextLocale TITLE = LangEntry.builder("Homes.Dialog.InvitePlayer.Title").text(title("Home",
+        "Invite Player"));
 
-    private static final DialogElementLocale BODY = LangEntry.builder("Homes.Dialog.InvitePlayer.Body").dialogElement(400,
+    private static final DialogElementLocale BODY = LangEntry.builder("Homes.Dialog.InvitePlayer.Body").dialogElement(
+        400,
         "Enter a name of the player you want to invite to your home."
     );
 
-    private static final TextLocale INPUT_NAME = LangEntry.builder("Homes.Dialog.InvitePlayer.Input.PlayerName").text("Player Name");
+    private static final TextLocale INPUT_NAME = LangEntry.builder("Homes.Dialog.InvitePlayer.Input.PlayerName").text(
+        "Player Name");
 
     private static final String JSON_NAME = "name";
 

@@ -1,19 +1,28 @@
 package su.nightexpress.sunlight.module.warps.dialog.impl;
 
+import static su.nightexpress.nightcore.util.text.night.wrapper.TagWrappers.BOLD;
+import static su.nightexpress.nightcore.util.text.night.wrapper.TagWrappers.OPEN_URL;
+import static su.nightexpress.nightcore.util.text.night.wrapper.TagWrappers.SPRITE_ITEM;
+import static su.nightexpress.nightcore.util.text.night.wrapper.TagWrappers.YELLOW;
+
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.jspecify.annotations.NonNull;
+
 import su.nightexpress.nightcore.bridge.dialog.wrap.WrappedDialog;
 import su.nightexpress.nightcore.locale.LangEntry;
 import su.nightexpress.nightcore.locale.entry.DialogElementLocale;
 import su.nightexpress.nightcore.locale.entry.TextLocale;
 import su.nightexpress.nightcore.ui.dialog.Dialogs;
-import su.nightexpress.nightcore.ui.dialog.build.*;
+import su.nightexpress.nightcore.ui.dialog.build.DialogActions;
+import su.nightexpress.nightcore.ui.dialog.build.DialogBases;
+import su.nightexpress.nightcore.ui.dialog.build.DialogBodies;
+import su.nightexpress.nightcore.ui.dialog.build.DialogButtons;
+import su.nightexpress.nightcore.ui.dialog.build.DialogInputs;
+import su.nightexpress.nightcore.ui.dialog.build.DialogTypes;
+import su.nightexpress.nightcore.ui.dialog.wrap.Dialog;
 import su.nightexpress.nightcore.util.Placeholders;
-import su.nightexpress.sunlight.dialog.Dialog;
 import su.nightexpress.sunlight.module.warps.Warp;
-
-import static su.nightexpress.nightcore.util.text.night.wrapper.TagWrappers.*;
 
 public class WarpNameDialog extends Dialog<Warp> {
 
@@ -23,7 +32,8 @@ public class WarpNameDialog extends Dialog<Warp> {
     private static final DialogElementLocale BODY = LangEntry.builder("Warps.Dialog.WarpName.Body").dialogElement(400,
         "Please enter a name for the warp.",
         "",
-        "You can click " + OPEN_URL.with(Placeholders.URL_WIKI_TEXT).wrap(YELLOW.and(BOLD).wrap("HERE")) + " to see all available formatting tags and color codes."
+        "You can click " + OPEN_URL.with(Placeholders.URL_WIKI_TEXT).wrap(YELLOW.and(BOLD).wrap("HERE")) +
+            " to see all available formatting tags and color codes."
     );
 
     private static final TextLocale INPUT_NAME = LangEntry.builder("Warps.Dialog.WarpName.Input.Name")

@@ -39,13 +39,15 @@ public class PlayerInfoCommandProvider extends AbstractCommandProvider {
 
     private static final Permission PERMISSION = EssentialPerms.COMMAND.permission("playerinfo");
 
-    private static final TextLocale DESCRIPTION = LangEntry.builder("Command.PlayerInfo.Desc").text("Show player info.");
+    private static final TextLocale DESCRIPTION = LangEntry.builder("Command.PlayerInfo.Desc").text(
+        "Show player info.");
 
-    private static final BooleanLocale STATUS = LangEntry.builder("Command.PlayerInfo.Status").bool(GREEN.wrap("Online"), RED.wrap("Offline"));
+    private static final BooleanLocale STATUS = LangEntry.builder("Command.PlayerInfo.Status").bool(GREEN.wrap(
+        "Online"), RED.wrap("Offline"));
 
-    private final EssentialModule module;
+    private final EssentialModule   module;
     private final EssentialSettings settings;
-    private final UserManager userManager;
+    private final UserManager       userManager;
 
     public PlayerInfoCommandProvider(@NonNull SunLightPlugin plugin, @NonNull EssentialModule module, @NonNull EssentialSettings settings, @NonNull UserManager userManager) {
         super(plugin);
@@ -56,35 +58,43 @@ public class PlayerInfoCommandProvider extends AbstractCommandProvider {
 
     @Override
     public void registerDefaults() {
-        this.registerLiteral("playerinfo", true, new String[]{"playerinfo", SLSharedConsts.COMMAND_PLAYER_INFO}, builder -> builder
-            .description(DESCRIPTION)
-            .permission(PERMISSION)
-            .withArguments(Arguments.playerName(CommandArguments.PLAYER))
-            .executes(this::showPlayerInfo)
+        this.registerLiteral("playerinfo", true, new String[]{"playerinfo", SLSharedConsts.COMMAND_PLAYER_INFO},
+            builder -> builder
+                .description(DESCRIPTION)
+                .permission(PERMISSION)
+                .withArguments(Arguments.playerName(CommandArguments.PLAYER))
+                .executes(this::showPlayerInfo)
         );
     }
 
     private boolean showPlayerInfo(@NonNull CommandContext context, @NonNull ParsedArguments arguments) {
-        this.loadPlayerOrSenderWithDataAndRunInMainThread(context, arguments, this.module, this.userManager, (user, target) -> {
-            Location location = target.getLocation();
-            Replacer replacer = Replacer.create()
-                .replace(forPlayerWithPAPI(target))
-                .replace(forLocation(location))
-                .replace(EssentialPlaceholders.PLAYER_STATUS, () -> STATUS.get(user.isOnline()))
-                .replace(EssentialPlaceholders.PLAYER_INET_ADDRESS, () -> user.getLatestAddress().map(InetAddress::getHostAddress).orElse("null"))
-                .replace(EssentialPlaceholders.PLAYER_LAST_SEEN, () -> TimeFormats.formatSince(user.getLastOnline(), TimeFormatType.LITERAL))
-                .replace(EssentialPlaceholders.PLAYER_LEVEL, () -> NumberUtil.format(target.getLevel()))
-                .replace(EssentialPlaceholders.PLAYER_CAN_FLY, () -> CoreLang.STATE_YES_NO.get(target.getAllowFlight()))
-                .replace(EssentialPlaceholders.PLAYER_FOOD_LEVEL, () -> NumberUtil.format(target.getFoodLevel()))
-                .replace(EssentialPlaceholders.PLAYER_SATURATION, () -> NumberUtil.format(target.getSaturation()))
-                .replace(EssentialPlaceholders.PLAYER_MAX_HEALTH, () -> NumberUtil.format(EntityUtil.getAttributeValue(target, Attribute.MAX_HEALTH)))
-                .replace(EssentialPlaceholders.PLAYER_HEALTH, () -> NumberUtil.format(target.getHealth()))
-                .replace(EssentialPlaceholders.PLAYER_GAME_MODE, () -> Lang.GAME_MODE.getLocalized(target.getGameMode()))
-                .replace(EssentialPlaceholders.PLAYER_VANISHED, () -> CoreLang.STATE_YES_NO.get(this.plugin.vanishProvider().map(provider -> provider.isVanished(target)).orElse(false)));
+        this.loadPlayerOrSenderWithDataAndRunInMainThread(context, arguments, this.module, this.userManager,
+            (user, target) -> {
+                Location location = target.getLocation();
+                Replacer replacer = Replacer.create()
+                    .replace(forPlayerWithPAPI(target))
+                    .replace(forLocation(location))
+                    .replace(EssentialPlaceholders.PLAYER_STATUS, () -> STATUS.get(user.isOnline()))
+                    .replace(EssentialPlaceholders.PLAYER_INET_ADDRESS, () -> user.getLatestAddress().map(
+                        InetAddress::getHostAddress).orElse("null"))
+                    .replace(EssentialPlaceholders.PLAYER_LAST_SEEN, () -> TimeFormats.formatSince(user.getLastOnline(),
+                        TimeFormatType.LITERAL))
+                    .replace(EssentialPlaceholders.PLAYER_LEVEL, () -> NumberUtil.format(target.getLevel()))
+                    .replace(EssentialPlaceholders.PLAYER_CAN_FLY, () -> CoreLang.STATE_YES_NO.get(target
+                        .getAllowFlight()))
+                    .replace(EssentialPlaceholders.PLAYER_FOOD_LEVEL, () -> NumberUtil.format(target.getFoodLevel()))
+                    .replace(EssentialPlaceholders.PLAYER_SATURATION, () -> NumberUtil.format(target.getSaturation()))
+                    .replace(EssentialPlaceholders.PLAYER_MAX_HEALTH, () -> NumberUtil.format(EntityUtil
+                        .getAttributeValue(target, Attribute.MAX_HEALTH)))
+                    .replace(EssentialPlaceholders.PLAYER_HEALTH, () -> NumberUtil.format(target.getHealth()))
+                    .replace(EssentialPlaceholders.PLAYER_GAME_MODE, () -> Lang.GAME_MODE.getLocalized(target
+                        .getGameMode()))
+                    .replace(EssentialPlaceholders.PLAYER_VANISHED, () -> CoreLang.STATE_YES_NO.get(this.plugin
+                        .vanishProvider().map(provider -> provider.isVanished(target)).orElse(false)));
 
-            String text = String.join("\n", replacer.apply(this.settings.playerInfoFormat.get()));
-            Players.sendMessage(context.getSender(), text);
-        });
+                String text = String.join("\n", replacer.apply(this.settings.playerInfoFormat.get()));
+                Players.sendMessage(context.getSender(), text);
+            });
         return true;
     }
 }

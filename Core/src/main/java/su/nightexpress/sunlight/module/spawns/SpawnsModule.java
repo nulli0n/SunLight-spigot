@@ -37,8 +37,8 @@ import java.util.*;
 
 public class SpawnsModule extends Module {
 
-    private final TeleportManager teleportManager;
-    private final SpawnsSettings settings;
+    private final TeleportManager    teleportManager;
+    private final SpawnsSettings     settings;
     private final Map<String, Spawn> spawnMap;
 
     private SpawnListEditor     listEditor;
@@ -60,7 +60,7 @@ public class SpawnsModule extends Module {
         this.loadSpawns();
 
         this.listEditor = new SpawnListEditor(this.plugin, this);
-        this.settingsEditor = new SpawnSettingsEditor(this.plugin, this, this.dialogRegistry);
+        this.settingsEditor = new SpawnSettingsEditor(this.plugin, this);
 
         this.addListener(new SpawnListener(this.plugin, this));
 
@@ -91,8 +91,10 @@ public class SpawnsModule extends Module {
     private void loadDialogs() {
         this.dialogRegistry.register(SpawnsDialogKeys.SPAWN_NAME, SpawnNameDialog::new);
         this.dialogRegistry.register(SpawnsDialogKeys.SPAWN_PRIORITY, SpawnPriorityDialog::new);
-        this.dialogRegistry.register(SpawnsDialogKeys.SPAWN_LOGIN_RULES, () -> new SpawnRulesDialog(Spawn::getLoginRule));
-        this.dialogRegistry.register(SpawnsDialogKeys.SPAWN_RESPAWN_RULES, () -> new SpawnRulesDialog(Spawn::getRespawnRule));
+        this.dialogRegistry.register(SpawnsDialogKeys.SPAWN_LOGIN_RULES,
+            () -> new SpawnRulesDialog(Spawn::getLoginRule));
+        this.dialogRegistry.register(SpawnsDialogKeys.SPAWN_RESPAWN_RULES,
+            () -> new SpawnRulesDialog(Spawn::getRespawnRule));
     }
 
     private void loadSpawns() {
@@ -172,16 +174,20 @@ public class SpawnsModule extends Module {
 
     @Nullable
     public Spawn getLoginSpawn(@NotNull Player player) {
-        return this.getSpawns().stream().filter(spawn -> spawn.isAvailableForJoin(player)).max(Comparator.comparingInt(Spawn::getPriority)).orElse(null);
+        return this.getSpawns().stream().filter(spawn -> spawn.isAvailableForJoin(player)).max(Comparator.comparingInt(
+            Spawn::getPriority)).orElse(null);
     }
 
     @Nullable
     public Spawn getDeathSpawn(@NotNull Player player) {
-        return this.getSpawns().stream().filter(spawn -> spawn.isAvailableForRespawn(player)).max(Comparator.comparingInt(Spawn::getPriority)).orElse(null);
+        return this.getSpawns().stream().filter(spawn -> spawn.isAvailableForRespawn(player)).max(Comparator
+            .comparingInt(Spawn::getPriority)).orElse(null);
     }
 
     public boolean createSpawn(@NotNull Player player, @NotNull String id) {
         Location location = player.getLocation();
+        if (location == null) return false;
+
         id = StringUtil.lowerCaseUnderscore(id);
 
         Spawn spawn = this.getSpawn(id);
@@ -268,7 +274,8 @@ public class SpawnsModule extends Module {
             .withFlag(TeleportFlag.CENTERED)
             .withFlagIf(TeleportFlag.BYPASS_WARMUP, () -> forced)
             .callback(() -> {
-                if (!silent) this.sendPrefixed(SpawnsLang.SPAWN_TELEPORT_NOTIFY, player, replacer -> replacer.with(spawn.placeholders()));
+                if (!silent) this.sendPrefixed(SpawnsLang.SPAWN_TELEPORT_NOTIFY, player, replacer -> replacer.with(spawn
+                    .placeholders()));
             })
             .build();
 

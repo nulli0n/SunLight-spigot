@@ -1,5 +1,11 @@
 package su.nightexpress.sunlight.module.homes.menu;
 
+import static su.nightexpress.nightcore.util.text.night.wrapper.TagWrappers.WHITE;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.IntStream;
+
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -8,7 +14,8 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.MenuType;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
+
 import su.nightexpress.nightcore.bridge.item.AdaptedItem;
 import su.nightexpress.nightcore.config.FileConfig;
 import su.nightexpress.nightcore.configuration.ConfigProperty;
@@ -27,21 +34,16 @@ import su.nightexpress.sunlight.module.homes.HomesModule;
 import su.nightexpress.sunlight.module.homes.config.HomesLang;
 import su.nightexpress.sunlight.module.homes.impl.Home;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.IntStream;
-
-import static su.nightexpress.nightcore.util.text.night.wrapper.TagWrappers.WHITE;
-
 public class IconSelectionMenu extends AbstractObjectMenu<Home> {
 
     private final HomesModule module;
 
     private ItemPopulator<HomeIcon> iconPopulator;
 
-    private record HomeIcon(@NotNull String id, @NotNull AdaptedItem adaptedItem) {}
+    private record HomeIcon(@NonNull String id, @NonNull AdaptedItem adaptedItem) {
+    }
 
-    public IconSelectionMenu(@NotNull SunLightPlugin plugin, @NotNull HomesModule module) {
+    public IconSelectionMenu(@NonNull SunLightPlugin plugin, @NonNull HomesModule module) {
         super(MenuType.GENERIC_9X4, "Icon Selection", Home.class);
         this.module = module;
 
@@ -62,8 +64,8 @@ public class IconSelectionMenu extends AbstractObjectMenu<Home> {
     public void defineDefaultLayout() {
         this.addBackgroundItem(Material.BLACK_STAINED_GLASS_PANE, IntStream.range(27, 36).toArray());
 
-        this.addDefaultButton("return", MenuItem.builder()
-            .defaultState(ItemState.defaultBuilder()
+        this.addDefaultButton("return", MenuItem.button()
+            .defaultState(ItemState.builder()
                 .icon(NightItem.fromType(Material.IRON_DOOR).setDisplayName(WHITE.wrap("Return")))
                 .action(context -> this.module.openHomeSettings(context.getPlayer(), this.getObject(context)))
                 .build()
@@ -74,8 +76,9 @@ public class IconSelectionMenu extends AbstractObjectMenu<Home> {
     }
 
     @Override
-    protected void onLoad(@NotNull FileConfig config) {
-        int[] iconSlots = ConfigProperty.of(ConfigTypes.INT_ARRAY, "Icons.Slots", IntStream.range(0, 27).toArray()).resolveWithDefaults(config);
+    protected void onLoad(@NonNull FileConfig config) {
+        int[] iconSlots = ConfigProperty.of(ConfigTypes.INT_ARRAY, "Icons.Slots", IntStream.range(0, 27).toArray())
+            .resolveWithDefaults(config);
 
         this.iconPopulator = ItemPopulator.builder(HomeIcon.class)
             .actionProvider(homeIcon -> context -> {
@@ -92,7 +95,8 @@ public class IconSelectionMenu extends AbstractObjectMenu<Home> {
 
                 return NightItem.fromItemStack(itemStack)
                     .localized(HomesLang.UI_ICON_SELECTION_ICON)
-                    .replace(builder -> builder.with(SLPlaceholders.GENERIC_NAME, () -> ItemUtil.getNameSerialized(itemStack)))
+                    .replace(builder -> builder.with(SLPlaceholders.GENERIC_NAME, () -> ItemUtil.getNameSerialized(
+                        itemStack)))
                     .hideAllComponents();
             })
             .slots(iconSlots)
@@ -100,22 +104,22 @@ public class IconSelectionMenu extends AbstractObjectMenu<Home> {
     }
 
     @Override
-    protected void onClick(@NotNull ViewerContext context, @NotNull InventoryClickEvent event) {
+    protected void onClick(@NonNull ViewerContext context, @NonNull InventoryClickEvent event) {
 
     }
 
     @Override
-    protected void onDrag(@NotNull ViewerContext context, @NotNull InventoryDragEvent event) {
+    protected void onDrag(@NonNull ViewerContext context, @NonNull InventoryDragEvent event) {
 
     }
 
     @Override
-    protected void onClose(@NotNull ViewerContext context, @NotNull InventoryCloseEvent event) {
+    protected void onClose(@NonNull ViewerContext context, @NonNull InventoryCloseEvent event) {
 
     }
 
     @Override
-    public void onPrepare(@NotNull ViewerContext context, @NotNull InventoryView view, @NotNull Inventory inventory, @NotNull List<MenuItem> items) {
+    public void onPrepare(@NonNull ViewerContext context, @NonNull InventoryView view, @NonNull Inventory inventory, @NonNull List<MenuItem> items) {
         List<HomeIcon> icons = new ArrayList<>();
 
         this.module.getSettings().getIconPresets().forEach((id, item) -> {
@@ -126,12 +130,12 @@ public class IconSelectionMenu extends AbstractObjectMenu<Home> {
     }
 
     @Override
-    public void onReady(@NotNull ViewerContext context, @NotNull InventoryView view, @NotNull Inventory inventory) {
+    public void onReady(@NonNull ViewerContext context, @NonNull InventoryView view, @NonNull Inventory inventory) {
 
     }
 
     @Override
-    public void onRender(@NotNull ViewerContext context, @NotNull InventoryView view, @NotNull Inventory inventory) {
+    public void onRender(@NonNull ViewerContext context, @NonNull InventoryView view, @NonNull Inventory inventory) {
 
     }
 }

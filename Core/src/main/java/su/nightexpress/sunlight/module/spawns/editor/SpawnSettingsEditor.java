@@ -1,5 +1,16 @@
 package su.nightexpress.sunlight.module.spawns.editor;
 
+import static su.nightexpress.nightcore.util.text.night.wrapper.TagWrappers.BLUE;
+import static su.nightexpress.nightcore.util.text.night.wrapper.TagWrappers.GREEN;
+import static su.nightexpress.nightcore.util.text.night.wrapper.TagWrappers.RED;
+import static su.nightexpress.nightcore.util.text.night.wrapper.TagWrappers.WHITE;
+import static su.nightexpress.sunlight.module.spawns.SpawnsPlaceholders.SPAWN_WORLD;
+import static su.nightexpress.sunlight.module.spawns.SpawnsPlaceholders.SPAWN_X;
+import static su.nightexpress.sunlight.module.spawns.SpawnsPlaceholders.SPAWN_Y;
+import static su.nightexpress.sunlight.module.spawns.SpawnsPlaceholders.SPAWN_Z;
+
+import java.util.List;
+
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -7,7 +18,8 @@ import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.MenuType;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
+
 import su.nightexpress.nightcore.config.FileConfig;
 import su.nightexpress.nightcore.core.config.CoreLang;
 import su.nightexpress.nightcore.locale.LangContainer;
@@ -20,16 +32,10 @@ import su.nightexpress.nightcore.ui.inventory.viewer.ViewerContext;
 import su.nightexpress.nightcore.util.bukkit.NightItem;
 import su.nightexpress.sunlight.SLPlaceholders;
 import su.nightexpress.sunlight.SunLightPlugin;
-import su.nightexpress.sunlight.dialog.DialogRegistry;
+import su.nightexpress.sunlight.module.spawns.Spawn;
 import su.nightexpress.sunlight.module.spawns.SpawnsModule;
 import su.nightexpress.sunlight.module.spawns.config.SpawnsLang;
-import su.nightexpress.sunlight.module.spawns.Spawn;
 import su.nightexpress.sunlight.module.spawns.dialog.SpawnsDialogKeys;
-
-import java.util.List;
-
-import static su.nightexpress.nightcore.util.text.night.wrapper.TagWrappers.*;
-import static su.nightexpress.sunlight.module.spawns.SpawnsPlaceholders.*;
 
 public class SpawnSettingsEditor extends AbstractObjectMenu<Spawn> implements LangContainer {
 
@@ -70,7 +76,8 @@ public class SpawnSettingsEditor extends AbstractObjectMenu<Spawn> implements La
 
     private static final IconLocale ICON_LOCATION = LangEntry.iconBuilder("Spawns.Editor.Spawn.Location")
         .name("Location")
-        .appendCurrent("Current", RED.wrap(SPAWN_X) + ", " + GREEN.wrap(SPAWN_Y) + ", " + BLUE.wrap(SPAWN_Z) + " @ " + WHITE.wrap(SPAWN_WORLD)).br()
+        .appendCurrent("Current", RED.wrap(SPAWN_X) + ", " + GREEN.wrap(SPAWN_Y) + ", " + BLUE.wrap(SPAWN_Z) + " @ " +
+            WHITE.wrap(SPAWN_WORLD)).br()
         .appendClick("Click to override")
         .build();
 
@@ -81,12 +88,10 @@ public class SpawnSettingsEditor extends AbstractObjectMenu<Spawn> implements La
         .build();
 
     private final SpawnsModule module;
-    private final DialogRegistry dialogRegistry;
 
-    public SpawnSettingsEditor(@NotNull SunLightPlugin plugin, @NotNull SpawnsModule module, @NotNull DialogRegistry dialogRegistry) {
+    public SpawnSettingsEditor(@NonNull SunLightPlugin plugin, @NonNull SpawnsModule module) {
         super(MenuType.GENERIC_9X4, SpawnsLang.EDITOR_TITLE_SETTINGS.text(), Spawn.class);
         this.module = module;
-        this.dialogRegistry = dialogRegistry;
 
         plugin.injectLang(this);
 
@@ -105,8 +110,8 @@ public class SpawnSettingsEditor extends AbstractObjectMenu<Spawn> implements La
 
     @Override
     public void defineDefaultLayout() {
-        this.addDefaultButton("return", MenuItem.builder()
-            .defaultState(ItemState.defaultBuilder()
+        this.addDefaultButton("return", MenuItem.button()
+            .defaultState(ItemState.builder()
                 .icon(NightItem.fromType(Material.ENDER_EYE).localized(ICON_RETURN))
                 .action(context -> this.module.openEditor(context.getPlayer()))
                 .build()
@@ -115,14 +120,15 @@ public class SpawnSettingsEditor extends AbstractObjectMenu<Spawn> implements La
             .build()
         );
 
-        this.addDefaultButton("name", MenuItem.builder()
-            .defaultState(ItemState.defaultBuilder()
+        this.addDefaultButton("name", MenuItem.button()
+            .defaultState(ItemState.builder()
                 .icon(NightItem.fromType(Material.NAME_TAG).localized(ICON_NAME))
                 .displayModifier((context, item) -> item.replace(builder -> builder
                     .with(SLPlaceholders.GENERIC_NAME, () -> this.getObject(context).getName())
                 ))
                 .action(context -> {
-                    this.dialogRegistry.show(context.getPlayer(), SpawnsDialogKeys.SPAWN_NAME, this.getObject(context), () -> context.getViewer().refresh());
+                    this.plugin.showDialog(context.getPlayer(), SpawnsDialogKeys.SPAWN_NAME, this.getObject(context),
+                        () -> context.getViewer().refresh());
                 })
                 .build()
             )
@@ -130,11 +136,12 @@ public class SpawnSettingsEditor extends AbstractObjectMenu<Spawn> implements La
             .build()
         );
 
-        this.addDefaultButton("permission", MenuItem.builder()
-            .defaultState(ItemState.defaultBuilder()
+        this.addDefaultButton("permission", MenuItem.button()
+            .defaultState(ItemState.builder()
                 .icon(NightItem.fromType(Material.REDSTONE).localized(ICON_PERMISSION))
                 .displayModifier((context, item) -> item.replace(builder -> builder
-                    .with(SLPlaceholders.GENERIC_STATE, () -> CoreLang.STATE_ENABLED_DISALBED.get(this.getObject(context).isPermissionRequired()))
+                    .with(SLPlaceholders.GENERIC_STATE, () -> CoreLang.STATE_ENABLED_DISALBED.get(this.getObject(
+                        context).isPermissionRequired()))
                 ))
                 .action(context -> {
                     Spawn spawn = this.getObject(context);
@@ -148,14 +155,15 @@ public class SpawnSettingsEditor extends AbstractObjectMenu<Spawn> implements La
             .build()
         );
 
-        this.addDefaultButton("priority", MenuItem.builder()
-            .defaultState(ItemState.defaultBuilder()
+        this.addDefaultButton("priority", MenuItem.button()
+            .defaultState(ItemState.builder()
                 .icon(NightItem.fromType(Material.COMPARATOR).localized(ICON_PRIORITY))
                 .displayModifier((context, item) -> item.replace(builder -> builder
                     .with(SLPlaceholders.GENERIC_VALUE, () -> String.valueOf(this.getObject(context).getPriority()))
                 ))
                 .action(context -> {
-                    this.dialogRegistry.show(context.getPlayer(), SpawnsDialogKeys.SPAWN_PRIORITY, this.getObject(context), () -> context.getViewer().refresh());
+                    this.plugin.showDialog(context.getPlayer(), SpawnsDialogKeys.SPAWN_PRIORITY, this.getObject(
+                        context), () -> context.getViewer().refresh());
                 })
                 .build()
             )
@@ -163,10 +171,11 @@ public class SpawnSettingsEditor extends AbstractObjectMenu<Spawn> implements La
             .build()
         );
 
-        this.addDefaultButton("location", MenuItem.builder()
-            .defaultState(ItemState.defaultBuilder()
+        this.addDefaultButton("location", MenuItem.button()
+            .defaultState(ItemState.builder()
                 .icon(NightItem.fromType(Material.COMPASS).localized(ICON_LOCATION))
-                .displayModifier((context, item) -> item.replace(builder -> builder.with(this.getObject(context).placeholders())))
+                .displayModifier((context, item) -> item.replace(builder -> builder.with(this.getObject(context)
+                    .placeholders())))
                 .action(context -> {
                     Spawn spawn = this.getObject(context);
                     spawn.setLocation(context.getPlayer().getLocation());
@@ -179,14 +188,16 @@ public class SpawnSettingsEditor extends AbstractObjectMenu<Spawn> implements La
             .build()
         );
 
-        this.addDefaultButton("login_rules", MenuItem.builder()
-            .defaultState(ItemState.defaultBuilder()
+        this.addDefaultButton("login_rules", MenuItem.button()
+            .defaultState(ItemState.builder()
                 .icon(NightItem.fromType(Material.IRON_DOOR).localized(ICON_LOGIN_RULES))
                 .displayModifier((context, item) -> item.replace(builder -> builder
-                    .with(SLPlaceholders.GENERIC_STATE, () -> CoreLang.STATE_ENABLED_DISALBED.get(this.getObject(context).getLoginRule().isEnabled()))
+                    .with(SLPlaceholders.GENERIC_STATE, () -> CoreLang.STATE_ENABLED_DISALBED.get(this.getObject(
+                        context).getLoginRule().isEnabled()))
                 ))
                 .action(context -> {
-                    this.dialogRegistry.show(context.getPlayer(), SpawnsDialogKeys.SPAWN_LOGIN_RULES, this.getObject(context), () -> context.getViewer().refresh());
+                    this.plugin.showDialog(context.getPlayer(), SpawnsDialogKeys.SPAWN_LOGIN_RULES, this.getObject(
+                        context), () -> context.getViewer().refresh());
                 })
                 .build()
             )
@@ -194,14 +205,16 @@ public class SpawnSettingsEditor extends AbstractObjectMenu<Spawn> implements La
             .build()
         );
 
-        this.addDefaultButton("respawn_rules", MenuItem.builder()
-            .defaultState(ItemState.defaultBuilder()
+        this.addDefaultButton("respawn_rules", MenuItem.button()
+            .defaultState(ItemState.builder()
                 .icon(NightItem.fromType(Material.RED_BED).localized(ICON_RESPAWN_RULES))
                 .displayModifier((context, item) -> item.replace(builder -> builder
-                    .with(SLPlaceholders.GENERIC_STATE, () -> CoreLang.STATE_ENABLED_DISALBED.get(this.getObject(context).getRespawnRule().isEnabled()))
+                    .with(SLPlaceholders.GENERIC_STATE, () -> CoreLang.STATE_ENABLED_DISALBED.get(this.getObject(
+                        context).getRespawnRule().isEnabled()))
                 ))
                 .action(context -> {
-                    this.dialogRegistry.show(context.getPlayer(), SpawnsDialogKeys.SPAWN_RESPAWN_RULES, this.getObject(context), () -> context.getViewer().refresh());
+                    this.plugin.showDialog(context.getPlayer(), SpawnsDialogKeys.SPAWN_RESPAWN_RULES, this.getObject(
+                        context), () -> context.getViewer().refresh());
                 })
                 .build()
             )
@@ -211,37 +224,37 @@ public class SpawnSettingsEditor extends AbstractObjectMenu<Spawn> implements La
     }
 
     @Override
-    protected void onLoad(@NotNull FileConfig config) {
+    protected void onLoad(@NonNull FileConfig config) {
 
     }
 
     @Override
-    protected void onClick(@NotNull ViewerContext context, @NotNull InventoryClickEvent event) {
+    protected void onClick(@NonNull ViewerContext context, @NonNull InventoryClickEvent event) {
 
     }
 
     @Override
-    protected void onDrag(@NotNull ViewerContext context, @NotNull InventoryDragEvent event) {
+    protected void onDrag(@NonNull ViewerContext context, @NonNull InventoryDragEvent event) {
 
     }
 
     @Override
-    protected void onClose(@NotNull ViewerContext context, @NotNull InventoryCloseEvent event) {
+    protected void onClose(@NonNull ViewerContext context, @NonNull InventoryCloseEvent event) {
 
     }
 
     @Override
-    public void onPrepare(@NotNull ViewerContext context, @NotNull InventoryView view, @NotNull Inventory inventory, @NotNull List<MenuItem> items) {
+    public void onPrepare(@NonNull ViewerContext context, @NonNull InventoryView view, @NonNull Inventory inventory, @NonNull List<MenuItem> items) {
 
     }
 
     @Override
-    public void onReady(@NotNull ViewerContext context, @NotNull InventoryView view, @NotNull Inventory inventory) {
+    public void onReady(@NonNull ViewerContext context, @NonNull InventoryView view, @NonNull Inventory inventory) {
 
     }
 
     @Override
-    public void onRender(@NotNull ViewerContext context, @NotNull InventoryView view, @NotNull Inventory inventory) {
+    public void onRender(@NonNull ViewerContext context, @NonNull InventoryView view, @NonNull Inventory inventory) {
 
     }
 }

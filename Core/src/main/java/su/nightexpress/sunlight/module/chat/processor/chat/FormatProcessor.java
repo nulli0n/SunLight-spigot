@@ -1,7 +1,8 @@
 package su.nightexpress.sunlight.module.chat.processor.chat;
 
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
+
 import su.nightexpress.nightcore.util.placeholder.CommonPlaceholders;
 import su.nightexpress.nightcore.util.placeholder.PlaceholderContext;
 import su.nightexpress.sunlight.SLPlaceholders;
@@ -13,7 +14,7 @@ import su.nightexpress.sunlight.module.chat.processor.MessageProcessor;
 public class FormatProcessor implements MessageProcessor {
 
     @Override
-    public void preProcess(@NotNull ChatModule module, @NotNull MessageContext context) {
+    public void preProcess(@NonNull ChatModule module, @NonNull MessageContext context) {
         Player player = context.getPlayer();
 
         PlaceholderContext componentContext = PlaceholderContext.builder()
@@ -42,12 +43,12 @@ public class FormatProcessor implements MessageProcessor {
     }
 
     @Override
-    public void postProcess(@NotNull ChatModule module, @NotNull MessageContext context) {
+    public void postProcess(@NonNull ChatModule module, @NonNull MessageContext context) {
 
     }
 
-    @NotNull
-    private static String oneSpace(@NotNull String str) {
+    @NonNull
+    private static String oneSpace(@NonNull String str) {
         return str.trim().replaceAll("\\s+", " ");
     }
 }

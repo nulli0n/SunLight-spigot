@@ -2,13 +2,19 @@ package su.nightexpress.sunlight.module.homes.dialog.impl;
 
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+
 import su.nightexpress.nightcore.bridge.dialog.wrap.WrappedDialog;
 import su.nightexpress.nightcore.locale.LangEntry;
 import su.nightexpress.nightcore.locale.entry.DialogElementLocale;
 import su.nightexpress.nightcore.locale.entry.TextLocale;
 import su.nightexpress.nightcore.ui.dialog.Dialogs;
-import su.nightexpress.nightcore.ui.dialog.build.*;
-import su.nightexpress.sunlight.dialog.Dialog;
+import su.nightexpress.nightcore.ui.dialog.build.DialogActions;
+import su.nightexpress.nightcore.ui.dialog.build.DialogBases;
+import su.nightexpress.nightcore.ui.dialog.build.DialogBodies;
+import su.nightexpress.nightcore.ui.dialog.build.DialogButtons;
+import su.nightexpress.nightcore.ui.dialog.build.DialogInputs;
+import su.nightexpress.nightcore.ui.dialog.build.DialogTypes;
+import su.nightexpress.nightcore.ui.dialog.wrap.Dialog;
 import su.nightexpress.sunlight.module.homes.impl.Home;
 
 public class HomeNameDialog extends Dialog<Home> {

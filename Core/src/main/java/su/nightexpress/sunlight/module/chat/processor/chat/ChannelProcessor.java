@@ -2,35 +2,37 @@ package su.nightexpress.sunlight.module.chat.processor.chat;
 
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
+
 import su.nightexpress.nightcore.util.time.TimeFormatType;
 import su.nightexpress.nightcore.util.time.TimeFormats;
 import su.nightexpress.sunlight.SLPlaceholders;
 import su.nightexpress.sunlight.SunLightPlugin;
-import su.nightexpress.sunlight.module.chat.channel.ChatChannel;
 import su.nightexpress.sunlight.module.chat.ChatModule;
 import su.nightexpress.sunlight.module.chat.cache.UserChatCache;
+import su.nightexpress.sunlight.module.chat.channel.ChatChannel;
+import su.nightexpress.sunlight.module.chat.context.MessageContext;
 import su.nightexpress.sunlight.module.chat.core.ChatLang;
 import su.nightexpress.sunlight.module.chat.core.ChatPerms;
-import su.nightexpress.sunlight.module.chat.context.MessageContext;
 import su.nightexpress.sunlight.module.chat.processor.MessageProcessor;
 
 public class ChannelProcessor implements MessageProcessor {
 
     private final SunLightPlugin plugin;
 
-    public ChannelProcessor(@NotNull SunLightPlugin plugin) {
+    public ChannelProcessor(@NonNull SunLightPlugin plugin) {
         this.plugin = plugin;
     }
 
     @Override
-    public void preProcess(@NotNull ChatModule module, @NotNull MessageContext context) {
+    public void preProcess(@NonNull ChatModule module, @NonNull MessageContext context) {
         Player player = context.getPlayer();
         ChatChannel channel = context.getChannel();
         UserChatCache cache = context.getCache();
 
         if (!channel.canSpeakHere(player)) {
-            module.sendPrefixed(ChatLang.CHANNEL_SPEAK_NO_PERMISSION, player, builder -> builder.with(channel.placeholders()));
+            module.sendPrefixed(ChatLang.CHANNEL_SPEAK_NO_PERMISSION, player, builder -> builder.with(channel
+                .placeholders()));
             context.cancel();
             return;
         }
@@ -39,7 +41,8 @@ public class ChannelProcessor implements MessageProcessor {
         if (cache.hasChannelCooldown(channel.getId())) {
             context.cancel();
             module.sendPrefixed(ChatLang.CHANNEL_MESSAGE_COOLDOWN, player, builder -> builder
-                .with(SLPlaceholders.GENERIC_TIME, () -> TimeFormats.formatDuration(cache.getChannelCooldownTimestamp(channel.getId()), TimeFormatType.LITERAL))
+                .with(SLPlaceholders.GENERIC_TIME, () -> TimeFormats.formatDuration(cache.getChannelCooldownTimestamp(
+                    channel.getId()), TimeFormatType.LITERAL))
             );
             return;
         }
@@ -64,12 +67,15 @@ public class ChannelProcessor implements MessageProcessor {
     }
 
     @Override
-    public void postProcess(@NotNull ChatModule module, @NotNull MessageContext context) {
+    public void postProcess(@NonNull ChatModule module, @NonNull MessageContext context) {
         Player player = context.getPlayer();
 
         if (this.isAlone(player, context)) {
-            // One tick delay to send after player's message.
-            this.plugin.runTask(() -> module.sendPrefixed(ChatLang.CHANNEL_NOBODY_HERE, player));
+            // While messages can be set silent in the lang config, it won't prevent this useless scheduler task, so use explicit config option to disable it.
+            if (module.getSettings().isChannelNoHeardMessageEnabled()) {
+                // One tick delay to send after player's message.
+                this.plugin.runTask(() -> module.sendPrefixed(ChatLang.CHANNEL_NOBODY_HERE, player));
+            }
         }
 
         if (!player.hasPermission(ChatPerms.BYPASS_CHANNEL_COOLDOWN)) {
@@ -82,7 +88,8 @@ public class ChannelProcessor implements MessageProcessor {
         }
     }
 
-    private boolean isAlone(@NotNull Player player, @NotNull MessageContext context) {
-        return context.getViewers().stream().noneMatch(sender -> sender != player && !(sender instanceof ConsoleCommandSender));
+    private boolean isAlone(@NonNull Player player, @NonNull MessageContext context) {
+        return context.getViewers().stream().noneMatch(
+            sender -> sender != player && !(sender instanceof ConsoleCommandSender));
     }
 }

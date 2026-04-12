@@ -1,5 +1,24 @@
 package su.nightexpress.sunlight.module.warps.menu;
 
+import static su.nightexpress.nightcore.util.text.night.wrapper.TagWrappers.BOLD;
+import static su.nightexpress.nightcore.util.text.night.wrapper.TagWrappers.DARK_GRAY;
+import static su.nightexpress.nightcore.util.text.night.wrapper.TagWrappers.GOLD;
+import static su.nightexpress.nightcore.util.text.night.wrapper.TagWrappers.GRAY;
+import static su.nightexpress.nightcore.util.text.night.wrapper.TagWrappers.GREEN;
+import static su.nightexpress.nightcore.util.text.night.wrapper.TagWrappers.ORANGE;
+import static su.nightexpress.nightcore.util.text.night.wrapper.TagWrappers.RED;
+import static su.nightexpress.nightcore.util.text.night.wrapper.TagWrappers.UNDERLINED;
+import static su.nightexpress.nightcore.util.text.night.wrapper.TagWrappers.WHITE;
+import static su.nightexpress.sunlight.SLPlaceholders.GENERIC_PAGE;
+import static su.nightexpress.sunlight.SLPlaceholders.GENERIC_SLOT;
+import static su.nightexpress.sunlight.SLPlaceholders.GENERIC_STATE;
+import static su.nightexpress.sunlight.SLPlaceholders.GENERIC_VALUE;
+import static su.nightexpress.sunlight.module.warps.WarpsPlaceholders.WARP_DESCRIPTION;
+import static su.nightexpress.sunlight.module.warps.WarpsPlaceholders.WARP_NAME;
+
+import java.util.List;
+import java.util.stream.IntStream;
+
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -8,10 +27,11 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.MenuType;
-import org.jetbrains.annotations.NotNull;
 import org.jspecify.annotations.NonNull;
+
 import su.nightexpress.nightcore.config.FileConfig;
 import su.nightexpress.nightcore.core.config.CoreLang;
+import su.nightexpress.nightcore.ui.dialog.wrap.DialogKey;
 import su.nightexpress.nightcore.ui.inventory.action.ObjectActionContext;
 import su.nightexpress.nightcore.ui.inventory.item.ItemState;
 import su.nightexpress.nightcore.ui.inventory.item.MenuItem;
@@ -20,28 +40,17 @@ import su.nightexpress.nightcore.ui.inventory.viewer.ViewerContext;
 import su.nightexpress.nightcore.util.ArrayUtil;
 import su.nightexpress.nightcore.util.Lists;
 import su.nightexpress.nightcore.util.bukkit.NightItem;
-import su.nightexpress.sunlight.dialog.DialogKey;
-import su.nightexpress.sunlight.dialog.DialogRegistry;
 import su.nightexpress.sunlight.module.warps.Warp;
 import su.nightexpress.sunlight.module.warps.WarpsModule;
 import su.nightexpress.sunlight.module.warps.dialog.WarpsDialogKeys;
 
-import java.util.List;
-import java.util.stream.IntStream;
-
-import static su.nightexpress.nightcore.util.text.night.wrapper.TagWrappers.*;
-import static su.nightexpress.sunlight.SLPlaceholders.*;
-import static su.nightexpress.sunlight.module.warps.WarpsPlaceholders.*;
-
 public class WarpOptionsMenu extends AbstractObjectMenu<Warp> {
 
-    private final   WarpsModule    manager;
-    protected final DialogRegistry dialogRegistry;
+    private final WarpsModule manager;
 
-    public WarpOptionsMenu(@NonNull WarpsModule manager, @NonNull DialogRegistry dialogRegistry) {
+    public WarpOptionsMenu(@NonNull WarpsModule manager) {
         super(MenuType.GENERIC_9X5, "Warp Settings", Warp.class);
         this.manager = manager;
-        this.dialogRegistry = dialogRegistry;
     }
 
     @Override
@@ -59,8 +68,8 @@ public class WarpOptionsMenu extends AbstractObjectMenu<Warp> {
         this.addBackgroundItem(Material.BLACK_STAINED_GLASS_PANE, IntStream.range(0, 9).toArray());
         this.addBackgroundItem(Material.BLACK_STAINED_GLASS_PANE, IntStream.range(36, 45).toArray());
 
-        this.addDefaultButton("back", MenuItem.builder()
-            .defaultState(ItemState.defaultBuilder()
+        this.addDefaultButton("back", MenuItem.button()
+            .defaultState(ItemState.builder()
                 .icon(NightItem.fromType(Material.COMPASS).setDisplayName(GREEN.wrap("Back to Warps")))
                 .action(this.createObjectAction(this::backToWarps))
                 .build()
@@ -69,8 +78,8 @@ public class WarpOptionsMenu extends AbstractObjectMenu<Warp> {
             .build()
         );
 
-        this.addDefaultButton("name", MenuItem.builder()
-            .defaultState(ItemState.defaultBuilder()
+        this.addDefaultButton("name", MenuItem.button()
+            .defaultState(ItemState.builder()
                 .icon(NightItem.fromType(Material.NAME_TAG)
                     .setDisplayName(GOLD.and(BOLD).wrap("Name"))
                     .setLore(Lists.newList(
@@ -80,7 +89,8 @@ public class WarpOptionsMenu extends AbstractObjectMenu<Warp> {
                     ))
                     .hideAllComponents()
                 )
-                .displayModifier((context, item) -> item.replace(builder -> builder.with(this.getObject(context).placeholders())))
+                .displayModifier((context, item) -> item.replace(builder -> builder.with(this.getObject(context)
+                    .placeholders())))
                 .action(this.createObjectAction(this::editName))
                 .build()
             )
@@ -88,8 +98,8 @@ public class WarpOptionsMenu extends AbstractObjectMenu<Warp> {
             .build()
         );
 
-        this.addDefaultButton("description", MenuItem.builder()
-            .defaultState(ItemState.defaultBuilder()
+        this.addDefaultButton("description", MenuItem.button()
+            .defaultState(ItemState.builder()
                 .icon(NightItem.fromType(Material.WRITABLE_BOOK)
                     .setDisplayName(GOLD.and(BOLD).wrap("Description"))
                     .setLore(Lists.newList(
@@ -99,7 +109,8 @@ public class WarpOptionsMenu extends AbstractObjectMenu<Warp> {
                     ))
                     .hideAllComponents()
                 )
-                .displayModifier((context, item) -> item.replace(builder -> builder.with(this.getObject(context).placeholders())))
+                .displayModifier((context, item) -> item.replace(builder -> builder.with(this.getObject(context)
+                    .placeholders())))
                 .action(this.createObjectAction(this::editDescription))
                 .build()
             )
@@ -107,8 +118,8 @@ public class WarpOptionsMenu extends AbstractObjectMenu<Warp> {
             .build()
         );
 
-        this.addDefaultButton("icon", MenuItem.builder()
-            .defaultState(ItemState.defaultBuilder()
+        this.addDefaultButton("icon", MenuItem.button()
+            .defaultState(ItemState.builder()
                 .icon(NightItem.fromType(Material.PAINTING)
                     .setDisplayName(GOLD.and(BOLD).wrap("Icon"))
                     .setLore(Lists.newList(
@@ -125,8 +136,8 @@ public class WarpOptionsMenu extends AbstractObjectMenu<Warp> {
             .build()
         );
 
-        this.addDefaultButton("permission", MenuItem.builder()
-            .defaultState(ItemState.defaultBuilder()
+        this.addDefaultButton("permission", MenuItem.button()
+            .defaultState(ItemState.builder()
                 .icon(NightItem.fromType(Material.REDSTONE)
                     .setDisplayName(RED.and(BOLD).wrap("Permission Requirement"))
                     .setLore(Lists.newList(
@@ -137,7 +148,8 @@ public class WarpOptionsMenu extends AbstractObjectMenu<Warp> {
                     .hideAllComponents()
                 )
                 .displayModifier((context, item) -> item.replace(builder -> builder
-                    .with(GENERIC_STATE, () -> CoreLang.STATE_YES_NO.get(this.getObject(context).isPermissionRequired()))
+                    .with(GENERIC_STATE, () -> CoreLang.STATE_YES_NO.get(this.getObject(context)
+                        .isPermissionRequired()))
                 ))
                 .action(this.createObjectAction(this::editPermission))
                 .build()
@@ -146,8 +158,8 @@ public class WarpOptionsMenu extends AbstractObjectMenu<Warp> {
             .build()
         );
 
-        this.addDefaultButton("slots", MenuItem.builder()
-            .defaultState(ItemState.defaultBuilder()
+        this.addDefaultButton("slots", MenuItem.button()
+            .defaultState(ItemState.builder()
                 .icon(NightItem.fromType(Material.ITEM_FRAME)
                     .setDisplayName(GOLD.and(BOLD).wrap("Page & Slots"))
                     .setLore(Lists.newList(
@@ -169,8 +181,8 @@ public class WarpOptionsMenu extends AbstractObjectMenu<Warp> {
             .build()
         );
 
-        this.addDefaultButton("command", MenuItem.builder()
-            .defaultState(ItemState.defaultBuilder()
+        this.addDefaultButton("command", MenuItem.button()
+            .defaultState(ItemState.builder()
                 .icon(NightItem.fromType(Material.COMMAND_BLOCK)
                     .setDisplayName(ORANGE.and(BOLD).wrap("Command Alias"))
                     .setLore(Lists.newList(
@@ -221,16 +233,16 @@ public class WarpOptionsMenu extends AbstractObjectMenu<Warp> {
     }
 
     private void openDialog(@NonNull ObjectActionContext<Warp> context, @NonNull DialogKey<Warp> key) {
-        this.dialogRegistry.show(context.getPlayer(), key, context.getObject(), () -> context.getViewer().refresh());
+        this.plugin.showDialog(context.getPlayer(), key, context.getObject(), () -> context.getViewer().refresh());
     }
 
     @Override
-    protected void onLoad(@NotNull FileConfig config) {
+    protected void onLoad(@NonNull FileConfig config) {
 
     }
 
     @Override
-    protected void onClick(@NotNull ViewerContext context, @NotNull InventoryClickEvent event) {
+    protected void onClick(@NonNull ViewerContext context, @NonNull InventoryClickEvent event) {
         if (event.isRightClick() && event.getRawSlot() >= event.getInventory().getSize()) {
             ItemStack itemStack = event.getCurrentItem();
             if (itemStack == null || itemStack.getType().isAir()) return;
@@ -243,27 +255,27 @@ public class WarpOptionsMenu extends AbstractObjectMenu<Warp> {
     }
 
     @Override
-    protected void onDrag(@NotNull ViewerContext context, @NotNull InventoryDragEvent event) {
+    protected void onDrag(@NonNull ViewerContext context, @NonNull InventoryDragEvent event) {
 
     }
 
     @Override
-    protected void onClose(@NotNull ViewerContext context, @NotNull InventoryCloseEvent event) {
+    protected void onClose(@NonNull ViewerContext context, @NonNull InventoryCloseEvent event) {
 
     }
 
     @Override
-    public void onPrepare(@NotNull ViewerContext context, @NotNull InventoryView view, @NotNull Inventory inventory, @NotNull List<MenuItem> items) {
+    public void onPrepare(@NonNull ViewerContext context, @NonNull InventoryView view, @NonNull Inventory inventory, @NonNull List<MenuItem> items) {
 
     }
 
     @Override
-    public void onReady(@NotNull ViewerContext context, @NotNull InventoryView view, @NotNull Inventory inventory) {
+    public void onReady(@NonNull ViewerContext context, @NonNull InventoryView view, @NonNull Inventory inventory) {
 
     }
 
     @Override
-    public void onRender(@NotNull ViewerContext context, @NotNull InventoryView view, @NotNull Inventory inventory) {
+    public void onRender(@NonNull ViewerContext context, @NonNull InventoryView view, @NonNull Inventory inventory) {
 
     }
 }

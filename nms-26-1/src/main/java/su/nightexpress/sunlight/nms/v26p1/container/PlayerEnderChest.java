@@ -1,16 +1,17 @@
-package su.nightexpress.sunlight.nms.mc_1_21_10.container;
+package su.nightexpress.sunlight.nms.v26p1.container;
 
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.PlayerEnderChestContainer;
 import org.bukkit.craftbukkit.entity.CraftHumanEntity;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.craftbukkit.inventory.CraftInventory;
 import org.jetbrains.annotations.NotNull;
+
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.PlayerEnderChestContainer;
 import su.nightexpress.nightcore.util.Reflex;
 
 public class PlayerEnderChest extends PlayerEnderChestContainer {
 
-    private static final String ITEMS_FIELD = "c"; // 'items'
+    private static final String ITEMS_FIELD = "items"; // 'c'
 
     private final CraftInventory inventory = new CraftInventory(this);
     private final CraftPlayer    owner;

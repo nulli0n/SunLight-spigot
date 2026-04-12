@@ -1,6 +1,6 @@
 package su.nightexpress.sunlight.module.kits.dialog;
 
-import su.nightexpress.sunlight.dialog.DialogKey;
+import su.nightexpress.nightcore.ui.dialog.wrap.DialogKey;
 import su.nightexpress.sunlight.module.kits.KitsModule;
 import su.nightexpress.sunlight.module.kits.model.Kit;
 

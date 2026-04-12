@@ -1,9 +1,13 @@
 package su.nightexpress.sunlight.module.spawns.dialog;
 
-import su.nightexpress.sunlight.dialog.DialogKey;
+import su.nightexpress.nightcore.ui.dialog.wrap.DialogKey;
 import su.nightexpress.sunlight.module.spawns.Spawn;
 
 public class SpawnsDialogKeys {
+
+    private SpawnsDialogKeys() {
+    }
+
 
     public static final DialogKey<Spawn> SPAWN_NAME          = new DialogKey<>("spawn_name");
     public static final DialogKey<Spawn> SPAWN_PRIORITY      = new DialogKey<>("spawn_priority");

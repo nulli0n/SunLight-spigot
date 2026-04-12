@@ -1,7 +1,8 @@
 package su.nightexpress.sunlight.module.chat.processor.conversation;
 
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
+
 import su.nightexpress.nightcore.util.Players;
 import su.nightexpress.nightcore.util.placeholder.CommonPlaceholders;
 import su.nightexpress.nightcore.util.placeholder.PlaceholderContext;
@@ -13,12 +14,12 @@ import su.nightexpress.sunlight.module.chat.processor.ChatProcessor;
 public class ConversationProcessor implements ChatProcessor<ConversationContext> {
 
     @Override
-    public void preProcess(@NotNull ChatModule module, @NotNull ConversationContext context) {
+    public void preProcess(@NonNull ChatModule module, @NonNull ConversationContext context) {
 
     }
 
     @Override
-    public void postProcess(@NotNull ChatModule module, @NotNull ConversationContext context) {
+    public void postProcess(@NonNull ChatModule module, @NonNull ConversationContext context) {
         String rawIncoming = module.getSettings().getConversationIncomingFormat();
         String rawOutgoing = module.getSettings().getConversationOutgoingFormat();
 
@@ -37,8 +38,8 @@ public class ConversationProcessor implements ChatProcessor<ConversationContext>
         module.getChatCache(context.getTarget()).setLastConversationWith(context.getPlayer().getUniqueId());
     }
 
-    @NotNull
-    private String format(@NotNull ConversationContext context, @NotNull Player player, @NotNull String rawFormat) {
+    @NonNull
+    private String format(@NonNull ConversationContext context, @NonNull Player player, @NonNull String rawFormat) {
         PlaceholderContext messageContext = PlaceholderContext.builder()
             .with(SLPlaceholders.GENERIC_MESSAGE, context::getMessage)
             .build();

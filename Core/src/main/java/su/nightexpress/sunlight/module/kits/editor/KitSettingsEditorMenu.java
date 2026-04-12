@@ -1,5 +1,16 @@
 package su.nightexpress.sunlight.module.kits.editor;
 
+import static su.nightexpress.nightcore.util.text.night.wrapper.TagWrappers.BR;
+import static su.nightexpress.nightcore.util.text.night.wrapper.TagWrappers.SOFT_RED;
+import static su.nightexpress.sunlight.SLPlaceholders.GENERIC_STATE;
+import static su.nightexpress.sunlight.SLPlaceholders.GENERIC_TIME;
+import static su.nightexpress.sunlight.SLPlaceholders.GENERIC_VALUE;
+import static su.nightexpress.sunlight.module.kits.KitsPlaceholders.KIT_DESCRIPTION;
+import static su.nightexpress.sunlight.module.kits.KitsPlaceholders.KIT_NAME;
+
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -8,7 +19,8 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.MenuType;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
+
 import su.nightexpress.nightcore.config.FileConfig;
 import su.nightexpress.nightcore.core.config.CoreLang;
 import su.nightexpress.nightcore.locale.LangContainer;
@@ -23,18 +35,10 @@ import su.nightexpress.nightcore.util.bukkit.NightItem;
 import su.nightexpress.nightcore.util.time.TimeFormatType;
 import su.nightexpress.nightcore.util.time.TimeFormats;
 import su.nightexpress.sunlight.SunLightPlugin;
-import su.nightexpress.sunlight.dialog.DialogRegistry;
 import su.nightexpress.sunlight.module.kits.KitsModule;
 import su.nightexpress.sunlight.module.kits.config.KitsLang;
 import su.nightexpress.sunlight.module.kits.dialog.KitDialogKeys;
 import su.nightexpress.sunlight.module.kits.model.Kit;
-
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
-import static su.nightexpress.nightcore.util.text.night.wrapper.TagWrappers.*;
-import static su.nightexpress.sunlight.SLPlaceholders.*;
-import static su.nightexpress.sunlight.module.kits.KitsPlaceholders.*;
 
 public class KitSettingsEditorMenu extends AbstractObjectMenu<Kit> implements LangContainer {
 
@@ -107,15 +111,13 @@ public class KitSettingsEditorMenu extends AbstractObjectMenu<Kit> implements La
         .appendClick("Click to return")
         .build();
 
-    private final KitsModule     module;
-    private final DialogRegistry dialogRegistry;
+    private final KitsModule module;
 
     private boolean iconMode;
 
-    public KitSettingsEditorMenu(@NotNull SunLightPlugin plugin, @NotNull KitsModule module, @NotNull DialogRegistry dialogRegistry) {
+    public KitSettingsEditorMenu(@NonNull SunLightPlugin plugin, @NonNull KitsModule module) {
         super(MenuType.GENERIC_9X5, KitsLang.EDITOR_TITLE_SETTINGS.text(), Kit.class);
         this.module = module;
-        this.dialogRegistry = dialogRegistry;
 
         plugin.injectLang(this);
         this.load(plugin);
@@ -133,7 +135,7 @@ public class KitSettingsEditorMenu extends AbstractObjectMenu<Kit> implements La
 
     @Override
     public void defineDefaultLayout() {
-        this.addDefaultButton("return", MenuItem.builder()
+        this.addDefaultButton("return", MenuItem.button()
             .defaultState(NightItem.fromType(Material.ARROW).localized(ICON_RETURN), context -> {
                 this.module.openEditor(context.getPlayer());
             })
@@ -141,12 +143,14 @@ public class KitSettingsEditorMenu extends AbstractObjectMenu<Kit> implements La
             .build()
         );
 
-        this.addDefaultButton("kit_name", MenuItem.builder()
-            .defaultState(ItemState.defaultBuilder()
+        this.addDefaultButton("kit_name", MenuItem.button()
+            .defaultState(ItemState.builder()
                 .icon(NightItem.fromType(Material.NAME_TAG).localized(ICON_NAME))
-                .displayModifier((context, item) -> item.replace(builder -> builder.with(this.getObject(context).placeholders())))
+                .displayModifier((context, item) -> item.replace(builder -> builder.with(this.getObject(context)
+                    .placeholders())))
                 .action(context -> {
-                    this.dialogRegistry.show(context.getPlayer(), KitDialogKeys.KIT_NAME, this.getObject(context), () -> context.getViewer().refresh());
+                    this.plugin.showDialog(context.getPlayer(), KitDialogKeys.KIT_NAME, this.getObject(context),
+                        () -> context.getViewer().refresh());
                 })
                 .build()
             )
@@ -154,12 +158,14 @@ public class KitSettingsEditorMenu extends AbstractObjectMenu<Kit> implements La
             .build()
         );
 
-        this.addDefaultButton("kit_description", MenuItem.builder()
-            .defaultState(ItemState.defaultBuilder()
+        this.addDefaultButton("kit_description", MenuItem.button()
+            .defaultState(ItemState.builder()
                 .icon(NightItem.fromType(Material.WRITABLE_BOOK).localized(ICON_DESCRIPTION))
-                .displayModifier((context, item) -> item.replace(builder -> builder.with(this.getObject(context).placeholders())))
+                .displayModifier((context, item) -> item.replace(builder -> builder.with(this.getObject(context)
+                    .placeholders())))
                 .action(context -> {
-                    this.dialogRegistry.show(context.getPlayer(), KitDialogKeys.KIT_DESCRIPTION, this.getObject(context), () -> context.getViewer().refresh());
+                    this.plugin.showDialog(context.getPlayer(), KitDialogKeys.KIT_DESCRIPTION, this.getObject(context),
+                        () -> context.getViewer().refresh());
                 })
                 .build()
             )
@@ -168,15 +174,15 @@ public class KitSettingsEditorMenu extends AbstractObjectMenu<Kit> implements La
         );
 
 
-
-        this.addDefaultButton("kit_priority", MenuItem.builder()
-            .defaultState(ItemState.defaultBuilder()
+        this.addDefaultButton("kit_priority", MenuItem.button()
+            .defaultState(ItemState.builder()
                 .icon(NightItem.fromType(Material.COMPARATOR).localized(ICON_PRIORITY))
                 .displayModifier((context, item) -> item.replace(builder -> builder
                     .with(GENERIC_VALUE, () -> String.valueOf(this.getObject(context).definition().getPriority())))
                 )
                 .action(context -> {
-                    this.dialogRegistry.show(context.getPlayer(), KitDialogKeys.KIT_PRIORITY, this.getObject(context), () -> context.getViewer().refresh());
+                    this.plugin.showDialog(context.getPlayer(), KitDialogKeys.KIT_PRIORITY, this.getObject(context),
+                        () -> context.getViewer().refresh());
                 })
                 .build()
             )
@@ -184,11 +190,12 @@ public class KitSettingsEditorMenu extends AbstractObjectMenu<Kit> implements La
             .build()
         );
 
-        this.addDefaultButton("kit_permission", MenuItem.builder()
-            .defaultState(ItemState.defaultBuilder()
+        this.addDefaultButton("kit_permission", MenuItem.button()
+            .defaultState(ItemState.builder()
                 .icon(NightItem.fromType(Material.REDSTONE).localized(ICON_PERMISSION))
                 .displayModifier((context, item) -> item.replace(builder -> builder
-                    .with(GENERIC_STATE, () -> CoreLang.STATE_ENABLED_DISALBED.get(this.getObject(context).definition().isPermissionRequired()))
+                    .with(GENERIC_STATE, () -> CoreLang.STATE_ENABLED_DISALBED.get(this.getObject(context).definition()
+                        .isPermissionRequired()))
                     .with(GENERIC_VALUE, () -> this.getObject(context).getPermission())
                 ))
                 .action(context -> {
@@ -203,14 +210,15 @@ public class KitSettingsEditorMenu extends AbstractObjectMenu<Kit> implements La
             .build()
         );
 
-        this.addDefaultButton("kit_cost", MenuItem.builder()
-            .defaultState(ItemState.defaultBuilder()
+        this.addDefaultButton("kit_cost", MenuItem.button()
+            .defaultState(ItemState.builder()
                 .icon(NightItem.fromType(Material.GOLD_NUGGET).localized(ICON_COST))
                 .displayModifier((context, item) -> item.replace(builder -> builder
                     .with(GENERIC_VALUE, () -> NumberUtil.format(this.getObject(context).definition().getCost()))
                 ))
                 .action(context -> {
-                    this.dialogRegistry.show(context.getPlayer(), KitDialogKeys.KIT_COST, this.getObject(context), () -> context.getViewer().refresh());
+                    this.plugin.showDialog(context.getPlayer(), KitDialogKeys.KIT_COST, this.getObject(context),
+                        () -> context.getViewer().refresh());
                 })
                 .build()
             )
@@ -218,14 +226,16 @@ public class KitSettingsEditorMenu extends AbstractObjectMenu<Kit> implements La
             .build()
         );
 
-        this.addDefaultButton("kit_cooldown", MenuItem.builder()
-            .defaultState(ItemState.defaultBuilder()
+        this.addDefaultButton("kit_cooldown", MenuItem.button()
+            .defaultState(ItemState.builder()
                 .icon(NightItem.fromType(Material.CLOCK).localized(ICON_COOLDOWN))
                 .displayModifier((context, item) -> item.replace(builder -> builder
-                    .with(GENERIC_TIME, () -> TimeFormats.formatAmount(TimeUnit.SECONDS.toMillis(this.getObject(context).definition().getCooldown()), TimeFormatType.LITERAL))
+                    .with(GENERIC_TIME, () -> TimeFormats.formatAmount(TimeUnit.SECONDS.toMillis(this.getObject(context)
+                        .definition().getCooldown()), TimeFormatType.LITERAL))
                 ))
                 .action(context -> {
-                    this.dialogRegistry.show(context.getPlayer(), KitDialogKeys.KIT_COOLDOWN, this.getObject(context), () -> context.getViewer().refresh());
+                    this.plugin.showDialog(context.getPlayer(), KitDialogKeys.KIT_COOLDOWN, this.getObject(context),
+                        () -> context.getViewer().refresh());
                 })
                 .build()
             )
@@ -233,14 +243,15 @@ public class KitSettingsEditorMenu extends AbstractObjectMenu<Kit> implements La
             .build()
         );
 
-        this.addDefaultButton("commands", MenuItem.builder()
-            .defaultState(ItemState.defaultBuilder()
+        this.addDefaultButton("commands", MenuItem.button()
+            .defaultState(ItemState.builder()
                 .icon(NightItem.fromType(Material.COMMAND_BLOCK).localized(ICON_COMMANDS))
                 .displayModifier((context, item) -> item.replace(builder -> builder
                     .with(GENERIC_VALUE, () -> String.join(BR, this.getObject(context).definition().getCommands()))
                 ))
                 .action(context -> {
-                    this.dialogRegistry.show(context.getPlayer(), KitDialogKeys.KIT_COMMANDS, this.getObject(context), () -> context.getViewer().refresh());
+                    this.plugin.showDialog(context.getPlayer(), KitDialogKeys.KIT_COMMANDS, this.getObject(context),
+                        () -> context.getViewer().refresh());
                 })
                 .build()
             )
@@ -248,10 +259,11 @@ public class KitSettingsEditorMenu extends AbstractObjectMenu<Kit> implements La
             .build()
         );
 
-        this.addDefaultButton("inventory_content", MenuItem.builder()
-            .defaultState(ItemState.defaultBuilder()
+        this.addDefaultButton("inventory_content", MenuItem.button()
+            .defaultState(ItemState.builder()
                 .icon(NightItem.fromType(Material.CHEST_MINECART).localized(ICON_INVENTORY))
-                .displayModifier((context, item) -> item.replace(builder -> builder.with(this.getObject(context).placeholders())))
+                .displayModifier((context, item) -> item.replace(builder -> builder.with(this.getObject(context)
+                    .placeholders())))
                 .action(context -> {
                     this.module.openContentEditor(context.getPlayer(), this.getObject(context));
                 })
@@ -263,12 +275,12 @@ public class KitSettingsEditorMenu extends AbstractObjectMenu<Kit> implements La
     }
 
     @Override
-    protected void onLoad(@NotNull FileConfig config) {
+    protected void onLoad(@NonNull FileConfig config) {
 
     }
 
     @Override
-    protected void onClick(@NotNull ViewerContext context, @NotNull InventoryClickEvent event) {
+    protected void onClick(@NonNull ViewerContext context, @NonNull InventoryClickEvent event) {
         if (this.iconMode) {
             if (event.getRawSlot() <= event.getInventory().getSize()) return;
 
@@ -284,21 +296,22 @@ public class KitSettingsEditorMenu extends AbstractObjectMenu<Kit> implements La
     }
 
     @Override
-    protected void onDrag(@NotNull ViewerContext context, @NotNull InventoryDragEvent event) {
+    protected void onDrag(@NonNull ViewerContext context, @NonNull InventoryDragEvent event) {
 
     }
 
     @Override
-    protected void onClose(@NotNull ViewerContext context, @NotNull InventoryCloseEvent event) {
+    protected void onClose(@NonNull ViewerContext context, @NonNull InventoryCloseEvent event) {
         this.iconMode = false;
     }
 
     @Override
-    public void onPrepare(@NotNull ViewerContext context, @NotNull InventoryView view, @NotNull Inventory inventory, @NotNull List<MenuItem> items) {
+    public void onPrepare(@NonNull ViewerContext context, @NonNull InventoryView view, @NonNull Inventory inventory, @NonNull List<MenuItem> items) {
         items.add(MenuItem.builder()
             .defaultState(ItemState.defaultBuilder()
                 .icon(this.getObject(context).definition().getIcon().localized(ICON_ICON))
-                .displayModifier((viewerContext, item) -> item.replace(builder -> builder.with(GENERIC_STATE, () -> CoreLang.STATE_ENABLED_DISALBED.get(this.iconMode))))
+                .displayModifier((viewerContext, item) -> item.replace(builder -> builder.with(GENERIC_STATE,
+                    () -> CoreLang.STATE_ENABLED_DISALBED.get(this.iconMode))))
                 .action(actionContext -> {
                     this.iconMode = !this.iconMode;
                     context.getViewer().refresh();
@@ -311,12 +324,12 @@ public class KitSettingsEditorMenu extends AbstractObjectMenu<Kit> implements La
     }
 
     @Override
-    public void onReady(@NotNull ViewerContext context, @NotNull InventoryView view, @NotNull Inventory inventory) {
+    public void onReady(@NonNull ViewerContext context, @NonNull InventoryView view, @NonNull Inventory inventory) {
 
     }
 
     @Override
-    public void onRender(@NotNull ViewerContext context, @NotNull InventoryView view, @NotNull Inventory inventory) {
+    public void onRender(@NonNull ViewerContext context, @NonNull InventoryView view, @NonNull Inventory inventory) {
 
     }
 }

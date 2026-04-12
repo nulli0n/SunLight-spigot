@@ -1,11 +1,15 @@
 package su.nightexpress.sunlight.module.playerwarps.dialog;
 
-import su.nightexpress.sunlight.dialog.DialogKey;
+import su.nightexpress.nightcore.ui.dialog.wrap.DialogKey;
 import su.nightexpress.sunlight.module.playerwarps.PlayerWarp;
 import su.nightexpress.sunlight.module.playerwarps.dialog.impl.PlayerWarpFeaturingDialog;
 import su.nightexpress.sunlight.module.playerwarps.menu.WarpsListData;
 
 public class PlayerWarpsDialogKeys {
+
+    private PlayerWarpsDialogKeys() {
+    }
+
 
     public static final DialogKey<PlayerWarp>                     WARP_NAME        = new DialogKey<>("pwarp_name");
     public static final DialogKey<PlayerWarp>                     WARP_DESCRIPTION = new DialogKey<>("pwarp_description");

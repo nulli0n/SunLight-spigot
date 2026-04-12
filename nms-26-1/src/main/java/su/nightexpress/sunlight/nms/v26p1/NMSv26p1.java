@@ -1,7 +1,22 @@
-package su.nightexpress.sunlight.nms.mc_1_21_10;
+package su.nightexpress.sunlight.nms.v26p1;
 
+import java.lang.reflect.Method;
+import java.util.UUID;
+
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.craftbukkit.CraftServer;
+import org.bukkit.craftbukkit.CraftWorld;
+import org.bukkit.craftbukkit.entity.CraftFallingBlock;
+import org.bukkit.craftbukkit.entity.CraftHumanEntity;
+import org.bukkit.craftbukkit.entity.CraftPlayer;
+import org.bukkit.entity.FallingBlock;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
+import org.jspecify.annotations.NonNull;
 
 import com.mojang.authlib.GameProfile;
+
 import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
@@ -18,60 +33,59 @@ import net.minecraft.server.level.ServerPlayerGameMode;
 import net.minecraft.server.players.NameAndId;
 import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.entity.item.FallingBlockEntity;
-import net.minecraft.world.inventory.*;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.AnvilMenu;
+import net.minecraft.world.inventory.CartographyTableMenu;
+import net.minecraft.world.inventory.ContainerLevelAccess;
+import net.minecraft.world.inventory.CraftingMenu;
+import net.minecraft.world.inventory.EnchantmentMenu;
+import net.minecraft.world.inventory.GrindstoneMenu;
+import net.minecraft.world.inventory.LoomMenu;
+import net.minecraft.world.inventory.SmithingMenu;
+import net.minecraft.world.inventory.StonecutterMenu;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.TagValueInput;
-import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.craftbukkit.CraftServer;
-import org.bukkit.craftbukkit.CraftWorld;
-import org.bukkit.craftbukkit.entity.CraftFallingBlock;
-import org.bukkit.craftbukkit.entity.CraftHumanEntity;
-import org.bukkit.craftbukkit.entity.CraftPlayer;
-import org.bukkit.entity.FallingBlock;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
-import org.jetbrains.annotations.NotNull;
 import su.nightexpress.nightcore.util.Reflex;
 import su.nightexpress.sunlight.api.PortableContainer;
 import su.nightexpress.sunlight.nms.SunNMS;
-import su.nightexpress.sunlight.nms.mc_1_21_10.container.PlayerEnderChest;
-import su.nightexpress.sunlight.nms.mc_1_21_10.container.PlayerInventory;
+import su.nightexpress.sunlight.nms.v26p1.container.PlayerEnderChest;
+import su.nightexpress.sunlight.nms.v26p1.container.PlayerInventory;
 
-import java.lang.reflect.Method;
-import java.util.UUID;
+public class NMSv26p1 implements SunNMS {
 
-public class MC_1_21_10 implements SunNMS {
+    private static final Method SET_GAME_MODE = Reflex.safeMethod(ServerPlayerGameMode.class,
+        "setGameModeForPlayer", "a", GameType.class, GameType.class);
 
-    private static final Method SET_GAME_MODE         = Reflex.getMethod(ServerPlayerGameMode.class, "setGameModeForPlayer", "a", GameType.class, GameType.class);
-    private static final Method OPEN_CUSTOM_INVENTORY = Reflex.getMethod(CraftHumanEntity.class, "openCustomInventory", Inventory.class, ServerPlayer.class, net.minecraft.world.inventory.MenuType.class);
+    private static final Method OPEN_CUSTOM_INVENTORY = Reflex.safeMethod(CraftHumanEntity.class, "openCustomInventory",
+        Inventory.class, ServerPlayer.class, net.minecraft.world.inventory.MenuType.class);
 
     @Override
-    public void dropFallingContent(@NotNull FallingBlock fallingBlock) {
+    public void dropFallingContent(@NonNull FallingBlock fallingBlock) {
         CraftFallingBlock craftBlock = (CraftFallingBlock) fallingBlock;
         FallingBlockEntity nmsBlock = craftBlock.getHandle();
 
         nmsBlock.spawnAtLocation((ServerLevel) nmsBlock.level(), nmsBlock.getBlockState().getBlock());
     }
 
-    @NotNull
-    public Object fineChatPacket(@NotNull Object packet) {
+    @NonNull
+    public Object fineChatPacket(@NonNull Object packet) {
         ClientboundPlayerChatPacket chatPacket = (ClientboundPlayerChatPacket) packet;
-        Component component = chatPacket.unsignedContent() == null ? Component.literal(chatPacket.body().content()) : chatPacket.unsignedContent();
+        Component component = chatPacket.unsignedContent() == null ? Component.literal(chatPacket.body()
+            .content()) : chatPacket.unsignedContent();
 
         Holder<ChatType> typeHolder = chatPacket.chatType().chatType();
 
-        ChatType.Bound decorator = new ChatType.Bound(typeHolder, chatPacket.chatType().name(), chatPacket.chatType().targetName());
+        ChatType.Bound decorator = new ChatType.Bound(typeHolder, chatPacket.chatType().name(), chatPacket.chatType()
+            .targetName());
         component = decorator.decorate(component);
 
         return new ClientboundSystemChatPacket(component, false);
     }
 
     @Override
-    @NotNull
-    public org.bukkit.entity.Player loadPlayerData(@NotNull UUID id, @NotNull String name) {
+    @NonNull
+    public Player loadPlayerData(@NonNull UUID id, @NonNull String name) {
         CraftServer craftServer = (CraftServer) Bukkit.getServer();
         DedicatedServer server = craftServer.getServer();
         DedicatedPlayerList playerList = craftServer.getHandle();
@@ -83,12 +97,10 @@ public class MC_1_21_10 implements SunNMS {
 
         ProblemReporter reporter = new ProblemReporter.Collector();
         RegistryAccess access = serverPlayer.registryAccess();
-        //CompoundTag emptyTag = new CompoundTag();
-
 
         NameAndId nameAndId = new NameAndId(id, name);
 
-        var input = playerList.playerIo.load(nameAndId).orElse(new CompoundTag());//.orElse(TagValueInput.create(reporter, access, emptyTag));
+        var input = playerList.playerIo.load(nameAndId).orElse(new CompoundTag());
         var value = TagValueInput.create(reporter, access, input);
 
         serverPlayer.load(value);
@@ -98,11 +110,9 @@ public class MC_1_21_10 implements SunNMS {
     }
 
     @Override
-    public void setGameMode(@NotNull Player player, @NotNull GameMode mode) {
+    public void setGameMode(@NonNull Player player, org.bukkit.@NonNull GameMode mode) {
         CraftPlayer craftPlayer = (CraftPlayer) player;
         ServerPlayer serverPlayer = craftPlayer.getHandle();
-        //serverPlayer.gameMode.changeGameModeForPlayer(GameType.byName(mode.name().toLowerCase()));
-        //craftPlayer.saveData();
 
         GameType gameType = GameType.byName(mode.name().toLowerCase());
         GameType previous = serverPlayer.gameMode.getPreviousGameModeForPlayer();
@@ -112,53 +122,51 @@ public class MC_1_21_10 implements SunNMS {
     }
 
     @Override
-    public void teleport(@NotNull Player player, @NotNull Location location) {
+    public void teleport(@NonNull Player player, @NonNull Location location) {
         CraftPlayer craftPlayer = (CraftPlayer) player;
         ServerPlayer serverPlayer = craftPlayer.getHandle();
         serverPlayer.setPosRaw(location.getX(), location.getY(), location.getZ());
         if (player.getWorld() != location.getWorld() && location.getWorld() != null) {
             CraftWorld craftWorld = (CraftWorld) location.getWorld();
-            //serverPlayer.level = craftWorld.getHandle();
             serverPlayer.setServerLevel(craftWorld.getHandle());
         }
         craftPlayer.saveData();
     }
 
     @Override
-    @NotNull
-    public Inventory getPlayerEnderChest(@NotNull Player player) {
+    @NonNull
+    public Inventory getPlayerEnderChest(@NonNull Player player) {
         return new PlayerEnderChest((CraftPlayer) player).getInventory();
     }
 
     @Override
-    @NotNull
-    public Inventory getPlayerInventory(@NotNull Player player) {
+    @NonNull
+    public Inventory getPlayerInventory(@NonNull Player player) {
         return new PlayerInventory((CraftPlayer) player).getInventory();
     }
 
     @Override
-    public void openPlayerInventory(@NotNull Player player, @NotNull Player owner) {
-        if (OPEN_CUSTOM_INVENTORY == null) return;
-
+    public void openPlayerInventory(@NonNull Player player, @NonNull Player owner) {
         Inventory inventory = this.getPlayerInventory(owner);  // Patched CraftInventory used here to prevent inventory type & size mismatch.
         CraftPlayer craftPlayer = (CraftPlayer) player;
         ServerPlayer serverPlayer = craftPlayer.getHandle();
 
-        // There is a "wrong" menu type obtained in the CraftHumanEntity#openInventory -> CraftContainer.getNotchInventoryType(inventory);
+        // There is a "wrong" menu type obtained in the CraftHumanEntity#openInventory -> CraftContainer#getNotchInventoryType(inventory)
         // This is caused by CraftInventory wrapper with the PlayerInventory container inside, which getNotchInventoryType takes it into an account and returns wrong MenuType.
         // We have to hardcode the 'windowType' variable here as 9X5 menu type to prevent Network Protocol Error due to slots size mismatch.
-        Reflex.invokeMethod(OPEN_CUSTOM_INVENTORY, null, inventory, serverPlayer, net.minecraft.world.inventory.MenuType.GENERIC_9x5);
+        Reflex.invokeMethod(OPEN_CUSTOM_INVENTORY, null, inventory, serverPlayer,
+            net.minecraft.world.inventory.MenuType.GENERIC_9x5);
     }
 
     @Override
-    public void openContainer(@NotNull Player player, @NotNull PortableContainer menuType) {
+    public void openContainer(@NonNull Player player, @NonNull PortableContainer menuType) {
         AbstractContainerMenu menu = this.createContainer(menuType, player);
 
         player.openInventory(menu.getBukkitView());
     }
 
-    @NotNull
-    private AbstractContainerMenu createContainer(@NotNull PortableContainer type, @NotNull Player player) {
+    @NonNull
+    private AbstractContainerMenu createContainer(@NonNull PortableContainer type, @NonNull Player player) {
         CraftPlayer craftPlayer = (CraftPlayer) player;
         ServerPlayer nmsPlayer = craftPlayer.getHandle();
         int contId = nmsPlayer.nextContainerCounter();

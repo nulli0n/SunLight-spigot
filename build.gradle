@@ -1,12 +1,12 @@
 plugins {
     id("java-library")
-    id("io.papermc.paperweight.userdev") version "2.0.0-beta.19" apply(false)
+    id("io.papermc.paperweight.userdev") version "2.0.0-beta.21" apply(false)
     id("maven-publish")
 }
 
 allprojects {
     group = 'su.nightexpress.sunlight'
-    version = '3.16.0'
+    version = '3.17.0'
 
     repositories {
         mavenCentral()
@@ -26,7 +26,7 @@ subprojects {
 
     java {
         toolchain {
-            languageVersion = JavaLanguageVersion.of(21)
+            languageVersion = JavaLanguageVersion.of(25)
         }
         withSourcesJar()
         //withJavadocJar()
@@ -38,8 +38,8 @@ subprojects {
     }
 
     dependencies {
-        compileOnly 'su.nightexpress.nightcore:main:2.13.3'
-        compileOnly 'io.papermc.paper:paper-api:1.21.11-R0.1-SNAPSHOT'
+        compileOnly 'su.nightexpress.nightcore:main:2.15.1'
+        compileOnly 'io.papermc.paper:paper-api:26.1.2.build.+'
         compileOnly 'com.comphenix.protocol:ProtocolLib:5.4.0-SNAPSHOT'
         compileOnly 'com.github.retrooper:packetevents-spigot:2.9.5-SNAPSHOT'
         compileOnly 'com.discordsrv:discordsrv:1.28.0'

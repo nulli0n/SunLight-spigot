@@ -1,12 +1,13 @@
 package su.nightexpress.sunlight.module.chat.processor;
 
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
+
 import su.nightexpress.sunlight.module.chat.ChatModule;
 import su.nightexpress.sunlight.module.chat.context.ChatContext;
 
 public interface ChatProcessor<T extends ChatContext> {
 
-    void preProcess(@NotNull ChatModule module, @NotNull T context);
+    void preProcess(@NonNull ChatModule module, @NonNull T context);
 
-    void postProcess(@NotNull ChatModule module, @NotNull T context);
+    void postProcess(@NonNull ChatModule module, @NonNull T context);
 }

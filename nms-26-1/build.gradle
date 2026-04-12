@@ -1,0 +1,16 @@
+plugins {
+    id("io.papermc.paperweight.userdev")
+}
+
+repositories {
+    maven { url = "https://repo.papermc.io/repository/maven-public/" }
+    maven { url = "https://libraries.minecraft.net/" }
+}
+
+dependencies {
+    paperweight.paperDevBundle("26.1.2.build.+")
+    compileOnly("com.mojang:authlib:7.0.62")
+
+    implementation(project(":API"))
+    implementation(project(":NMS"))
+}

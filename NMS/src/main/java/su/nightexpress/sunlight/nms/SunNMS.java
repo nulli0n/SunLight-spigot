@@ -1,32 +1,37 @@
 package su.nightexpress.sunlight.nms;
 
+import java.util.UUID;
+
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
-import org.jetbrains.annotations.NotNull;
-import su.nightexpress.sunlight.api.PortableContainer;
+import org.jspecify.annotations.NonNull;
 
-import java.util.UUID;
+import su.nightexpress.sunlight.api.PortableContainer;
 
 public interface SunNMS {
 
-    @NotNull Object fineChatPacket(@NotNull Object packet);
+    @NonNull
+    Object fineChatPacket(@NonNull Object packet);
 
-    @NotNull Player loadPlayerData(@NotNull UUID id, @NotNull String name);
+    @NonNull
+    Player loadPlayerData(@NonNull UUID id, @NonNull String name);
 
-    @NotNull Inventory getPlayerInventory(@NotNull Player player);
+    @NonNull
+    Inventory getPlayerInventory(@NonNull Player player);
 
-    void openPlayerInventory(@NotNull Player player, @NotNull Player owner);
+    void openPlayerInventory(@NonNull Player player, @NonNull Player owner);
 
-    @NotNull Inventory getPlayerEnderChest(@NotNull Player player);
+    @NonNull
+    Inventory getPlayerEnderChest(@NonNull Player player);
 
-    void setGameMode(@NotNull Player player, @NotNull GameMode mode);
+    void setGameMode(@NonNull Player player, @NonNull GameMode mode);
 
-    void teleport(@NotNull Player player, @NotNull Location location);
+    void teleport(@NonNull Player player, @NonNull Location location);
 
-    void openContainer(@NotNull Player player, @NotNull PortableContainer menuType);
+    void openContainer(@NonNull Player player, @NonNull PortableContainer menuType);
 
-    void dropFallingContent(@NotNull FallingBlock fallingBlock);
+    void dropFallingContent(@NonNull FallingBlock fallingBlock);
 }

@@ -1,5 +1,14 @@
 package su.nightexpress.sunlight.module.warps.menu;
 
+import static su.nightexpress.nightcore.util.text.night.wrapper.TagWrappers.GOLD;
+import static su.nightexpress.nightcore.util.text.night.wrapper.TagWrappers.UNDERLINED;
+import static su.nightexpress.sunlight.module.warps.WarpsPlaceholders.WARP_DESCRIPTION;
+import static su.nightexpress.sunlight.module.warps.WarpsPlaceholders.WARP_NAME;
+
+import java.util.List;
+import java.util.Set;
+import java.util.stream.IntStream;
+
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -8,8 +17,8 @@ import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.MenuType;
-import org.jetbrains.annotations.NotNull;
 import org.jspecify.annotations.NonNull;
+
 import su.nightexpress.nightcore.config.FileConfig;
 import su.nightexpress.nightcore.locale.LangContainer;
 import su.nightexpress.nightcore.locale.LangEntry;
@@ -22,13 +31,6 @@ import su.nightexpress.nightcore.ui.inventory.viewer.ViewerContext;
 import su.nightexpress.nightcore.util.Placeholders;
 import su.nightexpress.sunlight.module.warps.Warp;
 import su.nightexpress.sunlight.module.warps.WarpsModule;
-
-import java.util.List;
-import java.util.Set;
-import java.util.stream.IntStream;
-
-import static su.nightexpress.nightcore.util.text.night.wrapper.TagWrappers.*;
-import static su.nightexpress.sunlight.module.warps.WarpsPlaceholders.*;
 
 public class WarpListMenu extends AbstractMenu implements LangContainer {
 
@@ -74,32 +76,32 @@ public class WarpListMenu extends AbstractMenu implements LangContainer {
         this.addBackgroundItem(Material.BLACK_STAINED_GLASS_PANE, IntStream.range(45, 54).toArray());
         this.addBackgroundItem(Material.GRAY_STAINED_GLASS_PANE, IntStream.range(9, 45).toArray());
 
-        this.addNextPageItem(Material.ARROW, 53);
-        this.addPreviousPageItem(Material.ARROW, 45);
+        this.addNextPageButton(53);
+        this.addPreviousPageButton(45);
     }
 
     @Override
-    protected void onLoad(@NotNull FileConfig config) {
-
-    }
-
-    @Override
-    protected void onClick(@NotNull ViewerContext context, @NotNull InventoryClickEvent event) {
+    protected void onLoad(@NonNull FileConfig config) {
 
     }
 
     @Override
-    protected void onDrag(@NotNull ViewerContext context, @NotNull InventoryDragEvent event) {
+    protected void onClick(@NonNull ViewerContext context, @NonNull InventoryClickEvent event) {
 
     }
 
     @Override
-    protected void onClose(@NotNull ViewerContext context, @NotNull InventoryCloseEvent event) {
+    protected void onDrag(@NonNull ViewerContext context, @NonNull InventoryDragEvent event) {
 
     }
 
     @Override
-    public void onPrepare(@NotNull ViewerContext context, @NotNull InventoryView view, @NotNull Inventory inventory, @NotNull List<MenuItem> items) {
+    protected void onClose(@NonNull ViewerContext context, @NonNull InventoryCloseEvent event) {
+
+    }
+
+    @Override
+    public void onPrepare(@NonNull ViewerContext context, @NonNull InventoryView view, @NonNull Inventory inventory, @NonNull List<MenuItem> items) {
         Player player = context.getPlayer();
         MenuViewer viewer = context.getViewer();
 
@@ -109,8 +111,8 @@ public class WarpListMenu extends AbstractMenu implements LangContainer {
         viewer.setTotalPages(maxPages);
 
         warps.stream().filter(warp -> warp.getMenuPage() == viewer.getCurrentPage()).forEach(warp -> {
-            items.add(MenuItem.builder()
-                .defaultState(ItemState.defaultBuilder()
+            items.add(MenuItem.custom()
+                .defaultState(ItemState.builder()
                     .icon(warp.getIcon()
                         .localized(warp.canEdit(player) ? ICON_WARP_MODERATE : ICON_WARP_DEFAULT)
                         .replace(builder -> builder.with(warp.placeholders()))
@@ -124,12 +126,12 @@ public class WarpListMenu extends AbstractMenu implements LangContainer {
     }
 
     @Override
-    public void onReady(@NotNull ViewerContext context, @NotNull InventoryView view, @NotNull Inventory inventory) {
+    public void onReady(@NonNull ViewerContext context, @NonNull InventoryView view, @NonNull Inventory inventory) {
 
     }
 
     @Override
-    public void onRender(@NotNull ViewerContext context, @NotNull InventoryView view, @NotNull Inventory inventory) {
+    public void onRender(@NonNull ViewerContext context, @NonNull InventoryView view, @NonNull Inventory inventory) {
 
     }
 }

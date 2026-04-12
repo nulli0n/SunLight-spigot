@@ -1,8 +1,21 @@
 package su.nightexpress.sunlight.module.playerwarps.dialog.impl;
 
+import static su.nightexpress.nightcore.util.text.night.wrapper.TagWrappers.GREEN;
+import static su.nightexpress.nightcore.util.text.night.wrapper.TagWrappers.UNDERLINED;
+import static su.nightexpress.nightcore.util.text.night.wrapper.TagWrappers.YELLOW;
+import static su.nightexpress.sunlight.module.warps.WarpsPlaceholders.WARP_DESCRIPTION;
+import static su.nightexpress.sunlight.module.warps.WarpsPlaceholders.WARP_NAME;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.function.Predicate;
+
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
 import org.jspecify.annotations.NonNull;
+
 import su.nightexpress.nightcore.bridge.common.NightNbtHolder;
 import su.nightexpress.nightcore.bridge.dialog.wrap.WrappedDialog;
 import su.nightexpress.nightcore.bridge.dialog.wrap.base.WrappedDialogAfterAction;
@@ -12,45 +25,50 @@ import su.nightexpress.nightcore.locale.entry.ButtonLocale;
 import su.nightexpress.nightcore.locale.entry.DialogElementLocale;
 import su.nightexpress.nightcore.locale.entry.TextLocale;
 import su.nightexpress.nightcore.ui.dialog.Dialogs;
-import su.nightexpress.nightcore.ui.dialog.build.*;
+import su.nightexpress.nightcore.ui.dialog.build.DialogActions;
+import su.nightexpress.nightcore.ui.dialog.build.DialogBases;
+import su.nightexpress.nightcore.ui.dialog.build.DialogBodies;
+import su.nightexpress.nightcore.ui.dialog.build.DialogButtons;
+import su.nightexpress.nightcore.ui.dialog.build.DialogTypes;
+import su.nightexpress.nightcore.ui.dialog.wrap.Dialog;
 import su.nightexpress.nightcore.util.placeholder.PlaceholderContext;
-import su.nightexpress.sunlight.dialog.Dialog;
+import su.nightexpress.sunlight.module.playerwarps.PlayerWarp;
 import su.nightexpress.sunlight.module.playerwarps.PlayerWarpsModule;
 import su.nightexpress.sunlight.module.playerwarps.PlayerWarpsPlaceholders;
-import su.nightexpress.sunlight.module.playerwarps.PlayerWarp;
 import su.nightexpress.sunlight.module.playerwarps.featuring.FeaturedSlot;
-
-import java.util.*;
-import java.util.function.Predicate;
-
-import static su.nightexpress.sunlight.module.warps.WarpsPlaceholders.*;
-import static su.nightexpress.nightcore.util.text.night.wrapper.TagWrappers.*;
 
 public class PlayerWarpFeaturingDialog extends Dialog<PlayerWarpFeaturingDialog.Data> {
 
-    private static final TextLocale TITLE = LangEntry.builder("PlayerWarps.Dialog.Featuring.Title").text(title("Warp", "Featuring"));
+    private static final TextLocale TITLE = LangEntry.builder("PlayerWarps.Dialog.Featuring.Title").text(title("Warp",
+        "Featuring"));
 
-    private static final DialogElementLocale BODY_SELECTION = LangEntry.builder("PlayerWarps.Dialog.Featuring.Body.Selection").dialogElement(400,
-        "Select a warp to feature for promotion.",
-        "",
-        "It will remain featured for " + YELLOW.wrap(PlayerWarpsPlaceholders.SLOT_DURATION) + ". Cost: " + GREEN.wrap(PlayerWarpsPlaceholders.SLOT_PRICE) + "."
-    );
+    private static final DialogElementLocale BODY_SELECTION = LangEntry.builder(
+        "PlayerWarps.Dialog.Featuring.Body.Selection").dialogElement(400,
+            "Select a warp to feature for promotion.",
+            "",
+            "It will remain featured for " + YELLOW.wrap(PlayerWarpsPlaceholders.SLOT_DURATION) + ". Cost: " + GREEN
+                .wrap(PlayerWarpsPlaceholders.SLOT_PRICE) + "."
+        );
 
-    private static final DialogElementLocale BODY_CONFIRMATION = LangEntry.builder("PlayerWarps.Dialog.Featuring.Body.Confirmation").dialogElement(400,
-        "Please confirm featuring for the " + YELLOW.and(UNDERLINED).wrap(WARP_NAME) + " warp.",
-        "",
-        "It will remain featured for " + YELLOW.wrap(PlayerWarpsPlaceholders.SLOT_DURATION) + ". Cost: " + GREEN.wrap(PlayerWarpsPlaceholders.SLOT_PRICE) + "."
-    );
+    private static final DialogElementLocale BODY_CONFIRMATION = LangEntry.builder(
+        "PlayerWarps.Dialog.Featuring.Body.Confirmation").dialogElement(400,
+            "Please confirm featuring for the " + YELLOW.and(UNDERLINED).wrap(WARP_NAME) + " warp.",
+            "",
+            "It will remain featured for " + YELLOW.wrap(PlayerWarpsPlaceholders.SLOT_DURATION) + ". Cost: " + GREEN
+                .wrap(PlayerWarpsPlaceholders.SLOT_PRICE) + "."
+        );
 
-    private static final ButtonLocale BUTTON_WARP = LangEntry.builder("PlayerWarps.Dialog.Featuring.Button.Warp").button(WARP_NAME, WARP_DESCRIPTION);
+    private static final ButtonLocale BUTTON_WARP = LangEntry.builder("PlayerWarps.Dialog.Featuring.Button.Warp")
+        .button(WARP_NAME, WARP_DESCRIPTION);
 
     private static final String ACTION_WARP = "warp";
-    private static final String JSON_ID = "id";
+    private static final String JSON_ID     = "id";
 
     private final PlayerWarpsModule module;
     private final Map<UUID, String> idCache;
 
-    public record Data(@NonNull FeaturedSlot slot, int slotIndex) {}
+    public record Data(@NonNull FeaturedSlot slot, int slotIndex) {
+    }
 
     public PlayerWarpFeaturingDialog(@NonNull PlayerWarpsModule module) {
         this.module = module;
@@ -58,8 +76,8 @@ public class PlayerWarpFeaturingDialog extends Dialog<PlayerWarpFeaturingDialog.
     }
 
     @Override
-    @NotNull
-    public WrappedDialog create(@NotNull Player player, @NotNull Data data) {
+    @NonNull
+    public WrappedDialog create(@NonNull Player player, @NonNull Data data) {
         List<WrappedActionButton> buttons = new ArrayList<>();
 
         PlaceholderContext.Builder bodyPlaceholders = PlaceholderContext.builder().with(data.slot.placeholders());
@@ -69,15 +87,18 @@ public class PlayerWarpFeaturingDialog extends Dialog<PlayerWarpFeaturingDialog.
         boolean selected = selectedWarp != null;
 
         if (!selected) {
-            this.module.getRepository().getByOwner(player.getUniqueId()).stream().filter(Predicate.not(PlayerWarp::isFeatured)).forEach(warp -> {
-                PlaceholderContext placeholderContext = PlaceholderContext.builder().with(warp.placeholders()).build();
-                ButtonLocale locale = (BUTTON_WARP).replace(placeholderContext::apply);
+            this.module.getRepository().getByOwner(player.getUniqueId()).stream().filter(Predicate.not(
+                PlayerWarp::isFeatured)).forEach(warp -> {
+                    PlaceholderContext placeholderContext = PlaceholderContext.builder().with(warp.placeholders())
+                        .build();
+                    ButtonLocale locale = (BUTTON_WARP).replace(placeholderContext::apply);
 
-                buttons.add(DialogButtons.action(locale)
-                    .action(DialogActions.customClick(ACTION_WARP, NightNbtHolder.builder().put(JSON_ID, warp.getId()).build()))
-                    .build()
-                );
-            });
+                    buttons.add(DialogButtons.action(locale)
+                        .action(DialogActions.customClick(ACTION_WARP, NightNbtHolder.builder().put(JSON_ID, warp
+                            .getId()).build()))
+                        .build()
+                    );
+                });
         }
         else {
             bodyPlaceholders.with(selectedWarp.placeholders());
@@ -86,7 +107,8 @@ public class PlayerWarpFeaturingDialog extends Dialog<PlayerWarpFeaturingDialog.
 
         return Dialogs.builder()
             .base(DialogBases.builder(TITLE)
-                .body(DialogBodies.plainMessage((selected ? BODY_CONFIRMATION : BODY_SELECTION).replace(bodyPlaceholders.build()::apply)))
+                .body(DialogBodies.plainMessage((selected ? BODY_CONFIRMATION : BODY_SELECTION).replace(bodyPlaceholders
+                    .build()::apply)))
                 .afterAction(WrappedDialogAfterAction.NONE)
                 .build()
             )

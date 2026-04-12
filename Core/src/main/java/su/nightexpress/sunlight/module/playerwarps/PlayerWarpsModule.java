@@ -1,5 +1,12 @@
 package su.nightexpress.sunlight.module.playerwarps;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Set;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
@@ -7,9 +14,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.world.WorldLoadEvent;
 import org.bukkit.event.world.WorldUnloadEvent;
-import org.jetbrains.annotations.NotNull;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
+
 import su.nightexpress.nightcore.config.FileConfig;
 import su.nightexpress.nightcore.core.config.CoreLang;
 import su.nightexpress.nightcore.integration.currency.EconomyBridge;
@@ -34,20 +41,25 @@ import su.nightexpress.sunlight.module.playerwarps.core.PlayerWarpsLang;
 import su.nightexpress.sunlight.module.playerwarps.core.PlayerWarpsPerms;
 import su.nightexpress.sunlight.module.playerwarps.core.PlayerWarpsSettings;
 import su.nightexpress.sunlight.module.playerwarps.dialog.PlayerWarpsDialogKeys;
-import su.nightexpress.sunlight.module.playerwarps.dialog.impl.*;
+import su.nightexpress.sunlight.module.playerwarps.dialog.impl.PlayerWarpCategoryDialog;
+import su.nightexpress.sunlight.module.playerwarps.dialog.impl.PlayerWarpDescriptionDialog;
+import su.nightexpress.sunlight.module.playerwarps.dialog.impl.PlayerWarpFeaturingDialog;
+import su.nightexpress.sunlight.module.playerwarps.dialog.impl.PlayerWarpNameDialog;
+import su.nightexpress.sunlight.module.playerwarps.dialog.impl.PlayerWarpPriceDialog;
+import su.nightexpress.sunlight.module.playerwarps.dialog.impl.PlayerWarpsSearchDialog;
 import su.nightexpress.sunlight.module.playerwarps.event.PlayerWarpTeleportEvent;
 import su.nightexpress.sunlight.module.playerwarps.exception.PlayerWarpLoadException;
 import su.nightexpress.sunlight.module.playerwarps.featuring.FeaturedData;
 import su.nightexpress.sunlight.module.playerwarps.featuring.FeaturedSlot;
-import su.nightexpress.sunlight.module.playerwarps.menu.*;
-import su.nightexpress.sunlight.teleport.*;
-
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Set;
-import java.util.UUID;
-import java.util.stream.Collectors;
+import su.nightexpress.sunlight.module.playerwarps.menu.PlayerWarpOptionsMenu;
+import su.nightexpress.sunlight.module.playerwarps.menu.PlayerWarpSortType;
+import su.nightexpress.sunlight.module.playerwarps.menu.PlayerWarpsListMenu;
+import su.nightexpress.sunlight.module.playerwarps.menu.PlayerWarpsMainMenu;
+import su.nightexpress.sunlight.module.playerwarps.menu.WarpsListData;
+import su.nightexpress.sunlight.teleport.TeleportContext;
+import su.nightexpress.sunlight.teleport.TeleportFlag;
+import su.nightexpress.sunlight.teleport.TeleportManager;
+import su.nightexpress.sunlight.teleport.TeleportType;
 
 public class PlayerWarpsModule extends Module {
 
@@ -77,14 +89,16 @@ public class PlayerWarpsModule extends Module {
         this.plugin.injectLang(this.mainMenu);
 
         this.settingsMenu = new PlayerWarpOptionsMenu(this);
-        this.settingsMenu.load(this.plugin, FileConfig.load(this.getLocalUIPath(), PlayerWarpsFiles.FILE_WARP_SETTINGS));
+        this.settingsMenu.load(this.plugin, FileConfig.load(this.getLocalUIPath(),
+            PlayerWarpsFiles.FILE_WARP_SETTINGS));
 
         this.warpsListMenu = new PlayerWarpsListMenu(this.plugin, this, this.settings, this.repository);
         this.warpsListMenu.load(this.plugin, FileConfig.load(this.getLocalUIPath(), PlayerWarpsFiles.FILE_WARP_LIST));
         this.plugin.injectLang(this.warpsListMenu);
 
         this.dialogRegistry.register(PlayerWarpsDialogKeys.WARP_NAME, () -> new PlayerWarpNameDialog(this.settings));
-        this.dialogRegistry.register(PlayerWarpsDialogKeys.WARP_DESCRIPTION, () -> new PlayerWarpDescriptionDialog(this.settings));
+        this.dialogRegistry.register(PlayerWarpsDialogKeys.WARP_DESCRIPTION,
+            () -> new PlayerWarpDescriptionDialog(this.settings));
         this.dialogRegistry.register(PlayerWarpsDialogKeys.WARP_PRICE, PlayerWarpPriceDialog::new);
         this.dialogRegistry.register(PlayerWarpsDialogKeys.WARP_SEARCH, () -> new PlayerWarpsSearchDialog(this));
         this.dialogRegistry.register(PlayerWarpsDialogKeys.WARP_FEATURING, () -> new PlayerWarpFeaturingDialog(this));
@@ -108,7 +122,7 @@ public class PlayerWarpsModule extends Module {
     }
 
     @Override
-    protected void registerPermissions(@NotNull PermissionTree root) {
+    protected void registerPermissions(@NonNull PermissionTree root) {
         root.merge(PlayerWarpsPerms.ROOT);
     }
 
@@ -118,7 +132,7 @@ public class PlayerWarpsModule extends Module {
     }
 
     @Override
-    public void registerPlaceholders(@NotNull PlaceholderRegistry registry) {
+    public void registerPlaceholders(@NonNull PlaceholderRegistry registry) {
         registry.register("playerwarps_creation_limit", (player, payload) -> {
             int limit = this.getAllowedWarpsAmount(player);
             return limit >= 0 ? NumberUtil.format(limit) : CoreLang.OTHER_INFINITY.text();
@@ -151,7 +165,7 @@ public class PlayerWarpsModule extends Module {
         this.info("Loaded %s player warps.".formatted(String.valueOf(this.repository.size())));
     }
 
-    public boolean loadWarp(@NotNull PlayerWarp warp) {
+    public boolean loadWarp(@NonNull PlayerWarp warp) {
         try {
             warp.load();
             warp.activate();
@@ -179,16 +193,18 @@ public class PlayerWarpsModule extends Module {
         this.mainMenu.refresh();
     }
 
-    public void handleWorldLoad(@NotNull WorldLoadEvent event) {
+    public void handleWorldLoad(@NonNull WorldLoadEvent event) {
         World world = event.getWorld();
 
-        this.repository.getAll().stream().filter(PlayerWarp::isInactive).filter(warp -> warp.isWorld(world)).forEach(warp -> warp.activate(world));
+        this.repository.getAll().stream().filter(PlayerWarp::isInactive).filter(warp -> warp.isWorld(world)).forEach(
+            warp -> warp.activate(world));
     }
 
-    public void handleWorldUnload(@NotNull WorldUnloadEvent event) {
+    public void handleWorldUnload(@NonNull WorldUnloadEvent event) {
         World world = event.getWorld();
 
-        this.repository.getAll().stream().filter(PlayerWarp::isActive).filter(warp -> warp.isWorld(world)).forEach(PlayerWarp::deactivate);
+        this.repository.getAll().stream().filter(PlayerWarp::isActive).filter(warp -> warp.isWorld(world)).forEach(
+            PlayerWarp::deactivate);
     }
 
     @NonNull
@@ -206,13 +222,13 @@ public class PlayerWarpsModule extends Module {
         return this.settings;
     }
 
-    @NotNull
-    public Set<PlayerWarp> getAvailableWarps(@NotNull Player player) {
+    @NonNull
+    public Set<PlayerWarp> getAvailableWarps(@NonNull Player player) {
         return this.repository.stream().filter(warp -> warp.canUse(player)).collect(Collectors.toSet());
     }
 
-    @NotNull
-    public Set<PlayerWarp> getOwnedWarps(@NotNull Player player) {
+    @NonNull
+    public Set<PlayerWarp> getOwnedWarps(@NonNull Player player) {
         return this.repository.getByOwner(player.getUniqueId());
     }
 
@@ -236,11 +252,11 @@ public class PlayerWarpsModule extends Module {
         this.dialogRegistry.show(player, PlayerWarpsDialogKeys.WARP_SEARCH, data, null);
     }
 
-    public int getAllowedWarpsAmount(@NotNull Player player) {
+    public int getAllowedWarpsAmount(@NonNull Player player) {
         return this.settings.getMaxWarpsAmount(player);
     }
 
-    public int getOwnedWarpsAmount(@NotNull Player player) {
+    public int getOwnedWarpsAmount(@NonNull Player player) {
         return this.getOwnedWarps(player).size();
     }
 
@@ -272,7 +288,8 @@ public class PlayerWarpsModule extends Module {
 
         PlayerWarpFeaturingDialog.Data data = new PlayerWarpFeaturingDialog.Data(slot, slotIndex);
 
-        this.dialogRegistry.show(player, PlayerWarpsDialogKeys.WARP_FEATURING, data, () -> this.mainMenu.refresh(player));
+        this.dialogRegistry.show(player, PlayerWarpsDialogKeys.WARP_FEATURING, data, () -> this.mainMenu.refresh(
+            player));
 
         return true;
     }
@@ -295,7 +312,8 @@ public class PlayerWarpsModule extends Module {
     public boolean removeWarp(@NonNull CommandSender sender, @NonNull PlayerWarp warp, boolean force) {
         if (sender instanceof Player player) {
             if (!warp.canEdit(player)) {
-                this.sendPrefixed(PlayerWarpsLang.ERROR_NOT_OWN_WARP, player, builder -> builder.with(warp.placeholders()));
+                this.sendPrefixed(PlayerWarpsLang.ERROR_NOT_OWN_WARP, player, builder -> builder.with(warp
+                    .placeholders()));
                 return false;
             }
         }
@@ -305,7 +323,7 @@ public class PlayerWarpsModule extends Module {
         return true;
     }
 
-    public void delete(@NotNull PlayerWarp warp) {
+    public void delete(@NonNull PlayerWarp warp) {
         try {
             Files.delete(warp.getFile());
             this.repository.remove(warp);
@@ -315,7 +333,7 @@ public class PlayerWarpsModule extends Module {
         }
     }
 
-    public boolean create(@NotNull Player player, @NotNull String name, boolean force) {
+    public boolean create(@NonNull Player player, @NonNull String name, boolean force) {
         Location location = player.getLocation();
         String id = Strings.varStyle(name).orElse(null);
         if (id == null) {
@@ -353,7 +371,8 @@ public class PlayerWarpsModule extends Module {
 
         PlayerWarp existent = this.getRepository().getById(id);
         if (existent != null) {
-            this.sendPrefixed(PlayerWarpsLang.WARP_CREATION_ALREADY_EXISTS, player, builder -> builder.with(existent.placeholders()));
+            this.sendPrefixed(PlayerWarpsLang.WARP_CREATION_ALREADY_EXISTS, player, builder -> builder.with(existent
+                .placeholders()));
             return false;
         }
 
@@ -392,7 +411,7 @@ public class PlayerWarpsModule extends Module {
         return true;
     }
 
-    public boolean teleportToWarp(@NotNull PlayerWarp warp, @NotNull Player player, boolean force) {
+    public boolean teleportToWarp(@NonNull PlayerWarp warp, @NonNull Player player, boolean force) {
         if (!warp.isActive()) {
             this.sendPrefixed(PlayerWarpsLang.WARP_JUMP_INACTIVE, player, builder -> builder.with(warp.placeholders()));
             return false;
@@ -402,7 +421,8 @@ public class PlayerWarpsModule extends Module {
             double price = warp.getPrice();
 
             if (EconomyBridge.getEconomyBalance(player) < price) {
-                this.sendPrefixed(PlayerWarpsLang.WARP_JUMP_INSUFFICIENT_FUNDS, player, builder -> builder.with(warp.placeholders()));
+                this.sendPrefixed(PlayerWarpsLang.WARP_JUMP_INSUFFICIENT_FUNDS, player, builder -> builder.with(warp
+                    .placeholders()));
                 return false;
             }
 
@@ -425,7 +445,8 @@ public class PlayerWarpsModule extends Module {
                     warp.markDirty();
                 }
 
-                this.sendPrefixed(PlayerWarpsLang.WARP_JUMP_NOTIFY, player, builder -> builder.with(warp.placeholders()));
+                this.sendPrefixed(PlayerWarpsLang.WARP_JUMP_NOTIFY, player, builder -> builder.with(warp
+                    .placeholders()));
             })
             .build();
 
@@ -455,7 +476,8 @@ public class PlayerWarpsModule extends Module {
         }
 
         if (!slot.canAfford(player)) {
-            this.sendPrefixed(PlayerWarpsLang.WARP_FEATURE_CANT_AFFORD, player, builder -> builder.with(slot.placeholders()));
+            this.sendPrefixed(PlayerWarpsLang.WARP_FEATURE_CANT_AFFORD, player, builder -> builder.with(slot
+                .placeholders()));
             return false;
         }
 
@@ -464,7 +486,8 @@ public class PlayerWarpsModule extends Module {
         warp.markDirty();
         this.updateFeaturedWarps();
 
-        this.sendPrefixed(PlayerWarpsLang.WARP_FEATURE_SUCCESS, player, builder -> builder.with(slot.placeholders()).with(warp.placeholders()));
+        this.sendPrefixed(PlayerWarpsLang.WARP_FEATURE_SUCCESS, player, builder -> builder.with(slot.placeholders())
+            .with(warp.placeholders()));
         return true;
     }
 }

@@ -1,8 +1,12 @@
 package su.nightexpress.sunlight;
 
+import java.nio.file.Path;
+import java.util.Optional;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jspecify.annotations.NonNull;
+
 import su.nightexpress.nightcore.NightPlugin;
 import su.nightexpress.nightcore.commands.Commands;
 import su.nightexpress.nightcore.commands.command.NightCommand;
@@ -10,8 +14,8 @@ import su.nightexpress.nightcore.config.PluginDetails;
 import su.nightexpress.nightcore.core.config.CoreLang;
 import su.nightexpress.nightcore.util.Plugins;
 import su.nightexpress.nightcore.util.Version;
-import su.nightexpress.sunlight.api.provider.AfkProvider;
 import su.nightexpress.sunlight.api.SunlightAPI;
+import su.nightexpress.sunlight.api.provider.AfkProvider;
 import su.nightexpress.sunlight.api.provider.VanishProvider;
 import su.nightexpress.sunlight.command.CommandRegistry;
 import su.nightexpress.sunlight.config.Config;
@@ -19,9 +23,14 @@ import su.nightexpress.sunlight.config.Lang;
 import su.nightexpress.sunlight.config.PermissionTree;
 import su.nightexpress.sunlight.config.Perms;
 import su.nightexpress.sunlight.data.DataHandler;
-import su.nightexpress.sunlight.dialog.DialogRegistry;
 import su.nightexpress.sunlight.hook.impl.PlaceholderHook;
-import su.nightexpress.sunlight.module.*;
+import su.nightexpress.sunlight.module.LoadCondition;
+import su.nightexpress.sunlight.module.ModuleContext;
+import su.nightexpress.sunlight.module.ModuleContextProvider;
+import su.nightexpress.sunlight.module.ModuleDefinition;
+import su.nightexpress.sunlight.module.ModuleId;
+import su.nightexpress.sunlight.module.ModuleLoader;
+import su.nightexpress.sunlight.module.ModuleRegistry;
 import su.nightexpress.sunlight.module.afk.AfkModule;
 import su.nightexpress.sunlight.module.backlocation.BackLocationModule;
 import su.nightexpress.sunlight.module.bans.BansModule;
@@ -49,14 +58,10 @@ import su.nightexpress.sunlight.module.warmups.WarmupsModule;
 import su.nightexpress.sunlight.module.warps.WarpsModule;
 import su.nightexpress.sunlight.module.worlds.WorldsModule;
 import su.nightexpress.sunlight.nms.SunNMS;
-import su.nightexpress.sunlight.nms.mc_1_21_10.MC_1_21_10;
 import su.nightexpress.sunlight.nms.mc_1_21_11.MC_1_21_11;
-import su.nightexpress.sunlight.nms.mc_1_21_8.MC_1_21_8;
+import su.nightexpress.sunlight.nms.v26p1.NMSv26p1;
 import su.nightexpress.sunlight.teleport.TeleportManager;
 import su.nightexpress.sunlight.user.UserManager;
-
-import java.nio.file.Path;
-import java.util.Optional;
 
 public class SunLightPlugin extends NightPlugin implements SunlightAPI, ModuleContextProvider {
 
@@ -64,7 +69,6 @@ public class SunLightPlugin extends NightPlugin implements SunlightAPI, ModuleCo
 
     private CommandRegistry commandRegistry;
     private ModuleRegistry  moduleRegistry;
-    private DialogRegistry dialogRegistry;
 
     private DataHandler dataHandler;
     private UserManager userManager;
@@ -103,7 +107,6 @@ public class SunLightPlugin extends NightPlugin implements SunlightAPI, ModuleCo
     protected void onStartup() {
         this.commandRegistry = new CommandRegistry(this);
         this.moduleRegistry = new ModuleRegistry();
-        this.dialogRegistry = new DialogRegistry(this);
     }
 
     @Override
@@ -124,8 +127,8 @@ public class SunLightPlugin extends NightPlugin implements SunlightAPI, ModuleCo
             this.moduleRegistry.reload();
         }
         else {*/
-            //this.info("Initializing modules...");
-            this.loadModules();
+        //this.info("Initializing modules...");
+        this.loadModules();
         //}
 
         this.commandRegistry.setup();
@@ -158,33 +161,46 @@ public class SunLightPlugin extends NightPlugin implements SunlightAPI, ModuleCo
     private void loadModules() {
         ModuleLoader loader = new ModuleLoader(this, this.moduleRegistry);
 
-        loader.register(ModuleId.WORLDS, ModuleDefinition.named("Worlds"), context -> new WorldsModule(context, this.teleportManager));
+        loader.register(ModuleId.WORLDS, ModuleDefinition.named("Worlds"),
+            context -> new WorldsModule(context, this.teleportManager));
 
         loader.register(ModuleId.AFK, ModuleDefinition.named("AFK"), AfkModule::new);
         loader.register(ModuleId.BANS, ModuleDefinition.named("Bans"), BansModule::new);
-        loader.register(ModuleId.BACK_LOCATION, ModuleDefinition.named("Back"), context -> new BackLocationModule(context, this.teleportManager));
+        loader.register(ModuleId.BACK_LOCATION, ModuleDefinition.named("Back"),
+            context -> new BackLocationModule(context, this.teleportManager));
         loader.register(ModuleId.CUSTOM_TEXT, ModuleDefinition.named("Custom Text"), TextsModule::new);
         loader.register(ModuleId.CHAT, ModuleDefinition.named("Chat"), ChatModule::new);
         loader.register(ModuleId.DEATH_MESSAGES, ModuleDefinition.named("Death Messages"), DeathMessagesModule::new);
-        loader.register(ModuleId.ESSENTIAL, ModuleDefinition.named("Essential"), context -> new EssentialModule(context, this.teleportManager));
+        loader.register(ModuleId.ESSENTIAL, ModuleDefinition.named("Essential"),
+            context -> new EssentialModule(context, this.teleportManager));
         loader.register(ModuleId.EXTRAS, ModuleDefinition.named("Extras"), ExtrasModule::new);
         loader.register(ModuleId.GREETINGS, ModuleDefinition.named("Greetings"), GreetingsModule::new);
-        loader.register(ModuleId.HOMES, ModuleDefinition.named("Homes"), context -> new HomesModule(context, this.teleportManager));
-        loader.register(ModuleId.INVENTORIES, ModuleDefinition.named("Inventories"), context -> new InventoriesModule(context, this.sunNMS));
+        loader.register(ModuleId.HOMES, ModuleDefinition.named("Homes"),
+            context -> new HomesModule(context, this.teleportManager));
+        loader.register(ModuleId.INVENTORIES, ModuleDefinition.named("Inventories"),
+            context -> new InventoriesModule(context, this.sunNMS));
         loader.register(ModuleId.ITEMS, ModuleDefinition.named("Items"), ItemsModule::new);
         loader.register(ModuleId.KITS, ModuleDefinition.named("Kits"), KitsModule::new);
-        loader.register(ModuleId.NAME_TAGS, ModuleDefinition.named("Nametags"), NametagsModule::new, LoadCondition::packetLibrary);
+        loader.register(ModuleId.NAME_TAGS, ModuleDefinition.named("Nametags"), NametagsModule::new,
+            LoadCondition::packetLibrary);
         loader.register(ModuleId.NERF_PHANTOMS, ModuleDefinition.named("Nerf Phantoms"), PhantomsModule::new);
-        loader.register(ModuleId.PLAYER_WARPS, ModuleDefinition.named("Player Warps"), context -> new PlayerWarpsModule(context, this.teleportManager));
-        loader.register(ModuleId.PTP, ModuleDefinition.named("PTP"), context -> new PTPModule(context, this.teleportManager));
-        loader.register(ModuleId.RTP, ModuleDefinition.named("RTP"), context -> new RTPModule(context, this.teleportManager));
+        loader.register(ModuleId.PLAYER_WARPS, ModuleDefinition.named("Player Warps"),
+            context -> new PlayerWarpsModule(context, this.teleportManager));
+        loader.register(ModuleId.PTP, ModuleDefinition.named("PTP"),
+            context -> new PTPModule(context, this.teleportManager));
+        loader.register(ModuleId.RTP, ModuleDefinition.named("RTP"),
+            context -> new RTPModule(context, this.teleportManager));
         loader.register(ModuleId.SCHEDULER, ModuleDefinition.named("Scheduler"), SchedulerModule::new);
-        loader.register(ModuleId.SCOREBOARD, ModuleDefinition.named("Scoreboard"), ScoreboardModule::new, LoadCondition::packetLibrary);
-        loader.register(ModuleId.SPAWNS, ModuleDefinition.named("Spawn"), context -> new SpawnsModule(context, this.teleportManager));
+        loader.register(ModuleId.SCOREBOARD, ModuleDefinition.named("Scoreboard"), ScoreboardModule::new,
+            LoadCondition::packetLibrary);
+        loader.register(ModuleId.SPAWNS, ModuleDefinition.named("Spawn"),
+            context -> new SpawnsModule(context, this.teleportManager));
         loader.register(ModuleId.TAB, ModuleDefinition.named("Tab"), TabModule::new);
         loader.register(ModuleId.VANISH, ModuleDefinition.named("Vanish"), VanishModule::new);
-        loader.register(ModuleId.WARMUPS, ModuleDefinition.named("Warmups"), context -> new WarmupsModule(context, this.teleportManager));
-        loader.register(ModuleId.WARPS, ModuleDefinition.named("Warps"), context -> new WarpsModule(context, this.teleportManager));
+        loader.register(ModuleId.WARMUPS, ModuleDefinition.named("Warmups"),
+            context -> new WarmupsModule(context, this.teleportManager));
+        loader.register(ModuleId.WARPS, ModuleDefinition.named("Warps"),
+            context -> new WarpsModule(context, this.teleportManager));
 
         //loader.register(ModuleId.SPAWNERS, ModuleDefinition.named("Spawners"), SpawnersModule::new);
         //loader.register(ModuleId.SOCIALS, ModuleDefinition.named("Socials"), SocialsModule::new);
@@ -199,12 +215,15 @@ public class SunLightPlugin extends NightPlugin implements SunlightAPI, ModuleCo
     }
 
     private void setupInternalNMS() {
-        this.sunNMS = switch (Version.getCurrent()) {
-            case MC_1_21_8 -> new MC_1_21_8();
-            case MC_1_21_10 -> new MC_1_21_10();
-            case MC_1_21_11 -> new MC_1_21_11();
-            default -> null;
-        };
+        try {
+            this.sunNMS = switch (Version.getCurrent()) {
+                case MC_1_21_11 -> new MC_1_21_11();
+                default -> new NMSv26p1();
+            };
+        }
+        catch (Exception | NoClassDefFoundError e) {
+            e.printStackTrace();
+        }
 
         if (this.sunNMS == null) {
             this.warn("Could not load internals handler. Some features will be unvailable.");

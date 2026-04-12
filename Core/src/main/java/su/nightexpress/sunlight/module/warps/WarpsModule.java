@@ -52,7 +52,7 @@ public class WarpsModule extends Module {
     private final WarpsSettings     settings;
 
     private WarpOptionsMenu settingsMenu;
-    private WarpListMenu listMenu;
+    private WarpListMenu    listMenu;
 
     public WarpsModule(@NonNull ModuleContext context, @NonNull TeleportManager teleportManager) {
         super(context);
@@ -71,7 +71,7 @@ public class WarpsModule extends Module {
         this.dialogRegistry.register(WarpsDialogKeys.WARP_COMMAND, () -> new WarpCommandDialog(this));
         this.dialogRegistry.register(WarpsDialogKeys.WARP_SLOTS, WarpSlotsDialog::new);
 
-        this.settingsMenu = new WarpOptionsMenu(this, this.dialogRegistry);
+        this.settingsMenu = new WarpOptionsMenu(this);
         this.settingsMenu.load(this.plugin, FileConfig.load(this.getLocalUIPath(), WarpsFiles.FILE_WARP_SETTINGS));
 
         this.listMenu = new WarpListMenu(this);
@@ -139,7 +139,8 @@ public class WarpsModule extends Module {
     public void handleWorldLoad(@NonNull WorldLoadEvent event) {
         World world = event.getWorld();
 
-        this.getWarps().stream().filter(Warp::isInactive).filter(warp -> warp.isWorld(world)).forEach(warp -> warp.activate(world));
+        this.getWarps().stream().filter(Warp::isInactive).filter(warp -> warp.isWorld(world)).forEach(warp -> warp
+            .activate(world));
     }
 
     public void handleWorldUnload(@NonNull WorldUnloadEvent event) {
@@ -189,7 +190,7 @@ public class WarpsModule extends Module {
             return false;
         }
     }
-    
+
     public void unloadWarp(@NonNull Warp warp) {
         warp.deactivate();
         warp.clearCommand();
@@ -209,7 +210,8 @@ public class WarpsModule extends Module {
 
         NightCommand command = NightCommand.literal(this.plugin, label, builder -> builder
             .playerOnly()
-            .description(PlaceholderContext.builder().with(warp.placeholders()).build().apply(WarpsLang.COMMAND_WARP_DESC.text()))
+            .description(PlaceholderContext.builder().with(warp.placeholders()).build().apply(
+                WarpsLang.COMMAND_WARP_DESC.text()))
             .permission(warp.getPermission())
             .executes((context, arguments) -> {
                 return this.teleportToWarp(warp, context.getPlayerOrThrow(), false);
@@ -262,7 +264,8 @@ public class WarpsModule extends Module {
 
         Warp existent = this.getWarpById(id);
         if (existent != null) {
-            this.sendPrefixed(WarpsLang.WARP_CREATION_ALREADY_EXISTS, player, builder -> builder.with(existent.placeholders()));
+            this.sendPrefixed(WarpsLang.WARP_CREATION_ALREADY_EXISTS, player, builder -> builder.with(existent
+                .placeholders()));
             return false;
         }
 
@@ -293,7 +296,8 @@ public class WarpsModule extends Module {
         }
 
         if (!force && !warp.hasPermission(player)) {
-            this.sendPrefixed(WarpsLang.ERROR_NO_WARP_PERMISSION, player, replacer -> replacer.with(warp.placeholders()));
+            this.sendPrefixed(WarpsLang.ERROR_NO_WARP_PERMISSION, player, replacer -> replacer.with(warp
+                .placeholders()));
             return false;
         }
 

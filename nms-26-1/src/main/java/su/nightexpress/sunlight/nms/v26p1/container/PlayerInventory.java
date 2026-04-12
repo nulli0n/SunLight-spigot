@@ -1,12 +1,13 @@
-package su.nightexpress.sunlight.nms.mc_1_21_10.container;
+package su.nightexpress.sunlight.nms.v26p1.container;
 
-import net.minecraft.world.entity.EntityEquipment;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
 import org.bukkit.craftbukkit.entity.CraftHumanEntity;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.craftbukkit.inventory.CraftInventory;
 import org.jetbrains.annotations.NotNull;
+
+import net.minecraft.world.entity.EntityEquipment;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
 import su.nightexpress.nightcore.util.Reflex;
 import su.nightexpress.nightcore.util.Version;
 
@@ -31,9 +32,8 @@ public class PlayerInventory extends Inventory {
 
     private void reflectContents() {
         Inventory origin = this.player.getInventory();
-        String field = Version.isPaper() ? "items" : "k";
 
-        Reflex.setFieldValue(this, field, origin.getNonEquipmentItems());
+        Reflex.setFieldValue(this, "items", origin.getNonEquipmentItems());
     }
 
     @NotNull

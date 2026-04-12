@@ -1,5 +1,12 @@
 package su.nightexpress.sunlight.module.homes.menu;
 
+import static su.nightexpress.nightcore.util.text.night.wrapper.TagWrappers.BLACK;
+
+import java.util.Comparator;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.IntStream;
+
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -7,7 +14,8 @@ import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.MenuType;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
+
 import su.nightexpress.nightcore.bridge.item.AdaptedItem;
 import su.nightexpress.nightcore.config.ConfigValue;
 import su.nightexpress.nightcore.config.FileConfig;
@@ -23,24 +31,17 @@ import su.nightexpress.sunlight.module.homes.HomesModule;
 import su.nightexpress.sunlight.module.homes.config.HomesLang;
 import su.nightexpress.sunlight.module.homes.impl.Home;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.IntStream;
-
-import static su.nightexpress.nightcore.util.text.night.wrapper.TagWrappers.*;
-
 public class HomesMenu extends AbstractObjectMenu<UUID> {
 
     private final HomesModule module;
 
     private int totalSlots;
 
-    private ItemPopulator<Home> homePopulator;
-    private ItemPopulator<Home> teleportPopulator;
+    private ItemPopulator<Home>    homePopulator;
+    private ItemPopulator<Home>    teleportPopulator;
     private ItemPopulator<Integer> lockPopulator;
 
-    public HomesMenu(@NotNull SunLightPlugin plugin, @NotNull HomesModule module) {
+    public HomesMenu(@NonNull SunLightPlugin plugin, @NonNull HomesModule module) {
         super(MenuType.GENERIC_9X6, BLACK.wrap("Homes"), UUID.class);
         this.module = module;
 
@@ -66,15 +67,19 @@ public class HomesMenu extends AbstractObjectMenu<UUID> {
     }
 
     @Override
-    protected void onLoad(@NotNull FileConfig config) {
+    protected void onLoad(@NonNull FileConfig config) {
         this.totalSlots = ConfigValue.create("Homes.Total-Slots", 14).read(config);
 
         int[] homeSlots = ConfigValue.create("Homes.Slots-Homes", IntStream.range(19, 26).toArray()).read(config);
-        int[] teleportSlots = ConfigValue.create("Homes.Slots-Teleport", IntStream.range(28, 35).toArray()).read(config);
+        int[] teleportSlots = ConfigValue.create("Homes.Slots-Teleport", IntStream.range(28, 35).toArray()).read(
+            config);
 
-        NightItem teleportIcon = ConfigValue.create("Homes.Icon-Teleport", NightItem.fromType(Material.ENDER_PEARL)).read(config);
-        NightItem lockedIcon = ConfigValue.create("Homes.Icon-Locked", NightItem.fromType(Material.IRON_BARS)).read(config);
-        NightItem emptyIcon = ConfigValue.create("Homes.Icon-Empty", NightItem.fromType(Material.GRAY_DYE)).read(config);
+        NightItem teleportIcon = ConfigValue.create("Homes.Icon-Teleport", NightItem.fromType(Material.ENDER_PEARL))
+            .read(config);
+        NightItem lockedIcon = ConfigValue.create("Homes.Icon-Locked", NightItem.fromType(Material.IRON_BARS)).read(
+            config);
+        NightItem emptyIcon = ConfigValue.create("Homes.Icon-Empty", NightItem.fromType(Material.GRAY_DYE)).read(
+            config);
 
         this.homePopulator = ItemPopulator.builder(Home.class)
             .actionProvider(home -> context -> {
@@ -82,7 +87,8 @@ public class HomesMenu extends AbstractObjectMenu<UUID> {
             })
             .itemProvider((context, home) -> {
                 AdaptedItem adaptedItem = this.module.getSettings().getIconOrDefault(home.getIconId());
-                NightItem item = adaptedItem.itemStack().map(NightItem::fromItemStack).orElse(NightItem.fromType(Material.RED_BED));
+                NightItem item = adaptedItem.itemStack().map(NightItem::fromItemStack).orElse(NightItem.fromType(
+                    Material.RED_BED));
                 IconLocale locale = home.isFavorite() ? HomesLang.UI_HOMES_FAVORITE : HomesLang.UI_HOMES_NORMAL;
 
                 return item
@@ -124,29 +130,30 @@ public class HomesMenu extends AbstractObjectMenu<UUID> {
                 int maxHomes = this.module.getMaxHomesValue(context.getPlayer());
                 int finedSlot = slot + 1;
                 boolean isLocked = maxHomes >= 0 && finedSlot > maxHomes;
-                return (isLocked ? lockedIcon : emptyIcon).copy().localized(isLocked ? HomesLang.UI_HOMES_LOCKED : HomesLang.UI_HOMES_EMPTY).hideAllComponents();
+                return (isLocked ? lockedIcon : emptyIcon).copy().localized(
+                    isLocked ? HomesLang.UI_HOMES_LOCKED : HomesLang.UI_HOMES_EMPTY).hideAllComponents();
             })
             .slots(homeSlots)
             .build();
     }
 
     @Override
-    protected void onClick(@NotNull ViewerContext context, @NotNull InventoryClickEvent event) {
+    protected void onClick(@NonNull ViewerContext context, @NonNull InventoryClickEvent event) {
 
     }
 
     @Override
-    protected void onDrag(@NotNull ViewerContext context, @NotNull InventoryDragEvent event) {
+    protected void onDrag(@NonNull ViewerContext context, @NonNull InventoryDragEvent event) {
 
     }
 
     @Override
-    protected void onClose(@NotNull ViewerContext context, @NotNull InventoryCloseEvent event) {
+    protected void onClose(@NonNull ViewerContext context, @NonNull InventoryCloseEvent event) {
 
     }
 
     @Override
-    public void onPrepare(@NotNull ViewerContext context, @NotNull InventoryView view, @NotNull Inventory inventory, @NotNull List<MenuItem> items) {
+    public void onPrepare(@NonNull ViewerContext context, @NonNull InventoryView view, @NonNull Inventory inventory, @NonNull List<MenuItem> items) {
         UUID targetId = this.getObject(context);
 
         List<Home> homes = this.module.getHomes(targetId).stream().sorted(Comparator.comparing(Home::getId)).toList();
@@ -158,12 +165,12 @@ public class HomesMenu extends AbstractObjectMenu<UUID> {
     }
 
     @Override
-    public void onReady(@NotNull ViewerContext context, @NotNull InventoryView view, @NotNull Inventory inventory) {
+    public void onReady(@NonNull ViewerContext context, @NonNull InventoryView view, @NonNull Inventory inventory) {
 
     }
 
     @Override
-    public void onRender(@NotNull ViewerContext context, @NotNull InventoryView view, @NotNull Inventory inventory) {
+    public void onRender(@NonNull ViewerContext context, @NonNull InventoryView view, @NonNull Inventory inventory) {
 
     }
 }
