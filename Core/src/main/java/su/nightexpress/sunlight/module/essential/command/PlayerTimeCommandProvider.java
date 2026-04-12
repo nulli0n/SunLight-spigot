@@ -129,7 +129,7 @@ public class PlayerTimeCommandProvider extends AbstractCommandProvider {
         return this.runForOnlinePlayerOrSender(context, arguments, this.module, target -> {
             long finalTicks = WorldTime.clamp(ticks);
 
-            target.setPlayerTime(finalTicks, true);
+            target.setPlayerTime(finalTicks, false);
             long totalTicks = target.getPlayerTime() % WorldTime.MAX_TICKS;
             LocalTime time = WorldTime.getTimeOfTicks(totalTicks);
 
