@@ -49,8 +49,9 @@ public class PhantomsModule extends Module {
 
     @Override
     public void registerPlaceholders(@NotNull PlaceholderRegistry registry) {
-        registry.register("nophantom_state", (player, payload) -> {
-            return CoreLang.STATE_YES_NO.get(this.userManager.getOrFetch(player).getPropertyOrDefault(PhantomsProperties.ANTI_PHANTOM));
+        registry.register("phantoms_antiphantom_state", (player, payload) -> {
+            return CoreLang.STATE_YES_NO.get(this.userManager.getOrFetch(player).getPropertyOrDefault(
+                PhantomsProperties.ANTI_PHANTOM));
         });
     }
 

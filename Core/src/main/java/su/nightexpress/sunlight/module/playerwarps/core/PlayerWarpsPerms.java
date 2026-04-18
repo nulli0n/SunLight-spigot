@@ -10,7 +10,6 @@ public class PlayerWarpsPerms {
     public static final PermissionTree COMMAND = ROOT.branch("command");
     public static final PermissionTree BYPASS  = ROOT.branch("bypass");
     public static final PermissionTree OPTION  = ROOT.branch("option");
-    public static final PermissionTree WARP    = ROOT.branch("warp");
 
     public static final Permission COMMAND_WARPS_ROOT        = COMMAND.permission("warps.root");
     public static final Permission COMMAND_WARPS_CREATE      = COMMAND.permission("warps.create");

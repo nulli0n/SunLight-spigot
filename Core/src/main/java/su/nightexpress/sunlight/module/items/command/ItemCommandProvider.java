@@ -53,7 +53,7 @@ public class ItemCommandProvider extends AbstractCommandProvider {
 
     private final ItemsModule   module;
     private final ItemsSettings settings;
-    private final UserManager userManager;
+    private final UserManager   userManager;
 
     public ItemCommandProvider(@NotNull SunLightPlugin plugin, @NotNull ItemsModule module, @NotNull ItemsSettings settings, @NotNull UserManager userManager) {
         super(plugin);
@@ -102,16 +102,21 @@ public class ItemCommandProvider extends AbstractCommandProvider {
                         return Optional.ofNullable(context.getPlayer())
                             .map(player -> player.getInventory().getItemInMainHand())
                             .map(itemStack -> BukkitThing.getEnchantments().stream()
-                                .filter(enchantment -> enchantment.canEnchantItem(itemStack) || context.getSender().hasPermission(ItemsPerms.COMMAND_ITEM_ENCHANT_UNLIMITED))
+                                .filter(enchantment -> enchantment.canEnchantItem(itemStack) || context.getSender()
+                                    .hasPermission(ItemsPerms.COMMAND_ITEM_ENCHANT_UNLIMITED))
                                 .map(BukkitThing::getAsString)
                                 .toList()
                             )
                             .orElse(Collections.emptyList());
                     }),
                 Arguments.integer(CommandArguments.LEVEL, 1, 1000)
+                    .optional()
                     .suggestions((reader, context) -> {
-                        return Optional.ofNullable(BukkitThing.getEnchantment(reader.getArgument(reader.getCursor() - 1)))
-                            .map(enchantment -> context.getSender().hasPermission(ItemsPerms.COMMAND_ITEM_ENCHANT_UNLIMITED) ? Math.max(10, enchantment.getMaxLevel()) : enchantment.getMaxLevel())
+                        return Optional.ofNullable(BukkitThing.getEnchantment(reader.getArgument(reader
+                            .getCursor() - 1)))
+                            .map(enchantment -> context.getSender().hasPermission(
+                                ItemsPerms.COMMAND_ITEM_ENCHANT_UNLIMITED) ? Math.max(10, enchantment
+                                    .getMaxLevel()) : enchantment.getMaxLevel())
                             .map(maxLevel -> IntStream.range(1, maxLevel + 1).boxed().map(String::valueOf).toList())
                             .orElse(Collections.emptyList());
                     })
@@ -130,7 +135,8 @@ public class ItemCommandProvider extends AbstractCommandProvider {
                         return Optional.ofNullable(context.getPlayer())
                             .map(player -> player.getInventory().getItemInMainHand())
                             .filter(itemStack -> !itemStack.getType().isAir())
-                            .map(itemStack -> itemStack.getEnchantments().keySet().stream().map(BukkitThing::getAsString).toList())
+                            .map(itemStack -> itemStack.getEnchantments().keySet().stream().map(
+                                BukkitThing::getAsString).toList())
                             .orElse(Collections.emptyList());
                     })
             )
@@ -194,11 +200,15 @@ public class ItemCommandProvider extends AbstractCommandProvider {
             .permission(ItemsPerms.COMMAND_ITEM_SPAWN)
             .withArguments(
                 Arguments.itemType(CommandArguments.ITEM),
-                Arguments.decimal(CommandArguments.X).suggestions((reader, context) -> CommandArguments.getTargetPosSuggestions(context, Block::getX)),
-                Arguments.decimal(CommandArguments.Y).suggestions((reader, context) -> CommandArguments.getTargetPosSuggestions(context, block -> block.getY() + 1)),
-                Arguments.decimal(CommandArguments.Z).suggestions((reader, context) -> CommandArguments.getTargetPosSuggestions(context, Block::getZ)),
+                Arguments.decimal(CommandArguments.X).suggestions((reader, context) -> CommandArguments
+                    .getTargetPosSuggestions(context, Block::getX)),
+                Arguments.decimal(CommandArguments.Y).suggestions((reader, context) -> CommandArguments
+                    .getTargetPosSuggestions(context, block -> block.getY() + 1)),
+                Arguments.decimal(CommandArguments.Z).suggestions((reader, context) -> CommandArguments
+                    .getTargetPosSuggestions(context, Block::getZ)),
                 Arguments.world(CommandArguments.WORLD).optional(),
-                Arguments.integer(CommandArguments.AMOUNT, 1).optional().suggestions((reader, context) -> Lists.newList("1", "8", "16", "32", "64"))
+                Arguments.integer(CommandArguments.AMOUNT, 1).optional().suggestions((reader, context) -> Lists.newList(
+                    "1", "8", "16", "32", "64"))
             )
             .executes(this::dropItemAtLocation)
         );
@@ -207,7 +217,8 @@ public class ItemCommandProvider extends AbstractCommandProvider {
             .playerOnly()
             .description(ItemsLang.COMMAND_ITEM_UNBREAKABLE_DESC)
             .permission(ItemsPerms.COMMAND_ITEM_UNBREAKABLE)
-            .withArguments(Arguments.bool(CommandArguments.STATE).localized(Lang.COMMAND_ARGUMENT_NAME_STATE).optional())
+            .withArguments(Arguments.bool(CommandArguments.STATE).localized(Lang.COMMAND_ARGUMENT_NAME_STATE)
+                .optional())
             .executes(this::setUnbreakable)
         );
 
@@ -235,8 +246,10 @@ public class ItemCommandProvider extends AbstractCommandProvider {
             .permission(ItemsPerms.COMMAND_ITEM_POTION)
             .withArguments(
                 CommandArguments.effect(CommandArguments.TYPE, effectType -> true),
-                Arguments.integer(CommandArguments.LEVEL, 0).suggestions((reader, context) -> Lists.newList("0", "1", "5", "10", "127")),
-                Arguments.integer(CommandArguments.TIME, 1).suggestions((reader, context) -> Lists.newList("60", "300", "600", "3600"))
+                Arguments.integer(CommandArguments.LEVEL, 0).suggestions((reader, context) -> Lists.newList("0", "1",
+                    "5", "10", "127")),
+                Arguments.integer(CommandArguments.TIME, 1).suggestions((reader, context) -> Lists.newList("60", "300",
+                    "600", "3600"))
             )
             .executes(this::addPotionEffect)
         );
@@ -246,7 +259,8 @@ public class ItemCommandProvider extends AbstractCommandProvider {
         return CommandArguments.handleItemInHandOrError(context, (player, itemStack) -> {
             int maxStackSize = itemStack.getMaxStackSize();
             if (maxStackSize == 1) {
-                this.module.sendPrefixed(ItemsLang.ERROR_ITEM_NOT_STACKABLE, context.getSender(), builder -> builder.with(GENERIC_ITEM, () -> ItemUtil.getNameSerialized(itemStack)));
+                this.module.sendPrefixed(ItemsLang.ERROR_ITEM_NOT_STACKABLE, context.getSender(), builder -> builder
+                    .with(GENERIC_ITEM, () -> ItemUtil.getNameSerialized(itemStack)));
                 return false;
             }
 
@@ -265,7 +279,8 @@ public class ItemCommandProvider extends AbstractCommandProvider {
     private boolean damageOrRepairItem(@NotNull CommandContext context, @NotNull ParsedArguments arguments) {
         return CommandArguments.handleItemInHandOrError(context, (player, itemStack) -> {
             if (!ItemStackUtils.isDamageable(itemStack)) {
-                this.module.sendPrefixed(ItemsLang.ERROR_ITEM_NOT_DAMAGEABLE, context.getSender(), builder -> builder.with(GENERIC_ITEM, () -> ItemUtil.getNameSerialized(itemStack)));
+                this.module.sendPrefixed(ItemsLang.ERROR_ITEM_NOT_DAMAGEABLE, context.getSender(), builder -> builder
+                    .with(GENERIC_ITEM, () -> ItemUtil.getNameSerialized(itemStack)));
                 return false;
             }
 
@@ -297,21 +312,23 @@ public class ItemCommandProvider extends AbstractCommandProvider {
             Enchantment enchantment = arguments.getEnchantment(CommandArguments.ENCHANT);
 
             if (!hasBypass && !enchantment.canEnchantItem(itemStack)) {
-                this.module.sendPrefixed(ItemsLang.ITEM_ADD_ENCHANT_INCOMPATIBLE, context.getSender(), builder -> builder
-                    .with(GENERIC_ITEM, () -> ItemUtil.getNameSerialized(itemStack))
-                    .with(GENERIC_ENCHANTMENT, () -> LangUtil.getSerializedName(enchantment))
-                    .with(GENERIC_NAME, () -> LangUtil.getSerializedName(enchantment)) // old
+                this.module.sendPrefixed(ItemsLang.ITEM_ADD_ENCHANT_INCOMPATIBLE, context.getSender(),
+                    builder -> builder
+                        .with(GENERIC_ITEM, () -> ItemUtil.getNameSerialized(itemStack))
+                        .with(GENERIC_ENCHANTMENT, () -> LangUtil.getSerializedName(enchantment))
+                        .with(GENERIC_NAME, () -> LangUtil.getSerializedName(enchantment)) // old
                 );
                 return false;
             }
 
             int level = arguments.getInt(CommandArguments.LEVEL, 1);
             if (!hasBypass && level > enchantment.getMaxLevel()) {
-                this.module.sendPrefixed(ItemsLang.ITEM_ADD_ENCHANT_LEVEL_OVERFLOW, context.getSender(), builder -> builder
-                    .with(GENERIC_ITEM, () -> ItemUtil.getNameSerialized(itemStack))
-                    .with(GENERIC_ENCHANTMENT, () -> LangUtil.getSerializedName(enchantment))
-                    .with(GENERIC_NAME, () -> LangUtil.getSerializedName(enchantment)) // old
-                    .with(GENERIC_LEVEL, () -> LangUtil.getEnchantmentLevelLang(level))
+                this.module.sendPrefixed(ItemsLang.ITEM_ADD_ENCHANT_LEVEL_OVERFLOW, context.getSender(),
+                    builder -> builder
+                        .with(GENERIC_ITEM, () -> ItemUtil.getNameSerialized(itemStack))
+                        .with(GENERIC_ENCHANTMENT, () -> LangUtil.getSerializedName(enchantment))
+                        .with(GENERIC_NAME, () -> LangUtil.getSerializedName(enchantment)) // old
+                        .with(GENERIC_LEVEL, () -> LangUtil.getEnchantmentLevelLang(level))
                 );
                 return false;
             }
@@ -333,9 +350,10 @@ public class ItemCommandProvider extends AbstractCommandProvider {
             if (arguments.contains(CommandArguments.ENCHANT)) {
                 Enchantment enchantment = arguments.getEnchantment(CommandArguments.ENCHANT);
                 if (!itemStack.containsEnchantment(enchantment)) {
-                    this.module.sendPrefixed(ItemsLang.ITEM_DISENCHANT_SINGLE_NOTHING, context.getSender(), builder -> builder
-                        .with(GENERIC_ITEM, () -> ItemUtil.getNameSerialized(itemStack))
-                        .with(GENERIC_ENCHANTMENT, () -> LangUtil.getSerializedName(enchantment))
+                    this.module.sendPrefixed(ItemsLang.ITEM_DISENCHANT_SINGLE_NOTHING, context.getSender(),
+                        builder -> builder
+                            .with(GENERIC_ITEM, () -> ItemUtil.getNameSerialized(itemStack))
+                            .with(GENERIC_ENCHANTMENT, () -> LangUtil.getSerializedName(enchantment))
                     );
                     return false;
                 }
@@ -343,24 +361,27 @@ public class ItemCommandProvider extends AbstractCommandProvider {
                 int oldLevel = itemStack.getEnchantmentLevel(enchantment);
                 ItemStackUtils.removeEnchantment(itemStack, enchantment);
 
-                this.module.sendPrefixed(ItemsLang.ITEM_DISENCHANT_SINGLE_FEEDBACK, context.getSender(), builder -> builder
-                    .with(GENERIC_ITEM, () -> ItemUtil.getNameSerialized(itemStack))
-                    .with(GENERIC_ENCHANTMENT, () -> LangUtil.getSerializedName(enchantment))
-                    .with(GENERIC_LEVEL, () -> LangUtil.getEnchantmentLevelLang(oldLevel))
+                this.module.sendPrefixed(ItemsLang.ITEM_DISENCHANT_SINGLE_FEEDBACK, context.getSender(),
+                    builder -> builder
+                        .with(GENERIC_ITEM, () -> ItemUtil.getNameSerialized(itemStack))
+                        .with(GENERIC_ENCHANTMENT, () -> LangUtil.getSerializedName(enchantment))
+                        .with(GENERIC_LEVEL, () -> LangUtil.getEnchantmentLevelLang(oldLevel))
                 );
             }
             else {
                 if (itemStack.getEnchantments().isEmpty()) {
-                    this.module.sendPrefixed(ItemsLang.ITEM_DISENCHANT_FULL_NOTHING, context.getSender(), builder -> builder
-                        .with(GENERIC_ITEM, () -> ItemUtil.getNameSerialized(itemStack))
+                    this.module.sendPrefixed(ItemsLang.ITEM_DISENCHANT_FULL_NOTHING, context.getSender(),
+                        builder -> builder
+                            .with(GENERIC_ITEM, () -> ItemUtil.getNameSerialized(itemStack))
                     );
                     return false;
                 }
 
                 ItemStackUtils.removeEnchantments(itemStack);
 
-                this.module.sendPrefixed(ItemsLang.ITEM_DISENCHANT_FULL_FEEDBACK, context.getSender(), builder -> builder
-                    .with(GENERIC_ITEM, () -> ItemUtil.getNameSerialized(itemStack))
+                this.module.sendPrefixed(ItemsLang.ITEM_DISENCHANT_FULL_FEEDBACK, context.getSender(),
+                    builder -> builder
+                        .with(GENERIC_ITEM, () -> ItemUtil.getNameSerialized(itemStack))
                 );
             }
 
@@ -495,18 +516,21 @@ public class ItemCommandProvider extends AbstractCommandProvider {
     private boolean setUnbreakable(@NotNull CommandContext context, @NotNull ParsedArguments arguments) {
         return CommandArguments.handleItemInHandOrError(context, (player, itemStack) -> {
             if (!ItemStackUtils.isDamageable(itemStack)) {
-                this.module.sendPrefixed(ItemsLang.ERROR_ITEM_NOT_DAMAGEABLE, context.getSender(), builder -> builder.with(GENERIC_ITEM, () -> ItemUtil.getNameSerialized(itemStack)));
+                this.module.sendPrefixed(ItemsLang.ERROR_ITEM_NOT_DAMAGEABLE, context.getSender(), builder -> builder
+                    .with(GENERIC_ITEM, () -> ItemUtil.getNameSerialized(itemStack)));
                 return false;
             }
 
             ItemUtil.editMeta(itemStack, meta -> {
-                boolean state = arguments.contains(CommandArguments.STATE) ? arguments.getBoolean(CommandArguments.STATE) : !meta.isUnbreakable();
+                boolean state = arguments.contains(CommandArguments.STATE) ? arguments.getBoolean(
+                    CommandArguments.STATE) : !meta.isUnbreakable();
 
                 meta.setUnbreakable(state);
 
-                this.module.sendPrefixed(ItemsLang.ITEM_SET_UNBREAKABLE_FEEDBACK, context.getSender(), builder -> builder
-                    .with(GENERIC_ITEM, () -> ItemUtil.getNameSerialized(itemStack))
-                    .with(GENERIC_STATE, () -> CoreLang.STATE_ENABLED_DISALBED.get(meta.isUnbreakable()))
+                this.module.sendPrefixed(ItemsLang.ITEM_SET_UNBREAKABLE_FEEDBACK, context.getSender(),
+                    builder -> builder
+                        .with(GENERIC_ITEM, () -> ItemUtil.getNameSerialized(itemStack))
+                        .with(GENERIC_STATE, () -> CoreLang.STATE_ENABLED_DISALBED.get(meta.isUnbreakable()))
                 );
             });
 

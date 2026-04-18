@@ -18,7 +18,8 @@ public class BansQueries {
     private static final RowMapper<PunishmentData> PUNISHMENT_DATA_LOADER = resultSet -> {
         try {
             UUID id = UUID.fromString(resultSet.getString(BansDataManager.COLUMN_BAN_ID.getName()));
-            PunishmentType type = Enums.get(resultSet.getString(BansDataManager.COLUMN_TYPE.getName()), PunishmentType.class);
+            PunishmentType type = Enums.get(resultSet.getString(BansDataManager.COLUMN_TYPE.getName()),
+                PunishmentType.class);
             if (type == null) return null;
 
             String reason = resultSet.getString(BansDataManager.COLUMN_REASON.getName());
@@ -75,20 +76,22 @@ public class BansQueries {
         }
     };
 
-    public static final SelectStatement<PlayerPunishment> SELECT_PLAYER_PUNISHMENT = SelectStatement.builder(PLAYER_PUNISHMENT_LOADER).build();
+    public static final SelectStatement<PlayerPunishment> SELECT_PLAYER_PUNISHMENT = SelectStatement.builder(
+        PLAYER_PUNISHMENT_LOADER).build();
 
-    public static final SelectStatement<InetPunishment> SELECT_INET_PUNISHMENT = SelectStatement.builder(INET_PUNISHMENT_LOADER).build();
+    public static final SelectStatement<InetPunishment> SELECT_INET_PUNISHMENT = SelectStatement.builder(
+        INET_PUNISHMENT_LOADER).build();
 
     private static <T extends AbstractPunishment> InsertStatement.Builder<T> forPunishmentInsert(@NotNull Class<T> type) {
         return InsertStatement.builder(type)
-        .setUUID(BansDataManager.COLUMN_BAN_ID, AbstractPunishment::getId)
-        .setString(BansDataManager.COLUMN_TYPE, punishment -> punishment.getType().name())
-        .setBoolean(BansDataManager.COLUMN_ACTIVE, AbstractPunishment::isActive)
-        .setString(BansDataManager.COLUMN_REASON, AbstractPunishment::getReason)
-        .setString(BansDataManager.COLUMN_ADMIN, AbstractPunishment::getWho)
-        .setLong(BansDataManager.COLUMN_DURATION, AbstractPunishment::getDuration)
-        .setLong(BansDataManager.COLUMN_CREATE_DATE, AbstractPunishment::getCreationDate)
-        .setLong(BansDataManager.COLUMN_EXPIRE_DATE, AbstractPunishment::getExpirationDate);
+            .setUUID(BansDataManager.COLUMN_BAN_ID, AbstractPunishment::getId)
+            .setString(BansDataManager.COLUMN_TYPE, punishment -> punishment.getType().name())
+            .setBoolean(BansDataManager.COLUMN_ACTIVE, AbstractPunishment::isActive)
+            .setString(BansDataManager.COLUMN_REASON, AbstractPunishment::getReason)
+            .setString(BansDataManager.COLUMN_ADMIN, AbstractPunishment::getWho)
+            .setLong(BansDataManager.COLUMN_DURATION, AbstractPunishment::getDuration)
+            .setLong(BansDataManager.COLUMN_CREATE_DATE, AbstractPunishment::getCreationDate)
+            .setLong(BansDataManager.COLUMN_EXPIRE_DATE, AbstractPunishment::getExpirationDate);
     }
 
     private static <T extends AbstractPunishment> UpdateStatement.Builder<T> forPunishmentUpdate(@NotNull Class<T> type) {
@@ -101,7 +104,7 @@ public class BansQueries {
         .build();
 
     public static final InsertStatement<PlayerPunishment> INSERT_PLAYER = forPunishmentInsert(PlayerPunishment.class)
-        .setUUID(BansDataManager.COLUMN_PLAYER_ID, AbstractPunishment::getId)
+        .setUUID(BansDataManager.COLUMN_PLAYER_ID, PlayerPunishment::getPlayerId)
         .setString(BansDataManager.COLUMN_PLAYER_NAME, PlayerPunishment::getPlayerName)
         .build();
 

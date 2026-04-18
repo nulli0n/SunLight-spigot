@@ -7,6 +7,7 @@ import su.nightexpress.nightcore.commands.context.ParsedArguments;
 import su.nightexpress.sunlight.SLPlaceholders;
 import su.nightexpress.sunlight.SLUtils;
 import su.nightexpress.sunlight.SunLightPlugin;
+import su.nightexpress.sunlight.command.CommandArguments;
 import su.nightexpress.sunlight.command.provider.type.AbstractCommandProvider;
 import su.nightexpress.sunlight.module.chat.core.ChatLang;
 import su.nightexpress.sunlight.module.chat.ChatModule;
@@ -29,6 +30,7 @@ public class ClearChatCommandProvider extends AbstractCommandProvider {
             .description(ChatLang.COMMAND_CLEAR_CHAT_DESC)
             .permission(ChatPerms.COMMAND_CLEARCHAT)
             .executes(this::clearChat)
+            .withFlags(CommandArguments.FLAG_SILENT)
         );
     }
 
@@ -39,7 +41,10 @@ public class ClearChatCommandProvider extends AbstractCommandProvider {
             players.forEach(player -> player.sendMessage(" "));
         }
 
-        this.module.broadcastPrefixed(ChatLang.CLEAR_CHAT_NOTIFY, replacer -> replacer.with(SLPlaceholders.GENERIC_NAME, () -> SLUtils.getSenderName(context.getSender())));
+        if (!context.hasFlag(CommandArguments.FLAG_SILENT)) {
+            this.module.broadcastPrefixed(ChatLang.CLEAR_CHAT_NOTIFY, replacer -> replacer.with(
+                SLPlaceholders.GENERIC_NAME, () -> SLUtils.getSenderName(context.getSender())));
+        }
         return true;
     }
 }

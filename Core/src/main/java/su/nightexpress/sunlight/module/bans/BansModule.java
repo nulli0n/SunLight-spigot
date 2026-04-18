@@ -47,7 +47,7 @@ import java.util.stream.Collectors;
 
 public class BansModule extends Module {
 
-    private final BansSettings    settings;
+    private final BansSettings              settings;
     private final BansDataManager           dataManager;
     private final UniversalChatEventHandler chatHandler;
 
@@ -105,9 +105,12 @@ public class BansModule extends Module {
 
     @Override
     protected void registerCommands() {
-        this.commandRegistry.addProvider("bans-punish", new PunishmentCommandsProvider(this.plugin, this, this.userManager));
-        this.commandRegistry.addProvider("bans-pardon", new PardonCommandsProvider(this.plugin, this, this.userManager));
-        this.commandRegistry.addProvider("bans-history", new HistoryCommandsProvider(this.plugin, this, this.userManager));
+        this.commandRegistry.addProvider("bans-punish",
+            new PunishmentCommandsProvider(this.plugin, this, this.userManager));
+        this.commandRegistry.addProvider("bans-pardon",
+            new PardonCommandsProvider(this.plugin, this, this.userManager));
+        this.commandRegistry.addProvider("bans-history",
+            new HistoryCommandsProvider(this.plugin, this, this.userManager));
         this.commandRegistry.addProvider("bans-list", new ListCommandsProvider(this.plugin, this));
 
         if (this.settings.isAltCheckerEnabled()) {
@@ -165,8 +168,10 @@ public class BansModule extends Module {
         for (PunishmentType type : PunishmentType.values()) {
             PunishmentRepository repository = this.getPunishmentRepository(type);
 
-            repository.getPlayerPunishments().stream().filter(AbstractPunishment::isDirty).peek(AbstractPunishment::markClean).forEach(playerPunishments::add);
-            repository.getInetPunishments().stream().filter(AbstractPunishment::isDirty).peek(AbstractPunishment::markClean).forEach(inetPunishments::add);
+            repository.getPlayerPunishments().stream().filter(AbstractPunishment::isDirty).peek(
+                AbstractPunishment::markClean).forEach(playerPunishments::add);
+            repository.getInetPunishments().stream().filter(AbstractPunishment::isDirty).peek(
+                AbstractPunishment::markClean).forEach(inetPunishments::add);
         }
 
         this.dataManager.updatePlayerPunishments(playerPunishments);
@@ -175,7 +180,8 @@ public class BansModule extends Module {
 
     private void kickBanned() {
         Players.getOnline().forEach(player -> {
-            AbstractPunishment punishment = this.bansRepository.getActivePlayerOrInetPunishment(player.getUniqueId(), SLUtils.getInetAddress(player).orElse(null));
+            AbstractPunishment punishment = this.bansRepository.getActivePlayerOrInetPunishment(player.getUniqueId(),
+                SLUtils.getInetAddress(player).orElse(null));
             if (punishment == null) return;
 
             Players.kick(player, this.getKickScreenText(punishment));
@@ -339,7 +345,8 @@ public class BansModule extends Module {
 
     @NotNull
     private Set<Player> getPlayersToPunish(@NotNull AbstractPunishment punishData) {
-        return this.plugin.getServer().getOnlinePlayers().stream().filter(punishData::isApplicable).collect(Collectors.toSet());
+        return this.plugin.getServer().getOnlinePlayers().stream().filter(punishData::isApplicable).collect(Collectors
+            .toSet());
     }
 
     @NotNull
@@ -423,7 +430,8 @@ public class BansModule extends Module {
         if (aliases.stream().anyMatch(blockedCommands::contains)) {
             event.setCancelled(true);
 
-            MessageLocale locale = punishment.isPermanent() ? BansLang.MUTE_SPEAK_NOTIFY_PERMANENT : BansLang.MUTE_SPEAK_NOTIFY_TEMPORAL;
+            MessageLocale locale = punishment
+                .isPermanent() ? BansLang.MUTE_SPEAK_NOTIFY_PERMANENT : BansLang.MUTE_SPEAK_NOTIFY_TEMPORAL;
 
             this.sendPrefixed(locale, player, builder -> builder.with(punishment.placeholders()));
         }
@@ -443,7 +451,8 @@ public class BansModule extends Module {
 
         event.setCancelled(true);
 
-        MessageLocale locale = punishment.isPermanent() ? BansLang.MUTE_SPEAK_NOTIFY_PERMANENT : BansLang.MUTE_SPEAK_NOTIFY_TEMPORAL;
+        MessageLocale locale = punishment
+            .isPermanent() ? BansLang.MUTE_SPEAK_NOTIFY_PERMANENT : BansLang.MUTE_SPEAK_NOTIFY_TEMPORAL;
 
         this.sendPrefixed(locale, player, builder -> builder.with(punishment.placeholders()));
     }
@@ -458,24 +467,28 @@ public class BansModule extends Module {
             UserInfo profile = UserInfo.of(player);
             Set<CommandSender> receivers = new HashSet<>();
             receivers.add(this.plugin.getServer().getConsoleSender());
-            receivers.addAll(Players.getOnline().stream().filter(staff -> staff.hasPermission(BansPerms.ALTS_NOTIFY)).collect(Collectors.toSet()));
+            receivers.addAll(Players.getOnline().stream().filter(staff -> staff.hasPermission(BansPerms.ALTS_NOTIFY))
+                .collect(Collectors.toSet()));
             receivers.forEach(sender -> this.notifyAltProfiles(sender, profile, address, alts));
         }).whenComplete(FutureUtils::printStacktrace));
     }
 
-    public boolean kick(@NotNull CommandSender sender, @NotNull Player victim, @NotNull PunishmentReason reason, boolean silent) {
+    public boolean kick(@NotNull CommandSender sender, @NotNull Player victim, @NotNull PunishmentReason reason,
+                        boolean silent) {
         if (!this.dataLoaded) {
             this.sendPrefixed(BansLang.ERROR_DATA_NOT_LOADED_ADMIN_FEEDBACK, sender);
             return false;
         }
 
         if (victim == sender) {
-            this.sendPrefixed(BansLang.KICK_ERROR_YOURSELF, sender, builder -> builder.with(CommonPlaceholders.PLAYER.resolver(victim)));
+            this.sendPrefixed(BansLang.KICK_ERROR_YOURSELF, sender, builder -> builder.with(CommonPlaceholders.PLAYER
+                .resolver(victim)));
             return false;
         }
 
         if (this.hasImmunity(victim)) {
-            this.sendPrefixed(BansLang.IMMUNITY_FEEDBACK, sender, builder -> builder.with(BansPlaceholders.GENERIC_TARGET, victim::getName));
+            this.sendPrefixed(BansLang.IMMUNITY_FEEDBACK, sender, builder -> builder.with(
+                BansPlaceholders.GENERIC_TARGET, victim::getName));
             return false;
         }
 
@@ -483,7 +496,8 @@ public class BansModule extends Module {
         int victimPriority = this.getRankPriority(victim);
 
         if (victimPriority >= senderPriority) {
-            this.sendPrefixed(BansLang.KICK_ERROR_LOW_PRIORITY, sender, builder -> builder.with(CommonPlaceholders.PLAYER.resolver(victim)));
+            this.sendPrefixed(BansLang.KICK_ERROR_LOW_PRIORITY, sender, builder -> builder.with(
+                CommonPlaceholders.PLAYER.resolver(victim)));
             return false;
         }
 
@@ -496,7 +510,8 @@ public class BansModule extends Module {
             .with(BansPlaceholders.PUNISHMENT_WHO, () -> SLUtils.getSenderName(sender)) // old
             .build();
 
-        Players.kick(victim, NightMessage.parse(context.apply(String.join("\n", this.settings.disconnectScreenKick.get()))));
+        Players.kick(victim, NightMessage.parse(context.apply(String.join("\n", this.settings.disconnectScreenKick
+            .get()))));
 
         this.sendPrefixed(BansLang.KICK_FEEDBACK, sender, context);
         if (!silent) {
@@ -507,7 +522,8 @@ public class BansModule extends Module {
     }
 
     @NotNull
-    public CompletableFuture<Boolean> punishPlayer(@NotNull CommandSender sender, @NotNull UserInfo victim, @NotNull PunishmentContext context) {
+    public CompletableFuture<Boolean> punishPlayer(@NotNull CommandSender sender, @NotNull UserInfo victim,
+                                                   @NotNull PunishmentContext context) {
         return this.getRankPriority(victim).thenApplyAsync(victimPriority -> {
 
             return this.punishPlayer(sender, victim, victimPriority, context);
@@ -515,11 +531,13 @@ public class BansModule extends Module {
         }, this.plugin::runTask).whenComplete(FutureUtils::printStacktrace); // Back to main thread
     }
 
-    public boolean punishPlayer(@NotNull CommandSender sender, @NotNull Player victim, @NotNull PunishmentContext context) {
+    public boolean punishPlayer(@NotNull CommandSender sender, @NotNull Player victim,
+                                @NotNull PunishmentContext context) {
         return this.punishPlayer(sender, UserInfo.of(victim), this.getRankPriority(victim), context);
     }
 
-    private boolean punishPlayer(@NotNull CommandSender sender, @NotNull UserInfo victim, int victimPriority, @NotNull PunishmentContext context) {
+    private boolean punishPlayer(@NotNull CommandSender sender, @NotNull UserInfo victim, int victimPriority,
+                                 @NotNull PunishmentContext context) {
         if (!this.dataLoaded) {
             this.sendPrefixed(BansLang.ERROR_DATA_NOT_LOADED_ADMIN_FEEDBACK, sender);
             return false;
@@ -541,7 +559,8 @@ public class BansModule extends Module {
         }
 
         if (this.hasImmunity(playerName) || this.hasImmunity(playerId.toString())) {
-            this.sendPrefixed(BansLang.IMMUNITY_FEEDBACK, sender, builder -> builder.with(BansPlaceholders.GENERIC_TARGET, () -> playerName));
+            this.sendPrefixed(BansLang.IMMUNITY_FEEDBACK, sender, builder -> builder.with(
+                BansPlaceholders.GENERIC_TARGET, () -> playerName));
             return false;
         }
 
@@ -573,19 +592,22 @@ public class BansModule extends Module {
                     case WARN -> BansLang.WARN_ERROR_HIGH_DURATION;
                 };
 
-                this.sendPrefixed(locale, sender, builder -> builder.with(SLPlaceholders.GENERIC_TIME, () -> TimeFormats.toLiteral(maxTime.accumulated())));
+                this.sendPrefixed(locale, sender, builder -> builder.with(SLPlaceholders.GENERIC_TIME, () -> TimeFormats
+                    .toLiteral(maxTime.accumulated())));
                 return false;
             }
 
             // Ensure players can't override higher bans/mutes with lower time values.
-            if (type != PunishmentType.WARN && activePunishments.stream().anyMatch(punishment -> banTime.isSmaller(punishment.getRemainingDuration()))) {
+            if (type != PunishmentType.WARN && activePunishments.stream().anyMatch(punishment -> banTime.isSmaller(
+                punishment.getRemainingDuration()))) {
                 MessageLocale locale = switch (type) {
                     case BAN -> BansLang.BAN_ERROR_HIGHER_EXISTS;
                     case MUTE -> BansLang.MUTE_ERROR_HIGHER_EXISTS;
                     default -> throw new IllegalStateException("Unexpected value: " + type);
                 };
 
-                this.sendPrefixed(locale, sender, builder -> builder.with(SLPlaceholders.GENERIC_TIME, () -> TimeFormats.toLiteral(banTime.accumulated())));
+                this.sendPrefixed(locale, sender, builder -> builder.with(SLPlaceholders.GENERIC_TIME, () -> TimeFormats
+                    .toLiteral(banTime.accumulated())));
                 return false;
             }
         }
@@ -620,8 +642,10 @@ public class BansModule extends Module {
 
         MessageLocale broadcastLocale = switch (type) {
             case BAN -> punishment.isPermanent() ? BansLang.BAN_PERMANENT_BROADCAST : BansLang.BAN_TEMPORARY_BROADCAST;
-            case MUTE -> punishment.isPermanent() ? BansLang.MUTE_PERMANENT_BROADCAST : BansLang.MUTE_TEMPORARY_BROADCAST;
-            case WARN -> punishment.isPermanent() ? BansLang.WARN_PERMANENT_BROADCAST : BansLang.WARN_TEMPORARY_BROADCAST;
+            case MUTE -> punishment
+                .isPermanent() ? BansLang.MUTE_PERMANENT_BROADCAST : BansLang.MUTE_TEMPORARY_BROADCAST;
+            case WARN -> punishment
+                .isPermanent() ? BansLang.WARN_PERMANENT_BROADCAST : BansLang.WARN_TEMPORARY_BROADCAST;
         };
 
         MessageLocale notifyLocale = switch (type) {
@@ -655,14 +679,16 @@ public class BansModule extends Module {
         return true;
     }
 
-    public boolean banInet(@NotNull CommandSender sender, @NotNull InetAddress address, @NotNull PunishmentReason reason, @NotNull BanTime banTime, boolean silent) {
+    public boolean banInet(@NotNull CommandSender sender, @NotNull InetAddress address,
+                           @NotNull PunishmentReason reason, @NotNull BanTime banTime, boolean silent) {
         if (!this.dataLoaded) {
             this.sendPrefixed(BansLang.ERROR_DATA_NOT_LOADED_ADMIN_FEEDBACK, sender);
             return false;
         }
 
         if (this.hasImmunity(address)) {
-            this.sendPrefixed(BansLang.IMMUNITY_FEEDBACK, sender, builder -> builder.with(BansPlaceholders.GENERIC_TARGET, address::getHostAddress));
+            this.sendPrefixed(BansLang.IMMUNITY_FEEDBACK, sender, builder -> builder.with(
+                BansPlaceholders.GENERIC_TARGET, address::getHostAddress));
             return false;
         }
 
@@ -676,8 +702,10 @@ public class BansModule extends Module {
         PunishmentData data = new PunishmentData(banId, PunishmentType.BAN, textReason, admin, duration, createDate, expireDate);
         InetPunishment punishment = new InetPunishment(address, data, true);
 
-        MessageLocale feedbackLocale = punishment.isPermanent() ? BansLang.BAN_INET_PERMANENT_FEEDBACK : BansLang.BAN_INET_TEMPORARY_FEEDBACK;
-        MessageLocale broadcastLocale = punishment.isPermanent() ? BansLang.BAN_INET_PERMANENT_BROADCAST : BansLang.BAN_INET_TEMPORARY_BROADCAST;
+        MessageLocale feedbackLocale = punishment
+            .isPermanent() ? BansLang.BAN_INET_PERMANENT_FEEDBACK : BansLang.BAN_INET_TEMPORARY_FEEDBACK;
+        MessageLocale broadcastLocale = punishment
+            .isPermanent() ? BansLang.BAN_INET_PERMANENT_BROADCAST : BansLang.BAN_INET_TEMPORARY_BROADCAST;
         MessageLocale notifyLocale = null;
 
         this.addInetPunishment(punishment);
@@ -712,7 +740,8 @@ public class BansModule extends Module {
         }
     }
 
-    public boolean pardonPlayer(@NotNull UserInfo user, @NotNull CommandSender sender, @NotNull PunishmentType type, boolean silent) {
+    public boolean pardonPlayer(@NotNull UserInfo user, @NotNull CommandSender sender, @NotNull PunishmentType type,
+                                boolean silent) {
         if (!this.dataLoaded) {
             this.sendPrefixed(BansLang.ERROR_DATA_NOT_LOADED_ADMIN_FEEDBACK, sender);
             return false;
@@ -729,21 +758,24 @@ public class BansModule extends Module {
                 case WARN -> BansLang.UNWARN_ERROR_NOT_WARNED;
             };
 
-            this.sendPrefixed(locale, sender, builder -> builder.with(BansPlaceholders.PUNISHMENT_TARGET, () -> playerName));
+            this.sendPrefixed(locale, sender, builder -> builder.with(BansPlaceholders.PUNISHMENT_TARGET,
+                () -> playerName));
             return false;
         }
 
         if (this.settings.durationLimitsForPardon.get() && !sender.hasPermission(BansPerms.BYPASS_DURATION_LIMIT)) {
             BanTime maxTime = this.getGreatestDuration(sender, type);
 
-            if (activePunishments.stream().anyMatch(punishment -> maxTime.isSmaller(punishment.getRemainingDuration()))) {
+            if (activePunishments.stream().anyMatch(punishment -> maxTime.isSmaller(punishment
+                .getRemainingDuration()))) {
                 MessageLocale locale = switch (type) {
                     case BAN -> BansLang.UNBAN_ERROR_HIGH_DURATION;
                     case MUTE -> BansLang.UNMUTE_ERROR_HIGH_DURATION;
                     case WARN -> BansLang.UNWARN_ERROR_HIGH_DURATION;
                 };
 
-                this.sendPrefixed(locale, sender, builder -> builder.with(SLPlaceholders.GENERIC_TIME, () -> TimeFormats.toLiteral(maxTime.accumulated())));
+                this.sendPrefixed(locale, sender, builder -> builder.with(SLPlaceholders.GENERIC_TIME, () -> TimeFormats
+                    .toLiteral(maxTime.accumulated())));
                 return false;
             }
         }
@@ -832,7 +864,8 @@ public class BansModule extends Module {
     private String getKickScreenText(@NotNull AbstractPunishment punishment) {
         List<String> text;
         if (punishment instanceof PlayerPunishment) {
-            text = punishment.isPermanent() ? this.settings.disconnectScreenPermaBan.get() : this.settings.disconnectScreenTempBan.get();
+            text = punishment.isPermanent() ? this.settings.disconnectScreenPermaBan
+                .get() : this.settings.disconnectScreenTempBan.get();
         }
         else {
             text = this.settings.disconnectScreenIpBan.get();
@@ -847,11 +880,13 @@ public class BansModule extends Module {
         return CompletableFuture.supplyAsync(() -> this.dataHandler.getProfilesByInet(address));
     }
 
-    public void notifyAltProfiles(@NotNull CommandSender sender, @NotNull UserInfo profile, @NotNull InetAddress address, @NotNull List<UserInfo> alts) {
+    public void notifyAltProfiles(@NotNull CommandSender sender, @NotNull UserInfo profile,
+                                  @NotNull InetAddress address, @NotNull List<UserInfo> alts) {
         alts.removeIf(alt -> alt.id().equals(profile.id()));
 
         if (alts.isEmpty()) {
-            this.sendPrefixed(BansLang.ALTS_GLOBAL_NOTHING, sender, builder -> builder.with(CommonPlaceholders.PLAYER_NAME, profile::name));
+            this.sendPrefixed(BansLang.ALTS_GLOBAL_NOTHING, sender, builder -> builder.with(
+                CommonPlaceholders.PLAYER_NAME, profile::name));
             return;
         }
 
@@ -860,7 +895,8 @@ public class BansModule extends Module {
             .with(SLPlaceholders.GENERIC_AMOUNT, () -> String.valueOf(alts.size()))
             .with(SLPlaceholders.GENERIC_ADDRESS, address::getHostAddress)
             .with(SLPlaceholders.GENERIC_ENTRY, () -> alts.stream()
-                .map(alt -> PlaceholderContext.builder().with(SLPlaceholders.GENERIC_NAME, alt::name).build().apply(BansLang.ALTS_GLOBAL_ENTRY.text()))
+                .map(alt -> PlaceholderContext.builder().with(SLPlaceholders.GENERIC_NAME, alt::name).build().apply(
+                    BansLang.ALTS_GLOBAL_ENTRY.text()))
                 .collect(Collectors.joining("\n"))
             )
             .build();

@@ -20,9 +20,9 @@ public class ChatPerms {
     public static final Permission COMMAND_CLEARCHAT = COMMAND.permission("clearchat");
     public static final Permission COMMAND_ME        = COMMAND.permission("me");
 
-    public static final Permission COMMAND_MENTIONS        = COMMAND.permission("mentions");
-    public static final Permission COMMAND_MENTIONS_OTHERS = COMMAND.permission("mentions.others");
-    public static final Permission COMMAND_MENTIONS_ROOT   = COMMAND.permission("mentions.root");
+    public static final Permission COMMAND_MENTIONS_TOGGLE        = COMMAND.permission("mentions.toggle");
+    public static final Permission COMMAND_MENTIONS_TOGGLE_OTHERS = COMMAND.permission("mentions.toggle.others");
+    public static final Permission COMMAND_MENTIONS_ROOT          = COMMAND.permission("mentions.root");
 
     public static final Permission COMMAND_SPY_LOGGER         = COMMAND.permission("spy.logger");
     public static final Permission COMMAND_SPY_CHAT           = COMMAND.permission("spy.chat");
@@ -32,18 +32,19 @@ public class ChatPerms {
     public static final Permission COMMAND_SPY_SOCIAL         = COMMAND.permission("spy.social");
     public static final Permission COMMAND_SPY_SOCIAL_OTEHRS  = COMMAND.permission("spy.social.others");
 
-    public static final Permission COMMAND_CONVERSATIONS_ROOT   = COMMAND.permission("conversations.root");
-    public static final Permission COMMAND_CONVERSATIONS_TOGGLE = COMMAND.permission("conversations");
-    public static final Permission COMMAND_CONVERSATIONS_OTHERS = COMMAND.permission("conversations.others");
-    public static final Permission COMMAND_REPLY                = COMMAND.permission("reply");
-    public static final Permission COMMAND_TELL                 = COMMAND.permission("tell");
+    public static final Permission COMMAND_CONVERSATIONS_ROOT          = COMMAND.permission("conversations.root");
+    public static final Permission COMMAND_CONVERSATIONS_TOGGLE        = COMMAND.permission("conversations.toggle");
+    public static final Permission COMMAND_CONVERSATIONS_TOGGLE_OTHERS = COMMAND.permission(
+        "conversations.toggle.others");
+    public static final Permission COMMAND_REPLY                       = COMMAND.permission("conversations.reply");
+    public static final Permission COMMAND_TELL                        = COMMAND.permission("conversations.send");
 
     public static final Permission BYPASS_CONVERSATIONS_DISABLED = BYPASS.permission("conversations.disabled");
     public static final Permission BYPASS_MENTION_COOLDOWN       = BYPASS.permission("mention.cooldown");
     public static final Permission BYPASS_MENTION_AMOUNT         = BYPASS.permission("mention.amount");
     public static final Permission BYPASS_CHANNEL_COOLDOWN       = BYPASS.permission("channel.cooldown");
-    public static final Permission BYPASS_ANTI_CAPS              = BYPASS.permission("anticaps");
-    public static final Permission BYPASS_ANTI_FLOOD             = BYPASS.permission("antiflood");
-    public static final Permission BYPASS_PROFANITY_FILTER       = BYPASS.permission("profanity.filter");
-    public static final Permission BYPASS_SPY                    = BYPASS.permission("spy.logger");
+    public static final Permission BYPASS_ANTI_CAPS              = BYPASS.permission("moderation.anticaps");
+    public static final Permission BYPASS_ANTI_FLOOD             = BYPASS.permission("moderation.antiflood");
+    public static final Permission BYPASS_PROFANITY_FILTER       = BYPASS.permission("moderation.profanity.filter");
+    public static final Permission BYPASS_SPY_MONITOR            = BYPASS.permission("spy.monitor");
 }

@@ -34,14 +34,16 @@ public class FlyCommandProvider extends AbstractCommandProvider {
     private static final String COMMAND_OFF    = "off";
     private static final String COMMAND_ON     = "on";
 
-    // TODO world restrictions, tempfly etc.
+    // TODO world restrictions, tempfly
 
     private static final Permission PERMISSION        = EssentialPerms.COMMAND.permission("fly");
     private static final Permission PERMISSION_OTHERS = EssentialPerms.COMMAND.permission("fly.others");
     private static final Permission PERMISSION_ROOT   = EssentialPerms.COMMAND.permission("fly.root");
 
-    private static final TextLocale DESCRIPTION_ROOT   = LangEntry.builder("Command.Fly.Root.Desc").text("Fly commands.");
-    private static final TextLocale DESCRIPTION_TOGGLE = LangEntry.builder("Command.Fly.Toggle.Desc").text("Toggle fly.");
+    private static final TextLocale DESCRIPTION_ROOT   = LangEntry.builder("Command.Fly.Root.Desc").text(
+        "Fly commands.");
+    private static final TextLocale DESCRIPTION_TOGGLE = LangEntry.builder("Command.Fly.Toggle.Desc").text(
+        "Toggle fly.");
     private static final TextLocale DESCRIPTION_ON     = LangEntry.builder("Command.Fly.On.Desc").text("Enable fly.");
     private static final TextLocale DESCRIPTION_OFF    = LangEntry.builder("Command.Fly.Off.Desc").text("Disable fly.");
 
@@ -56,7 +58,7 @@ public class FlyCommandProvider extends AbstractCommandProvider {
     );
 
     private final EssentialModule module;
-    private final UserManager userManager;
+    private final UserManager     userManager;
 
     public FlyCommandProvider(@NotNull SunLightPlugin plugin, @NotNull EssentialModule module, @NotNull UserManager userManager) {
         super(plugin);
@@ -66,9 +68,14 @@ public class FlyCommandProvider extends AbstractCommandProvider {
 
     @Override
     public void registerDefaults() {
-        this.registerLiteral(COMMAND_TOGGLE, true, new String[]{"fly", "togglefly"}, builder -> this.buildCommand(builder, DESCRIPTION_TOGGLE, ToggleMode.TOGGLE));
-        this.registerLiteral(COMMAND_ON, true, new String[]{"fly-on"}, builder -> this.buildCommand(builder, DESCRIPTION_ON, ToggleMode.ON));
-        this.registerLiteral(COMMAND_OFF, true, new String[]{"fly-off"}, builder -> this.buildCommand(builder, DESCRIPTION_OFF, ToggleMode.OFF));
+        this.registerLiteral(COMMAND_TOGGLE, true, new String[]{"fly", "togglefly"}, builder -> this.buildCommand(
+            builder, DESCRIPTION_TOGGLE, ToggleMode.TOGGLE));
+
+        this.registerLiteral(COMMAND_ON, true, new String[]{"fly-on"}, builder -> this.buildCommand(builder,
+            DESCRIPTION_ON, ToggleMode.ON));
+
+        this.registerLiteral(COMMAND_OFF, true, new String[]{"fly-off"}, builder -> this.buildCommand(builder,
+            DESCRIPTION_OFF, ToggleMode.OFF));
 
         this.registerRoot("Fly", false, new String[]{"flymode"},
             Map.of(
@@ -80,7 +87,8 @@ public class FlyCommandProvider extends AbstractCommandProvider {
         );
     }
 
-    private void buildCommand(@NotNull LiteralNodeBuilder builder, @NotNull TextLocale description, @NotNull ToggleMode mode) {
+    private void buildCommand(@NotNull LiteralNodeBuilder builder, @NotNull TextLocale description,
+                              @NotNull ToggleMode mode) {
         builder
             .description(description)
             .permission(PERMISSION)
@@ -89,20 +97,23 @@ public class FlyCommandProvider extends AbstractCommandProvider {
             .executes((context, arguments) -> this.toggleFly(context, arguments, mode));
     }
 
-    private boolean toggleFly(@NotNull CommandContext context, @NotNull ParsedArguments arguments, @NotNull ToggleMode mode) {
+    private boolean toggleFly(@NotNull CommandContext context, @NotNull ParsedArguments arguments,
+                              @NotNull ToggleMode mode) {
         return this.loadPlayerOrSenderAndRunInMainThread(context, arguments, this.module, this.userManager, target -> {
             target.setAllowFlight(mode.apply(target.getAllowFlight()));
 
             if (context.getSender() != target) {
                 this.module.sendPrefixed(MESSAGE_TOGGLE_FEEDBACK, context.getSender(), builder -> builder
                     .with(CommonPlaceholders.PLAYER.resolver(target))
-                    .with(SLPlaceholders.GENERIC_STATE, () -> CoreLang.STATE_ENABLED_DISALBED.get(target.getAllowFlight()))
+                    .with(SLPlaceholders.GENERIC_STATE, () -> CoreLang.STATE_ENABLED_DISALBED.get(target
+                        .getAllowFlight()))
                 );
             }
 
             if (!context.hasFlag(CommandArguments.FLAG_SILENT)) {
                 this.module.sendPrefixed(MESSAGE_TOGGLE_NOTIFY, target, builder -> builder
-                    .with(SLPlaceholders.GENERIC_STATE, () -> CoreLang.STATE_ENABLED_DISALBED.get(target.getAllowFlight()))
+                    .with(SLPlaceholders.GENERIC_STATE, () -> CoreLang.STATE_ENABLED_DISALBED.get(target
+                        .getAllowFlight()))
                 );
             }
         });

@@ -22,9 +22,9 @@ import su.nightexpress.sunlight.module.essential.EssentialModule;
 import su.nightexpress.sunlight.module.essential.EssentialPerms;
 import su.nightexpress.sunlight.user.UserManager;
 
+import static su.nightexpress.nightcore.util.Placeholders.PLAYER_DISPLAY_NAME;
 import static su.nightexpress.nightcore.util.text.night.wrapper.TagWrappers.*;
 import static su.nightexpress.sunlight.SLPlaceholders.GENERIC_TIME;
-import static su.nightexpress.sunlight.SLPlaceholders.PLAYER_DISPLAY_NAME;
 
 public class FireTicksCommandsProvider extends AbstractCommandProvider {
 
@@ -32,26 +32,33 @@ public class FireTicksCommandsProvider extends AbstractCommandProvider {
     private static final String COMMAND_EXTINGUISH = "extinguish";
 
     private static final Permission PERMISSION_IGNITE            = EssentialPerms.COMMAND.permission("ignite");
+    private static final Permission PERMISSION_IGNITE_OTHERS     = EssentialPerms.COMMAND.permission("ignite.others");
     private static final Permission PERMISSION_EXTINGUISH        = EssentialPerms.COMMAND.permission("extinguish");
-    private static final Permission PERMISSION_EXTINGUISH_OTHERS = EssentialPerms.COMMAND.permission("extinguish.others");
+    private static final Permission PERMISSION_EXTINGUISH_OTHERS = EssentialPerms.COMMAND.permission(
+        "extinguish.others");
 
-    private static final TextLocale DESCRIPTION_IGNITE     = LangEntry.builder("Command.Ignite.Desc").text("Ignite a player.");
-    private static final TextLocale DESCRIPTION_EXTINGUISH = LangEntry.builder("Command.Extinguish.Desc").text("Extinguish a player.");
+    private static final TextLocale DESCRIPTION_IGNITE     = LangEntry.builder("Command.Ignite.Desc").text(
+        "Ignite a player.");
+    private static final TextLocale DESCRIPTION_EXTINGUISH = LangEntry.builder("Command.Extinguish.Desc").text(
+        "Extinguish a player.");
 
-    private static final MessageLocale MESSAGE_EXTINGUISH_FEEDBACK = LangEntry.builder("Command.Extinguish.Feedback").chatMessage(
-        Sound.BLOCK_FIRE_EXTINGUISH,
-        GRAY.wrap("You have extinguished " + WHITE.wrap(PLAYER_DISPLAY_NAME) + ".")
-    );
+    private static final MessageLocale MESSAGE_EXTINGUISH_FEEDBACK = LangEntry.builder("Command.Extinguish.Feedback")
+        .chatMessage(
+            Sound.BLOCK_FIRE_EXTINGUISH,
+            GRAY.wrap("You have extinguished " + WHITE.wrap(PLAYER_DISPLAY_NAME) + ".")
+        );
 
-    private static final MessageLocale MESSAGE_EXTINGUISH_NOTIFY = LangEntry.builder("Command.Extinguish.Notify").chatMessage(
-        Sound.BLOCK_FIRE_EXTINGUISH,
-        GRAY.wrap("You have been extinguished.")
-    );
+    private static final MessageLocale MESSAGE_EXTINGUISH_NOTIFY = LangEntry.builder("Command.Extinguish.Notify")
+        .chatMessage(
+            Sound.BLOCK_FIRE_EXTINGUISH,
+            GRAY.wrap("You have been extinguished.")
+        );
 
-    private static final MessageLocale MESSAGE_IGNITE_FEEDBACK = LangEntry.builder("Command.Ignite.Feedback").chatMessage(
-        Sound.ENTITY_PLAYER_HURT_ON_FIRE,
-        GRAY.wrap("You have ignited " + WHITE.wrap(PLAYER_DISPLAY_NAME) + " for " + SOFT_YELLOW.wrap(GENERIC_TIME))
-    );
+    private static final MessageLocale MESSAGE_IGNITE_FEEDBACK = LangEntry.builder("Command.Ignite.Feedback")
+        .chatMessage(
+            Sound.ENTITY_PLAYER_HURT_ON_FIRE,
+            GRAY.wrap("You have ignited " + WHITE.wrap(PLAYER_DISPLAY_NAME) + " for " + SOFT_YELLOW.wrap(GENERIC_TIME))
+        );
 
     private static final MessageLocale MESSAGE_IGNITE_NOTIFY = LangEntry.builder("Command.Ignite.Notify").chatMessage(
         Sound.ENTITY_PLAYER_HURT_ON_FIRE,
@@ -59,7 +66,7 @@ public class FireTicksCommandsProvider extends AbstractCommandProvider {
     );
 
     private final EssentialModule module;
-    private final UserManager userManager;
+    private final UserManager     userManager;
 
     public FireTicksCommandsProvider(@NotNull SunLightPlugin plugin, @NotNull EssentialModule module, @NotNull UserManager userManager) {
         super(plugin);
@@ -73,10 +80,10 @@ public class FireTicksCommandsProvider extends AbstractCommandProvider {
             .description(DESCRIPTION_IGNITE)
             .permission(PERMISSION_IGNITE)
             .withArguments(
-                Arguments.playerName(CommandArguments.PLAYER),
                 Arguments.integer(CommandArguments.TIME, 1, 86400)
                     .localized(Lang.COMMAND_ARGUMENT_NAME_TIME.text())
-                    .suggestions((reader, context) -> Lists.newList("5", "10", "30", "60"))
+                    .suggestions((reader, context) -> Lists.newList("5", "10", "30", "60")),
+                Arguments.playerName(CommandArguments.PLAYER).permission(PERMISSION_IGNITE_OTHERS).optional()
             )
             .withFlags(CommandArguments.FLAG_SILENT)
             .executes(this::ignite)
@@ -120,7 +127,8 @@ public class FireTicksCommandsProvider extends AbstractCommandProvider {
             target.setFireTicks(0);
 
             if (context.getSender() != target) {
-                this.module.sendPrefixed(MESSAGE_EXTINGUISH_FEEDBACK, context.getSender(), builder -> builder.with(CommonPlaceholders.PLAYER.resolver(target)));
+                this.module.sendPrefixed(MESSAGE_EXTINGUISH_FEEDBACK, context.getSender(), builder -> builder.with(
+                    CommonPlaceholders.PLAYER.resolver(target)));
             }
 
             if (!context.hasFlag(CommandArguments.FLAG_SILENT)) {

@@ -25,10 +25,12 @@ public class DisposalCommandProvider extends AbstractCommandProvider {
     private static final Permission PERMISSION        = EssentialPerms.COMMAND.permission("disposal");
     private static final Permission PERMISSION_OTHERS = EssentialPerms.COMMAND.permission("disposal.others");
 
-    private static final TextLocale DESCRIPTION = LangEntry.builder("Command.Disposal.Desc").text("Opens Virtual Disposal.");
+    private static final TextLocale DESCRIPTION = LangEntry.builder("Command.Disposal.Desc").text(
+        "Open Virtual Disposal.");
 
     private static final MessageLocale MESSAGE_FEEDBACK = LangEntry.builder("Command.Disposal.Target").chatMessage(
-        GRAY.wrap("You have opened " + ORANGE.wrap("Virtual Disposal") + " for " + WHITE.wrap(CommonPlaceholders.PLAYER_DISPLAY_NAME) + ".")
+        GRAY.wrap("You have opened " + ORANGE.wrap("Virtual Disposal") + " for " + WHITE.wrap(
+            CommonPlaceholders.PLAYER_DISPLAY_NAME) + ".")
     );
 
     private static final MessageLocale MESSAGE_NOTIFY = LangEntry.builder("Command.Disposal.Notify").chatMessage(
@@ -57,14 +59,16 @@ public class DisposalCommandProvider extends AbstractCommandProvider {
 
     private boolean openDisposal(@NotNull CommandContext context, @NotNull ParsedArguments arguments) {
         return this.runForOnlinePlayerOrSender(context, arguments, this.module, target -> {
-            Inventory inventory = plugin.getServer().createInventory(null, this.settings.disposalSize.get(), NightMessage.asLegacy(this.settings.disposalTitle.get()));
+            Inventory inventory = plugin.getServer().createInventory(null, this.settings.disposalSize.get(),
+                NightMessage.asLegacy(this.settings.disposalTitle.get()));
             target.openInventory(inventory);
 
             if (!context.hasFlag(CommandArguments.FLAG_SILENT)) {
                 this.module.sendPrefixed(MESSAGE_NOTIFY, target);
             }
             if (target != context.getSender()) {
-                this.module.sendPrefixed(MESSAGE_FEEDBACK, context.getSender(), builder -> builder.with(CommonPlaceholders.PLAYER.resolver(target)));
+                this.module.sendPrefixed(MESSAGE_FEEDBACK, context.getSender(), builder -> builder.with(
+                    CommonPlaceholders.PLAYER.resolver(target)));
             }
             return true;
         });

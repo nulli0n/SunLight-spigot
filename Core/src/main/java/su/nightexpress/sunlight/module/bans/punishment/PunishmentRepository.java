@@ -32,14 +32,17 @@ public class PunishmentRepository {
     }
 
     public synchronized void addPlayerPunishment(@NotNull PlayerPunishment punishment) {
-        this.addPunishment(punishment, punishment.getPlayerId(), this.playerPunishmentMap, this.activePlayerPunishmentMap);
+        this.addPunishment(punishment, punishment.getPlayerId(), this.playerPunishmentMap,
+            this.activePlayerPunishmentMap);
     }
 
     public synchronized void addInetPunishment(@NotNull InetPunishment punishment) {
         this.addPunishment(punishment, punishment.getAddress(), this.inetPunishmentMap, this.activeInetPunishmentMap);
     }
 
-    private synchronized <T extends AbstractPunishment, K> void addPunishment(@NotNull T punishment, @NotNull K key, @NotNull Map<K, Map<UUID, T>> globalMap, @NotNull Map<K, Set<T>> activeMap) {
+    private synchronized <T extends AbstractPunishment, K> void addPunishment(@NotNull T punishment, @NotNull K key,
+                                                                              @NotNull Map<K, Map<UUID, T>> globalMap,
+                                                                              @NotNull Map<K, Set<T>> activeMap) {
         if (punishment.isValid()) {
             activeMap.computeIfAbsent(key, k -> new HashSet<>()).add(punishment);
         }
@@ -48,27 +51,37 @@ public class PunishmentRepository {
     }
 
     public synchronized void removePlayerPunishment(@NotNull PlayerPunishment punishment) {
-        this.removePunishment(punishment, punishment.getPlayerId(), this.playerPunishmentMap, this.activePlayerPunishmentMap);
+        this.removePunishment(punishment, punishment.getPlayerId(), this.playerPunishmentMap,
+            this.activePlayerPunishmentMap);
     }
 
     public synchronized void removeInetPunishment(@NotNull InetPunishment punishment) {
-        this.removePunishment(punishment, punishment.getAddress(), this.inetPunishmentMap, this.activeInetPunishmentMap);
+        this.removePunishment(punishment, punishment.getAddress(), this.inetPunishmentMap,
+            this.activeInetPunishmentMap);
     }
 
-    private synchronized <T extends AbstractPunishment, K> void removePunishment(@NotNull T punishment, @NotNull K key, @NotNull Map<K, Map<UUID, T>> globalMap, @NotNull Map<K, Set<T>> activeMap) {
-        activeMap.getOrDefault(key, Collections.emptySet()).removeIf(active -> active.getId().equals(punishment.getId()));
+    private synchronized <T extends AbstractPunishment, K> void removePunishment(@NotNull T punishment, @NotNull K key,
+                                                                                 @NotNull Map<K, Map<UUID, T>> globalMap,
+                                                                                 @NotNull Map<K, Set<T>> activeMap) {
+        activeMap.getOrDefault(key, Collections.emptySet()).removeIf(active -> active.getId().equals(punishment
+            .getId()));
         globalMap.getOrDefault(key, Collections.emptyMap()).remove(punishment.getId());
     }
 
     public synchronized void updatePlayerPunishmentReferences(@NotNull PlayerPunishment punishment) {
-        this.updatePunishmentReferences(punishment, punishment.getPlayerId(), this.playerPunishmentMap, this.activePlayerPunishmentMap);
+        this.updatePunishmentReferences(punishment, punishment.getPlayerId(), this.playerPunishmentMap,
+            this.activePlayerPunishmentMap);
     }
 
     public synchronized void updateInetPunishmentReferences(@NotNull InetPunishment punishment) {
-        this.updatePunishmentReferences(punishment, punishment.getAddress(), this.inetPunishmentMap, this.activeInetPunishmentMap);
+        this.updatePunishmentReferences(punishment, punishment.getAddress(), this.inetPunishmentMap,
+            this.activeInetPunishmentMap);
     }
 
-    private synchronized <T extends AbstractPunishment, K> void updatePunishmentReferences(@NotNull T punishment, @NotNull K key, @NotNull Map<K, Map<UUID, T>> globalMap, @NotNull Map<K, Set<T>> activeMap) {
+    private synchronized <T extends AbstractPunishment, K> void updatePunishmentReferences(@NotNull T punishment,
+                                                                                           @NotNull K key,
+                                                                                           @NotNull Map<K, Map<UUID, T>> globalMap,
+                                                                                           @NotNull Map<K, Set<T>> activeMap) {
         this.removePunishment(punishment, key, globalMap, activeMap);
         this.addPunishment(punishment, key, globalMap, activeMap);
     }
@@ -107,7 +120,8 @@ public class PunishmentRepository {
 
     @Nullable
     private <T extends AbstractPunishment, K> T getActivePunishment(@NotNull K key, @NotNull Map<K, Set<T>> activeMap) {
-        return this.getActivePunishments(key, activeMap).stream().max(Comparator.comparingLong(AbstractPunishment::getCreationDate)).orElse(null);
+        return this.getActivePunishments(key, activeMap).stream().max(Comparator.comparingLong(
+            AbstractPunishment::getCreationDate)).orElse(null);
     }
 
     @NotNull
@@ -131,7 +145,8 @@ public class PunishmentRepository {
     }
 
     @NotNull
-    private <T extends AbstractPunishment, K> Set<T> getActivePunishments(@NotNull K key, @NotNull Map<K, Set<T>> activeMap) {
+    private <T extends AbstractPunishment, K> Set<T> getActivePunishments(@NotNull K key,
+                                                                          @NotNull Map<K, Set<T>> activeMap) {
         Set<T> punishments = activeMap.get(key);
         if (punishments == null) return Collections.emptySet();
 
@@ -147,7 +162,8 @@ public class PunishmentRepository {
 
     @NotNull
     public Set<PlayerPunishment> getPlayerPunishments() {
-        return this.playerPunishmentMap.values().stream().flatMap(map -> map.values().stream()).collect(Collectors.toSet());
+        return this.playerPunishmentMap.values().stream().flatMap(map -> map.values().stream()).collect(Collectors
+            .toSet());
     }
 
     @NotNull
@@ -157,11 +173,13 @@ public class PunishmentRepository {
 
     @NotNull
     public Set<InetPunishment> getInetPunishments() {
-        return this.inetPunishmentMap.values().stream().flatMap(map -> map.values().stream()).collect(Collectors.toSet());
+        return this.inetPunishmentMap.values().stream().flatMap(map -> map.values().stream()).collect(Collectors
+            .toSet());
     }
 
     @NotNull
-    private <T extends AbstractPunishment, K> Set<T> getPunishments(@NotNull K key, @NotNull Map<K, Map<UUID, T>> globalMap) {
+    private <T extends AbstractPunishment, K> Set<T> getPunishments(@NotNull K key,
+                                                                    @NotNull Map<K, Map<UUID, T>> globalMap) {
         Map<UUID, T> punishments = globalMap.get(key);
         return punishments == null ? Collections.emptySet() : Set.copyOf(punishments.values());
     }

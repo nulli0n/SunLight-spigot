@@ -2,7 +2,7 @@
 /.paper-nms/
 .gradle
 .vscode
-**/build/
-!src/**/build/
-**/target/
-!src/**/target/
+**/build/*
+!src/**/build/*
+**/target/*
+!src/**/target/*

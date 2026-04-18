@@ -21,8 +21,7 @@ import static su.nightexpress.sunlight.SLPlaceholders.PLAYER_NAME;
 
 public class SmiteCommandProvider extends AbstractCommandProvider {
 
-    private static final Permission PERMISSION        = EssentialPerms.COMMAND.permission("smite");
-    private static final Permission PERMISSION_OTHERS = EssentialPerms.COMMAND.permission("smite.others");
+    private static final Permission PERMISSION = EssentialPerms.COMMAND.permission("smite");
 
     private static final TextLocale DESCRIPTION = LangEntry.builder("Command.Smite.Desc").text(
         "Smite player with lightning.");
@@ -47,7 +46,7 @@ public class SmiteCommandProvider extends AbstractCommandProvider {
         this.registerLiteral("smite", true, new String[]{"smite"}, builder -> builder
             .description(DESCRIPTION)
             .permission(PERMISSION)
-            .withArguments(Arguments.playerName(CommandArguments.PLAYER).permission(PERMISSION_OTHERS))
+            .withArguments(Arguments.playerName(CommandArguments.PLAYER))
             .withFlags(CommandArguments.FLAG_SILENT)
             .executes(this::execute)
         );

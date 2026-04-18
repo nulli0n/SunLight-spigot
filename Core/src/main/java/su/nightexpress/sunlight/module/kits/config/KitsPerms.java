@@ -1,12 +1,13 @@
 package su.nightexpress.sunlight.module.kits.config;
 
 import org.bukkit.permissions.Permission;
-import su.nightexpress.nightcore.util.wrapper.UniPermission;
-import su.nightexpress.sunlight.SLPlaceholders;
 import su.nightexpress.sunlight.config.PermissionTree;
 import su.nightexpress.sunlight.config.Perms;
 
 public class KitsPerms {
+
+    private KitsPerms() {
+    }
 
     public static final PermissionTree ROOT    = Perms.detached("kits");
     public static final PermissionTree COMMAND = ROOT.branch("command");

@@ -59,7 +59,8 @@ public class HomeCommonCommandProvider extends AbstractCommandProvider {
             .playerOnly()
             .description(HomesLang.COMMAND_HOME_LIST_DESC)
             .permission(HomesPerms.COMMAND_HOMES_LIST)
-            .withArguments(Arguments.playerName(CommandArguments.PLAYER).optional().permission(HomesPerms.COMMAND_HOMES_LIST_OTHERS))
+            .withArguments(Arguments.playerName(CommandArguments.PLAYER).optional().permission(
+                HomesPerms.COMMAND_HOMES_LIST_OTHERS))
             .executes(this::listHomes)
         );
 
@@ -70,17 +71,19 @@ public class HomeCommonCommandProvider extends AbstractCommandProvider {
             .withArguments(Arguments.string(CommandArguments.NAME)
                 .optional()
                 .localized(CoreLang.COMMAND_ARGUMENT_NAME_NAME)
-                .suggestions((reader, context) -> this.module.getHomes(context.getPlayerOrThrow()).stream().map(Home::getId).toList())
+                .suggestions((reader, context) -> this.module.getHomes(context.getPlayerOrThrow()).stream().map(
+                    Home::getId).toList())
             )
             .executes(this::setHome)
         );
 
-        this.registerLiteral(COMMAND_TELEPORT, true, new String[]{HomeDefaults.DEFAULT_TELEPORT_ALIAS}, builder -> builder
-            .playerOnly()
-            .description(HomesLang.COMMAND_TELEPORT_HOME_DESC)
-            .permission(HomesPerms.COMMAND_HOMES_TELEPORT)
-            .withArguments(this.homeArgument(false).optional())
-            .executes(this::teleportToHome)
+        this.registerLiteral(COMMAND_TELEPORT, true, new String[]{HomeDefaults.DEFAULT_TELEPORT_ALIAS},
+            builder -> builder
+                .playerOnly()
+                .description(HomesLang.COMMAND_TELEPORT_HOME_DESC)
+                .permission(HomesPerms.COMMAND_HOMES_TELEPORT)
+                .withArguments(this.homeArgument(false).optional())
+                .executes(this::teleportToHome)
         );
 
         this.registerLiteral(COMMAND_VISIT, true, new String[]{"visithome"}, builder -> builder
@@ -92,7 +95,8 @@ public class HomeCommonCommandProvider extends AbstractCommandProvider {
                     Player player = context.getPlayer();
                     if (player == null) return Collections.emptyList();
 
-                    return this.module.getRepository().getAll(home -> home.canVisit(player)).stream().map(Home::getOwner).map(UserInfo::name).distinct().toList();
+                    return this.module.getRepository().getAll(home -> home.canVisit(player)).stream().map(
+                        Home::getOwner).map(UserInfo::name).distinct().toList();
                 }),
                 this.homeArgument(true)
             )
@@ -103,7 +107,7 @@ public class HomeCommonCommandProvider extends AbstractCommandProvider {
             .playerOnly()
             .description(HomesLang.COMMAND_HOME_INVITE_DESC)
             .permission(HomesPerms.COMMAND_HOMES_INVITE)
-            .withArguments(Arguments.playerName(CommandArguments.PLAYER), this.homeArgument(false))
+            .withArguments(Arguments.playerName(CommandArguments.PLAYER), this.homeArgument(false).optional())
             .executes(this::inviteHome)
         );
 
@@ -122,26 +126,30 @@ public class HomeCommonCommandProvider extends AbstractCommandProvider {
 
     @NotNull
     private ArgumentNodeBuilder<Home> homeArgument(boolean ofPlayer) {
-        return Commands.argument(ARG_HOME, (context, string) ->
-                Optional.of(ofPlayer ? context.getArguments().getString(CommandArguments.PLAYER) : context.getSender().getName())
-                    .map(name -> this.userManager.getRepository().getAssociatedId(name))
-                    .map(playerId -> this.module.getHome(playerId, string)).orElseThrow(() -> CommandSyntaxException.custom(HomesLang.COMMAND_SYNTAX_INVALID_HOME))
-            )
+        return Commands.argument(ARG_HOME, (context, string) -> Optional.of(ofPlayer ? context.getArguments().getString(
+            CommandArguments.PLAYER) : context.getSender().getName())
+            .map(name -> this.userManager.getRepository().getAssociatedId(name))
+            .map(playerId -> this.module.getHome(playerId, string)).orElseThrow(() -> CommandSyntaxException.custom(
+                HomesLang.COMMAND_SYNTAX_INVALID_HOME))
+        )
             .localized(HomesLang.COMMAND_ARGUMENT_NAME_HOME)
             .suggestions((reader, context) -> {
                 Player player = context.getPlayer();
                 if (player == null) return Collections.emptyList();
 
-                String ownerName = ofPlayer ? context.getArguments().getString(CommandArguments.PLAYER) : player.getName();
+                String ownerName = ofPlayer ? context.getArguments().getString(CommandArguments.PLAYER) : player
+                    .getName();
                 UUID ownerId = this.userManager.getRepository().getAssociatedId(ownerName);
                 if (ownerId == null) return Collections.emptyList();
 
-                return this.module.getUserRepository(ownerId).getAll(home -> home.canVisit(player)).stream().map(Home::getId).toList();
+                return this.module.getUserRepository(ownerId).getAll(home -> home.canVisit(player)).stream().map(
+                    Home::getId).toList();
             });
     }
 
     @Nullable
-    private Home getHomeOrDefault(@NotNull Player player, @NotNull ParsedArguments arguments, @NotNull CommandContext context) {
+    private Home getHomeOrDefault(@NotNull Player player, @NotNull ParsedArguments arguments,
+                                  @NotNull CommandContext context) {
         if (arguments.contains(ARG_HOME)) {
             return arguments.get(ARG_HOME, Home.class);
         }

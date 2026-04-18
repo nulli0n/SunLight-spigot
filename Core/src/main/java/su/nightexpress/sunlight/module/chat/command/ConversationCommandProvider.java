@@ -42,34 +42,36 @@ public class ConversationCommandProvider extends AbstractCommandProvider {
 
     @Override
     public void registerDefaults() {
-        this.registerLiteral(COMMAND_MESSAGE, true, new String[]{ChatDefaults.DEFAULT_PM_ALIAS, "pm", "whisper", "w", "tell"}, builder -> builder
-            .playerOnly()
-            .description(ChatLang.COMMAND_TELL_DESC)
-            .permission(ChatPerms.COMMAND_TELL)
-            .withArguments(
-                Arguments.player(CommandArguments.PLAYER),
-                Arguments.greedyString(CommandArguments.TEXT).localized(Lang.COMMAND_ARGUMENT_NAME_TEXT)
-            )
-            .executes(this::sendConversationMessage)
+        this.registerLiteral(COMMAND_MESSAGE, true,
+            new String[]{ChatDefaults.DEFAULT_PM_ALIAS, "pm", "whisper", "w", "tell"}, builder -> builder
+                .playerOnly()
+                .description(ChatLang.COMMAND_TELL_DESC)
+                .permission(ChatPerms.COMMAND_TELL)
+                .withArguments(
+                    Arguments.player(CommandArguments.PLAYER),
+                    Arguments.greedyString(CommandArguments.TEXT).localized(Lang.COMMAND_ARGUMENT_NAME_TEXT)
+                )
+                .executes(this::sendConversationMessage)
         );
 
-        this.registerLiteral(COMMAND_REPLY, true, new String[]{ChatDefaults.DEFAULT_REPLY_ALIAS, "r"}, builder -> builder
-            .playerOnly()
-            .description(ChatLang.COMMAND_REPLY_DESC)
-            .permission(ChatPerms.COMMAND_REPLY)
-            .withArguments(Arguments.greedyString(CommandArguments.TEXT).localized(Lang.COMMAND_ARGUMENT_NAME_TEXT))
-            .executes(this::replyToConversation)
+        this.registerLiteral(COMMAND_REPLY, true, new String[]{ChatDefaults.DEFAULT_REPLY_ALIAS, "r"},
+            builder -> builder
+                .playerOnly()
+                .description(ChatLang.COMMAND_REPLY_DESC)
+                .permission(ChatPerms.COMMAND_REPLY)
+                .withArguments(Arguments.greedyString(CommandArguments.TEXT).localized(Lang.COMMAND_ARGUMENT_NAME_TEXT))
+                .executes(this::replyToConversation)
         );
 
-        this.registerLiteral(COMMAND_TOGGLE, false, new String[]{"togglepm", "pmtoggle"}, builder -> {
+        this.registerLiteral(COMMAND_TOGGLE, true, new String[]{"togglepm", "pmtoggle"}, builder -> {
             this.buildToggleCommand(builder, ChatLang.COMMAND_CONVERSATIONS_TOGGLE_DESC, ToggleMode.TOGGLE);
         });
 
-        this.registerLiteral(COMMAND_ON, false, new String[]{"allowpm"}, builder -> {
+        this.registerLiteral(COMMAND_ON, false, new String[]{"pm-on"}, builder -> {
             this.buildToggleCommand(builder, ChatLang.COMMAND_CONVERSATIONS_ON_DESC, ToggleMode.ON);
         });
 
-        this.registerLiteral(COMMAND_OFF, false, new String[]{"denypm"}, builder -> {
+        this.registerLiteral(COMMAND_OFF, false, new String[]{"pm-off"}, builder -> {
             this.buildToggleCommand(builder, ChatLang.COMMAND_CONVERSATIONS_OFF_DESC, ToggleMode.OFF);
         });
 
@@ -81,15 +83,18 @@ public class ConversationCommandProvider extends AbstractCommandProvider {
                 COMMAND_ON, "on",
                 COMMAND_OFF, "off"
             ),
-            builder -> builder.description(ChatLang.COMMAND_CONVERSATIONS_ROOT_DESC).permission(ChatPerms.COMMAND_CONVERSATIONS_ROOT)
+            builder -> builder.description(ChatLang.COMMAND_CONVERSATIONS_ROOT_DESC).permission(
+                ChatPerms.COMMAND_CONVERSATIONS_ROOT)
         );
     }
 
-    private void buildToggleCommand(@NotNull LiteralNodeBuilder builder, @NotNull TextLocale description, @NotNull ToggleMode mode) {
+    private void buildToggleCommand(@NotNull LiteralNodeBuilder builder, @NotNull TextLocale description,
+                                    @NotNull ToggleMode mode) {
         builder
             .description(description)
             .permission(ChatPerms.COMMAND_CONVERSATIONS_TOGGLE)
-            .withArguments(Arguments.playerName(CommandArguments.PLAYER).permission(ChatPerms.COMMAND_CONVERSATIONS_OTHERS).optional())
+            .withArguments(Arguments.playerName(CommandArguments.PLAYER).permission(
+                ChatPerms.COMMAND_CONVERSATIONS_TOGGLE_OTHERS).optional())
             .withFlags(CommandArguments.FLAG_SILENT)
             .executes((context, arguments) -> this.toggleConversations(context, arguments, mode));
     }
@@ -121,8 +126,11 @@ public class ConversationCommandProvider extends AbstractCommandProvider {
         return this.module.sendPrivateMessage(player, target, message);
     }
 
-    private boolean toggleConversations(@NotNull CommandContext context, @NotNull ParsedArguments arguments, @NotNull ToggleMode mode) {
-        return this.loadPlayerOrSenderWithDataAndRunInMainThread(context, arguments, this.module, this.userManager, (user, target) -> {
+    private boolean toggleConversations(@NotNull CommandContext context, @NotNull ParsedArguments arguments,
+                                        @NotNull ToggleMode mode) {
+        return this.loadPlayerOrSenderWithDataAndRunInMainThread(context, arguments, this.module, this.userManager, (
+                                                                                                                     user,
+                                                                                                                     target) -> {
             boolean state = mode.apply(user.getPropertyOrDefault(ChatProperties.CONVERSATIONS));
 
             user.setProperty(ChatProperties.CONVERSATIONS, state);

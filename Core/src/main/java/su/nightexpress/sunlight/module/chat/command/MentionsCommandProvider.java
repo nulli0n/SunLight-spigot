@@ -56,21 +56,28 @@ public class MentionsCommandProvider extends AbstractCommandProvider {
                 COMMAND_ON, "on",
                 COMMAND_TOGGLE, "toggle"
             ),
-            builder -> builder.description(ChatLang.COMMAND_MENTIONS_ROOT_DESC).permission(ChatPerms.COMMAND_MENTIONS_ROOT)
+            builder -> builder.description(ChatLang.COMMAND_MENTIONS_ROOT_DESC).permission(
+                ChatPerms.COMMAND_MENTIONS_ROOT)
         );
     }
 
-    private void buildToggleCommand(@NotNull LiteralNodeBuilder builder, @NotNull TextLocale description, @NotNull ToggleMode mode) {
+    private void buildToggleCommand(@NotNull LiteralNodeBuilder builder, @NotNull TextLocale description,
+                                    @NotNull ToggleMode mode) {
         builder
             .description(description)
-            .permission(ChatPerms.COMMAND_MENTIONS)
-            .withArguments(Arguments.playerName(CommandArguments.PLAYER).permission(ChatPerms.COMMAND_MENTIONS_OTHERS).optional())
+            .permission(ChatPerms.COMMAND_MENTIONS_TOGGLE)
+            .withArguments(Arguments.playerName(CommandArguments.PLAYER).permission(
+                ChatPerms.COMMAND_MENTIONS_TOGGLE_OTHERS)
+                .optional())
             .withFlags(CommandArguments.FLAG_SILENT)
             .executes((context, arguments) -> this.toggleMentions(context, arguments, mode));
     }
 
-    private boolean toggleMentions(@NotNull CommandContext context, @NotNull ParsedArguments arguments, @NotNull ToggleMode mode) {
-        return this.loadPlayerOrSenderWithDataAndRunInMainThread(context, arguments, this.module, this.userManager, (user, target) -> {
+    private boolean toggleMentions(@NotNull CommandContext context, @NotNull ParsedArguments arguments,
+                                   @NotNull ToggleMode mode) {
+        return this.loadPlayerOrSenderWithDataAndRunInMainThread(context, arguments, this.module, this.userManager, (
+                                                                                                                     user,
+                                                                                                                     target) -> {
             boolean state = mode.apply(user.getPropertyOrDefault(ChatProperties.MENTIONS));
 
             user.setProperty(ChatProperties.MENTIONS, state);

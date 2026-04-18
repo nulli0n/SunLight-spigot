@@ -43,75 +43,96 @@ public class EnderchestCommandsProvider extends AbstractCommandProvider {
     private static final String COMMAND_OPEN   = "open";
     private static final String COMMAND_REPAIR = "repair";
 
-    private static final Permission PERMISSION_HUB           = InventoriesPerms.COMMAND.permission("enderchest.hub");
+    private static final Permission PERMISSION_ROOT          = InventoriesPerms.COMMAND.permission("enderchest.root");
     private static final Permission PERMISSION_CLEAR         = InventoriesPerms.COMMAND.permission("enderchest.clear");
-    private static final Permission PERMISSION_CLEAR_OTHERS  = InventoriesPerms.COMMAND.permission("enderchest.clear.others");
+    private static final Permission PERMISSION_CLEAR_OTHERS  = InventoriesPerms.COMMAND.permission(
+        "enderchest.clear.others");
     private static final Permission PERMISSION_COPY          = InventoriesPerms.COMMAND.permission("enderchest.copy");
     private static final Permission PERMISSION_FILL          = InventoriesPerms.COMMAND.permission("enderchest.fill");
     private static final Permission PERMISSION_OPEN          = InventoriesPerms.COMMAND.permission("enderchest.open");
-    private static final Permission PERMISSION_OPEN_OTHERS   = InventoriesPerms.COMMAND.permission("enderchest.open.others");
+    private static final Permission PERMISSION_OPEN_OTHERS   = InventoriesPerms.COMMAND.permission(
+        "enderchest.open.others");
     private static final Permission PERMISSION_REPAIR        = InventoriesPerms.COMMAND.permission("enderchest.repair");
-    private static final Permission PERMISSION_REPAIR_OTHERS = InventoriesPerms.COMMAND.permission("enderchest.repair.others");
+    private static final Permission PERMISSION_REPAIR_OTHERS = InventoriesPerms.COMMAND.permission(
+        "enderchest.repair.others");
 
-    private static final TextLocale DESCRIPTION_HUB    = LangEntry.builder("Command.Enderchest.Hub.Desc").text("Ender Chest commands.");
-    private static final TextLocale DESCRIPTION_CLEAR  = LangEntry.builder("Command.Enderchest.Clear.Desc").text("Clear Ender Chest.");
-    private static final TextLocale DESCRIPTION_COPY   = LangEntry.builder("Command.Enderchest.Copy.Desc").text("Copy player's Ender Chest.");
-    private static final TextLocale DESCRIPTION_FILL   = LangEntry.builder("Command.Enderchest.Fill.Desc").text("Fill Ender Chest with specified item.");
-    private static final TextLocale DESCRIPTION_OPEN   = LangEntry.builder("Command.Enderchest.Open.Desc").text("Open Ender Chest.");
-    private static final TextLocale DESCRIPTION_REPAIR = LangEntry.builder("Command.Enderchest.Repair.Desc").text("Repair all Ender Chest items.");
+    private static final TextLocale DESCRIPTION_ROOT   = LangEntry.builder("Command.Enderchest.Hub.Desc").text(
+        "Ender Chest commands.");
+    private static final TextLocale DESCRIPTION_CLEAR  = LangEntry.builder("Command.Enderchest.Clear.Desc").text(
+        "Clear Ender Chest.");
+    private static final TextLocale DESCRIPTION_COPY   = LangEntry.builder("Command.Enderchest.Copy.Desc").text(
+        "Copy player's Ender Chest.");
+    private static final TextLocale DESCRIPTION_FILL   = LangEntry.builder("Command.Enderchest.Fill.Desc").text(
+        "Fill Ender Chest with specified item.");
+    private static final TextLocale DESCRIPTION_OPEN   = LangEntry.builder("Command.Enderchest.Open.Desc").text(
+        "Open Ender Chest.");
+    private static final TextLocale DESCRIPTION_REPAIR = LangEntry.builder("Command.Enderchest.Repair.Desc").text(
+        "Repair all Ender Chest items.");
 
-    private static final MessageLocale MESSAGE_CLEAR_TARGETTED = LangEntry.builder("Command.Enderchest.Clear.Done.Target").chatMessage(
-        Sound.BLOCK_FIRE_EXTINGUISH,
-        GRAY.wrap("You have cleared " + WHITE.wrap(PLAYER_DISPLAY_NAME) + "'s " + SOFT_PURPLE.wrap("Ender Chest."))
-    );
+    private static final MessageLocale MESSAGE_CLEAR_TARGETTED = LangEntry.builder(
+        "Command.Enderchest.Clear.Done.Target").chatMessage(
+            Sound.BLOCK_FIRE_EXTINGUISH,
+            GRAY.wrap("You have cleared " + WHITE.wrap(PLAYER_DISPLAY_NAME) + "'s " + SOFT_PURPLE.wrap("Ender Chest."))
+        );
 
-    private static final MessageLocale MESSAGE_CLEAR_NOTIFY = LangEntry.builder("Command.Enderchest.Clear.Done.Notify").chatMessage(
-        Sound.BLOCK_FIRE_EXTINGUISH,
-        GRAY.wrap("Your " + SOFT_PURPLE.wrap("Ender Chest") + " has been cleared.")
-    );
-
-
-    private static final MessageLocale MESSAGE_COPY_NOTIFY = LangEntry.builder("Command.Enderchest.Copy.Done.Executor").chatMessage(
-        Sound.ITEM_ARMOR_EQUIP_LEATHER,
-        GRAY.wrap("You have copied " + WHITE.wrap(PLAYER_DISPLAY_NAME) + "'s " + SOFT_PURPLE.wrap("Ender Chest") + " content to yours.")
-    );
-
-    private static final MessageLocale MESSAGE_COPY_YOURSELF = LangEntry.builder("Inventories.Command.Enderchest.Copy.NotYourself").chatMessage(
-        Sound.ENTITY_VILLAGER_NO,
-        GRAY.wrap("You can not copy your own " + SOFT_PURPLE.wrap("Ender Chest") + ".")
-    );
+    private static final MessageLocale MESSAGE_CLEAR_NOTIFY = LangEntry.builder("Command.Enderchest.Clear.Done.Notify")
+        .chatMessage(
+            Sound.BLOCK_FIRE_EXTINGUISH,
+            GRAY.wrap("Your " + SOFT_PURPLE.wrap("Ender Chest") + " has been cleared.")
+        );
 
 
-    private static final MessageLocale MESSAGE_FILL_TARGETTED = LangEntry.builder("Command.Enderchest.Fill.Done.Executor").chatMessage(
-        Sound.ENTITY_ITEM_PICKUP,
-        GRAY.wrap("You have filled " + WHITE.wrap(PLAYER_DISPLAY_NAME) + "'s " + SOFT_PURPLE.wrap("Ender Chest") + " with " + WHITE.wrap(GENERIC_ITEM + "."))
-    );
+    private static final MessageLocale MESSAGE_COPY_NOTIFY = LangEntry.builder("Command.Enderchest.Copy.Done.Executor")
+        .chatMessage(
+            Sound.ITEM_ARMOR_EQUIP_LEATHER,
+            GRAY.wrap("You have copied " + WHITE.wrap(PLAYER_DISPLAY_NAME) + "'s " + SOFT_PURPLE.wrap("Ender Chest") +
+                " content to yours.")
+        );
+
+    private static final MessageLocale MESSAGE_COPY_YOURSELF = LangEntry.builder(
+        "Inventories.Command.Enderchest.Copy.NotYourself").chatMessage(
+            Sound.ENTITY_VILLAGER_NO,
+            GRAY.wrap("You can not copy your own " + SOFT_PURPLE.wrap("Ender Chest") + ".")
+        );
 
 
-    private static final MessageLocale MESSAGE_OPEN_NOTIFY = LangEntry.builder("Command.Enderchest.Open.Notify").chatMessage(
-        Sound.BLOCK_ENDER_CHEST_OPEN,
-        GRAY.wrap("You have opened your " + SOFT_PURPLE.wrap("Ender Chest."))
-    );
-
-    private static final MessageLocale MESSAGE_OPEN_TARGETTED = LangEntry.builder("Command.Enderchest.Open.Targetted").chatMessage(
-        Sound.BLOCK_ENDER_CHEST_OPEN,
-        GRAY.wrap("You have opened " + WHITE.wrap(PLAYER_DISPLAY_NAME) + "'s " + SOFT_PURPLE.wrap("Ender Chest."))
-    );
+    private static final MessageLocale MESSAGE_FILL_TARGETTED = LangEntry.builder(
+        "Command.Enderchest.Fill.Done.Executor").chatMessage(
+            Sound.ENTITY_ITEM_PICKUP,
+            GRAY.wrap("You have filled " + WHITE.wrap(PLAYER_DISPLAY_NAME) + "'s " + SOFT_PURPLE.wrap("Ender Chest") +
+                " with " + WHITE.wrap(GENERIC_ITEM + "."))
+        );
 
 
-    private static final MessageLocale MESSAGE_REPAIR_NOTIFY = LangEntry.builder("Command.Enderchest.Repair.Notify").chatMessage(
-        Sound.BLOCK_ANVIL_USE,
-        GRAY.wrap("All items in your " + SOFT_PURPLE.wrap("Ender Chest") + " has been repaired.")
-    );
+    private static final MessageLocale MESSAGE_OPEN_NOTIFY = LangEntry.builder("Command.Enderchest.Open.Notify")
+        .chatMessage(
+            Sound.BLOCK_ENDER_CHEST_OPEN,
+            GRAY.wrap("You have opened your " + SOFT_PURPLE.wrap("Ender Chest."))
+        );
 
-    private static final MessageLocale MESSAGE_REPAIR_TARGETTED = LangEntry.builder("Command.Enderchest.Repair.Target").chatMessage(
-        Sound.BLOCK_ANVIL_USE,
-        GRAY.wrap("You have repaired all items in " + WHITE.wrap(PLAYER_DISPLAY_NAME) + "'s " + SOFT_PURPLE.wrap("Ender Chest."))
-    );
+    private static final MessageLocale MESSAGE_OPEN_TARGETTED = LangEntry.builder("Command.Enderchest.Open.Targetted")
+        .chatMessage(
+            Sound.BLOCK_ENDER_CHEST_OPEN,
+            GRAY.wrap("You have opened " + WHITE.wrap(PLAYER_DISPLAY_NAME) + "'s " + SOFT_PURPLE.wrap("Ender Chest."))
+        );
+
+
+    private static final MessageLocale MESSAGE_REPAIR_NOTIFY = LangEntry.builder("Command.Enderchest.Repair.Notify")
+        .chatMessage(
+            Sound.BLOCK_ANVIL_USE,
+            GRAY.wrap("All items in your " + SOFT_PURPLE.wrap("Ender Chest") + " has been repaired.")
+        );
+
+    private static final MessageLocale MESSAGE_REPAIR_TARGETTED = LangEntry.builder("Command.Enderchest.Repair.Target")
+        .chatMessage(
+            Sound.BLOCK_ANVIL_USE,
+            GRAY.wrap("You have repaired all items in " + WHITE.wrap(PLAYER_DISPLAY_NAME) + "'s " + SOFT_PURPLE.wrap(
+                "Ender Chest."))
+        );
 
     private final InventoriesModule module;
-    private final UserManager userManager;
-    private final SunNMS internals;
+    private final UserManager       userManager;
+    private final SunNMS            internals;
 
     public EnderchestCommandsProvider(@NotNull SunLightPlugin plugin, @NotNull InventoriesModule module, @NotNull UserManager userManager, @Nullable SunNMS internals) {
         super(plugin);
@@ -122,7 +143,7 @@ public class EnderchestCommandsProvider extends AbstractCommandProvider {
 
     @Override
     public void registerDefaults() {
-        this.registerLiteral(COMMAND_CLEAR, false, new String[]{"enderclear", "clearender"}, builder -> builder
+        this.registerLiteral(COMMAND_CLEAR, false, new String[]{"enderclear", "clearec"}, builder -> builder
             .description(DESCRIPTION_CLEAR)
             .permission(PERMISSION_CLEAR)
             .withArguments(Arguments.playerName(CommandArguments.PLAYER).permission(PERMISSION_CLEAR_OTHERS).optional())
@@ -130,7 +151,7 @@ public class EnderchestCommandsProvider extends AbstractCommandProvider {
             .executes(this::executeClear)
         );
 
-        this.registerLiteral(COMMAND_COPY, false, new String[]{"endercopy", "copyender"}, builder -> builder
+        this.registerLiteral(COMMAND_COPY, false, new String[]{"endercopy", "copyec"}, builder -> builder
             .playerOnly()
             .description(DESCRIPTION_COPY)
             .permission(PERMISSION_COPY)
@@ -138,7 +159,7 @@ public class EnderchestCommandsProvider extends AbstractCommandProvider {
             .executes(this::executeCopy)
         );
 
-        this.registerLiteral(COMMAND_FILL, false, new String[]{"enderfill", "fillender"}, builder -> builder
+        this.registerLiteral(COMMAND_FILL, false, new String[]{"enderfill", "fillec"}, builder -> builder
             .description(DESCRIPTION_FILL)
             .permission(PERMISSION_FILL)
             .withArguments(
@@ -156,10 +177,11 @@ public class EnderchestCommandsProvider extends AbstractCommandProvider {
             .executes(this::executeOpen)
         );
 
-        this.registerLiteral(COMMAND_REPAIR, false, new String[]{"repairender", "fixender"}, builder -> builder
+        this.registerLiteral(COMMAND_REPAIR, false, new String[]{"repairender", "fixec"}, builder -> builder
             .description(DESCRIPTION_REPAIR)
             .permission(PERMISSION_REPAIR)
-            .withArguments(Arguments.playerName(CommandArguments.PLAYER).permission(PERMISSION_REPAIR_OTHERS).optional())
+            .withArguments(Arguments.playerName(CommandArguments.PLAYER).permission(PERMISSION_REPAIR_OTHERS)
+                .optional())
             .withFlags(CommandArguments.FLAG_SILENT)
             .executes(this::executeRepair)
         );
@@ -172,8 +194,8 @@ public class EnderchestCommandsProvider extends AbstractCommandProvider {
                 COMMAND_OPEN, "open",
                 COMMAND_REPAIR, "repair"
             ), builder -> builder
-            .description(DESCRIPTION_HUB)
-            .permission(PERMISSION_HUB)
+                .description(DESCRIPTION_ROOT)
+                .permission(PERMISSION_ROOT)
         );
     }
 
@@ -259,7 +281,8 @@ public class EnderchestCommandsProvider extends AbstractCommandProvider {
                 player.openInventory(inventory);
 
                 if (player != target) {
-                    this.module.sendPrefixed(MESSAGE_OPEN_TARGETTED, player, builder -> builder.with(CommonPlaceholders.PLAYER.resolver(target)));
+                    this.module.sendPrefixed(MESSAGE_OPEN_TARGETTED, player, builder -> builder.with(
+                        CommonPlaceholders.PLAYER.resolver(target)));
                 }
                 else {
                     this.module.sendPrefixed(MESSAGE_OPEN_NOTIFY, player);
@@ -274,7 +297,8 @@ public class EnderchestCommandsProvider extends AbstractCommandProvider {
                 inventory.forEach(ItemStackUtils::repairItem);
 
                 if (context.getSender() != target) {
-                    this.module.sendPrefixed(MESSAGE_REPAIR_TARGETTED, context.getSender(), builder -> builder.with(CommonPlaceholders.PLAYER.resolver(target)));
+                    this.module.sendPrefixed(MESSAGE_REPAIR_TARGETTED, context.getSender(), builder -> builder.with(
+                        CommonPlaceholders.PLAYER.resolver(target)));
                 }
 
                 if (!context.hasFlag(CommandArguments.FLAG_SILENT)) {

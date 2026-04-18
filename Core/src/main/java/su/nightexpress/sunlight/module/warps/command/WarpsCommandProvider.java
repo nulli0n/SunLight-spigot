@@ -50,11 +50,10 @@ public class WarpsCommandProvider extends AbstractCommandProvider {
 
     @NonNull
     private ArgumentNodeBuilder<Warp> warpArgument(@Nullable Predicate<Warp> predicate) {
-        return Commands.argument(ARGUMENT_WARP, (context, str) ->
-                Optional.ofNullable(this.module.getWarpById(str))
-                    .filter(warp -> predicate == null || predicate.test(warp))
-                    .orElseThrow(() -> CommandSyntaxException.custom(WarpsLang.COMMAND_SYNTAX_INVALID_WARP))
-            )
+        return Commands.argument(ARGUMENT_WARP, (context, str) -> Optional.ofNullable(this.module.getWarpById(str))
+            .filter(warp -> predicate == null || predicate.test(warp))
+            .orElseThrow(() -> CommandSyntaxException.custom(WarpsLang.COMMAND_SYNTAX_INVALID_WARP))
+        )
             .suggestions((reader, context) -> {
                 return this.module.getWarps().stream().map(Warp::getId).toList();
             })
@@ -71,7 +70,7 @@ public class WarpsCommandProvider extends AbstractCommandProvider {
             .executes(this::createWarp)
         );
 
-        this.registerLiteral(COMMAND_UPDATE, false, new String[]{"updatewarp"}, builder -> builder
+        this.registerLiteral(COMMAND_UPDATE, true, new String[]{"updatewarp"}, builder -> builder
             .playerOnly()
             .description(WarpsLang.COMMAND_WARPS_UPDATE_DESC)
             .permission(WarpsPerms.COMMAND_WARPS_UPDATE)
@@ -96,7 +95,8 @@ public class WarpsCommandProvider extends AbstractCommandProvider {
         this.registerLiteral(COMMAND_MENU, true, new String[]{"warplist"}, builder -> builder
             .description(WarpsLang.COMMAND_WARPS_LIST_DESC)
             .permission(WarpsPerms.COMMAND_WARPS_LIST)
-            .withArguments(Arguments.playerName(CommandArguments.PLAYER).permission(WarpsPerms.COMMAND_WARPS_LIST_OTHERS).optional())
+            .withArguments(Arguments.playerName(CommandArguments.PLAYER).permission(
+                WarpsPerms.COMMAND_WARPS_LIST_OTHERS).optional())
             .executes(this::openWarps)
         );
 
@@ -106,9 +106,11 @@ public class WarpsCommandProvider extends AbstractCommandProvider {
             .withArguments(
                 this.warpArgument(Warp::isActive).suggestions((reader, context) -> {
                     Player player = context.getPlayer();
-                    return (player == null ? this.module.getWarps() : this.module.getAvailableWarps(player)).stream().map(Warp::getId).toList();
+                    return (player == null ? this.module.getWarps() : this.module.getAvailableWarps(player)).stream()
+                        .map(Warp::getId).toList();
                 }),
-                Arguments.playerName(CommandArguments.PLAYER).optional().permission(WarpsPerms.COMMAND_WARPS_JUMP_OTHERS)
+                Arguments.playerName(CommandArguments.PLAYER).optional().permission(
+                    WarpsPerms.COMMAND_WARPS_JUMP_OTHERS)
             )
             .withFlags(CommandArguments.FLAG_FORCE)
             .executes(this::jumpToWarp)
@@ -159,7 +161,8 @@ public class WarpsCommandProvider extends AbstractCommandProvider {
             }
 
             if (context.getSender() != target) {
-                this.module.sendPrefixed(WarpsLang.BROWSER_FEEDBACK, context.getSender(), replacer -> replacer.with(CommonPlaceholders.PLAYER.resolver(target)));
+                this.module.sendPrefixed(WarpsLang.BROWSER_FEEDBACK, context.getSender(), replacer -> replacer.with(
+                    CommonPlaceholders.PLAYER.resolver(target)));
             }
 
             return true;

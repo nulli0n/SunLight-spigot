@@ -39,7 +39,7 @@ public class PTPCommands extends AbstractCommandProvider {
     public static final String ACCEPT_NAME  = "tpyes";
     public static final String DECLINE_NAME = "tpno";
 
-    private final PTPModule module;
+    private final PTPModule   module;
     private final UserManager userManager;
 
     public PTPCommands(@NotNull SunLightPlugin plugin, PTPModule module, @NotNull UserManager userManager) {
@@ -51,17 +51,17 @@ public class PTPCommands extends AbstractCommandProvider {
     @Override
     public void registerDefaults() {
         this.registerLiteral(COMMAND_ACCEPT, true, new String[]{ACCEPT_NAME}, builder -> {
-                builder.description(PTPLang.COMMAND_ACCEPT_DESC);
-                builder.permission(PTPPerms.COMMAND_ACCEPT);
-                this.builderAccept(builder, true);
-            }
+            builder.description(PTPLang.COMMAND_ACCEPT_DESC);
+            builder.permission(PTPPerms.COMMAND_ACCEPT);
+            this.builderAccept(builder, true);
+        }
         );
 
         this.registerLiteral(COMMAND_DECLINE, true, new String[]{DECLINE_NAME}, builder -> {
-                builder.description(PTPLang.COMMAND_DECLINE_DESC);
-                builder.permission(PTPPerms.COMMAND_DECLINE);
-                this.builderAccept(builder, false);
-            }
+            builder.description(PTPLang.COMMAND_DECLINE_DESC);
+            builder.permission(PTPPerms.COMMAND_DECLINE);
+            this.builderAccept(builder, false);
+        }
         );
 
         this.registerLiteral(COMMAND_REQUEST, true, new String[]{"tpa", "call"}, builder -> {
@@ -76,9 +76,12 @@ public class PTPCommands extends AbstractCommandProvider {
             this.buildRequest(builder, TeleportMode.INVITE);
         });
 
-        this.registerLiteral(COMMAND_TOGGLE, true, new String[]{"tptoggle"}, builder -> this.buildRequests(builder, ToggleMode.TOGGLE));
-        this.registerLiteral(COMMAND_ON, true, new String[]{"tptoggle-on"}, builder -> this.buildRequests(builder, ToggleMode.ON));
-        this.registerLiteral(COMMAND_OFF, true, new String[]{"tptoggle-off"}, builder -> this.buildRequests(builder, ToggleMode.OFF));
+        this.registerLiteral(COMMAND_TOGGLE, true, new String[]{"tptoggle"}, builder -> this.buildRequests(builder,
+            ToggleMode.TOGGLE));
+        this.registerLiteral(COMMAND_ON, true, new String[]{"tptoggle-on"}, builder -> this.buildRequests(builder,
+            ToggleMode.ON));
+        this.registerLiteral(COMMAND_OFF, true, new String[]{"tptoggle-off"}, builder -> this.buildRequests(builder,
+            ToggleMode.OFF));
 
         this.registerRoot("ptp", true, new String[]{"ptp"},
             map -> {
@@ -96,10 +99,12 @@ public class PTPCommands extends AbstractCommandProvider {
         builder
             .playerOnly()
             .withArguments(Arguments.playerName(CommandArguments.PLAYER)
+                .optional()
                 .suggestions((reader, context) -> {
                     if (!(context.getSender() instanceof Player player)) return Collections.emptyList();
 
-                    return this.module.getRequests(player).stream().map(TeleportRequest::getSender).filter(Objects::nonNull).map(Player::getName).toList();
+                    return this.module.getRequests(player).stream().map(TeleportRequest::getSender).filter(
+                        Objects::nonNull).map(Player::getName).toList();
                 })
             )
             .executes((context, arguments) -> this.acceptOrDecline(context, arguments, accept));
@@ -122,19 +127,22 @@ public class PTPCommands extends AbstractCommandProvider {
         builder
             .description(description)
             .permission(PTPPerms.COMMAND_REQUESTS)
-            .withArguments(Arguments.playerName(CommandArguments.PLAYER).permission(PTPPerms.COMMAND_REQUESTS_OTHERS).optional())
+            .withArguments(Arguments.playerName(CommandArguments.PLAYER).permission(PTPPerms.COMMAND_REQUESTS_OTHERS)
+                .optional())
             .withFlags(CommandArguments.FLAG_SILENT)
             .executes((context, arguments) -> this.toggleRequests(context, arguments, mode));
     }
 
-    private boolean acceptOrDecline(@NotNull CommandContext context, @NotNull ParsedArguments arguments, boolean accept) {
+    private boolean acceptOrDecline(@NotNull CommandContext context, @NotNull ParsedArguments arguments,
+                                    boolean accept) {
         Player player = context.getPlayerOrThrow();
         String from = arguments.contains(CommandArguments.PLAYER) ? arguments.getString(CommandArguments.PLAYER) : null;
 
         return accept ? this.module.accept(player, from) : this.module.decline(player, from);
     }
 
-    private boolean sendRequest(@NotNull CommandContext context, @NotNull ParsedArguments arguments, @NotNull TeleportMode mode) {
+    private boolean sendRequest(@NotNull CommandContext context, @NotNull ParsedArguments arguments,
+                                @NotNull TeleportMode mode) {
         Player player = context.getPlayerOrThrow();
 
         Player target = arguments.getPlayer(CommandArguments.PLAYER);
@@ -146,8 +154,11 @@ public class PTPCommands extends AbstractCommandProvider {
         return module.sendRequest(player, target, mode);
     }
 
-    private boolean toggleRequests(@NotNull CommandContext context, @NotNull ParsedArguments arguments, @NotNull ToggleMode mode) {
-        return this.loadPlayerOrSenderWithDataAndRunInMainThread(context, arguments, this.module, this.userManager, (user, target) -> {
+    private boolean toggleRequests(@NotNull CommandContext context, @NotNull ParsedArguments arguments,
+                                   @NotNull ToggleMode mode) {
+        return this.loadPlayerOrSenderWithDataAndRunInMainThread(context, arguments, this.module, this.userManager, (
+                                                                                                                     user,
+                                                                                                                     target) -> {
             boolean state = mode.apply(user.getPropertyOrDefault(PTPProperties.TELEPORT_REQUESTS));
             user.setProperty(PTPProperties.TELEPORT_REQUESTS, state);
             user.markDirty();

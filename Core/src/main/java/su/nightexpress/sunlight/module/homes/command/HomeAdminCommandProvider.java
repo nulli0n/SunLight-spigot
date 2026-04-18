@@ -45,7 +45,9 @@ public class HomeAdminCommandProvider extends AbstractCommandProvider {
             .permission(HomesPerms.COMMAND_HOMES_DELETE_OTHERS)
             .withArguments(
                 Arguments.playerName(CommandArguments.PLAYER),
-                Arguments.string(CommandArguments.NAME).localized(HomesLang.COMMAND_ARGUMENT_NAME_HOME).suggestions((reader, context) -> {
+                Arguments.string(CommandArguments.NAME).localized(HomesLang.COMMAND_ARGUMENT_NAME_HOME).suggestions((
+                                                                                                                     reader,
+                                                                                                                     context) -> {
                     String playerName = context.getArguments().getString(CommandArguments.PLAYER);
                     UUID playerId = this.userManager.getRepository().getAssociatedId(playerName);
                     if (playerId == null) return Collections.emptyList();
@@ -62,13 +64,14 @@ public class HomeAdminCommandProvider extends AbstractCommandProvider {
             .permission(HomesPerms.COMMAND_HOMES_SET_OTHERS)
             .withArguments(
                 Arguments.playerName(CommandArguments.PLAYER),
-                Arguments.string(CommandArguments.NAME).optional().localized(HomesLang.COMMAND_ARGUMENT_NAME_HOME).suggestions((reader, context) -> {
-                    String playerName = context.getArguments().getString(CommandArguments.PLAYER);
-                    UUID playerId = this.userManager.getRepository().getAssociatedId(playerName);
-                    if (playerId == null) return Collections.emptyList();
+                Arguments.string(CommandArguments.NAME).optional().localized(HomesLang.COMMAND_ARGUMENT_NAME_HOME)
+                    .suggestions((reader, context) -> {
+                        String playerName = context.getArguments().getString(CommandArguments.PLAYER);
+                        UUID playerId = this.userManager.getRepository().getAssociatedId(playerName);
+                        if (playerId == null) return Collections.emptyList();
 
-                    return this.module.getUserRepository(playerId).getAll().stream().map(Home::getId).toList();
-                })
+                        return this.module.getUserRepository(playerId).getAll().stream().map(Home::getId).toList();
+                    })
             )
             .executes(this::createHome)
         );
@@ -78,13 +81,14 @@ public class HomeAdminCommandProvider extends AbstractCommandProvider {
                 COMMAND_CREATE, "create",
                 COMMAND_DELETE, "delete"
             ),
-            builder -> builder.description(HomesLang.COMMAND_ADMIN_ROOT_DESC).permission(HomesPerms.COMMAND_HOMES_ADMIN_ROOT));
+            builder -> builder.description(HomesLang.COMMAND_ADMIN_ROOT_DESC).permission(
+                HomesPerms.COMMAND_HOMES_ADMIN_ROOT));
     }
 
     private boolean createHome(@NotNull CommandContext context, @NotNull ParsedArguments arguments) {
         Player player = context.getPlayerOrThrow();
         String userName = arguments.getString(CommandArguments.PLAYER);
-        String homeId = arguments.getString(CommandArguments.NAME, HomeDefaults.DEFAULT_HOME_ID);
+        String homeId = arguments.getString(CommandArguments.NAME, HomeDefaults.DEFAULT_HOME_ID); // TODO Favorite
 
         UUID playerId = this.userManager.getRepository().getAssociatedId(userName);
         if (playerId == null) {
@@ -115,7 +119,7 @@ public class HomeAdminCommandProvider extends AbstractCommandProvider {
 
     private boolean deleteHome(@NotNull CommandContext context, @NotNull ParsedArguments arguments) {
         String userName = arguments.getString(CommandArguments.PLAYER);
-        String homeId = arguments.getString(CommandArguments.NAME);
+        String homeId = arguments.getString(CommandArguments.NAME); // TODO Favorite
 
         this.userManager.loadByNameAsync(userName).thenAccept(userOptional -> {
             SunUser user = userOptional.orElse(null);
@@ -126,8 +130,9 @@ public class HomeAdminCommandProvider extends AbstractCommandProvider {
 
             Home home = this.module.getHome(user.getId(), homeId);
             if (home == null) {
-                this.module.sendPrefixed(HomesLang.ADMIN_HOME_DELETE_ERROR_NO_HOME, context.getSender(), builder -> builder
-                    .with(HomePlaceholders.HOME_ID, () -> homeId)
+                this.module.sendPrefixed(HomesLang.ADMIN_HOME_DELETE_ERROR_NO_HOME, context.getSender(),
+                    builder -> builder
+                        .with(HomePlaceholders.HOME_ID, () -> homeId)
                 );
                 return;
             }

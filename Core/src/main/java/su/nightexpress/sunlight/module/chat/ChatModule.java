@@ -67,8 +67,8 @@ import java.util.stream.Stream;
 
 public class ChatModule extends Module {
 
-    private final ChatSettings      settings;
-    private final ChannelRepository channelRepository;
+    private final ChatSettings              settings;
+    private final ChannelRepository         channelRepository;
     private final UniversalChatEventHandler chatEventHandler;
 
     private Pattern        mentionsPattern;
@@ -148,11 +148,13 @@ public class ChatModule extends Module {
         }
 
         if (this.settings.isConversationsEnabled()) {
-            this.commandRegistry.addProvider("chat-conversations", new ConversationCommandProvider(this.plugin, this, this.userManager));
+            this.commandRegistry.addProvider("chat-conversations",
+                new ConversationCommandProvider(this.plugin, this, this.userManager));
         }
 
         if (this.settings.isMentionsEnabled()) {
-            this.commandRegistry.addProvider("chat-mentions", new MentionsCommandProvider(this.plugin, this, this.userManager));
+            this.commandRegistry.addProvider("chat-mentions",
+                new MentionsCommandProvider(this.plugin, this, this.userManager));
         }
 
         if (this.settings.isRoleplayCommandEnabled()) {
@@ -167,11 +169,13 @@ public class ChatModule extends Module {
     @Override
     public void registerPlaceholders(@NotNull PlaceholderRegistry registry) {
         registry.register("chat_conversations_state", (player, payload) -> {
-            return CoreLang.STATE_ENABLED_DISALBED.get(this.userManager.getOrFetch(player).getPropertyOrDefault(ChatProperties.CONVERSATIONS));
+            return CoreLang.STATE_ENABLED_DISALBED.get(this.userManager.getOrFetch(player).getPropertyOrDefault(
+                ChatProperties.CONVERSATIONS));
         });
 
         registry.register("chat_conversations_bool", (player, payload) -> {
-            return String.valueOf(this.userManager.getOrFetch(player).getPropertyOrDefault(ChatProperties.CONVERSATIONS));
+            return String.valueOf(this.userManager.getOrFetch(player).getPropertyOrDefault(
+                ChatProperties.CONVERSATIONS));
         });
     }
 
@@ -210,7 +214,9 @@ public class ChatModule extends Module {
         ChatChannel defChannel = this.channelRepository.getById(defaultId);
 
         if (defChannel == null) {
-            this.error("Channel '%s', that is set as default one, does not exist. The '%s' one will be used to keep the chat working.".formatted(defaultId, ChatDefaults.DEFAULT_CHANNEL_ID));
+            this.error(
+                "Channel '%s', that is set as default one, does not exist. The '%s' one will be used to keep the chat working."
+                    .formatted(defaultId, ChatDefaults.DEFAULT_CHANNEL_ID));
             this.loadDefaultChannel(channelsDir);
             return;
         }
@@ -264,9 +270,10 @@ public class ChatModule extends Module {
         Set<String> ruleNames = this.settings.getProfanityFilterRules();
         Set<String> allRules = new HashSet<>();
 
-        FileUtil.findFiles(rulesPath.toString(), file -> ruleNames.contains(file.getFileName().toString())).forEach(file -> {
-            allRules.addAll(this.readRules(file));
-        });
+        FileUtil.findFiles(rulesPath.toString(), file -> ruleNames.contains(file.getFileName().toString())).forEach(
+            file -> {
+                allRules.addAll(this.readRules(file));
+            });
 
         this.wordFilter = new WordFilter(allRules);
     }
@@ -358,7 +365,8 @@ public class ChatModule extends Module {
 
     @NotNull
     public Set<ChatChannel> getChannelsAllowedToListen(@NotNull Player player) {
-        return this.channelRepository.getChannels().stream().filter(channel -> channel.canListenHere(player)).collect(Collectors.toSet());
+        return this.channelRepository.getChannels().stream().filter(channel -> channel.canListenHere(player)).collect(
+            Collectors.toSet());
     }
 
     @NotNull
@@ -391,20 +399,23 @@ public class ChatModule extends Module {
     public boolean joinChannel(@NotNull Player player, @NotNull ChatChannel channel, boolean isSilent) {
         if (!channel.canListenOrSpeakHere(player)) {
             if (!isSilent) {
-                this.sendPrefixed(ChatLang.CHANNEL_JOIN_ERROR_NO_PERMISSION, player, builder -> builder.with(channel.placeholders()));
+                this.sendPrefixed(ChatLang.CHANNEL_JOIN_ERROR_NO_PERMISSION, player, builder -> builder.with(channel
+                    .placeholders()));
             }
             return false;
         }
 
         if (channel.addPlayer(player)) {
             if (!isSilent) {
-                this.sendPrefixed(ChatLang.CHANNEL_JOIN_SUCCESS, player, builder -> builder.with(channel.placeholders()));
+                this.sendPrefixed(ChatLang.CHANNEL_JOIN_SUCCESS, player, builder -> builder.with(channel
+                    .placeholders()));
             }
             return true;
         }
 
         if (!isSilent) {
-            this.sendPrefixed(ChatLang.CHANNEL_JOIN_ERROR_ALREADY_IN, player, builder -> builder.with(channel.placeholders()));
+            this.sendPrefixed(ChatLang.CHANNEL_JOIN_ERROR_ALREADY_IN, player, builder -> builder.with(channel
+                .placeholders()));
         }
 
         return false;
@@ -421,9 +432,10 @@ public class ChatModule extends Module {
     }
 
     public void autoJoinChannels(@NotNull Player player) {
-        this.getChannelsAllowedToListen(player).stream().filter(channel -> channel.getAccessibility().autoJoin()).forEach(channel -> {
-            this.joinChannel(player, channel, true);
-        });
+        this.getChannelsAllowedToListen(player).stream().filter(channel -> channel.getAccessibility().autoJoin())
+            .forEach(channel -> {
+                this.joinChannel(player, channel, true);
+            });
     }
 
     public void removeFromAllChannels(@NotNull Player player) {
@@ -439,7 +451,8 @@ public class ChatModule extends Module {
             .collect(Collectors.toSet());
     }
 
-    public void sendSpyInfo(@NotNull Player player, @NotNull String message, @NotNull String format, @NotNull SpyType spyType) {
+    public void sendSpyInfo(@NotNull Player player, @NotNull String message, @NotNull String format,
+                            @NotNull SpyType spyType) {
         PlaceholderContext context = PlaceholderContext.builder()
             .with(CommonPlaceholders.PLAYER.resolver(player))
             .with(SLPlaceholders.GENERIC_MESSAGE, () -> message)
@@ -497,7 +510,7 @@ public class ChatModule extends Module {
             processors.add(new MentionProcessor(this.mentionsPattern, this.userManager)); // Inject mentions in postProcess in prepared format.
         }
 
-        if (this.settings.isSpyEnabled() && !player.hasPermission(ChatPerms.BYPASS_SPY)) {
+        if (this.settings.isSpyEnabled() && !player.hasPermission(ChatPerms.BYPASS_SPY_MONITOR)) {
             processors.add(new SpyProcessor());
         }
 
@@ -530,22 +543,25 @@ public class ChatModule extends Module {
 
         String commandName = context.getCommandName();
 
-        if (this.settings.isAntiFloodEnabled() && !this.settings.isAntiFloodWhitelistedCommand(commandName) && !player.hasPermission(ChatPerms.BYPASS_ANTI_FLOOD)) {
+        if (this.settings.isAntiFloodEnabled() && !this.settings.isAntiFloodWhitelistedCommand(commandName) && !player
+            .hasPermission(ChatPerms.BYPASS_ANTI_FLOOD)) {
             processors.add(new CommandCooldownProcessor()); // Check general commands cooldown.
             processors.add(new AntiFloodProcessor()); // Check message similarity only after all modifications are done.
         }
 
-        if (this.settings.isAntiCapsEnabled() && this.settings.isAntiCapsBlacklistedCommand(commandName) && !player.hasPermission(ChatPerms.BYPASS_ANTI_CAPS)) {
+        if (this.settings.isAntiCapsEnabled() && this.settings.isAntiCapsBlacklistedCommand(commandName) && !player
+            .hasPermission(ChatPerms.BYPASS_ANTI_CAPS)) {
             processors.add(new AntiCapsProcessor()); // Check CAPS usage and adjust to lower case if needed.
         }
 
-        if (this.settings.getProfanityFilterEnabled() && this.settings.isProfanityFilterAffectedCommand(commandName) && !player.hasPermission(ChatPerms.BYPASS_PROFANITY_FILTER)) {
+        if (this.settings.getProfanityFilterEnabled() && this.settings.isProfanityFilterAffectedCommand(
+            commandName) && !player.hasPermission(ChatPerms.BYPASS_PROFANITY_FILTER)) {
             if (this.wordFilter != null) {
                 processors.add(new FilterProcessor(this.wordFilter)); // Check custom regex rules and adjust/cancel if needed.
             }
         }
 
-        if (this.settings.isSpyEnabled() && !player.hasPermission(ChatPerms.BYPASS_SPY)) {
+        if (this.settings.isSpyEnabled() && !player.hasPermission(ChatPerms.BYPASS_SPY_MONITOR)) {
             processors.add(new SpyProcessor());
         }
 
@@ -564,8 +580,10 @@ public class ChatModule extends Module {
         }
 
         SunUser targetUser = this.userManager.getOrFetch(target);
-        if (!targetUser.getPropertyOrDefault(ChatProperties.CONVERSATIONS) && !player.hasPermission(ChatPerms.BYPASS_CONVERSATIONS_DISABLED)) {
-            this.sendPrefixed(ChatLang.CONVERSATIONS_SEND_DENIED, player, replacer -> replacer.with(CommonPlaceholders.PLAYER.resolver(target)));
+        if (!targetUser.getPropertyOrDefault(ChatProperties.CONVERSATIONS) && !player.hasPermission(
+            ChatPerms.BYPASS_CONVERSATIONS_DISABLED)) {
+            this.sendPrefixed(ChatLang.CONVERSATIONS_SEND_DENIED, player, replacer -> replacer.with(
+                CommonPlaceholders.PLAYER.resolver(target)));
             return false;
         }
 
@@ -617,7 +635,7 @@ public class ChatModule extends Module {
             processors.add(new ItemDisplayProcessor()); // Inject item display in postProcess in prepared format.
         }
 
-        if (this.settings.isSpyEnabled() && !player.hasPermission(ChatPerms.BYPASS_SPY)) {
+        if (this.settings.isSpyEnabled() && !player.hasPermission(ChatPerms.BYPASS_SPY_MONITOR)) {
             processors.add(new SpyProcessor());
         }
 
@@ -626,7 +644,8 @@ public class ChatModule extends Module {
         return this.process(processors, context);
     }
 
-    private <T extends ChatContext> boolean process(@NotNull List<ChatProcessor<? super T>> processors, @NotNull T context) {
+    private <T extends ChatContext> boolean process(@NotNull List<ChatProcessor<? super T>> processors,
+                                                    @NotNull T context) {
         for (var processor : processors) {
             processor.preProcess(this, context);
 
