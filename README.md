@@ -1,67 +1,86 @@
-<div align="center">
-  <img src="https://nightexpressdev.com/img/sunlight/overview/banner.png" alt="Banner">
+<p align="center">
+  <img src="https://nightexpressdev.com/sunlight/logo.png">
+</p>
 
-  <a href="https://discord.gg/EwNFGsnGaW"><img src="https://nightexpressdev.com/img/overview/button/discord.png" alt="Discord"></a>
-  <a href="https://ko-fi.com/nightexpress"><img src="https://nightexpressdev.com/img/overview/button/donate.png" alt="Donate"></a>
-  <a href="#"><img src="https://nightexpressdev.com/img/overview/button/manual.png" alt="Manual"></a>
+**SunLight** is a modern, lightweight, all-in-one core solution featuring the essential tools every server needs. 
 
-  **SunLight** is a modern, modular core solution for your server. It combines all the essential features every modern server needs with deep, flexible customization.
+It includes **26** fully optional and customizable modules, allowing you to select only what your server actually requires!
 
-![Image 1](https://nightexpressdev.com/img/sunlight/overview/bans_list.gif)
-![Image 2](https://nightexpressdev.com/img/sunlight/overview/bans_history.gif)
-![Image 3](https://nightexpressdev.com/img/sunlight/overview/chat_channels.gif)
-![Image 4](https://nightexpressdev.com/img/sunlight/overview/chat_items.gif)
-![Image 5](https://nightexpressdev.com/img/sunlight/overview/chat_mentions.gif)
-![Image 6](https://nightexpressdev.com/img/sunlight/overview/homes_beds.gif)
-![Image 7](https://nightexpressdev.com/img/sunlight/overview/homes_gui.gif)
-![Image 8](https://nightexpressdev.com/img/sunlight/overview/homes_icon.gif)
-![Image 9](https://nightexpressdev.com/img/sunlight/overview/homes_invite.gif)
-![Image 10](https://nightexpressdev.com/img/sunlight/overview/kits_list.gif)
-![Image 11](https://nightexpressdev.com/img/sunlight/overview/kits_share.gif)
-![Image 12](https://nightexpressdev.com/img/sunlight/overview/rtp_tp.gif)
-![Image 13](https://nightexpressdev.com/img/sunlight/overview/scheduler_messages.gif)
-![Image 14](https://nightexpressdev.com/img/sunlight/overview/tab_1.gif)
-![Image 15](https://nightexpressdev.com/img/sunlight/overview/tags_1.gif)
-![Image 16](https://nightexpressdev.com/img/sunlight/overview/warmups_tp.gif)
-</div>
+---
 
-## Customization Freedom
-- **Disable Anything:** Don’t need a specific module, function, or even a single command? Turn it off instantly.
-- **Your Style:** Change **command aliases**, customize **GUI layouts**, and edit every single piece of text.
-- **Modern Standards:** Native support for **MiniMessage** (gradients, hex colors) and **PlaceholderAPI** works almost everywhere.
-  
-## Key Features  
-- **Modularity:** SunLight is entirely composed of toggleable modules, where each module has its own area of responsibility. No unnecessary hard-coded bloat!
-- **Lightweight & Modern:** Pure original code written by a human (not AI), utilizing modern standards and tools.
-- **Command Cooldowns:** Ability to set cooldown for any SunLight command!
-- **Offline Player Support:** Ability to use any command on players who are currently offline!
-- **MiniMessage Support:** Use all tags and text components anywhere!
-- **PlaceholderAPI Support:** Use placeholders almost anywhere! Additionally, many modules provide their own unique placeholders.
-  
-## Module Overview
-- **AFK**: Tracks inactivity using "activity points" and smart filters to trigger AFK mode, status bar indicators, and rank-based auto-kicks.
-- **BackLocation**: Provides "Previous" and "Death" return points with expiration timers, world blacklists, and one-time use options.
+![](https://nightexpressdev.com/sunlight/img/afk.png)
+![](https://nightexpressdev.com/sunlight/img/bans.png)
+![](https://nightexpressdev.com/sunlight/img/chat.png)
+![](https://nightexpressdev.com/sunlight/img/tags.png)
+
+## ⭐ Core Features
+
+- **Database Support:** Works with SQLite and MySQL.
+- **Modularity:** Toggle any feature on/off with ease.
+- **Lightweight:** Only pure original code.
+- **Highly Customizable:** Change **commands**, **GUI layouts**, and edit every single piece of text.
+- **Command Cooldowns:** Set cooldown for any SunLight command.
+- **Offline Data Support:** Use almost any command on players, even if offline.
+- **MiniMessage Support:** Use all tags and text components almost anywhere.
+- **PlaceholderAPI Support:** Use placeholders almost anywhere.
+
+## 🧩 Modules
+
+- **AFK**: Track and control inactive online players with status bar indicators, rank-based auto-kicks, and custom commands on AFK mode changes.
+- **Back Location**: Provides "Previous" and "Death" return points with expiration timers, world blacklists, and one-time use options.
 - **Bans**: A comprehensive punishment system (Ban, Mute, Kick, Warn) featuring cross-server DB syncing, role priority, alt-account detection, and history GUIs.
-- **Chat**: Advanced chat management with DiscordSRV support, multi-channel (radius/world) settings, auto-moderation (anti-flood/caps), mentions, and social spy.
-- **DeathMessages**: Customizable death notifications based on damage or killer type with randomized messages and MiniMessage support.
-- **Essential**: Provides ~35 core utility commands including flight, healing, feeding, teleportation, XP management, and world/weather control.
+- **Chat**: Advanced chat management with multi-channel (radius/world) settings, auto-moderation (anti-flood/caps), mentions, item showcases, and social spy.
+- **Death Messages**: Customizable death notifications based on damage or killer type with randomization support.
+- **Essential**: Provides ~35 core utility commands including flight, healing, feeding, teleportation, XP management, world/weather control, and more.
 - **Extras**: Adds immersive mechanics like sitting on furniture (chairs/slabs), automatic chest sorting, and block physics for explosions.
-- **GodMode**: A simplified toggle for player invulnerability.
-- **Greetings**: Manages rank-based join and quit messages with priority settings and PlaceholderAPI support.
+- **Greetings**: Customize rank-based join and quit messages with priority system.
 - **Homes**: Allows players to set home points via commands or beds, featuring GUIs, guest/invite systems, and rank-based home limits.
-- **Inventories**: Enables viewing/editing of online/offline player inventories and Ender Chests, plus virtual access to workstations like Anvils or Looms.
-- **Items**: Tools to modify item parameters in-hand, including durability, custom model data, stack sizes, name/lore, and unbreakable status.
-- **Kits**: Creates unlimited item sets with a GUI editor, "inventory copy" feature, kit previews, cooldowns, and claim costs.
-- **Nametags**: Configures packet-based, client-side nametags with rank-based prefixes, suffixes, and colors.
-- **NerfPhantoms**: Controls Phantom behavior by disabling spawns, modifying damage/HP, or allowing players to personally reset their insomnia timer.
-- **PTP**: A player-to-player teleport request system with customizable timeouts and a toggle to block incoming requests.
-- **RTP**: Randomly teleports players within world-specific coordinates, featuring chunk safety checks and automatic world redirection.
-- **Scheduler**: An automated broadcast system for timed, randomized server messages with rank-based visibility.
+- **Inventories**: View and edit online/offline player inventories and Ender Chests, and access workstations like Anvils or Looms from anywhere!
+- **Items**: Modify and obtain in-game items. Edit item data in hand, including durability, model data, stack sizes, name/lore, and more!
+- **Kits**: Create unlimited item sets with a GUI editor, kit previews, cooldowns, and claim costs.
+- **Nametags**: Configure packet-based, client-side nametags with rank-based prefixes, suffixes, and colors.
+- **Nerf Phantoms**: Control Phantom behavior by disabling spawns, modifying damage/HP, or allowing players to personally reset their insomnia timer.
+- **Player Warps**: Allow players to create warps with categories, featured slots, top used warps, and more!
+- **Player Teleports**: A player-to-player teleport request system with customizable timeouts and a toggle to block incoming requests.
+- **Random Teleport**: Randomly teleports players within world-specific coordinates, featuring chunk safety checks and automatic world redirection.
+- **Scheduler**: Create custom server tasks that run in the background at specific times/intervals!
 - **Scoreboard**: Displays a side-panel information board with multiple templates, update intervals, and rank/world-specific visibility.
-- **Spawns**: Manages unlimited spawn points with rank-based auto-teleportation on join or respawn and a GUI editor.
-- **TAB**: Customizes the player list with automatic rank sorting, refresh intervals, and world-specific formatting.
+- **Spawns**: Create unlimited spawn points with rank-based auto-teleportation on join or respawn and a GUI editor.
+- **TAB**: Customize the player list with automatic rank sorting, refresh intervals, and world-specific formatting.
 - **Texts**: Maps the contents of text files to unique custom commands with MiniMessage and PlaceholderAPI support.
-- **Vanish**: Hides players from others with a status-persisting logout feature and a Boss Bar indicator.
-- **Warmups**: Adds preparation timers to teleports (Home, Spawn, RTP, etc.) with Boss Bar progress and movement/damage cancellation.
-- **Warps**: Creates public fast-travel points with access requirements based on permissions, costs, or the time of day.
-- **Worlds**: Manages unlimited custom worlds with dynamic loading, GUI GameRule editing, and per-world inventory separation.
+- **Vanish**: Hide yourself from others with a status-persisting logout feature and a Boss Bar indicator.
+- **Warm Ups**: Add preparation timers to teleports (Home, Spawn, RTP, etc.) with Boss Bar progress and movement/damage cancellation.
+- **Warps**: Create public fast-travel points with access requirements based on permissions and money costs.
+- **Worlds**: Create unlimited custom worlds with dynamic loading, GUI GameRule editing, and per-world inventory separation.
+
+---
+
+## ☑️ Requirements
+
+The following versions and platforms are supported: 
+
+| **Server Version**  | **Paper** | **Spigot** | **Folia** | **Java Version**
+| :---: | :---: | :---: | :--: | :---: |
+| 26.1.X | ✔️ | ✔️ | ❌ | 25 |
+| 1.21.11 | ✔️ | ✔️ | ❌ | 25 |
+| 1.21.10 | ❌ | ❌ | ❌ | - |
+| 1.21.9 | ❌ | ❌ | ❌ | - |
+| 1.21.8 | ❌ | ❌ | ❌ | - |
+
+- Anything not listed in the compatibility table is **NOT** supported.
+- Make sure to check out all known issues and incompatibilities [here](https://nightexpressdev.com/sunlight/faq/).
+
+**Dependencies:**
+- [NightCore](https://nightexpressdev.com/nightcore/) - Framework **required** for the plugin to run.
+
+**Optional Plugins:**
+- [PacketEvents](https://spigotmc.org/resources/80279/) - Required for some modules and features. Alternative to **ProtocolLib**.
+- [ProtocolLib](https://spigotmc.org/resources/1997/) - Required for some modules and features. Alternative to **PacketEvents**.
+- [PlaceholderAPI](https://spigotmc.org/resources/6245/) - For [global placeholders](https://nightexpressdev.com/sunlight/integrations/papi/) to use in other plugins.
+
+---
+
+## ❤️ Donate
+
+Everything here is created and maintained by a single person. If you enjoy my work or find my plugins useful, feel free to [Buy me a coffee](https://ko-fi.com/nightexpress) :)  
+Thank you!
