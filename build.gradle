@@ -6,7 +6,7 @@ plugins {
 
 allprojects {
     group = 'su.nightexpress.sunlight'
-    version = '3.17.0'
+    version = '3.17.1'
 
     repositories {
         mavenCentral()
@@ -38,7 +38,7 @@ subprojects {
     }
 
     dependencies {
-        compileOnly 'su.nightexpress.nightcore:main:2.15.1'
+        compileOnly 'su.nightexpress.nightcore:main:2.16.4'
         compileOnly 'io.papermc.paper:paper-api:26.1.2.build.+'
         compileOnly 'com.comphenix.protocol:ProtocolLib:5.4.0-SNAPSHOT'
         compileOnly 'com.github.retrooper:packetevents-spigot:2.12.0'
