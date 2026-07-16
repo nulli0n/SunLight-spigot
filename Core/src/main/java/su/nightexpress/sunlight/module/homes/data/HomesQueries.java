@@ -10,6 +10,7 @@ import su.nightexpress.nightcore.user.UserInfo;
 import su.nightexpress.nightcore.util.Enums;
 import su.nightexpress.nightcore.util.LocationUtil;
 import su.nightexpress.nightcore.util.geodata.pos.BlockPos;
+import su.nightexpress.nightcore.util.geodata.pos.ExactPos;
 import su.nightexpress.sunlight.data.DataHandler;
 import su.nightexpress.sunlight.module.homes.impl.Home;
 import su.nightexpress.sunlight.module.homes.impl.HomeType;
@@ -35,12 +36,16 @@ public class HomesQueries {
             World world = location.getWorld();
             if (world == null) return null;
 
-            HomeType type = Enums.parse(HomeColumns.TYPE.readOrThrow(resultSet), HomeType.class).orElse(HomeType.PRIVATE);
-            Set<UserInfo> invitedPlayers = DataHandler.GSON.fromJson(HomeColumns.INVITED_PLAYERS.readOrThrow(resultSet), new TypeToken<Set<UserInfo>>() {}.getType());
+            HomeType type = Enums.parse(HomeColumns.TYPE.readOrThrow(resultSet), HomeType.class).orElse(
+                HomeType.PRIVATE);
+            Set<UserInfo> invitedPlayers = DataHandler.GSON.fromJson(HomeColumns.INVITED_PLAYERS.readOrThrow(resultSet),
+                new TypeToken<Set<UserInfo>>() {
+                }.getType());
             boolean favorite = HomeColumns.FAVORITE.readOrThrow(resultSet);
 
             UserInfo owner = new UserInfo(ownerId, ownerName);
-            return new Home(id, owner, name, iconId, BlockPos.from(location), location.getWorld().getName(), type, invitedPlayers, favorite);
+            return new Home(id, owner, name, iconId, ExactPos.from(location), location.getWorld()
+                .getName(), type, invitedPlayers, favorite);
         }
         catch (SQLException | NoSuchElementException exception) {
             exception.printStackTrace();
@@ -56,15 +61,28 @@ public class HomesQueries {
             String name = HomeColumns.NAME.readOrThrow(resultSet);
             String iconId = HomeColumns.ICON_ID.readOrThrow(resultSet);
 
-            BlockPos blockPos = BlockPos.deserialize(HomeColumns.POSITION.readOrThrow(resultSet));
+            String posRaw = HomeColumns.POSITION.readOrThrow(resultSet);
+            ExactPos pos;
+
+            if (posRaw.split(",").length < 5) {
+                BlockPos blockPos = BlockPos.deserialize(posRaw);
+                pos = ExactPos.from(blockPos);
+            }
+            else {
+                pos = ExactPos.deserialize(posRaw);
+            }
+
             String worldName = HomeColumns.WORLD.readOrThrow(resultSet);
 
-            HomeType type = Enums.parse(HomeColumns.TYPE.readOrThrow(resultSet), HomeType.class).orElse(HomeType.PRIVATE);
-            Set<UserInfo> invitedPlayers = DataHandler.GSON.fromJson(HomeColumns.INVITED_PLAYERS.readOrThrow(resultSet), new TypeToken<Set<UserInfo>>() {}.getType());
+            HomeType type = Enums.parse(HomeColumns.TYPE.readOrThrow(resultSet), HomeType.class).orElse(
+                HomeType.PRIVATE);
+            Set<UserInfo> invitedPlayers = DataHandler.GSON.fromJson(HomeColumns.INVITED_PLAYERS.readOrThrow(resultSet),
+                new TypeToken<Set<UserInfo>>() {
+                }.getType());
             boolean favorite = HomeColumns.FAVORITE.readOrThrow(resultSet);
 
             UserInfo owner = new UserInfo(ownerId, ownerName);
-            return new Home(id, owner, name, iconId, blockPos, worldName, type, invitedPlayers, favorite);
+            return new Home(id, owner, name, iconId, pos, worldName, type, invitedPlayers, favorite);
         }
         catch (SQLException | NoSuchElementException exception) {
             exception.printStackTrace();

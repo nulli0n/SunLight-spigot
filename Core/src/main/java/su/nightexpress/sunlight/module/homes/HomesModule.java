@@ -35,6 +35,7 @@ import su.nightexpress.nightcore.util.NumberUtil;
 import su.nightexpress.nightcore.util.Players;
 import su.nightexpress.nightcore.util.StringUtil;
 import su.nightexpress.nightcore.util.geodata.pos.BlockPos;
+import su.nightexpress.nightcore.util.geodata.pos.ExactPos;
 import su.nightexpress.nightcore.util.placeholder.CommonPlaceholders;
 import su.nightexpress.sunlight.SLPlaceholders;
 import su.nightexpress.sunlight.config.PermissionTree;
@@ -427,7 +428,7 @@ public class HomesModule extends Module {
 
     @NonNull
     public Home createHome(@NonNull String id, @NonNull UserInfo owner, @NonNull Location location) {
-        Home home = Home.createDefault(id, owner, this.settings.getDefaultIconId(), location.getWorld(), BlockPos.from(
+        Home home = Home.createDefault(id, owner, this.settings.getDefaultIconId(), location.getWorld(), ExactPos.from(
             location));
         home.activate();
 
