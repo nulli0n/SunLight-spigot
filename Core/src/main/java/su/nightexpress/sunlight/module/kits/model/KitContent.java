@@ -12,7 +12,7 @@ import org.jspecify.annotations.NonNull;
 import su.nightexpress.nightcore.bridge.item.AdaptedItem;
 import su.nightexpress.nightcore.config.FileConfig;
 import su.nightexpress.nightcore.config.Writeable;
-import su.nightexpress.nightcore.integration.item.impl.AdaptedItemStack;
+import su.nightexpress.nightcore.integration.item.codec.AdaptedItemCodec;
 import su.nightexpress.nightcore.util.Numbers;
 
 public class KitContent implements Writeable {
@@ -41,8 +41,7 @@ public class KitContent implements Writeable {
             int slot = Numbers.parseInteger(sId).orElse(-1);
             if (slot < 0) return;
 
-            AdaptedItem adaptedItem = AdaptedItemStack.read(config, path + "." + sId);
-            if (adaptedItem == null) return;
+            AdaptedItem adaptedItem = AdaptedItemCodec.read(config, path + "." + sId);
 
             itemBySlotMap.put(slot, adaptedItem);
         });

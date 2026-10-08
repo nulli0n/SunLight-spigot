@@ -59,6 +59,7 @@ import su.nightexpress.sunlight.module.worlds.WorldsModule;
 import su.nightexpress.sunlight.nms.SunNMS;
 import su.nightexpress.sunlight.nms.mc_1_21_11.MC_1_21_11;
 import su.nightexpress.sunlight.nms.v26p1.NMSv26p1;
+import su.nightexpress.sunlight.nms.v26p3.NMSv26p3;
 import su.nightexpress.sunlight.teleport.TeleportManager;
 import su.nightexpress.sunlight.user.UserManager;
 
@@ -211,7 +212,8 @@ public class SunLightPlugin extends NightPlugin implements SunlightAPI, ModuleCo
     @NonNull
     public ModuleContext createModuleContext(@NonNull String id, @NonNull Path path,
                                              @NonNull ModuleDefinition definition) {
-        return new ModuleContext(this, this.dataHandler, this.userManager, this.commandRegistry, this.dialogRegistry, id, path, definition);
+        return new ModuleContext(this, this.dataHandler, this.userManager, this.commandRegistry, this.dialogRegistry,
+            id, path, definition);
     }
 
     private void setupInternalNMS() {
@@ -223,7 +225,9 @@ public class SunLightPlugin extends NightPlugin implements SunlightAPI, ModuleCo
         try {
             this.sunNMS = switch (Version.getCurrent()) {
                 case MC_1_21_11 -> new MC_1_21_11();
-                default -> new NMSv26p1();
+                case MC_26_1 -> new NMSv26p1();
+                case MC_26_3 -> new NMSv26p3();
+                default -> new NMSv26p3();
             };
         }
         catch (Exception | NoClassDefFoundError e) {
@@ -235,7 +239,7 @@ public class SunLightPlugin extends NightPlugin implements SunlightAPI, ModuleCo
         }
     }
 
-    private void registerCommands() {
+    protected void registerCommands() {
         this.rootCommand = NightCommand.forPlugin(this, builder -> builder
             .branch(Commands.literal("reload")
                 .description(CoreLang.COMMAND_RELOAD_DESC)

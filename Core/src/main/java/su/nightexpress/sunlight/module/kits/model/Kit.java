@@ -1,11 +1,17 @@
 package su.nightexpress.sunlight.module.kits.model;
 
+import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+
 import su.nightexpress.nightcore.bridge.item.AdaptedItem;
 import su.nightexpress.nightcore.config.FileConfig;
-import su.nightexpress.nightcore.integration.item.impl.AdaptedVanillaStack;
+import su.nightexpress.nightcore.integration.item.ItemBridge;
 import su.nightexpress.nightcore.util.FileUtil;
 import su.nightexpress.nightcore.util.LowerCase;
 import su.nightexpress.nightcore.util.bukkit.NightItem;
@@ -13,11 +19,6 @@ import su.nightexpress.nightcore.util.placeholder.PlaceholderResolvable;
 import su.nightexpress.nightcore.util.placeholder.PlaceholderResolver;
 import su.nightexpress.sunlight.module.kits.KitsPlaceholders;
 import su.nightexpress.sunlight.module.kits.config.KitsPerms;
-
-import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class Kit implements PlaceholderResolvable {
 
@@ -54,7 +55,7 @@ public class Kit implements PlaceholderResolvable {
                 ItemStack itemStack = combined[slot];
                 if (itemStack == null || itemStack.getType().isAir()) continue;
 
-                AdaptedItem adaptedItem = AdaptedVanillaStack.of(itemStack);
+                AdaptedItem adaptedItem = ItemBridge.get().adaptOrDummy(itemStack);
                 itemMap.put(slot, adaptedItem);
             }
 
@@ -75,7 +76,8 @@ public class Kit implements PlaceholderResolvable {
         List<String> commands = KitSchema.COMMANDS.resolveWithDefaults(config);
         KitContent content = KitSchema.CONTENT.resolveWithDefaults(config);
 
-        KitDefinition definition = new KitDefinition(name, description, permissionRequired, cooldown, cost, priority, icon, commands, content);
+        KitDefinition definition = new KitDefinition(name, description, permissionRequired, cooldown, cost, priority,
+            icon, commands, content);
 
         return new Kit(file, id, definition);
     }

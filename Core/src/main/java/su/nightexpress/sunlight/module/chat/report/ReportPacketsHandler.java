@@ -12,6 +12,7 @@ import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerCh
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerJoinGame;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerServerData;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerSystemChatMessage;
+
 import net.kyori.adventure.text.Component;
 
 public class ReportPacketsHandler implements ReportHandler {
@@ -73,13 +74,15 @@ public class ReportPacketsHandler implements ReportHandler {
                         ChatType.Bound decorator = new ChatType.Bound(chatType, bound.getName(), bound.getTargetName());
                         component = chatType.getChatDecoration().decorate(component, decorator);
 
-                        WrapperPlayServerSystemChatMessage system = new WrapperPlayServerSystemChatMessage(false, component);
+                        WrapperPlayServerSystemChatMessage system = new WrapperPlayServerSystemChatMessage(false,
+                            component);
                         event.setCancelled(true);
 
                         event.getUser().sendPacket(system);
                     }
                 }
-                default -> {}
+                default -> {
+                }
             }
         }
     }

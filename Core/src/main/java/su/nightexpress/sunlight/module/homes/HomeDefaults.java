@@ -1,14 +1,15 @@
 package su.nightexpress.sunlight.module.homes;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.bukkit.Tag;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
-import su.nightexpress.nightcore.bridge.item.AdaptedItem;
-import su.nightexpress.nightcore.integration.item.impl.AdaptedVanillaStack;
-import su.nightexpress.nightcore.util.BukkitThing;
 
-import java.util.HashMap;
-import java.util.Map;
+import su.nightexpress.nightcore.bridge.item.AdaptedItem;
+import su.nightexpress.nightcore.integration.item.ItemBridge;
+import su.nightexpress.nightcore.util.BukkitThing;
 
 public class HomeDefaults {
 
@@ -22,7 +23,7 @@ public class HomeDefaults {
         Map<String, AdaptedItem> map = new HashMap<>();
 
         Tag.BEDS.getValues().forEach(material -> {
-            map.put(BukkitThing.getValue(material), AdaptedVanillaStack.of(new ItemStack(material)));
+            map.put(BukkitThing.getValue(material), ItemBridge.get().adaptOrDummy(new ItemStack(material)));
         });
 
         return map;

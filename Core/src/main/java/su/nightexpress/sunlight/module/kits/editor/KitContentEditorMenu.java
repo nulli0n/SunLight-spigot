@@ -24,7 +24,6 @@ import org.jspecify.annotations.NonNull;
 
 import su.nightexpress.nightcore.NightPlugin;
 import su.nightexpress.nightcore.bridge.item.AdaptedItem;
-import su.nightexpress.nightcore.bridge.item.ItemAdapter;
 import su.nightexpress.nightcore.config.FileConfig;
 import su.nightexpress.nightcore.integration.item.ItemBridge;
 import su.nightexpress.nightcore.locale.LangContainer;
@@ -156,7 +155,8 @@ public class KitContentEditorMenu extends AbstractObjectMenu<KitContentEditorMen
     }
 
     @Override
-    public void onPrepare(@NonNull ViewerContext context, @NonNull InventoryView view, @NonNull Inventory inventory, @NonNull List<MenuItem> items) {
+    public void onPrepare(@NonNull ViewerContext context, @NonNull InventoryView view, @NonNull Inventory inventory,
+                          @NonNull List<MenuItem> items) {
         Data data = this.getObject(context);
         KitContent content = data.contentCopy;
 
@@ -202,7 +202,8 @@ public class KitContentEditorMenu extends AbstractObjectMenu<KitContentEditorMen
         context.getViewer().refresh();
     }
 
-    private void transferItems(@NonNull KitContent content, @NonNull Inventory inventory, @NonNull Function<Integer, Integer> slotMapper) {
+    private void transferItems(@NonNull KitContent content, @NonNull Inventory inventory,
+                               @NonNull Function<Integer, Integer> slotMapper) {
         Map<Integer, AdaptedItem> itemBySlotMap = content.getItemBySlotMap();
 
         itemBySlotMap.clear();
@@ -214,10 +215,7 @@ public class KitContentEditorMenu extends AbstractObjectMenu<KitContentEditorMen
             ItemStack itemStack = inventory.getItem(slot);
             if (itemStack == null || itemStack.getType().isAir()) continue;
 
-            ItemAdapter<?> adapter = ItemBridge.adapter(itemStack).orElse(null);
-            if (adapter == null) continue;
-
-            AdaptedItem adaptedItem = adapter.adapt(itemStack).orElse(null);
+            AdaptedItem adaptedItem = ItemBridge.get().adapt(itemStack).orElse(null);
             if (adaptedItem == null) continue;
 
             itemBySlotMap.put(slotIndex, adaptedItem);

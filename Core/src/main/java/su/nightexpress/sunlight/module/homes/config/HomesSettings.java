@@ -1,32 +1,34 @@
 package su.nightexpress.sunlight.module.homes.config;
 
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
 import su.nightexpress.nightcore.bridge.item.AdaptedItem;
 import su.nightexpress.nightcore.config.FileConfig;
 import su.nightexpress.nightcore.configuration.AbstractConfig;
 import su.nightexpress.nightcore.configuration.ConfigProperty;
 import su.nightexpress.nightcore.configuration.ConfigType;
 import su.nightexpress.nightcore.configuration.ConfigTypes;
-import su.nightexpress.nightcore.integration.item.impl.AdaptedItemStack;
-import su.nightexpress.nightcore.integration.item.impl.AdaptedVanillaStack;
+import su.nightexpress.nightcore.configuration.codec.ConfigCodecs;
+import su.nightexpress.nightcore.integration.item.ItemBridge;
+import su.nightexpress.nightcore.integration.item.codec.AdaptedItemCodec;
 import su.nightexpress.nightcore.integration.permission.PermissionPlugins;
 import su.nightexpress.nightcore.util.BukkitThing;
 import su.nightexpress.nightcore.util.LowerCase;
 import su.nightexpress.nightcore.util.RankTable;
 import su.nightexpress.sunlight.module.homes.HomeDefaults;
 
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-
 public class HomesSettings extends AbstractConfig {
 
     private static final ConfigType<AdaptedItem> ADAPTED_ITEM_CONFIG_TYPE = ConfigType.of(
-        AdaptedItemStack::read,
-        FileConfig::set
+        AdaptedItemCodec::read,
+        AdaptedItemCodec::write
     );
 
     private static final ConfigType<RankTable> RANK_TABLE_CONFIG_TYPE = ConfigType.of(
@@ -40,18 +42,21 @@ public class HomesSettings extends AbstractConfig {
     );
 
 
-    private final ConfigProperty<Boolean> bedModeEnabled = this.addProperty(ConfigTypes.BOOLEAN, "Creation.BedMode.Enabled",
+    private final ConfigProperty<Boolean> bedModeEnabled = this.addProperty(ConfigTypes.BOOLEAN,
+        "Creation.BedMode.Enabled",
         true,
         "Sets whether or not players can use beds to set home locations."
     );
 
-    private final ConfigProperty<Boolean> bedModeOverrideRespawn = this.addProperty(ConfigTypes.BOOLEAN, "Creation.BedMode.OverrideRespawn",
+    private final ConfigProperty<Boolean> bedModeOverrideRespawn = this.addProperty(ConfigTypes.BOOLEAN,
+        "Creation.BedMode.OverrideRespawn",
         false,
         "When enabled, overrides vanilla bed respawn point mechanic.",
         "Respawn point is set to the latest created/updated bed home."
     );
 
-    private final ConfigProperty<Boolean> bedModeColors = this.addProperty(ConfigTypes.BOOLEAN, "Creation.BedMode.Colors",
+    private final ConfigProperty<Boolean> bedModeColors = this.addProperty(ConfigTypes.BOOLEAN,
+        "Creation.BedMode.Colors",
         false,
         "When enabled, each bed color will set different home point."
     );
@@ -61,25 +66,29 @@ public class HomesSettings extends AbstractConfig {
         ""
     );
 
-    private final ConfigProperty<Map<String, AdaptedItem>> iconPresets = this.addProperty(ConfigTypes.forMapWithLowerKeys(ADAPTED_ITEM_CONFIG_TYPE),
+    private final ConfigProperty<Map<String, AdaptedItem>> iconPresets = this.addProperty(ConfigCodecs
+        .forMapWithLowerKeys(ADAPTED_ITEM_CONFIG_TYPE),
         "Home.Icon.Presets",
         HomeDefaults.getDefaultIconPresets(),
         ""
     );
 
 
-    private final ConfigProperty<Boolean> checkBuildAccess = this.addProperty(ConfigTypes.BOOLEAN, "Creation.Check_Build_Access",
+    private final ConfigProperty<Boolean> checkBuildAccess = this.addProperty(ConfigTypes.BOOLEAN,
+        "Creation.Check_Build_Access",
         true,
         "When enabled, simulates player block place event to check for build access.",
         "If building is not allowed, home can't be created."
     );
 
-    private final ConfigProperty<Set<String>> worldBlacklist = this.addProperty(ConfigTypes.STRING_SET_LOWER_CASE, "Creation.World_Blacklist",
+    private final ConfigProperty<Set<String>> worldBlacklist = this.addProperty(ConfigTypes.STRING_SET_LOWER_CASE,
+        "Creation.World_Blacklist",
         Set.of("world_name", "another_world"),
         "A list of worlds, where homes can not be created."
     );
 
-    private final ConfigProperty<RankTable> homesPerRank = this.addProperty(RANK_TABLE_CONFIG_TYPE, "Creation.Amount_Per_Rank",
+    private final ConfigProperty<RankTable> homesPerRank = this.addProperty(RANK_TABLE_CONFIG_TYPE,
+        "Creation.Amount_Per_Rank",
         RankTable.builder(RankTable.Mode.RANK, 1)
             .addRankValue("vip", 3)
             .addRankValue("gold", 5)
@@ -91,7 +100,8 @@ public class HomesSettings extends AbstractConfig {
         "If player is in multiple groups listed here, the greater value will be used.",
         "If player is not in any group listed here, the 'default' value will be used if present.",
         "",
-        "[*] Requires %s with a compatible permissions plugin OR %s to work.".formatted(PermissionPlugins.VAULT, PermissionPlugins.LUCK_PERMS),
+        "[*] Requires %s with a compatible permissions plugin OR %s to work.".formatted(PermissionPlugins.VAULT,
+            PermissionPlugins.LUCK_PERMS),
         "Use '-1' for unlimited amount."
     );
 
@@ -115,7 +125,7 @@ public class HomesSettings extends AbstractConfig {
     public AdaptedItem getIconOrDefault(@NotNull String iconId) {
         return Optional.ofNullable(this.getIconPreset(iconId))
             .or(() -> Optional.ofNullable(this.getIconPreset(this.getDefaultIconId())))
-            .orElse(AdaptedVanillaStack.of(new ItemStack(Material.RED_BED)));
+            .orElse(ItemBridge.get().adaptOrDummy(new ItemStack(Material.RED_BED)));
     }
 
     @NotNull
