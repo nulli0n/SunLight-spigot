@@ -3,12 +3,13 @@ package su.nightexpress.sunlight.nms.v26p1.container;
 import org.bukkit.craftbukkit.entity.CraftHumanEntity;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.craftbukkit.inventory.CraftInventory;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.PlayerEnderChestContainer;
 import su.nightexpress.nightcore.util.Reflex;
 
+@NullMarked
 public class PlayerEnderChest extends PlayerEnderChestContainer {
 
     private static final String ITEMS_FIELD = "items"; // 'c'
@@ -22,7 +23,6 @@ public class PlayerEnderChest extends PlayerEnderChestContainer {
         Reflex.setFieldValue(this, ITEMS_FIELD, owner.getHandle().getEnderChestInventory().items);
     }
 
-    @NotNull
     public org.bukkit.inventory.Inventory getInventory() {
         return this.inventory;
     }
@@ -33,13 +33,13 @@ public class PlayerEnderChest extends PlayerEnderChestContainer {
     }
 
     @Override
-    public void onClose(@NotNull CraftHumanEntity who) {
+    public void onClose(CraftHumanEntity who) {
         super.onClose(who);
         this.saveOnExit();
     }
 
     @Override
-    public boolean stillValid(@NotNull Player player) {
+    public boolean stillValid(Player player) {
         return true;
     }
 }

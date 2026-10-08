@@ -7,6 +7,8 @@ dependencies {
     implementation project(':NMS')
     implementation project(":MC_1_21_11")
     implementation project(":nms-26-1")
+    implementation project(":nms-26-2")
+    implementation project(":nms-26-3")
 }
 
 // Configure the shadowJar task to bundle the necessary dependencies.
@@ -21,6 +23,8 @@ shadowJar {
         include(project(':NMS'))
         include(project(':MC_1_21_11'))
         include(project(':nms-26-1'))
+        include(project(':nms-26-2'))
+        include(project(':nms-26-3'))
     }
 }
 

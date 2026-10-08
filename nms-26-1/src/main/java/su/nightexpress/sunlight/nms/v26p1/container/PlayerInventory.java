@@ -3,7 +3,7 @@ package su.nightexpress.sunlight.nms.v26p1.container;
 import org.bukkit.craftbukkit.entity.CraftHumanEntity;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.craftbukkit.inventory.CraftInventory;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
 import net.minecraft.world.entity.EntityEquipment;
 import net.minecraft.world.entity.player.Inventory;
@@ -11,19 +11,20 @@ import net.minecraft.world.entity.player.Player;
 import su.nightexpress.nightcore.util.Reflex;
 import su.nightexpress.nightcore.util.Version;
 
+@NullMarked
 public class PlayerInventory extends Inventory {
 
     private final CraftInventory inventory;
     private final CraftPlayer    owner;
 
-    public PlayerInventory(@NotNull CraftPlayer player) {
+    public PlayerInventory(CraftPlayer player) {
         super(player.getHandle(), getEquipment(player));
         this.owner = player;
         this.inventory = new PatchedCraftInventory(this);
         this.reflectContents();
     }
 
-    private static EntityEquipment getEquipment(@NotNull CraftPlayer craftPlayer) {
+    private static EntityEquipment getEquipment(CraftPlayer craftPlayer) {
         if (Version.isSpigot()) {
             return (EntityEquipment) Reflex.getFieldValue(craftPlayer.getHandle(), "equipment", "m");
         }
@@ -36,7 +37,7 @@ public class PlayerInventory extends Inventory {
         Reflex.setFieldValue(this, "items", origin.getNonEquipmentItems());
     }
 
-    @NotNull
+
     public org.bukkit.inventory.Inventory getInventory() {
         return this.inventory;
     }
@@ -47,7 +48,7 @@ public class PlayerInventory extends Inventory {
     }
 
     @Override
-    public void onClose(@NotNull CraftHumanEntity who) {
+    public void onClose(CraftHumanEntity who) {
         super.onClose(who);
         this.saveOnExit();
     }
@@ -63,7 +64,7 @@ public class PlayerInventory extends Inventory {
     }
 
     @Override
-    public boolean stillValid(@NotNull Player player) {
+    public boolean stillValid(Player player) {
         return true;
     }
 }
